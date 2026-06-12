@@ -1,34 +1,44 @@
 ---
-id: TASK-MEM-005
-title: Store factory and namespace validation
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 4
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 55
-dependencies: [TASK-MEM-002, TASK-MEM-003]
-tags: [langgraph, asyncpostgresstore, pgvector, namespaces]
 consumer_context:
-  - task: TASK-MEM-002
-    consumes: FLEET_MEMORY_PG_DSN
-    framework: "langgraph AsyncPostgresStore (langgraph-checkpoint-postgres)"
-    driver: "psycopg3 + psycopg-pool"
-    format_note: "Plain postgresql://user:pass@host:port/dbname conninfo — psycopg3 format, NO +asyncpg dialect suffix; pool sizing from pg_pool_min/pg_pool_max, connect bound from pg_connect_timeout_s"
-  - task: TASK-MEM-003
-    consumes: EMBED_CALLABLE
-    framework: "AsyncPostgresStore index config"
-    driver: "httpx (inside the callable)"
-    format_note: "async callable list[str] -> list[list[float]], exactly settings.embed_dims (768) floats per vector; raises EmbedDimensionError/EmbedTimeoutError/EmbedServiceError on failure"
+- consumes: FLEET_MEMORY_PG_DSN
+  driver: psycopg3 + psycopg-pool
+  format_note: Plain postgresql://user:pass@host:port/dbname conninfo — psycopg3 format,
+    NO +asyncpg dialect suffix; pool sizing from pg_pool_min/pg_pool_max, connect
+    bound from pg_connect_timeout_s
+  framework: langgraph AsyncPostgresStore (langgraph-checkpoint-postgres)
+  task: TASK-MEM-002
+- consumes: EMBED_CALLABLE
+  driver: httpx (inside the callable)
+  format_note: async callable list[str] -> list[list[float]], exactly settings.embed_dims
+    (768) floats per vector; raises EmbedDimensionError/EmbedTimeoutError/EmbedServiceError
+    on failure
+  framework: AsyncPostgresStore index config
+  task: TASK-MEM-003
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-002
+- TASK-MEM-003
+estimated_minutes: 55
+feature_id: FEAT-CA81
+id: TASK-MEM-005
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- langgraph
+- asyncpostgresstore
+- pgvector
+- namespaces
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Store factory and namespace validation
+updated: 2026-06-12 17:00:00+00:00
+wave: 4
 ---
 
 # Task: Store factory and namespace validation

@@ -65,3 +65,25 @@ class EmbedServiceError(RuntimeError):
         super().__init__(msg)
         self.url = url
         self.status_code = status_code
+
+
+class NamespaceValidationError(ValueError):
+    """Raised when namespace tuple contains invalid identifiers.
+
+    Namespace identifiers must match ^[a-z0-9_]+$ (underscores only, no hyphens).
+    Never includes database credentials.
+    """
+
+    def __init__(self, namespace: tuple[str, ...], invalid_parts: list[str]) -> None:
+        """Initialize with namespace and invalid parts.
+
+        Args:
+            namespace: The full namespace tuple that failed validation
+            invalid_parts: List of invalid identifier strings
+        """
+        super().__init__(
+            f"Invalid namespace identifiers {invalid_parts}: must use underscores only "
+            f"(match ^[a-z0-9_]+$), got namespace {namespace}"
+        )
+        self.namespace = namespace
+        self.invalid_parts = invalid_parts
