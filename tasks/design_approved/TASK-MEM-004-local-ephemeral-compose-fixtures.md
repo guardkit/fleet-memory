@@ -1,23 +1,28 @@
 ---
-id: TASK-MEM-004
-title: Local ephemeral compose and pytest fixtures
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: infrastructure
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 2
-implementation_mode: task-work
 complexity: 5
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-001
 estimated_minutes: 60
-dependencies: [TASK-MEM-001]
-tags: [docker-compose, pgvector, hermetic-testing, fixtures]
+feature_id: FEAT-CA81
+id: TASK-MEM-004
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- docker-compose
+- pgvector
+- hermetic-testing
+- fixtures
+task_type: infrastructure
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Local ephemeral compose and pytest fixtures
+updated: 2026-06-12 17:00:00+00:00
+wave: 2
 ---
 
 # Task: Local ephemeral compose and pytest fixtures

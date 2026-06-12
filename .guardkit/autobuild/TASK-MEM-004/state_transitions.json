@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-004",
+    "pre_path": "tasks/backlog/TASK-MEM-004-local-ephemeral-compose-fixtures.md",
+    "post_path": "tasks/design_approved/TASK-MEM-004-local-ephemeral-compose-fixtures.md",
+    "timestamp": "2026-06-12T17:17:36.691140+00:00",
+    "kind": "design_approved_transition"
+  }
+]
