@@ -49,7 +49,7 @@ store/embed/settings modules contain zero NATS imports.
 - [ ] `src/fleet_memory/app.py` exports module-level `broker` and a `FastStream` app whose lifespan enters `async_store_context(settings)` and exposes the store (app/broker context attribute); no `@broker.subscriber` present; `python -c "from fleet_memory.app import app, broker"` exits 0 with required `FLEET_MEMORY_` env set
 - [ ] Lifespan unit test using `TestNatsBroker` enters and exits cleanly with a fake embed and a mocked/stubbed store context — no real NATS, no real Postgres
 - [ ] Startup-failure unit test: with a DSN pointing at a closed local port and the REAL store context, lifespan entry raises within `pg_connect_timeout_s` plus slack (test wall-clock under 15 s) and the error names the database target without leaking the password — ASSUM-006 verification: record the actual observed driver timeout behaviour in a test comment
-- [ ] `grep -rE "from nats|import nats|faststream" src/fleet_memory/store.py src/fleet_memory/embed.py src/fleet_memory/settings.py` exits non-zero (service layers carry zero broker imports — handler/service boundary)
+- [ ] Service layer carries zero broker imports (handler/service boundary): grep for the pattern `from nats|import nats|faststream` across `src/fleet_memory/store.py`, `src/fleet_memory/embed.py`, and `src/fleet_memory/settings.py` finds no matches (grep exits non-zero)
 - [ ] `python -m pytest tests/unit/test_app_lifespan.py -v` passes
 - [ ] All modified files pass project-configured lint/format checks with zero errors
 

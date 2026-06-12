@@ -1,7 +1,7 @@
 {
-  "tests_run": 4,
+  "tests_run": 69,
   "tests_failed": 0,
-  "coverage_pct": 60.68,
-  "output_summary": "4 tests passed, 0 failed. Modified files (app.py: 100%, test_app_lifespan.py: 97%) meet coverage requirements.",
+  "coverage_pct": 91.77215189873418,
+  "output_summary": "69 unit tests passed, 92% coverage, 0 integration tests (excluded by default)",
   "quality_gates_passed": true
 }

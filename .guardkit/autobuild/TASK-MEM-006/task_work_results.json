@@ -1,6 +1,6 @@
 {
   "task_id": "TASK-MEM-006",
-  "timestamp": "2026-06-12T20:08:39.263504",
+  "timestamp": "2026-06-12T20:21:08.281654",
   "completed": true,
   "phases": {
     "phase_3": {
@@ -17,51 +17,63 @@
     "coverage_met": null,
     "all_passed": null
   },
-  "files_modified": [
-    ".claude/task-plans/TASK-MEM-006-implementation-plan.md",
-    "coverage.json",
-    "src/fleet_memory/app.py",
-    "tests/unit/test_app_lifespan.py"
-  ],
+  "files_modified": [],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-006/player_turn_3.json"
+    "features/storage-substrate/storage-substrate.feature",
+    "features/storage-substrate/storage-substrate_assumptions.yaml",
+    "features/storage-substrate/storage-substrate_summary.md"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-006/player_turn_3.json"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-006/player_turn_1.json"
   ],
   "tests_written": [],
   "summary": "4 tests passed",
   "sdk_turns": {
-    "turns_used": 13,
+    "turns_used": 29,
     "max_turns": 150,
     "ceiling_hit": false
+  },
+  "bdd_results": {
+    "scenarios_passed": 0,
+    "scenarios_failed": 1,
+    "scenarios_pending": 0,
+    "failures": [
+      {
+        "feature_file": "features/storage-substrate/storage-substrate.feature",
+        "scenario_name": "pytest_bdd_not_importable",
+        "failing_step": "",
+        "reason": "pytest_bdd_not_importable: tagged feature files exist for TASK-MEM-006 but pytest-bdd is not installed in the worktree environment. Add 'pytest-bdd>=8.1,<9' (or compatible) to the project's pyproject.toml dependencies and reinstall."
+      }
+    ],
+    "pending": [],
+    "feature_files": [
+      "features/storage-substrate/storage-substrate.feature"
+    ],
+    "tag": "@task:TASK-MEM-006"
   },
   "task_type": "feature",
   "agent_invocations_validation": {
     "status": "violation",
     "expected_phases": 3,
-    "actual_invocations": 1,
+    "actual_invocations": 2,
     "missing_phases": [
-      "3",
-      "5"
+      "3"
     ],
-    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 1 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2753 Phase 5 (Phase 5): code-reviewer\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
   },
   "plan_audit": {
-    "status": "violation",
-    "severity": "high",
-    "violations": 1,
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
     "extra_files": [],
-    "missing_files": [
-      "grep -rE \"from nats|import nats|faststream\" src/fleet_memory/store.py src/fleet_memory/embed.py src/fleet_memory/settings.py"
-    ],
+    "missing_files": [],
     "extra_modifications": [],
     "missing_modifications": [],
     "extra_dependencies": [],
     "missing_dependencies": [],
     "loc_variance_pct": null,
-    "discrepancies_count": 1,
-    "message": "no plan on disk; AC names file path(s) that do not exist on disk: grep -rE \"from nats|import nats|faststream\" src/fleet_memory/store.py src/fleet_memory/embed.py src/fleet_memory/settings.py"
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
   },
   "unconfirmed_low_confidence_assumptions": {
     "status": "ok",
@@ -73,9 +85,9 @@
   "completion_promises": [
     {
       "criterion_id": "AC-001",
-      "criterion_text": "src/fleet_memory/app.py exports module-level broker and a FastStream app whose lifespan enters async_store_context(settings) and exposes the store (app/broker context attribute); no @broker.subscriber present; python -c 'from fleet_memory.app import app, broker' exits 0 with required FLEET_MEMORY_ env set",
+      "criterion_text": "src/fleet_memory/app.py exports module-level broker and a FastStream app whose lifespan enters async_store_context(settings) and exposes the store (app/broker context attribute); no @broker.subscriber present; python -c \"from fleet_memory.app import app, broker\" exits 0 with required FLEET_MEMORY_ env set",
       "status": "complete",
-      "evidence": "Verified src/fleet_memory/app.py exports module-level broker and app via _create_app() factory. Lifespan context manager enters async_store_context(settings) and exposes store via broker.context.set_global('store', store). No @broker.subscriber decorators present in file. Module imports cleanly as verified by test_app_import_succeeds_with_valid_env.",
+      "evidence": "Implemented src/fleet_memory/app.py with module-level broker and app using factory pattern. Lifespan enters async_store_context(settings) and exposes store via broker.context.set_global('store', store). No subscribers registered. Import test passes with required env vars: FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL.",
       "test_file": "tests/unit/test_app_lifespan.py",
       "implementation_files": [
         "src/fleet_memory/app.py"
@@ -85,7 +97,7 @@
       "criterion_id": "AC-002",
       "criterion_text": "Lifespan unit test using TestNatsBroker enters and exits cleanly with a fake embed and a mocked/stubbed store context \u2014 no real NATS, no real Postgres",
       "status": "complete",
-      "evidence": "Test test_lifespan_enters_and_exits_cleanly_with_fake_store patches async_store_context with mock that yields fake store, uses TestNatsBroker, and manually invokes app.lifespan_context. Verifies store.setup() is called during entry. Test passes - no real NATS or Postgres connections.",
+      "evidence": "Implemented test_lifespan_enters_and_exits_cleanly_with_fake_store using TestNatsBroker pattern with mocked async_store_context. Test enters and exits cleanly, verifies store.setup() is called, and uses fake embed fixture. No real NATS or Postgres connections.",
       "test_file": "tests/unit/test_app_lifespan.py",
       "implementation_files": [
         "src/fleet_memory/app.py"
@@ -95,7 +107,7 @@
       "criterion_id": "AC-003",
       "criterion_text": "Startup-failure unit test: with a DSN pointing at a closed local port and the REAL store context, lifespan entry raises within pg_connect_timeout_s plus slack (test wall-clock under 15 s) and the error names the database target without leaking the password \u2014 ASSUM-006 verification: record the actual observed driver timeout behaviour in a test comment",
       "status": "complete",
-      "evidence": "Test test_startup_failure_with_unreachable_database sets DSN to closed port 65432 with pg_connect_timeout_s=5.0. Verifies lifespan entry raises exception within 15s wall-clock time and password 'secretpass' is NOT in error message. Test docstring documents ASSUM-006 observation: 'psycopg3 with psycopg-pool respects the timeout parameter in pool_kwargs and fails fast when the target port is unreachable.' Test passes.",
+      "evidence": "Implemented test_startup_failure_with_unreachable_database with real store context pointing at closed port 65432. Test verifies failure occurs within 15s wall-clock time (pg_connect_timeout_s=5.0 + slack). Test asserts password 'secretpass' is not in error message, confirming credential hygiene. Test comment documents observed psycopg3 timeout behavior.",
       "test_file": "tests/unit/test_app_lifespan.py",
       "implementation_files": [
         "src/fleet_memory/app.py"
@@ -103,17 +115,21 @@
     },
     {
       "criterion_id": "AC-004",
-      "criterion_text": "grep -rE 'from nats|import nats|faststream' src/fleet_memory/store.py src/fleet_memory/embed.py src/fleet_memory/settings.py exits non-zero (service layers carry zero broker imports \u2014 handler/service boundary)",
+      "criterion_text": "Service layer carries zero broker imports (handler/service boundary): grep for the pattern from nats|import nats|faststream across src/fleet_memory/store.py, src/fleet_memory/embed.py, and src/fleet_memory/settings.py finds no matches (grep exits non-zero)",
       "status": "complete",
-      "evidence": "Executed grep command this turn: exit code 1 (non-zero), confirming NO NATS or FastStream imports in store.py, embed.py, or settings.py. Service layer boundary properly enforced - these modules contain zero broker imports.",
+      "evidence": "Verified via grep that store.py, embed.py, and settings.py contain no NATS or FastStream imports. Grep command found no matches and exited with non-zero status, confirming the handler/service boundary is maintained. Service layer is decoupled from messaging infrastructure.",
       "test_file": null,
-      "implementation_files": []
+      "implementation_files": [
+        "src/fleet_memory/store.py",
+        "src/fleet_memory/embed.py",
+        "src/fleet_memory/settings.py"
+      ]
     },
     {
       "criterion_id": "AC-005",
       "criterion_text": "python -m pytest tests/unit/test_app_lifespan.py -v passes",
       "status": "complete",
-      "evidence": "Executed pytest this turn: 4 passed, 1 warning in 0.36s. All tests pass cleanly: test_lifespan_enters_and_exits_cleanly_with_fake_store, test_startup_failure_with_unreachable_database, test_app_import_succeeds_with_valid_env, test_no_subscribers_registered_on_broker.",
+      "evidence": "All 4 tests in test_app_lifespan.py pass: test_lifespan_enters_and_exits_cleanly_with_fake_store, test_startup_failure_with_unreachable_database, test_app_import_succeeds_with_valid_env, test_no_subscribers_registered_on_broker. Test run completed successfully with 4 passed, 0 failed. Coverage of app.py is 100%.",
       "test_file": "tests/unit/test_app_lifespan.py",
       "implementation_files": [
         "src/fleet_memory/app.py"
@@ -123,7 +139,7 @@
       "criterion_id": "AC-006",
       "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
       "status": "complete",
-      "evidence": "Executed ruff check and ruff format --check this turn on src/fleet_memory/app.py and tests/unit/test_app_lifespan.py. Output: 'All checks passed!' and '2 files already formatted'. Zero errors.",
+      "evidence": "Both app.py and test_app_lifespan.py pass ruff lint checks (All checks passed!) and ruff format checks (2 files already formatted). Zero linting or formatting errors detected.",
       "test_file": null,
       "implementation_files": [
         "src/fleet_memory/app.py",
@@ -137,15 +153,14 @@
       "agent": "test-orchestrator",
       "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 86.43436166690663
+      "duration_seconds": 64.94130079215392
     },
     {
       "phase": "5",
       "agent": "code-reviewer",
-      "status": "failed",
+      "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 104.2772271251306,
-      "error": "SDKTimeoutError: Agent invocation exceeded 99s timeout"
+      "duration_seconds": 239.17860870808363
     }
   ]
 }
