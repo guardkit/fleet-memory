@@ -1,0 +1,44 @@
+{
+  "turn_number": 3,
+  "files_modified": [
+    ".guardkit/autobuild/TASK-MEM-009/specialist_results.json",
+    ".guardkit/autobuild/TASK-MEM-009/task_work_results.json",
+    ".guardkit/autobuild/TASK-MEM-010/checkpoints.json",
+    ".guardkit/autobuild/TASK-MEM-010/task_work_results.json",
+    ".guardkit/autobuild/TASK-MEM-010/turn_context.json",
+    "coverage.json"
+  ],
+  "files_created": [],
+  "tests_written": [],
+  "tests_passed": false,
+  "test_count": 77,
+  "timestamp": "2026-06-12T20:57:57.730282",
+  "detection_method": "git_test_detection",
+  "git_changes": {
+    "files_modified": [
+      ".guardkit/autobuild/TASK-MEM-009/specialist_results.json",
+      ".guardkit/autobuild/TASK-MEM-009/task_work_results.json",
+      ".guardkit/autobuild/TASK-MEM-010/checkpoints.json",
+      ".guardkit/autobuild/TASK-MEM-010/task_work_results.json",
+      ".guardkit/autobuild/TASK-MEM-010/turn_context.json",
+      "coverage.json"
+    ],
+    "files_added": [],
+    "files_deleted": [],
+    "diff_stats": ".../autobuild/TASK-MEM-009/specialist_results.json |  20 +--\n .../autobuild/TASK-MEM-009/task_work_results.json  |  31 +++-\n .guardkit/autobuild/TASK-MEM-010/checkpoints.json  |  11 +-\n .../autobuild/TASK-MEM-010/task_work_results.json  | 191 +++------------------\n .guardkit/autobuild/TASK-MEM-010/turn_context.json |   4 +-\n coverage.json                                      |   2 +-\n 6 files changed, 73 insertions(+), 186 deletions(-)",
+    "insertions": 73,
+    "deletions": 186,
+    "timestamp": "2026-06-12T20:57:26.128599"
+  },
+  "test_results": {
+    "tests_run": true,
+    "tests_passed": false,
+    "test_count": 77,
+    "passed_count": 0,
+    "failed_count": 77,
+    "output_summary": ".F...................................................................... [ 92%]\n......                                                                   [100%]\n=============================== warnings summary ===============================\n../../../../../../../../Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:25\n  /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:2",
+    "timestamp": "2026-06-12T20:57:57.729941",
+    "error": null
+  },
+  "player_report_available": false
+}

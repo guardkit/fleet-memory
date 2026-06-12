@@ -1,18 +1,18 @@
 {
   "phase_4": {
-    "status": "passed",
-    "duration_seconds": 85.20662800036371,
-    "error": null,
-    "tests_run": 78,
-    "tests_failed": 1,
-    "coverage_pct": 94.84,
-    "output_summary": "77/78 passed; test_startup_failure_with_unreachable_database failed on connection pool timeout",
+    "status": "failed",
+    "duration_seconds": 65.26861083414406,
+    "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout",
+    "tests_run": 0,
+    "tests_failed": 0,
+    "coverage_pct": 0.0,
+    "output_summary": "",
     "quality_gates_passed": false
   },
   "phase_5": {
-    "status": "passed",
-    "duration_seconds": 260.27175087528303,
-    "error": null,
+    "status": "skipped",
+    "duration_seconds": 0.0,
+    "error": "phase_4 status=failed",
     "issues": [],
     "quality_score": 0.0,
     "recommendations": [],

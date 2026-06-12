@@ -1,18 +1,18 @@
 {
   "phase_4": {
-    "status": "passed",
-    "duration_seconds": 91.72436900017783,
-    "error": null,
-    "tests_run": 78,
-    "tests_failed": 1,
-    "coverage_pct": 94.84,
-    "output_summary": "77/78 tests passed; 1 failure in test_startup_failure_with_unreachable_database (connection refused expected)",
+    "status": "failed",
+    "duration_seconds": 65.32452454185113,
+    "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout",
+    "tests_run": 0,
+    "tests_failed": 0,
+    "coverage_pct": 0.0,
+    "output_summary": "",
     "quality_gates_passed": false
   },
   "phase_5": {
-    "status": "failed",
-    "duration_seconds": 242.2577567086555,
-    "error": "SDKTimeoutError: Agent invocation exceeded 237s timeout",
+    "status": "skipped",
+    "duration_seconds": 0.0,
+    "error": "phase_4 status=failed",
     "issues": [],
     "quality_score": 0.0,
     "recommendations": [],

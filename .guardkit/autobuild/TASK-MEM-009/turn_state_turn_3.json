@@ -1,0 +1,30 @@
+{
+  "id": "TURN-FEAT-CA81-3",
+  "feature_id": "FEAT-CA81",
+  "task_id": "TASK-MEM-009",
+  "turn_number": 3,
+  "player_summary": "Implementation attempt",
+  "player_decision": "failed",
+  "coach_decision": "error",
+  "coach_feedback": null,
+  "mode": "recovering_state",
+  "blockers_found": [],
+  "progress_summary": "Turn 3: error",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    ".guardkit/autobuild/TASK-MEM-009/checkpoints.json",
+    ".guardkit/autobuild/TASK-MEM-009/task_work_results.json",
+    ".guardkit/autobuild/TASK-MEM-009/turn_context.json",
+    ".guardkit/autobuild/TASK-MEM-010/specialist_results.json",
+    ".guardkit/autobuild/TASK-MEM-010/task_work_results.json"
+  ],
+  "tests_passed": null,
+  "tests_failed": null,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-06-12T20:57:26.747802",
+  "completed_at": "2026-06-12T20:57:26.747802",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}

@@ -1,0 +1,31 @@
+{
+  "id": "TURN-FEAT-CA81-3",
+  "feature_id": "FEAT-CA81",
+  "task_id": "TASK-MEM-010",
+  "turn_number": 3,
+  "player_summary": "Implementation attempt",
+  "player_decision": "feedback",
+  "coach_decision": "feedback",
+  "coach_feedback": "- ABSENT SIGNAL: evidence_bundle.tests.tests_run is null. No test count captured despite this being a testing task. ZERO-CARDINALITY TEST GUARD applies - cannot approve based on absence of test execution evidence.: Ensure tests are created and the orchestrator can capture test execution count. The evidence bundle must show tests_run with a non-null count.\n- Requirements verification shows all_criteria_met: false with 0 of 5 criteria satisfied. All criteria in evidence_bundle.requirements.criteria_results marked 'rejected' with evidence 'Promise status: incomplete'.: Player crash (exit code 143) and git_test_detection recovery left no analyzable evidence of what the tests verify. Re-implement with successful completion to allow requirements verification.\n- No evidence that tests verify AC-002: Round-trip behavior (aput then aget returns byte-identical content with created_at/updated_at present). Criterion marked rejected in evidence bundle.: Create integration test that stores a memory via aput, retrieves it via aget, asserts byte-identical content, and verifies created_at/updated_at timestamps are present.\n... and 5 more issues",
+  "mode": "recovering_state",
+  "blockers_found": [],
+  "progress_summary": "Turn 3: feedback",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    ".guardkit/autobuild/TASK-MEM-009/specialist_results.json",
+    ".guardkit/autobuild/TASK-MEM-009/task_work_results.json",
+    ".guardkit/autobuild/TASK-MEM-010/checkpoints.json",
+    ".guardkit/autobuild/TASK-MEM-010/task_work_results.json",
+    ".guardkit/autobuild/TASK-MEM-010/turn_context.json",
+    "coverage.json"
+  ],
+  "tests_passed": null,
+  "tests_failed": null,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-06-12T21:01:41.976675",
+  "completed_at": "2026-06-12T21:01:41.976675",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}
