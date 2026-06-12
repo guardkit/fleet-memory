@@ -1,29 +1,35 @@
 ---
-id: TASK-MEM-006
-title: App shell with lifespan-managed store
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 5
-implementation_mode: task-work
 complexity: 4
-estimated_minutes: 45
-dependencies: [TASK-MEM-003, TASK-MEM-005]
-tags: [faststream, lifespan, app-shell]
 consumer_context:
-  - task: TASK-MEM-005
-    consumes: STORE_CONTEXT
-    framework: "FastStream lifespan context manager"
-    driver: "langgraph AsyncPostgresStore via async_store_context"
-    format_note: "asynccontextmanager yielding a ready AsyncPostgresStore (setup() already run); entering connects + verifies, exiting releases every connection"
+- consumes: STORE_CONTEXT
+  driver: langgraph AsyncPostgresStore via async_store_context
+  format_note: asynccontextmanager yielding a ready AsyncPostgresStore (setup() already
+    run); entering connects + verifies, exiting releases every connection
+  framework: FastStream lifespan context manager
+  task: TASK-MEM-005
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-003
+- TASK-MEM-005
+estimated_minutes: 45
+feature_id: FEAT-CA81
+id: TASK-MEM-006
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- faststream
+- lifespan
+- app-shell
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: App shell with lifespan-managed store
+updated: 2026-06-12 17:00:00+00:00
+wave: 5
 ---
 
 # Task: App shell with lifespan-managed store

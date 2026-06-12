@@ -1,0 +1,7 @@
+{
+  "tests_run": 4,
+  "tests_failed": 0,
+  "coverage_pct": 100.0,
+  "output_summary": "4/4 tests passed, 100% coverage on fleet_memory.app module",
+  "quality_gates_passed": true
+}
