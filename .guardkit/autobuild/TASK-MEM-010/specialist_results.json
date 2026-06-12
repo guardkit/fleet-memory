@@ -1,18 +1,18 @@
 {
   "phase_4": {
-    "status": "failed",
-    "duration_seconds": 65.25961112510413,
-    "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout",
-    "tests_run": 0,
+    "status": "passed",
+    "duration_seconds": 94.12829466629773,
+    "error": null,
+    "tests_run": 16,
     "tests_failed": 0,
-    "coverage_pct": 0.0,
-    "output_summary": "",
-    "quality_gates_passed": false
+    "coverage_pct": 64.91228070175438,
+    "output_summary": "16 integration tests passed with 65% coverage in 23.28s",
+    "quality_gates_passed": true
   },
   "phase_5": {
-    "status": "skipped",
-    "duration_seconds": 0.0,
-    "error": "phase_4 status=failed",
+    "status": "passed",
+    "duration_seconds": 195.77378862537444,
+    "error": null,
     "issues": [],
     "quality_score": 0.0,
     "recommendations": [],

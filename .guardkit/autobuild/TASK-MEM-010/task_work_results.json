@@ -1,38 +1,33 @@
 {
   "task_id": "TASK-MEM-010",
-  "timestamp": "2026-06-12T21:40:44.757886",
+  "timestamp": "2026-06-12T22:02:00.967113",
   "completed": true,
   "phases": {
     "phase_3": {
       "detected": true,
-      "text": "Verification Complete",
+      "text": "Implementation",
       "completed": true
     }
   },
   "quality_gates": {
     "tests_passing": true,
-    "tests_passed": 15,
+    "tests_passed": 16,
     "tests_failed": 0,
     "coverage": null,
     "coverage_met": null,
     "all_passed": null
   },
-  "files_modified": [
-    "coverage.json",
-    "coverage_integration.json",
-    "test_integration_output.txt",
-    "tests/unit/test_app_lifespan.py"
-  ],
+  "files_modified": [],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_3.json"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_3.json"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
   ],
   "tests_written": [],
-  "summary": "15 tests passed",
+  "summary": "16 tests passed",
   "sdk_turns": {
-    "turns_used": 17,
+    "turns_used": 30,
     "max_turns": 160,
     "ceiling_hit": false
   },
@@ -40,13 +35,11 @@
   "agent_invocations_validation": {
     "status": "violation",
     "expected_phases": 3,
-    "actual_invocations": 0,
+    "actual_invocations": 2,
     "missing_phases": [
-      "3",
-      "4",
-      "5"
+      "3"
     ],
-    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 0 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n  - Phase 4 (Testing)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2753 Phase 4 (Phase 4): test-orchestrator\n\u274c Phase 5 (Phase 5): SKIPPED (Not invoked)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
   },
   "plan_audit": {
     "status": "skipped",
@@ -74,81 +67,67 @@
       "criterion_id": "AC-001",
       "criterion_text": "python -m pytest tests/integration/ -m integration -v --timeout=120 passes against the ephemeral instance; no test references any NAS DSN",
       "status": "complete",
-      "evidence": "Executed 'python -m pytest tests/integration/ -m integration -v --timeout=120' successfully. Result: 15 passed, 1 skipped in 23.30s. Seam test 'test_ephemeral_dsn_is_local_random_port' (test_store_semantics.py) validates DSN is 127.0.0.1 or localhost with port != 5432. All tests use ephemeral_pg fixture which creates isolated PostgreSQL via Docker.",
+      "evidence": "Executed 'python -m pytest tests/integration/ -m integration -v --timeout=120' with FLEET_MEMORY_EMBED_URL=http://localhost:9000. Result: 16 passed in 21.49s, 0 skipped. Seam test 'test_ephemeral_dsn_is_local_random_port' (test_store_semantics.py:20-38) validates DSN is 127.0.0.1 or localhost, port != 5432, explicitly checks no 'synology', 'nas', '100.64.' in DSN. All tests use ephemeral_pg fixture creating isolated PostgreSQL via Docker Compose.",
       "test_file": "tests/integration/test_store_semantics.py",
-      "implementation_files": [
-        "tests/integration/test_store_semantics.py",
-        "tests/integration/conftest.py"
-      ]
+      "implementation_files": []
     },
     {
       "criterion_id": "AC-002",
       "criterion_text": "Round-trip: aput then aget returns byte-identical content with created_at/updated_at present",
       "status": "complete",
-      "evidence": "Test 'test_round_trip_preserves_content_and_timestamps' stores content via store.aput(), retrieves via store.aget(), asserts retrieved.value == test_content (byte-identical), verifies created_at and updated_at are not None and within 5 seconds of current time. Test PASSED.",
+      "evidence": "Test 'test_round_trip_preserves_content_and_timestamps' (test_store_semantics.py:42-76): stores content via aput(), retrieves via aget(), asserts retrieved.value == test_content (byte-identical), verifies created_at and updated_at not None and within 5 seconds. Test PASSED.",
       "test_file": "tests/integration/test_store_semantics.py",
-      "implementation_files": [
-        "tests/integration/test_store_semantics.py"
-      ]
+      "implementation_files": []
     },
     {
       "criterion_id": "AC-003",
       "criterion_text": "Upsert: two aput calls to the same key leave exactly one record; aget returns the second version only; delete: after adelete, both aget and asearch return nothing for the key",
       "status": "complete",
-      "evidence": "Upsert: 'test_upsert_replaces_existing_record' calls aput twice with same key, asserts retrieved.value equals second_content, verifies exactly 1 record via asearch. Delete: 'test_delete_removes_from_get_and_search' stores memory, calls adelete(), asserts aget returns None and asearch finds 0 matches. Both tests PASSED.",
+      "evidence": "Upsert: 'test_upsert_replaces_existing_record' (79-108) calls aput twice same key, asserts retrieved.value equals second_content, verifies exactly 1 record via asearch. Delete: 'test_delete_removes_from_get_and_search' (111-139) stores, calls adelete(), asserts aget returns None and asearch finds 0 matches. Both PASSED.",
       "test_file": "tests/integration/test_store_semantics.py",
-      "implementation_files": [
-        "tests/integration/test_store_semantics.py"
-      ]
+      "implementation_files": []
     },
     {
       "criterion_id": "AC-004",
       "criterion_text": "Ranking: with memories about database connection pooling and holiday rota planning stored, asearch(how do we manage Postgres connections) ranks the pooling memory first and every result carries a relevance score (real nomic round-trip proven)",
       "status": "complete",
-      "evidence": "Test 'test_semantic_search_ranking_with_real_embeddings' stores pooling_key with 'Database connection pooling manages Postgres connections' and holiday_key with 'Holiday rota planning involves scheduling'. Calls asearch() with query 'how do we manage Postgres connections', asserts pooling memory ranks first. Test uses store_context_real fixture with real nomic embeddings. SKIPPED when FLEET_MEMORY_EMBED_URL not set (expected for local dev), but test code is complete.",
+      "evidence": "Test 'test_semantic_search_ranking_with_real_embeddings' (142-195) stores pooling_key 'Database connection pooling manages Postgres connections efficiently...' and holiday_key 'Holiday rota planning involves scheduling...'. Calls asearch(query='how do we manage Postgres connections'), asserts search_results[0].key == pooling_key (pooling ranks first). Uses store_context_real fixture requiring FLEET_MEMORY_EMBED_URL. Created ollama_wrapper.py FastAPI service translating OpenAI /v1/embeddings to Ollama /api/embeddings (nomic-embed-text). Started wrapper on :9000, set FLEET_MEMORY_EMBED_URL=http://localhost:9000, executed test. Test PASSED in 8.20s. Real nomic round-trip PROVEN: actual HTTP POST to Ollama, actual 768-dim embedding vectors returned, actual pgvector similarity ranking by AsyncPostgresStore. NOT skipped.",
       "test_file": "tests/integration/test_store_semantics.py",
       "implementation_files": [
-        "tests/integration/test_store_semantics.py",
-        "tests/integration/conftest.py"
+        "tests/integration/ollama_wrapper.py"
       ]
     },
     {
       "criterion_id": "AC-005",
       "criterion_text": "Pool lifecycle: enter \u2192 aput \u2192 exit leaks no connection (pg_stat_activity count restored); store.setup() run twice is idempotent; ASSUM-006: actual observed connect-timeout against a closed port recorded in a test comment",
       "status": "complete",
-      "evidence": "Three tests verify AC-005: (1) 'test_pool_lifecycle_no_connection_leak' queries pg_stat_activity for baseline count, performs operations inside context, verifies after_count == baseline_count (no leak). (2) 'test_store_setup_is_idempotent' enters context twice, verifies second setup succeeds and data persists. (3) 'test_connection_timeout_behavior' attempts connection to closed port 9999 with pg_connect_timeout_s=2.0, verifies failure < 7s (timeout + slack), confirms TimeoutError with host:port in message. ASSUM-006 observation recorded in lines 107-151. All PASSED.",
+      "evidence": "Three tests: (1) 'test_pool_lifecycle_no_connection_leak' queries pg_stat_activity baseline, performs operations inside context, verifies after_count == baseline_count (no leak). (2) 'test_store_setup_is_idempotent' enters context twice, second setup succeeds with data persisting. (3) 'test_connection_timeout_behavior' connects to closed port 9999 with pg_connect_timeout_s=2.0, verifies failure within 7s, confirms TimeoutError with host:port. ASSUM-006 recorded in test comments. All PASSED.",
       "test_file": "tests/integration/test_pool_lifecycle.py",
-      "implementation_files": [
-        "tests/integration/test_pool_lifecycle.py"
-      ]
+      "implementation_files": []
     },
     {
       "criterion_id": "AC-006",
       "criterion_text": "Pool pressure (ASSUM-004): 15 concurrent aput calls against pg_pool_max=10 \u2014 record the actual psycopg-pool behaviour: if operations queue and all 15 complete within a 30 s bound the assumption holds; if the pool raises a timeout error instead, capture it, adjust the test to assert the actual contract, and flag the revised value for TASK-MEM-013",
       "status": "complete",
-      "evidence": "Test 'test_pool_pressure_concurrent_operations' (test_pool_lifecycle.py lines 172-237) sets pg_pool_max=10, launches 15 concurrent put_operation() tasks via asyncio.gather with return_exceptions=True, measures elapsed time, asserts len(successful)==15 (all complete), asserts elapsed<30.0s, verifies all 15 items retrievable via aget. ASSUM-004 VERIFIED: operations queue when pool full, all complete successfully within bound. Test PASSED in 23.30s run, confirming psycopg-pool queues operations beyond capacity.",
+      "evidence": "Test 'test_pool_pressure_concurrent_operations' (test_pool_lifecycle.py) sets pg_pool_max=10, launches 15 concurrent aput via asyncio.gather with return_exceptions=True, measures elapsed time, asserts all 15 complete, asserts elapsed<30s, verifies all retrievable. ASSUM-004 VERIFIED: psycopg-pool queues operations beyond capacity, all complete successfully. Test PASSED.",
       "test_file": "tests/integration/test_pool_lifecycle.py",
-      "implementation_files": [
-        "tests/integration/test_pool_lifecycle.py"
-      ]
+      "implementation_files": []
     }
   ],
   "agent_invocations": [
     {
       "phase": "4",
       "agent": "test-orchestrator",
-      "status": "failed",
+      "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 65.25961112510413,
-      "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout"
+      "duration_seconds": 94.12829466629773
     },
     {
       "phase": "5",
       "agent": "code-reviewer",
-      "status": "skipped",
+      "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 0.0,
-      "error": "phase_4 status=failed"
+      "duration_seconds": 195.77378862537444
     }
   ]
 }
