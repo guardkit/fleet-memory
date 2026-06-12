@@ -1,0 +1,70 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0, timeout-2.4.0, asyncio-1.4.0, langsmith-0.8.15, bdd-8.1.0, anyio-4.13.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 110 items / 78 deselected / 32 selected
+
+tests/integration/test_concurrent_writes.py::test_concurrent_same_key_writes_converge_on_one_winner PASSED [  3%]
+tests/integration/test_concurrent_writes.py::test_read_during_write_observes_complete_version_only PASSED [  6%]
+tests/integration/test_concurrent_writes.py::test_asearch_during_concurrent_writes_returns_complete_items PASSED [  9%]
+tests/integration/test_embed_failures.py::test_embed_down_atomicity_no_partial_write PASSED [ 12%]
+tests/integration/test_embed_failures.py::test_embed_down_preserves_existing_memories PASSED [ 15%]
+tests/integration/test_embed_failures.py::test_dimension_mismatch_no_partial_write PASSED [ 18%]
+tests/integration/test_ephemeral_fixture.py::test_ephemeral_pg_starts_and_provides_dsn PASSED [ 21%]
+tests/integration/test_ephemeral_fixture.py::test_pgvector_extension_available PASSED [ 25%]
+tests/integration/test_ephemeral_fixture.py::test_ephemeral_pg_uses_random_port PASSED [ 28%]
+tests/integration/test_ephemeral_fixture.py::test_data_isolation_between_projects PASSED [ 31%]
+tests/integration/test_ephemeral_fixture.py::test_teardown_removes_container_and_volume PASSED [ 34%]
+tests/integration/test_injection_safety.py::test_sql_injection_text_round_trips_byte_identical PASSED [ 37%]
+tests/integration/test_injection_safety.py::test_hostile_content_appears_in_search_results PASSED [ 40%]
+tests/integration/test_injection_safety.py::test_hostile_content_does_not_affect_other_memories PASSED [ 43%]
+tests/integration/test_injection_safety.py::test_unicode_and_special_characters_round_trip PASSED [ 46%]
+tests/integration/test_metadata_filter.py::test_metadata_filter_scopes_to_project_preserving_ranking PASSED [ 50%]
+tests/integration/test_metadata_filter.py::test_search_without_filter_returns_all_projects PASSED [ 53%]
+tests/integration/test_pool_lifecycle.py::test_pool_lifecycle_no_connection_leak PASSED [ 56%]
+tests/integration/test_pool_lifecycle.py::test_store_setup_is_idempotent PASSED [ 59%]
+tests/integration/test_pool_lifecycle.py::test_connection_timeout_behavior PASSED [ 62%]
+tests/integration/test_pool_lifecycle.py::test_pool_pressure_concurrent_operations PASSED [ 65%]
+tests/integration/test_pool_lifecycle.py::test_pool_concurrent_reads_and_writes PASSED [ 68%]
+tests/integration/test_search_boundaries.py::test_search_limit_returns_exactly_n_results PASSED [ 71%]
+tests/integration/test_search_boundaries.py::test_search_default_limit_returns_at_most_10 PASSED [ 75%]
+tests/integration/test_search_boundaries.py::test_search_empty_store_returns_zero_results PASSED [ 78%]
+tests/integration/test_search_boundaries.py::test_search_without_query_on_empty_store PASSED [ 81%]
+tests/integration/test_store_semantics.py::test_ephemeral_dsn_is_local_random_port PASSED [ 84%]
+tests/integration/test_store_semantics.py::test_round_trip_preserves_content_and_timestamps PASSED [ 87%]
+tests/integration/test_store_semantics.py::test_upsert_replaces_existing_record PASSED [ 90%]
+tests/integration/test_store_semantics.py::test_delete_removes_from_get_and_search PASSED [ 93%]
+tests/integration/test_store_semantics.py::test_semantic_search_ranking_with_real_embeddings PASSED [ 96%]
+tests/integration/test_store_semantics.py::test_search_without_query_returns_all_items PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/integration/test_concurrent_writes.py: 3 warnings
+tests/integration/test_embed_failures.py: 4 warnings
+tests/integration/test_injection_safety.py: 4 warnings
+tests/integration/test_metadata_filter.py: 2 warnings
+tests/integration/test_pool_lifecycle.py: 6 warnings
+tests/integration/test_search_boundaries.py: 4 warnings
+tests/integration/test_store_semantics.py: 5 warnings
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/lib/python3.14/site-packages/langgraph/store/base/embed.py:413: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    asyncio.iscoroutinefunction(func)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.2-final-0 _______________
+
+Name                           Stmts   Miss  Cover
+--------------------------------------------------
+src/fleet_memory/__init__.py       1      0   100%
+src/fleet_memory/app.py           18     18     0%
+src/fleet_memory/embed.py         61     17    72%
+src/fleet_memory/errors.py        25      9    64%
+src/fleet_memory/settings.py      19      1    95%
+src/fleet_memory/store.py         47      7    85%
+--------------------------------------------------
+TOTAL                            171     52    70%
+Coverage JSON written to file coverage_phase4_new.json
+=============== 32 passed, 78 deselected, 28 warnings in 24.53s ================

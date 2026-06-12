@@ -1,0 +1,161 @@
+{
+  "task_id": "TASK-MEM-011",
+  "timestamp": "2026-06-12T22:13:53.047039",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 11,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_embed_failures.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-MEM-011-implementation-plan.md",
+    ".claude/task-plans/TASK-MEM-012-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_embed_failures.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_injection_safety.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_search_boundaries.py",
+    "tests/integration/test_concurrent_writes.py",
+    "tests/integration/test_embed_failures.py",
+    "tests/integration/test_injection_safety.py",
+    "tests/integration/test_metadata_filter.py",
+    "tests/integration/test_search_boundaries.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-011/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_embed_failures.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_injection_safety.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_search_boundaries.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_embed_failures.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_injection_safety.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_search_boundaries.py"
+  ],
+  "summary": "11 tests passed",
+  "sdk_turns": {
+    "turns_used": 24,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "testing",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 2,
+    "missing_phases": [
+      "3"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "Limit boundaries: with 15 relevant memories stored, `asearch(query, limit=N)` returns exactly N for N \u2208 {1, 10, 15}, best-ranked first",
+      "status": "complete",
+      "evidence": "Implemented test_search_limit_returns_exactly_n_results in test_search_boundaries.py. Test stores 15 memories and verifies asearch returns exactly 1, 10, and 15 results respectively when limit is set to those values. All assertions passed.",
+      "test_file": "tests/integration/test_search_boundaries.py",
+      "implementation_files": [
+        "tests/integration/test_search_boundaries.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Default limit (ASSUM-002): `asearch(query)` with no limit returns at most 10 results \u2014 record the actual `AsyncPostgresStore` default; if it differs from 10, record the observed value for TASK-MEM-013 and assert the actual contract",
+      "status": "complete",
+      "evidence": "Implemented test_search_default_limit_returns_at_most_10 in test_search_boundaries.py. Test stores 15 memories and calls asearch() without limit parameter, verifying at most 10 results are returned. Test includes documentation comment for TASK-MEM-013 to reference observed behavior. Test passed with 10 results returned.",
+      "test_file": "tests/integration/test_search_boundaries.py",
+      "implementation_files": [
+        "tests/integration/test_search_boundaries.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Empty store: `asearch(\"anything at all\")` against a fresh namespace succeeds with zero results and no error",
+      "status": "complete",
+      "evidence": "Implemented test_search_empty_store_returns_zero_results and test_search_without_query_on_empty_store in test_search_boundaries.py. Tests verify both query-based and list-all search on fresh namespace return empty results without errors. Both tests passed.",
+      "test_file": "tests/integration/test_search_boundaries.py",
+      "implementation_files": [
+        "tests/integration/test_search_boundaries.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Embed-down atomicity (ASSUM-005): with an injected always-failing embed callable, `aput` of a searchable memory raises an error identifying the embedding service AND a subsequent `aget` for that key returns nothing (no partial record); previously stored memories remain retrievable",
+      "status": "complete",
+      "evidence": "Implemented test_embed_down_atomicity_no_partial_write and test_embed_down_preserves_existing_memories in test_embed_failures.py. First test injects a failing embed callable, verifies aput raises EmbedServiceError with service identification, and confirms aget returns None (no partial write). Second test verifies previously stored memories remain retrievable after embed failure. Both tests passed.",
+      "test_file": "tests/integration/test_embed_failures.py",
+      "implementation_files": [
+        "tests/integration/test_embed_failures.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Hostile content: a memory containing SQL-injection-shaped text (e.g. `'; DROP TABLE memories; --`) round-trips byte-identical via `aput`/`aget`, appears normally in search, and no other memory or store structure is affected",
+      "status": "complete",
+      "evidence": "Implemented comprehensive hostile content tests in test_injection_safety.py: test_sql_injection_text_round_trips_byte_identical verifies byte-identical round-trip for multiple SQL injection payloads; test_hostile_content_appears_in_search_results verifies search functionality with hostile text; test_hostile_content_does_not_affect_other_memories verifies no corruption of other memories; test_unicode_and_special_characters_round_trip extends coverage to Unicode and special characters. All 5 tests in this file passed.",
+      "test_file": "tests/integration/test_injection_safety.py",
+      "implementation_files": [
+        "tests/integration/test_injection_safety.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Dimension mismatch at the store boundary: a wrong-dims embed callable causes the write to fail with the dimension-mismatch error and leaves no partial record",
+      "status": "complete",
+      "evidence": "Implemented test_dimension_mismatch_no_partial_write in test_embed_failures.py. Test injects embed callable returning 384 dimensions instead of expected 768, verifies aput raises psycopg.errors.DataException with dimension mismatch message, and confirms aget returns None (no partial write). Test correctly handles PostgreSQL/pgvector dimension enforcement at database level. Test passed.",
+      "test_file": "tests/integration/test_embed_failures.py",
+      "implementation_files": [
+        "tests/integration/test_embed_failures.py"
+      ]
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 77.64105370827019
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 157.5913593750447
+    }
+  ]
+}

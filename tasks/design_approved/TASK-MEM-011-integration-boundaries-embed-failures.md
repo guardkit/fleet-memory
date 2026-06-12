@@ -1,29 +1,34 @@
 ---
-id: TASK-MEM-011
-title: "Integration tests: search boundaries and embed failures"
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: testing
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 7
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 70
-dependencies: [TASK-MEM-010]
-tags: [integration-tests, boundaries, negative-cases]
 consumer_context:
-  - task: TASK-MEM-004
-    consumes: EPHEMERAL_PG_DSN
-    framework: "pytest session fixture (ephemeral_pg) — seam owned by TASK-MEM-010"
-    driver: "docker compose + psycopg3"
-    format_note: "Inherits the fixture contract proven by TASK-MEM-010's seam test; same conftest, no new seam stub required"
+- consumes: EPHEMERAL_PG_DSN
+  driver: docker compose + psycopg3
+  format_note: Inherits the fixture contract proven by TASK-MEM-010's seam test; same
+    conftest, no new seam stub required
+  framework: pytest session fixture (ephemeral_pg) — seam owned by TASK-MEM-010
+  task: TASK-MEM-004
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-010
+estimated_minutes: 70
+feature_id: FEAT-CA81
+id: TASK-MEM-011
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- integration-tests
+- boundaries
+- negative-cases
+task_type: testing
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: 'Integration tests: search boundaries and embed failures'
+updated: 2026-06-12 17:00:00+00:00
+wave: 7
 ---
 
 # Task: Integration tests — search boundaries and embed failures

@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-012",
+    "pre_path": "tasks/backlog/TASK-MEM-012-integration-metadata-concurrency.md",
+    "post_path": "tasks/design_approved/TASK-MEM-012-integration-metadata-concurrency.md",
+    "timestamp": "2026-06-12T21:09:08.554434+00:00",
+    "kind": "design_approved_transition"
+  }
+]

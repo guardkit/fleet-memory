@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-011",
+    "pre_path": "tasks/backlog/TASK-MEM-011-integration-boundaries-embed-failures.md",
+    "post_path": "tasks/design_approved/TASK-MEM-011-integration-boundaries-embed-failures.md",
+    "timestamp": "2026-06-12T21:09:08.403731+00:00",
+    "kind": "design_approved_transition"
+  }
+]

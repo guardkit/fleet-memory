@@ -1,0 +1,7 @@
+{
+  "tests_run": 78,
+  "tests_failed": 0,
+  "coverage_pct": 94.74,
+  "output_summary": "78 unit tests passed with 95% coverage; 32 integration tests deselected",
+  "quality_gates_passed": true
+}
