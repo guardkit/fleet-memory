@@ -8,6 +8,25 @@ for integration tests. Each test session gets a unique Docker Compose project wi
 - Health check polling before yielding DSN
 
 No imports from fleet_memory.settings - reads environment only.
+
+Parallel Isolation Testing (AC-006 verification):
+--------------------------------------------------
+The ephemeral_pg fixture ensures parallel test runs are isolated via:
+1. UUID-based Docker Compose project names (fleet_memory_test_{uuid8})
+2. Random port allocation per session (via _get_random_port())
+3. Independent database instances with no shared state
+
+Manual verification (run from two shells concurrently):
+    Shell 1: python -m pytest tests/integration/ -m integration -v --timeout=120
+    Shell 2: python -m pytest tests/integration/ -m integration -v --timeout=120
+
+Each run should:
+- Use distinct Docker Compose projects (check with: docker compose ls)
+- Bind to different ports (visible in ephemeral_pg DSN)
+- Pass all tests without conflicts or port collisions
+- Clean up independently without affecting the other session
+
+This parallel isolation is critical for CI/CD and parallel worktree development.
 """
 
 from __future__ import annotations

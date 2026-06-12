@@ -1,0 +1,61 @@
+{
+  "task_id": "TASK-MEM-012",
+  "turn": 2,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "Evidence gathering aborted with status 'partial_honesty_abort' before independent test verification could run. No test evidence collected in evidence_bundle.tests or evidence_bundle.independent_tests. Cannot verify any acceptance criteria without authoritative test signal.",
+      "requirement": "All ACs (AC-001 through AC-006)",
+      "suggestion": "Fix the file path typo in files_modified (remove leading backtick from '`tests/integration/conftest.py'). Ensure files_modified lists only files actually changed in THIS turn, not files from previous tasks. Resubmit to allow evidence gathering to complete."
+    },
+    {
+      "type": "code_quality",
+      "severity": "major",
+      "description": "Player claimed 11 files in files_modified that git status shows were not modified this turn: tests/integration/test_concurrent_writes.py, tests/integration/test_metadata_filter.py, tests/integration/test_embed_failures.py, tests/integration/test_injection_safety.py, tests/integration/test_search_boundaries.py, tests/integration/test_ephemeral_fixture.py, tests/integration/conftest.py, plus orchestrator-managed files (.claude/task-plans/*.md, coverage*.json, test_phase4_output.txt). These discrepancies triggered 11 'should_fix' honesty warnings.",
+      "requirement": "Honest reporting",
+      "suggestion": "In files_modified, list only files you actually modified in Turn 2. If you added tests to existing files from tasks 010/011, list only those files. Do not sweep in orchestrator-managed paths (.claude/task-plans/, coverage files) or unchanged test files."
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "major",
+      "description": "Critical discrepancy: Player claimed file '`tests/integration/conftest.py' (with leading backtick) which does not exist. Path was Layer-1 resolved to task file by state_bridge, suggesting a typo in the report. This typo triggered the gathering abort.",
+      "requirement": "AC-006 (conftest.py documentation)",
+      "suggestion": "Remove the leading backtick from the filename. If you modified tests/integration/conftest.py to add parallel-isolation documentation (AC-006), ensure the actual file (without backtick) shows changes in git status before reporting it."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Cannot verify - no independent test evidence collected due to gathering abort. Player claims test_metadata_filter_scopes_to_project_preserving_ranking exists in tests/integration/test_metadata_filter.py, but that file shows as unmodified in git status (created in previous task?). Need independent pytest run to verify the test actually exists and passes."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Cannot verify - no independent test evidence collected due to gathering abort. Player claims test_concurrent_same_key_writes_converge_on_one_winner exists in tests/integration/test_concurrent_writes.py, but that file shows as unmodified in git status. Need independent pytest run to verify."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Cannot verify - no independent test evidence collected due to gathering abort. Player claims two tests for read-during-write in tests/integration/test_concurrent_writes.py, but file shows as unmodified. Need independent pytest run to verify."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Cannot verify - no independent test execution. Player self-reports 32 tests passed, but evidence_bundle.tests and evidence_bundle.independent_tests are both null due to gathering abort. Per Coach instructions, the bundle's independent test signal is authoritative, not Player self-report. ABSENT SIGNAL."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Cannot verify - no independent grep execution in evidence bundle. Player claims hermeticity verified, but evidence_bundle.quality_gates is null due to gathering abort. Need independent grep run to verify."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Cannot verify - Player claims documentation added to tests/integration/conftest.py, but honesty check shows conftest.py was not modified this turn (should_fix discrepancy). Additionally, Player claimed '`tests/integration/conftest.py' with typo backtick (critical discrepancy). Need to actually modify the real conftest.py file and have it show in git status."
+    }
+  ],
+  "rationale": "FEEDBACK required due to gathering_status='partial_honesty_abort' (Guard 5: ABSENT SIGNAL). Evidence collection aborted at honesty verification before any independent test execution occurred. All test-related fields (tests, independent_tests, coverage_details, bdd, arch_review) are null - cannot verify acceptance criteria without authoritative test evidence. The abort was triggered by a critical discrepancy (typo: leading backtick in filename '`tests/integration/conftest.py') plus 11 should_fix discrepancies (files claimed but not modified). Player must fix the typo, clean up files_modified to list only actually-changed files, and resubmit to allow evidence gathering to complete with independent test verification."
+}
