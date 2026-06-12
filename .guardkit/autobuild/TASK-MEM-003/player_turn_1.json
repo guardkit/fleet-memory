@@ -1,0 +1,119 @@
+{
+  "task_id": "TASK-MEM-003",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py",
+    "coverage.json"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-MEM-003-implementation-plan.md",
+    ".claude/task-plans/TASK-MEM-007-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py",
+    "deploy/nas/.env.deploy.example",
+    "deploy/nas/deploy.sh",
+    "deploy/nas/docker-compose.yml",
+    "deploy/nas/initdb/01_extensions.sql",
+    "deploy/nas/smoke.sh",
+    "src/fleet_memory/embed.py",
+    "src/fleet_memory/errors.py",
+    "tests/unit/test_embed.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "AC-001: All unit tests pass with zero network calls using httpx.MockTransport",
+    "AC-002: Dimension mismatches (512, 767, 769, 1024) all raise EmbedDimensionError with both actual and expected dims in message",
+    "AC-003: Timeout handling with EmbedTimeoutError, ASSUM-008 verified in test comments",
+    "AC-004: src/fleet_memory/embed.py exports embed callable and make_fake_embed",
+    "AC-005: src/fleet_memory/errors.py exports three error classes with safe error messages",
+    "AC-006: All files pass lint/format checks (ruff check and format)"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 38,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-003/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py"
+  ],
+  "tests_passed_count": 18,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`python -m pytest tests/unit/test_embed.py -v` passes with zero network calls (httpx `MockTransport` throughout)",
+      "status": "complete",
+      "evidence": "Created tests/unit/test_embed.py with 18 comprehensive tests, all using httpx.MockTransport. Verified with 'python -m pytest tests/unit/test_embed.py -v' which passed all 18 tests in 0.10s. Every test function uses MockTransport parameter, ensuring zero network calls are made. Transport parameter is threaded through embed() signature for testing.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py",
+        "tests/unit/test_embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Dimension-mismatch rows 512, 767, 769, 1024 each raise `EmbedDimensionError` whose message names both actual and expected dimensions (BDD `@boundary @negative` outline)",
+      "status": "complete",
+      "evidence": "Implemented test_dimension_mismatch_raises_error with @pytest.mark.parametrize covering all four boundary cases (512, 767, 769, 1024). Each raises EmbedDimensionError. The error message includes both actual and expected dimensions: 'Embedding dimension mismatch: got {actual} dimensions, expected {expected}'. Verified error.actual and error.expected attributes plus string representation contains both values.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py",
+        "src/fleet_memory/embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "A `MockTransport` that never responds triggers `EmbedTimeoutError` within `embed_timeout_s` \u2014 ASSUM-008 verification: record the actual httpx connect-vs-read timeout semantics observed, in a comment in `test_embed.py`",
+      "status": "complete",
+      "evidence": "Implemented test_timeout_raises_embed_timeout_error with comprehensive docstring documenting ASSUM-008 verification. The test confirms httpx timeout semantics: httpx.Timeout(connect=5.0, read=settings.embed_timeout_s, write=5.0, pool=5.0) where read timeout controls model inference time. MockTransport raises httpx.ReadTimeout which is caught and converted to EmbedTimeoutError. Test verifies error includes timeout_s value and message.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py",
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "`src/fleet_memory/embed.py` exports the async embed callable (settings-driven) and `make_fake_embed(dims=768)` returning a deterministic, network-free callable",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/embed.py with two exported functions: (1) embed(texts, settings, transport=None) - async function using httpx against /v1/embeddings with dimension validation; (2) make_fake_embed(dims=768) - factory returning deterministic async callable that generates unit-norm vectors from text hashes. Both verified by comprehensive unit tests including deterministic behavior, unit-norm validation, and different texts producing different vectors.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "`src/fleet_memory/errors.py` exports `EmbedDimensionError`, `EmbedTimeoutError`, `EmbedServiceError`; error messages may name the embedding service URL but never any database credential",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/errors.py exporting three exception classes: EmbedDimensionError (ValueError subclass with actual/expected attributes), EmbedTimeoutError (TimeoutError subclass with url/timeout_s), EmbedServiceError (RuntimeError subclass with url/status_code). All error messages include embedding service URLs but explicitly documented to never include database credentials. Verified by test_embed_service_error_includes_url_not_credentials which confirms service URL is in error message but pg_dsn is not.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "All three files pass both ruff linting and formatting checks. Executed 'python -m ruff check src/fleet_memory/errors.py src/fleet_memory/embed.py tests/unit/test_embed.py' which returned 'All checks passed!'. Executed 'python -m ruff format --check' which confirmed '3 files already formatted'. Fixed initial issues (f-string without placeholders, line too long, unused import) before final verification.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/errors.py",
+        "src/fleet_memory/embed.py",
+        "tests/unit/test_embed.py"
+      ]
+    }
+  ]
+}

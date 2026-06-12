@@ -1,29 +1,36 @@
 ---
-id: TASK-MEM-003
-title: Embed callable with dimension guard
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 3
-implementation_mode: task-work
 complexity: 4
-estimated_minutes: 45
-dependencies: [TASK-MEM-002]
-tags: [embeddings, httpx, nomic, timeout]
 consumer_context:
-  - task: TASK-MEM-002
-    consumes: FLEET_MEMORY_SETTINGS
-    framework: "httpx async client against OpenAI-compatible /v1/embeddings (llama-swap)"
-    driver: "httpx"
-    format_note: "embed_url is the base URL of the OpenAI-compatible API (e.g. http://gb10:9000/v1 or host root — normalise to .../v1/embeddings); embed_timeout_s is the httpx read-timeout bound in seconds (ASSUM-008 placeholder 10.0)"
+- consumes: FLEET_MEMORY_SETTINGS
+  driver: httpx
+  format_note: embed_url is the base URL of the OpenAI-compatible API (e.g. http://gb10:9000/v1
+    or host root — normalise to .../v1/embeddings); embed_timeout_s is the httpx read-timeout
+    bound in seconds (ASSUM-008 placeholder 10.0)
+  framework: httpx async client against OpenAI-compatible /v1/embeddings (llama-swap)
+  task: TASK-MEM-002
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-002
+estimated_minutes: 45
+feature_id: FEAT-CA81
+id: TASK-MEM-003
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- embeddings
+- httpx
+- nomic
+- timeout
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Embed callable with dimension guard
+updated: 2026-06-12 17:00:00+00:00
+wave: 3
 ---
 
 # Task: Embed callable with dimension guard

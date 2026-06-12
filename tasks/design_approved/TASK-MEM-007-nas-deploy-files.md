@@ -1,23 +1,28 @@
 ---
-id: TASK-MEM-007
-title: NAS deploy files (compose, deploy.sh, smoke.sh)
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: infrastructure
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 3
-implementation_mode: task-work
 complexity: 4
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-004
 estimated_minutes: 50
-dependencies: [TASK-MEM-004]
-tags: [nas, synology, deployment, runbook-productization]
+feature_id: FEAT-CA81
+id: TASK-MEM-007
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- nas
+- synology
+- deployment
+- runbook-productization
+task_type: infrastructure
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: NAS deploy files (compose, deploy.sh, smoke.sh)
+updated: 2026-06-12 17:00:00+00:00
+wave: 3
 ---
 
 # Task: NAS deploy files (compose, deploy.sh, smoke.sh)

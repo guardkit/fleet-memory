@@ -1,0 +1,25 @@
+# Docker Compose configuration for fleet_memory durable Postgres instance on Synology NAS
+#
+# FIREWALL REQUIREMENT:
+# Configure DSM firewall (Control Panel → Security → Firewall) to allow TCP 5432 from:
+#   - LAN subnet only (e.g., 192.168.1.0/24)
+#   - Tailscale CGNAT range 100.64.0.0/10 (if NAS is on the tailnet)
+#   - DENY all other sources
+#
+# This ensures the database is only accessible from the private network.
+
+services:
+  fleet_memory_postgres:
+    image: pgvector/pgvector:pg16
+    container_name: fleet_memory_postgres
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${NAS_DOCKER_ROOT}/pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: fleet_memory
+      POSTGRES_DB: fleet_memory
+      # POSTGRES_PASSWORD loaded from .env file (rendered by deploy.sh)

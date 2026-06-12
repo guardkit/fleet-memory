@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-003",
+    "pre_path": "tasks/backlog/TASK-MEM-003-embed-callable-dimension-guard.md",
+    "post_path": "tasks/design_approved/TASK-MEM-003-embed-callable-dimension-guard.md",
+    "timestamp": "2026-06-12T18:22:24.640774+00:00",
+    "kind": "design_approved_transition"
+  }
+]

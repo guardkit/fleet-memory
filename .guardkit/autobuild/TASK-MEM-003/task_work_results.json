@@ -1,0 +1,155 @@
+{
+  "task_id": "TASK-MEM-003",
+  "timestamp": "2026-06-12T19:27:54.002487",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 18,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py",
+    "coverage.json"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-MEM-003-implementation-plan.md",
+    ".claude/task-plans/TASK-MEM-007-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py",
+    "deploy/nas/.env.deploy.example",
+    "deploy/nas/deploy.sh",
+    "deploy/nas/docker-compose.yml",
+    "deploy/nas/initdb/01_extensions.sql",
+    "deploy/nas/smoke.sh",
+    "src/fleet_memory/embed.py",
+    "src/fleet_memory/errors.py",
+    "tests/unit/test_embed.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-003/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/embed.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_embed.py"
+  ],
+  "summary": "18 tests passed",
+  "sdk_turns": {
+    "turns_used": 38,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "feature",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 1,
+    "missing_phases": [
+      "4",
+      "5"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 1 completed invocations\n\nMissing phases:\n  - Phase 4 (Testing)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 3 (Phase 3): Implementation (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`python -m pytest tests/unit/test_embed.py -v` passes with zero network calls (httpx `MockTransport` throughout)",
+      "status": "complete",
+      "evidence": "Created tests/unit/test_embed.py with 18 comprehensive tests, all using httpx.MockTransport. Verified with 'python -m pytest tests/unit/test_embed.py -v' which passed all 18 tests in 0.10s. Every test function uses MockTransport parameter, ensuring zero network calls are made. Transport parameter is threaded through embed() signature for testing.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py",
+        "tests/unit/test_embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Dimension-mismatch rows 512, 767, 769, 1024 each raise `EmbedDimensionError` whose message names both actual and expected dimensions (BDD `@boundary @negative` outline)",
+      "status": "complete",
+      "evidence": "Implemented test_dimension_mismatch_raises_error with @pytest.mark.parametrize covering all four boundary cases (512, 767, 769, 1024). Each raises EmbedDimensionError. The error message includes both actual and expected dimensions: 'Embedding dimension mismatch: got {actual} dimensions, expected {expected}'. Verified error.actual and error.expected attributes plus string representation contains both values.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py",
+        "src/fleet_memory/embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "A `MockTransport` that never responds triggers `EmbedTimeoutError` within `embed_timeout_s` \u2014 ASSUM-008 verification: record the actual httpx connect-vs-read timeout semantics observed, in a comment in `test_embed.py`",
+      "status": "complete",
+      "evidence": "Implemented test_timeout_raises_embed_timeout_error with comprehensive docstring documenting ASSUM-008 verification. The test confirms httpx timeout semantics: httpx.Timeout(connect=5.0, read=settings.embed_timeout_s, write=5.0, pool=5.0) where read timeout controls model inference time. MockTransport raises httpx.ReadTimeout which is caught and converted to EmbedTimeoutError. Test verifies error includes timeout_s value and message.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py",
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "`src/fleet_memory/embed.py` exports the async embed callable (settings-driven) and `make_fake_embed(dims=768)` returning a deterministic, network-free callable",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/embed.py with two exported functions: (1) embed(texts, settings, transport=None) - async function using httpx against /v1/embeddings with dimension validation; (2) make_fake_embed(dims=768) - factory returning deterministic async callable that generates unit-norm vectors from text hashes. Both verified by comprehensive unit tests including deterministic behavior, unit-norm validation, and different texts producing different vectors.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/embed.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "`src/fleet_memory/errors.py` exports `EmbedDimensionError`, `EmbedTimeoutError`, `EmbedServiceError`; error messages may name the embedding service URL but never any database credential",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/errors.py exporting three exception classes: EmbedDimensionError (ValueError subclass with actual/expected attributes), EmbedTimeoutError (TimeoutError subclass with url/timeout_s), EmbedServiceError (RuntimeError subclass with url/status_code). All error messages include embedding service URLs but explicitly documented to never include database credentials. Verified by test_embed_service_error_includes_url_not_credentials which confirms service URL is in error message but pg_dsn is not.",
+      "test_file": "tests/unit/test_embed.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "All three files pass both ruff linting and formatting checks. Executed 'python -m ruff check src/fleet_memory/errors.py src/fleet_memory/embed.py tests/unit/test_embed.py' which returned 'All checks passed!'. Executed 'python -m ruff format --check' which confirmed '3 files already formatted'. Fixed initial issues (f-string without placeholders, line too long, unused import) before final verification.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/errors.py",
+        "src/fleet_memory/embed.py",
+        "tests/unit/test_embed.py"
+      ]
+    }
+  ]
+}
