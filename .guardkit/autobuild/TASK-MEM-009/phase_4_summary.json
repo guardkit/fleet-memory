@@ -1,7 +1,7 @@
 {
   "tests_run": 78,
-  "tests_failed": 0,
-  "coverage_pct": 93.71069182389937,
-  "output_summary": "78 passed, 16 deselected in 0.41s - 94% coverage",
-  "quality_gates_passed": true
+  "tests_failed": 1,
+  "coverage_pct": 94.84,
+  "output_summary": "77/78 passed; test_startup_failure_with_unreachable_database failed on connection pool timeout",
+  "quality_gates_passed": false
 }
