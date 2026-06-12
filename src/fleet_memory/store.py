@@ -6,10 +6,12 @@ Namespace validation enforces underscores-only identifiers before database opera
 
 from __future__ import annotations
 
+import asyncio
 import re
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from typing import TYPE_CHECKING
+from urllib.parse import urlsplit
 
 from langgraph.store.postgres.aio import AsyncPostgresStore, PoolConfig
 
@@ -22,6 +24,29 @@ if TYPE_CHECKING:
 
 # Namespace validation pattern: lowercase alphanumeric + underscores only
 _NAMESPACE_PATTERN = re.compile(r"^[a-z0-9_]+$")
+
+# Slack added to pg_connect_timeout_s when bounding store-context entry:
+# entry covers pool open plus store.setup(), so the bound must leave room
+# for schema setup on a healthy connection while still failing fast when
+# the database is unreachable (ASSUM-006).
+_SETUP_SLACK_S = 5.0
+
+
+def _dsn_target(dsn: str) -> str:
+    """Render the database target from a DSN without credentials.
+
+    Falls back to a generic label for non-URL conninfo strings so the
+    caller never risks echoing a password.
+    """
+    parts = urlsplit(dsn)
+    if not parts.hostname:
+        return "configured database"
+    target = parts.hostname
+    if parts.port:
+        target = f"{target}:{parts.port}"
+    if parts.path and parts.path != "/":
+        target = f"{target}{parts.path}"
+    return target
 
 
 def validate_namespace(namespace: tuple[str, ...]) -> None:
@@ -112,19 +137,31 @@ async def async_store_context(
         kwargs={"connect_timeout": settings.pg_connect_timeout_s},
     )
 
-    try:
-        async with AsyncPostgresStore.from_conn_string(
-            settings.pg_dsn,
-            index=index_config,
-            pool_config=pool_config,
-        ) as store:
-            # Initialize schema (creates tables/indexes if not exists)
-            await store.setup()
+    # Bound context entry (pool open + setup) with asyncio.timeout: the
+    # per-connection connect_timeout kwarg above does not bound the pool's
+    # own open/wait retry loop (psycopg-pool retries failed connections for
+    # its default 30s), so without this an unreachable database stalls
+    # startup well past pg_connect_timeout_s (ASSUM-006).
+    entry_timeout_s = settings.pg_connect_timeout_s + _SETUP_SLACK_S
+    async with AsyncExitStack() as stack:
+        try:
+            async with asyncio.timeout(entry_timeout_s):
+                store = await stack.enter_async_context(
+                    AsyncPostgresStore.from_conn_string(
+                        settings.pg_dsn,
+                        index=index_config,
+                        pool_config=pool_config,
+                    )
+                )
+                # Initialize schema (creates tables/indexes if not exists)
+                await store.setup()
+        except TimeoutError as exc:
+            # Credential hygiene: name the target host/port/db only - never
+            # interpolate the DSN itself, which carries the password.
+            raise TimeoutError(
+                f"Timed out connecting to Postgres at {_dsn_target(settings.pg_dsn)} "
+                f"after {entry_timeout_s}s "
+                f"(pg_connect_timeout_s={settings.pg_connect_timeout_s})"
+            ) from exc
 
-            yield store
-
-    except Exception:
-        # Credential hygiene: password stripping handled by psycopg internally
-        # The DSN may be interpolated into exception strings, but psycopg handles this
-        # Don't re-raise with DSN in message - let original exception propagate
-        raise
+        yield store

@@ -107,9 +107,12 @@ async def test_connection_timeout_behavior(ephemeral_pg: str) -> None:
 
     ASSUM-006 VERIFICATION:
     - Individual connection attempts timeout at connect_timeout (2s per attempt)
-    - Pool retries failed connections within its own timeout (default 30s)
-    - Total failure time = pool.timeout, not connect_timeout
-    - For fast-fail behavior, pool timeout must be reduced separately
+    - psycopg-pool alone would retry failed connections within its own timeout
+      (default 30s) - connect_timeout is per-attempt, not a circuit breaker
+    - async_store_context therefore bounds context entry (pool open + setup)
+      with asyncio.timeout(pg_connect_timeout_s + 5s slack) and raises
+      TimeoutError naming the target host/port without credentials
+    - Total failure time = pg_connect_timeout_s + 5s slack, not the pool's 30s
     """
     from fleet_memory.embed import make_fake_embed
     from fleet_memory.settings import Settings
@@ -141,23 +144,28 @@ async def test_connection_timeout_behavior(ephemeral_pg: str) -> None:
     elapsed = time.time() - start_time
 
     # ASSUM-006 observation recorded here:
-    # Actual behavior: connect_timeout controls INDIVIDUAL connection attempts (2s each),
-    # but psycopg-pool retries for 30s (pool default timeout) before raising PoolTimeout.
-    # Each retry logs "connection timeout expired" but pool continues retrying.
-    # Total elapsed time ≈ 30s (pool timeout), not 2s (connect_timeout).
-    #
-    # This means: connect_timeout is NOT a global circuit breaker - it's per-attempt only.
-    # For fast failure, pool.timeout must also be reduced (not currently exposed).
-    assert 25.0 < elapsed < 35.0, (
-        f"Pool should retry for ~30s (pool default timeout). "
-        f"Actual: {elapsed:.2f}s. Individual connect_timeout={timeout_s}s."
+    # connect_timeout controls INDIVIDUAL connection attempts (2s each); the
+    # underlying psycopg-pool would keep retrying until its own 30s default
+    # timeout. async_store_context bounds context entry with
+    # asyncio.timeout(pg_connect_timeout_s + 5s slack), so entry fails fast
+    # at ~7s here (2s + 5s) instead of the pool's 30s.
+    entry_bound_s = timeout_s + 5.0
+    assert elapsed < entry_bound_s + 3.0, (
+        f"Store context entry should fail within pg_connect_timeout_s + 5s slack "
+        f"(~{entry_bound_s}s). Actual: {elapsed:.2f}s."
     )
 
-    # Verify exception type - should be PoolTimeout from psycopg_pool
-    exception_type = type(exc_info.value).__name__
-    assert exception_type in ("PoolTimeout", "Exception"), (
-        f"Expected PoolTimeout after pool exhausts retries, got: {exception_type}"
+    # Verify exception type and credential hygiene: async_store_context raises
+    # TimeoutError naming the target host/port, never the password
+    assert isinstance(exc_info.value, TimeoutError), (
+        f"Expected TimeoutError from bounded store-context entry, "
+        f"got: {type(exc_info.value).__name__}"
     )
+    error_msg = str(exc_info.value)
+    assert "127.0.0.1:9999" in error_msg, (
+        f"Error should name the database target, got: {error_msg}"
+    )
+    assert "fleet_memory:fleet_memory@" not in error_msg, "Credentials leaked in error"
 
 
 @pytest.mark.integration
