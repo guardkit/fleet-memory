@@ -4,93 +4,51 @@
   "decision": "feedback",
   "issues": [
     {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "ABSENT SIGNAL: evidence_bundle.tests.tests_run is null. No test count captured despite this being a testing task. ZERO-CARDINALITY TEST GUARD applies - cannot approve based on absence of test execution evidence.",
-      "requirement": "All acceptance criteria require verifiable test execution",
-      "suggestion": "Ensure tests are created and the orchestrator can capture test execution count. The evidence bundle must show tests_run with a non-null count."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "Requirements verification shows all_criteria_met: false with 0 of 5 criteria satisfied. All criteria in evidence_bundle.requirements.criteria_results marked 'rejected' with evidence 'Promise status: incomplete'.",
-      "requirement": "AC-002 through AC-006",
-      "suggestion": "Player crash (exit code 143) and git_test_detection recovery left no analyzable evidence of what the tests verify. Re-implement with successful completion to allow requirements verification."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "No evidence that tests verify AC-002: Round-trip behavior (aput then aget returns byte-identical content with created_at/updated_at present). Criterion marked rejected in evidence bundle.",
-      "requirement": "AC-002",
-      "suggestion": "Create integration test that stores a memory via aput, retrieves it via aget, asserts byte-identical content, and verifies created_at/updated_at timestamps are present."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "No evidence that tests verify AC-003: Upsert and delete semantics (two aput calls leave one record; aget returns second version; after adelete both aget and asearch return nothing). Criterion marked rejected in evidence bundle.",
-      "requirement": "AC-003",
-      "suggestion": "Create integration test that calls aput twice with same key, asserts single record exists, verifies second version is returned, then deletes and asserts both aget and asearch return nothing."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "No evidence that tests verify AC-004: Semantic ranking (memories about 'database connection pooling' and 'holiday rota planning' stored; asearch('how do we manage Postgres connections') ranks pooling first with relevance scores via real nomic round-trip). Criterion marked rejected in evidence bundle.",
-      "requirement": "AC-004",
-      "suggestion": "Create integration test that stores two memories with contrasting topics, performs semantic search, asserts relevant memory ranks first, and verifies all results carry relevance scores from actual nomic embedding round-trip."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "No evidence that tests verify AC-005: Pool lifecycle (enter\u2192aput\u2192exit leaks no connection per pg_stat_activity; store.setup() twice is idempotent; ASSUM-006 connect-timeout recorded). Criterion marked rejected in evidence bundle.",
-      "requirement": "AC-005",
-      "suggestion": "Create integration test that queries pg_stat_activity before/after store lifecycle, asserts connection count restored, runs store.setup() twice and verifies idempotence, and documents observed connect-timeout behavior in test comment."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "No evidence that tests verify AC-006: Pool pressure (15 concurrent aput calls against pg_pool_max=10; record actual psycopg-pool behavior - queueing vs timeout). Criterion marked rejected in evidence bundle.",
-      "requirement": "AC-006",
-      "suggestion": "Create integration test that issues 15 concurrent aput operations with pool max 10, documents whether operations queue and complete within 30s or raise timeout error, and flags actual contract for TASK-MEM-013."
-    },
-    {
       "type": "test_failure",
-      "severity": "major",
-      "description": "Player's own report shows tests_passed: false with test output '.F.....' indicating at least one test failure. Player crashed with exit code 143 and was recovered via git_test_detection.",
-      "requirement": "All tests must pass",
-      "suggestion": "Investigate the test failure indicated by 'F' in test output. Re-run implementation phase without crashing to completion."
+      "severity": "critical",
+      "description": "AC-004 test 'test_semantic_search_ranking_with_real_embeddings' was SKIPPED, not executed. Test output shows '15 passed, 1 skipped in 23.30s'. The test skips when FLEET_MEMORY_EMBED_URL environment variable is not set. A skipped test is an absent oracle and does not prove the 'real nomic round-trip' as required by the criterion.",
+      "requirement": "AC-004: Ranking: with memories about 'database connection pooling' and 'holiday rota planning' stored, asearch('how do we manage Postgres connections') ranks the pooling memory first and every result carries a relevance score (real nomic round-trip proven)",
+      "suggestion": "Configure FLEET_MEMORY_EMBED_URL in the test environment to enable real nomic embedding execution, OR if the embedding service cannot be made available in the ephemeral test environment, consult with the task author to clarify whether a correctly-written conditional test (that skips when service unavailable) satisfies the 'proven' requirement."
+    },
+    {
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "Turn 2 feedback requested updating the report generator to filter orchestrator-managed paths from files_modified/files_created/implementation_files. Six files are still incorrectly claimed: coverage_integration.json, test_integration_output.txt, tests/integration/conftest.py, tests/integration/test_pool_lifecycle.py, tests/integration/test_store_semantics.py, tests/unit/test_app_lifespan.py. Honesty verification shows 'should_fix' severity for each.",
+      "requirement": "Report hygiene and honesty",
+      "suggestion": "Filter orchestrator-managed paths (.guardkit/autobuild/, coverage*.json, test_*_output.txt) and files not modified this turn from the Player report's files_modified, files_created, and implementation_files arrays. If delegating to task-work, ensure the delegation includes instructions to produce an accurate file manifest."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
       "result": "verified",
-      "notes": "Command result shows 'python -m pytest tests/integration/ -m integration -v --timeout=120' executed with exit_code 0 in 45.459 seconds. The pytest command mechanically runs and passes. However, note that tests_run is null, so we cannot verify test count."
+      "notes": "pytest -m integration passes with 15 passed, 1 skipped in 23.30s. Seam test 'test_ephemeral_dsn_is_local_random_port' validates DSN is local (127.0.0.1 or localhost, port != 5432). No NAS DSN references found. All tests use ephemeral_pg fixture."
     },
     {
       "criterion_id": "AC-002",
-      "result": "rejected",
-      "notes": "Evidence bundle requirements.criteria_results shows status 'rejected' with evidence 'Promise status: incomplete'. No verifiable evidence that tests verify round-trip behavior (aput\u2192aget byte-identical with timestamps). Player completion_promise shows 'No git-analysis evidence for this criterion'."
+      "result": "verified",
+      "notes": "Test 'test_round_trip_preserves_content_and_timestamps' passed. Verifies aput\u2192aget returns byte-identical content, created_at and updated_at are present and within 5 seconds of current time."
     },
     {
       "criterion_id": "AC-003",
-      "result": "rejected",
-      "notes": "Evidence bundle requirements.criteria_results shows status 'rejected' with evidence 'Promise status: incomplete'. No verifiable evidence that tests verify upsert semantics (two aput\u2192one record) or delete behavior (aget/asearch return nothing after adelete). Player completion_promise shows 'No git-analysis evidence for this criterion'."
+      "result": "verified",
+      "notes": "Upsert test 'test_upsert_replaces_existing_record' verifies two aput calls to same key leave exactly one record with second version. Delete test 'test_delete_removes_from_get_and_search' verifies adelete results in aget returning None and asearch returning 0 matches. Both passed."
     },
     {
       "criterion_id": "AC-004",
       "result": "rejected",
-      "notes": "Evidence bundle requirements.criteria_results shows status 'rejected' with evidence 'Promise status: incomplete'. No verifiable evidence that tests verify semantic ranking with real nomic round-trip. Player completion_promise shows 'No git-analysis evidence for this criterion'."
+      "notes": "Test 'test_semantic_search_ranking_with_real_embeddings' was SKIPPED (not executed) because FLEET_MEMORY_EMBED_URL environment variable is not set. Test output: '15 passed, 1 skipped in 23.30s'. The criterion requires 'real nomic round-trip proven' \u2014 a skipped test is an absent oracle and proves nothing. While the test code is correctly written to use real nomic embeddings when available, actual execution did not occur, so the round-trip was not proven."
     },
     {
       "criterion_id": "AC-005",
-      "result": "rejected",
-      "notes": "Evidence bundle requirements.criteria_results shows status 'rejected' with evidence 'Promise status: incomplete'. No verifiable evidence that tests verify pool lifecycle (connection leak via pg_stat_activity, store.setup() idempotence, connect-timeout observation). Player completion_promise shows 'No git-analysis evidence for this criterion'."
+      "result": "verified",
+      "notes": "Three tests passed: (1) 'test_pool_lifecycle_no_connection_leak' verifies pg_stat_activity count restored after context exit (no leak), (2) 'test_store_setup_is_idempotent' verifies setup can run twice, (3) 'test_connection_timeout_behavior' verifies timeout against closed port with ASSUM-006 observation recorded in lines 107-151."
     },
     {
       "criterion_id": "AC-006",
-      "result": "rejected",
-      "notes": "Evidence bundle requirements.criteria_results shows status 'rejected' with evidence 'Promise status: incomplete'. No verifiable evidence that tests verify pool pressure behavior (15 concurrent aput with max=10, queueing vs timeout). Player completion_promise shows 'No git-analysis evidence for this criterion'."
+      "result": "verified",
+      "notes": "Test 'test_pool_pressure_concurrent_operations' (lines 172-237 of test_pool_lifecycle.py) passed. Sets pg_pool_max=10, launches 15 concurrent aput tasks, verifies all 15 complete within 30s bound. ASSUM-004 verified: psycopg-pool queues operations when pool is full; all complete successfully."
     }
   ],
-  "rationale": "Cannot approve: ZERO-CARDINALITY TEST GUARD applies (tests_run is null), evidence_bundle.requirements shows all_criteria_met: false with 0 of 5 criteria verified, all criteria marked 'rejected' with 'Promise status: incomplete'. While AC-001 (pytest command execution) mechanically passes, there is no verifiable evidence that tests exist to verify the substantive behavioral requirements AC-002 through AC-006. Player crashed (exit code 143) and git_test_detection recovery could not determine what tests verify. Per .claude/rules/absence-of-failure-is-not-success.md, ABSENT SIGNAL is not a pass."
+  "rationale": "AC-004 cannot be verified because the semantic search ranking test with real nomic embeddings was skipped due to missing FLEET_MEMORY_EMBED_URL configuration. The criterion explicitly requires 'real nomic round-trip proven' \u2014 a skipped test does not prove execution occurred. Per absence-of-failure guard: 'an ABSENT or zero-cardinality oracle is NOT a pass.' Additionally, Turn 2 feedback on report hygiene (filtering orchestrator-managed paths from files_modified) was not addressed."
 }
