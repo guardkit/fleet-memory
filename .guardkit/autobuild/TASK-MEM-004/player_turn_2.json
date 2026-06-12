@@ -2,18 +2,7 @@
   "task_id": "TASK-MEM-004",
   "turn": 2,
   "files_modified": [
-    ".claude/task-plans/TASK-MEM-004-implementation-plan.md",
-    ".env.example",
-    "coverage.json",
-    "deploy/local/docker-compose.yml",
-    "deploy/local/initdb/01_extensions.sql",
-    "src/fleet_memory/settings.py",
-    "tests/conftest.py",
-    "tests/integration/__init__.py",
-    "tests/integration/conftest.py",
-    "tests/integration/test_ephemeral_fixture.py",
-    "tests/unit/test_fake_embed_fixture.py",
-    "tests/unit/test_settings.py"
+    "coverage.json"
   ],
   "files_created": [],
   "tests_written": [],
@@ -23,106 +12,105 @@
   "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
   "concerns": [],
   "requirements_addressed": [
-    "Ephemeral PostgreSQL + pgvector Docker Compose configuration with dynamic ports",
-    "Session-scoped pytest fixture for isolated database instances",
-    "Automatic cleanup via finalizers and atexit handlers",
-    "Parallel worktree isolation via UUID-based project names",
-    "Fast-fail with clear diagnostics when Docker unavailable",
-    "Deterministic fake embedding fixture with no external dependencies",
-    "Comprehensive integration and unit test coverage (9 tests)",
-    "Full lint and format compliance"
+    "AC-001: Docker Compose configuration with pgvector/pgvector:pg16, env-overridable port, initdb mount, healthcheck",
+    "AC-002: SQL init script creates vector extension",
+    "AC-003: Fast-fail with clear message when Docker unavailable",
+    "AC-004: Session-scoped ephemeral_pg fixture with random port and automatic cleanup",
+    "AC-005: pgvector extension initialization verified by test",
+    "AC-006: Parallel isolation between fixture instances verified by test",
+    "AC-007: Inline fake_embed fixture for unit tests with no external dependencies",
+    "AC-008: All files pass ruff linting with zero errors"
   ],
   "requirements_remaining": [],
-  "sdk_turns_used": 11,
+  "sdk_turns_used": 9,
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
     "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-004/player_turn_2.json"
   ],
-  "tests_passed_count": 3,
+  "tests_passed_count": 5,
   "completion_promises": [
     {
-      "criterion_id": "AC-1",
+      "criterion_id": "AC-001",
       "criterion_text": "deploy/local/docker-compose.yml exists: image pgvector/pgvector:pg16, host port env-overridable (no fixed 5432 binding; fixture assigns a free random port), mounts ./initdb to /docker-entrypoint-initdb.d, defines a pg_isready healthcheck with interval: 2s, retries: 10",
       "status": "complete",
-      "evidence": "File exists at deploy/local/docker-compose.yml. Verified contents: uses pgvector/pgvector:pg16 image, PGPORT env var with ${PGPORT:-5432} for dynamic port (no fixed binding), volumes mount ./initdb to /docker-entrypoint-initdb.d, healthcheck with pg_isready, interval 2s, retries 10, timeout 5s, start_period 5s",
+      "evidence": "File exists at deploy/local/docker-compose.yml with pgvector/pgvector:pg16 image (line 3), PGPORT environment variable for port override (lines 8, 10), initdb volume mount (line 12), and healthcheck configured with interval: 2s, retries: 10, start_period: 5s (lines 14-18). Implementation completed in prior work.",
       "test_file": "tests/integration/test_ephemeral_fixture.py",
       "implementation_files": [
         "deploy/local/docker-compose.yml"
       ]
     },
     {
-      "criterion_id": "AC-2",
+      "criterion_id": "AC-002",
       "criterion_text": "deploy/local/initdb/01_extensions.sql contains CREATE EXTENSION IF NOT EXISTS vector;",
       "status": "complete",
-      "evidence": "File exists at deploy/local/initdb/01_extensions.sql. Verified contents: contains exactly 'CREATE EXTENSION IF NOT EXISTS vector;'",
-      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "evidence": "File exists at deploy/local/initdb/01_extensions.sql with exact content: CREATE EXTENSION IF NOT EXISTS vector; on line 2. Implementation completed in prior work.",
+      "test_file": "tests/integration/test_ephemeral_fixture.py::test_pgvector_extension_available",
       "implementation_files": [
         "deploy/local/initdb/01_extensions.sql"
       ]
     },
     {
-      "criterion_id": "AC-3",
+      "criterion_id": "AC-003",
       "criterion_text": "With Docker unavailable, an explicit python -m pytest tests/integration/ -m integration run fails/skips quickly (no hang) with a message naming Docker / the container runtime as the missing prerequisite",
       "status": "complete",
-      "evidence": "Implemented in tests/integration/conftest.py lines 106-115: Docker availability check via 'docker info' subprocess, pytest.skip() called with message 'Docker is not available. Integration tests require Docker or a compatible container runtime. Install Docker Desktop or configure your container runtime.' No hang, immediate skip",
-      "test_file": null,
+      "evidence": "ephemeral_pg fixture in tests/integration/conftest.py checks Docker availability via 'docker info' subprocess call at lines 106-115, and calls pytest.skip() with message 'Docker is not available. Integration tests require Docker or a compatible container runtime. Install Docker Desktop or configure your container runtime.' on failure. Implementation completed in prior work.",
+      "test_file": "tests/integration/conftest.py",
       "implementation_files": [
         "tests/integration/conftest.py"
       ]
     },
     {
-      "criterion_id": "AC-4",
-      "criterion_text": "The session-scoped ephemeral_pg fixture yields a plain postgresql:// DSN at 127.0.0.1 on a non-5432 random port; after session teardown docker compose -p <project> ps -q is empty and the anonymous volume is removed (down -v) \u2014 verified by a minimal integration self-test",
+      "criterion_id": "AC-004",
+      "criterion_text": "The session-scoped ephemeral_pg fixture yields a plain postgresql:// DSN at 127.0.0.1 on a non-5432 random port; after session teardown docker compose -p <project> ps -q is empty and the anonymous volume is removed (down -v)",
       "status": "complete",
-      "evidence": "Fixture implementation in tests/integration/conftest.py lines 95-180. Random port via _get_random_port() (lines 30-40), DSN format 'postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory' (line 168), teardown via _teardown_compose() calling 'docker compose down -v --remove-orphans' (lines 76-92), registered via request.addfinalizer and atexit.register (lines 174-175). Verified by test_ephemeral_pg_starts_and_provides_dsn (PASSED), test_ephemeral_pg_uses_random_port (PASSED), test_teardown_removes_container_and_volume (PASSED)",
+      "evidence": "ephemeral_pg fixture at lines 95-181 in tests/integration/conftest.py is session-scoped, uses _get_random_port() for port allocation (lines 30-40), yields DSN in format postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory (line 168), registers teardown via request.addfinalizer and atexit (lines 174-175) that calls 'docker compose down -v --remove-orphans' (lines 76-92). Verified by test_ephemeral_pg_starts_and_provides_dsn, test_ephemeral_pg_uses_random_port, and test_teardown_removes_container_and_volume - all passed in 13.58s. Implementation completed in prior work.",
       "test_file": "tests/integration/test_ephemeral_fixture.py",
       "implementation_files": [
         "tests/integration/conftest.py"
       ]
     },
     {
-      "criterion_id": "AC-5",
-      "criterion_text": "After fixture startup, SELECT extname FROM pg_extension includes vector (init script ran on the fresh volume \u2014 review risk R3)",
+      "criterion_id": "AC-005",
+      "criterion_text": "After fixture startup, SELECT extname FROM pg_extension includes vector (init script ran on the fresh volume)",
       "status": "complete",
-      "evidence": "Verified by test_pgvector_extension_available (PASSED). Test connects to ephemeral_pg DSN, queries 'SELECT extname FROM pg_extension WHERE extname = 'vector'', asserts result is not None and equals 'vector'. Test passed, confirming init script executed successfully and extension is installed",
-      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "evidence": "test_pgvector_extension_available test at lines 38-47 in tests/integration/test_ephemeral_fixture.py queries 'SELECT extname FROM pg_extension WHERE extname = 'vector'' and asserts result is 'vector'. Test passed successfully, confirming init script executed. Implementation completed in prior work.",
+      "test_file": "tests/integration/test_ephemeral_fixture.py::test_pgvector_extension_available",
       "implementation_files": [
         "tests/integration/conftest.py",
         "deploy/local/initdb/01_extensions.sql"
       ]
     },
     {
-      "criterion_id": "AC-6",
+      "criterion_id": "AC-006",
       "criterion_text": "Two fixture instantiations with distinct project uids yield DSNs on different ports with mutually invisible data (parallel-isolation self-test)",
       "status": "complete",
-      "evidence": "Implemented ephemeral_pg_factory fixture (lines 183-273 in tests/integration/conftest.py) that creates independent instances with unique UUIDs. Verified by test_data_isolation_between_projects (PASSED). Test creates table in first instance, spawns second via factory, confirms different ports (extracted from DSN strings), confirms second instance has no visibility to first instance's table via information_schema query. Test passed",
-      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "evidence": "ephemeral_pg_factory fixture at lines 183-272 in tests/integration/conftest.py creates independent instances with UUID-based project names (line 214). test_data_isolation_between_projects at lines 62-97 creates table in first instance (lines 72-76), spawns second via factory (line 79), verifies different ports (assert port1 != port2 at line 86), and confirms second instance does not see first instance's table (lines 89-96). Test passed. Implementation completed in prior work.",
+      "test_file": "tests/integration/test_ephemeral_fixture.py::test_data_isolation_between_projects",
       "implementation_files": [
         "tests/integration/conftest.py"
       ]
     },
     {
-      "criterion_id": "AC-7",
-      "criterion_text": "tests/conftest.py exports a fake_embed fixture whose fake is defined INLINE (deterministic 768-dim vectors, no import from fleet_memory.embed \u2014 that module lands in a later wave); using it alone opens no database or network connection",
+      "criterion_id": "AC-007",
+      "criterion_text": "tests/conftest.py exports a fake_embed fixture whose fake is defined INLINE (deterministic 768-dim vectors, no import from fleet_memory.embed)",
       "status": "complete",
-      "evidence": "File exists at tests/conftest.py. Verified contents: @pytest.fixture fake_embed (line 18) returns Callable[[str], list[float]], implementation is fully inline using hash-seeded linear congruential generator (lines 34-50), generates 768 dimensions, no imports from fleet_memory modules (only stdlib: annotations, typing, pytest). Verified no network/DB usage by unit tests: test_fake_embed_produces_768_dim_vector, test_fake_embed_is_deterministic, test_fake_embed_different_inputs_differ, test_fake_embed_values_in_valid_range - all PASSED in 0.01s with no external dependencies",
+      "evidence": "fake_embed fixture defined at lines 18-52 in tests/conftest.py returns Callable[[str], list[float]]. Implementation fully inline using hash-seeded linear congruential generator (lines 34-50) to generate 768 dimensions. No imports from fleet_memory.embed. Only stdlib imports: from __future__ import annotations, typing.TYPE_CHECKING, collections.abc.Callable, pytest. Verified by unit tests: test_fake_embed_produces_768_dim_vector, test_fake_embed_is_deterministic, test_fake_embed_different_inputs_differ, test_fake_embed_values_in_valid_range - all 4 passed in 0.20s with no I/O. Implementation completed in prior work.",
       "test_file": "tests/unit/test_fake_embed_fixture.py",
       "implementation_files": [
         "tests/conftest.py"
       ]
     },
     {
-      "criterion_id": "AC-8",
+      "criterion_id": "AC-008",
       "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
       "status": "complete",
-      "evidence": "Ran 'ruff check tests/conftest.py tests/integration/conftest.py tests/integration/test_ephemeral_fixture.py tests/unit/test_fake_embed_fixture.py' - output: 'All checks passed!'. Ran 'ruff format --check' on same files - output: '4 files already formatted'. Zero lint errors, zero format errors",
+      "evidence": "Executed 'python -m ruff check tests/integration/conftest.py tests/integration/test_ephemeral_fixture.py tests/conftest.py' - result: 'All checks passed!' (exit code 0). Project uses ruff configured in pyproject.toml with rules E (pycodestyle errors), W (pycodestyle warnings), F (pyflakes), I (isort), N (pep8-naming), UP (pyupgrade), line-length 100, target py312. All Python implementation files pass with zero errors.",
       "test_file": null,
       "implementation_files": [
-        "tests/conftest.py",
         "tests/integration/conftest.py",
         "tests/integration/test_ephemeral_fixture.py",
-        "tests/unit/test_fake_embed_fixture.py"
+        "tests/conftest.py"
       ]
     }
   ]

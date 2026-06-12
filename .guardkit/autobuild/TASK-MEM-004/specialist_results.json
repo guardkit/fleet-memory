@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 97.7921811658889,
+    "duration_seconds": 53.63401391590014,
     "error": null,
-    "tests_run": 9,
+    "tests_run": 26,
     "tests_failed": 0,
-    "coverage_pct": 86.0,
-    "output_summary": "9 tests passed (4 unit, 5 integration); implementation coverage 86-100%; linting clean",
+    "coverage_pct": 100.0,
+    "output_summary": "26 passed, 5 integration tests deselected, 100% coverage on src/fleet_memory (20/20 statements)",
     "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 155.33264912525192,
+    "duration_seconds": 146.26480249967426,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
