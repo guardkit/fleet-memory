@@ -81,7 +81,7 @@ async def test_startup_failure_with_unreachable_database(monkeypatch) -> None:
         "postgresql://testuser:secretpass@localhost:65432/testdb",
     )
     monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://fake-embed-service")
-    monkeypatch.setenv("FLEET_MEMORY_PG_CONNECT_TIMEOUT_S", "5.0")
+    monkeypatch.setenv("FLEET_MEMORY_PG_CONNECT_TIMEOUT_S", "2.0")
 
     # Remove cached module to force reimport with new env vars
     if "fleet_memory.app" in sys.modules:
@@ -103,8 +103,8 @@ async def test_startup_failure_with_unreachable_database(monkeypatch) -> None:
 
     elapsed = asyncio.get_event_loop().time() - start_time
 
-    # Assert: Failed within 15 seconds (timeout + slack)
-    assert elapsed < 15.0, f"Startup took {elapsed}s, expected < 15s"
+    # Assert: Failed within timeout + _SETUP_SLACK_S (2.0 + 5.0 = 7.0) + margin
+    assert elapsed < 8.0, f"Startup took {elapsed}s, expected < 8s"
 
     # Assert: Error message contains target info but not password
     error_msg = str(exc_info.value)

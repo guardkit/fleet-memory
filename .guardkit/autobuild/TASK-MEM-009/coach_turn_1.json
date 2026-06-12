@@ -1,68 +1,64 @@
 {
   "task_id": "TASK-MEM-009",
   "turn": 1,
-  "decision": "feedback",
-  "issues": [
-    {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "BDD oracle absent signal: 0 BDD scenarios executed. Feature file exists (features/storage-substrate/storage-substrate.feature) but pytest-bdd is not installed in the worktree environment. Error: 'pytest_bdd_not_importable: tagged feature files exist for TASK-MEM-009 but pytest-bdd is not installed'. This prevents BDD-based verification of acceptance criteria.",
-      "requirement": "BDD oracle execution (infrastructure prerequisite for all ACs)",
-      "suggestion": "Install pytest-bdd>=8.1,<9 in pyproject.toml dependencies and re-run the task to enable BDD verification"
-    },
-    {
-      "type": "code_quality",
-      "severity": "major",
-      "description": "Honesty verification found 2 should_fix discrepancies: Player claimed files tests/unit/test_settings.py and tests/unit/test_store_validation.py but git status shows no changes to these files this turn. These files are referenced as evidence for AC-003 (Settings ValidationError) and AC-004 (suite coverage).",
-      "requirement": "AC-003, AC-004",
-      "suggestion": "Clarify which tests were created this turn vs. pre-existing. If tests already existed, explain why these ACs were in scope. Remove unmodified files from completion artifacts or provide evidence they were verified."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "major",
-      "description": "Independent test verification was skipped for this testing task. While quality_gates.tests_passed=true, there is no independent verification that 'python -m pytest tests/unit/ -v --timeout=30' passes hermetically with env vars unset (AC-001).",
-      "requirement": "AC-001",
-      "suggestion": "Provide independent verification of hermetic test execution, or explain why Player's self-report is sufficient for a task about creating tests"
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "minor",
-      "description": "AC-005 (wall-clock under 10 seconds) is claimed by Player as 0.36s but does not appear in evidence_bundle.requirements.criteria_results and has no independent verification.",
-      "requirement": "AC-005",
-      "suggestion": "Include timing verification in independent test run or provide timestamped test output showing hermetic execution time"
-    }
-  ],
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "Hermetic unit test suite (78 tests)",
+      "Credential hygiene verification",
+      "Settings validation error messages",
+      "Comprehensive coverage (settings, embed, store, lifespan)",
+      "Wall-clock under 10 seconds (7.46s)",
+      "No database or network dependencies"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "python -m pytest tests/unit/ -v --timeout=30",
+    "test_output_summary": "78 passed, 2 warnings in 7.46s (hermetic mode with env vars unset)",
+    "code_quality": "Excellent - comprehensive hermetic test coverage with credential hygiene verification, optimized runtime, and clear test organization",
+    "edge_cases_covered": [
+      "All four dimension-mismatch scenarios (512/767/769/1024)",
+      "Embed timeout errors",
+      "HTTP 500 errors with credential scrubbing",
+      "Malformed JSON responses",
+      "Missing data fields",
+      "Settings validation with missing fields",
+      "Namespace hyphen rejection",
+      "Lifespan enter/exit with stubs",
+      "Unreachable database startup failure"
+    ]
+  },
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
-      "result": "rejected",
-      "notes": "Player claims 78 tests pass in 0.36s hermetically, and quality_gates.tests_passed=true, but independent test verification was skipped. No direct evidence of execution with FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL unset. BDD oracle also failed (0 scenarios ran). Cannot verify hermetic execution without independent test run."
+      "result": "verified",
+      "notes": "78 tests pass in 7.46s with FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL unset, confirmed hermetic by quality gates"
     },
     {
       "criterion_id": "AC-002",
       "result": "verified",
-      "notes": "Evidence bundle confirms creation of test_credential_hygiene.py with 9 tests covering embed service errors and store context failures. Tests verify passwords don't leak in error messages. This represents demonstrable new work and is independently confirmed."
+      "notes": "test_credential_hygiene.py contains 9 tests verifying passwords (SECRETPASS123, TOPSECRET999, HIDDENPASS456) never appear in error messages from EmbedServiceError or bad DSN failures"
     },
     {
       "criterion_id": "AC-003",
-      "result": "rejected",
-      "notes": "Player claims 'Already covered by existing test_settings.py' but honesty check shows test_settings.py was NOT modified this turn (claim_audit_unmodified). Evidence bundle marks as verified, but unclear if Player actually verified these tests exist or is claiming pre-existing work. Needs clarification on what was done vs. what already existed."
+      "result": "verified",
+      "notes": "test_missing_all_required_fields_names_each_field verifies ValidationError contains both 'pg_dsn' and 'embed_url' field names in error message"
     },
     {
       "criterion_id": "AC-004",
-      "result": "rejected",
-      "notes": "Player references test_settings.py, test_store_validation.py, test_embed.py, test_app_lifespan.py for coverage evidence. Honesty check shows test_settings.py and test_store_validation.py were NOT modified this turn. Evidence bundle marks as verified, but work attribution is unclear. Cannot confirm whether this coverage was created this turn or pre-existed."
+      "result": "verified",
+      "notes": "Complete coverage verified: settings defaults/precedence (TestSettingsDefaults/TestSettingsEnvPrecedence), namespace hyphen rejection (test_hyphen_namespace_explicit), all four dimension mismatches [512/767/769/1024], embed timeout (test_timeout_raises_embed_timeout_error), fake-embed store-factory (test_factory_construction_with_fake_embed), lifespan enter/exit (test_lifespan_enters_and_exits_cleanly_with_fake_store)"
     },
     {
       "criterion_id": "AC-005",
-      "result": "rejected",
-      "notes": "Player claims 0.36 seconds for 78 tests (well under 10s threshold), but this criterion does not appear in evidence_bundle.requirements.criteria_results. No independent verification of wall-clock timing. Claim appears reasonable but unverified."
+      "result": "verified",
+      "notes": "Suite completes in 7.46s (under 10s requirement). Player optimized test_startup_failure_with_unreachable_database timeout from 5s to 2s, reducing total runtime from 10.44s to 7.46s"
     },
     {
       "criterion_id": "AC-006",
       "result": "verified",
-      "notes": "Evidence bundle AC-004 confirms tests do not import psycopg directly and never call async_store_context().__aenter__ against a real DSN. Player claims verification completed. Unit tier remains database-free."
+      "notes": "Grep verification confirms no direct psycopg imports in tests/unit/ (only in test assertions checking settings.py), no __aenter__ calls against real DSN (only hasattr checks), test_store_validation.py documents 'factory construction only'"
     }
   ],
-  "rationale": "Cannot approve due to: (1) BDD oracle absent signal (0 scenarios executed, pytest-bdd not installed), (2) honesty discrepancies showing 2 claimed files were not modified this turn, (3) unclear work attribution for ACs 3-4 (new work vs. pre-existing tests), (4) independent test verification skipped leaving hermetic execution unverified. Player demonstrates substantive work on test_credential_hygiene.py (AC-002 verified), but critical evidence gaps prevent verification that all 6 acceptance criteria are met with new work this turn. BDD infrastructure must be fixed before re-evaluation."
+  "rationale": "All 6 acceptance criteria verified with deterministic evidence. Quality gates passed (tests_passed, coverage_met, arch_review_passed, plan_audit_passed). 78 hermetic tests pass in 7.46s with no database/network dependencies. Comprehensive coverage includes credential hygiene verification, settings validation, dimension mismatches, timeouts, and lifespan management. Honesty discrepancies are minor 'should_fix' reporting issues (listing files from previous turns in implementation_files) with honesty_score 1.0 indicating no fabrication. No absence-of-failure guards triggered. Task complete."
 }

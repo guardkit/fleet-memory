@@ -1,13 +1,13 @@
 {
   "phase_4": {
-    "status": "failed",
-    "duration_seconds": 65.32452454185113,
-    "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout",
-    "tests_run": 0,
+    "status": "passed",
+    "duration_seconds": 67.08136729197577,
+    "error": null,
+    "tests_run": 4,
     "tests_failed": 0,
-    "coverage_pct": 0.0,
-    "output_summary": "",
-    "quality_gates_passed": false
+    "coverage_pct": 53.21637426900585,
+    "output_summary": "4 passed, 1 warning in 7.39s - 53% coverage on tests/unit/test_app_lifespan.py",
+    "quality_gates_passed": true
   },
   "phase_5": {
     "status": "skipped",
