@@ -1,7 +1,7 @@
 {
-  "tests_run": 26,
+  "tests_run": 9,
   "tests_failed": 0,
-  "coverage_pct": 100.0,
-  "output_summary": "26 passed, 0 failed, 100% coverage on fleet_memory package",
+  "coverage_pct": 86.0,
+  "output_summary": "9 tests passed (4 unit, 5 integration); implementation coverage 86-100%; linting clean",
   "quality_gates_passed": true
 }

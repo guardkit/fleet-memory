@@ -6,73 +6,66 @@
     {
       "type": "test_failure",
       "severity": "critical",
-      "description": "Independent test verification failed (tests_passed: false) with non-functional output capture. The test_output_summary shows only 'I'll run that test command for you and show you the full output.' instead of actual pytest results. Duration was 7.6s but no test output was captured.",
-      "requirement": "All acceptance criteria requiring test verification (AC-004, AC-005, AC-006)",
-      "suggestion": "The orchestrator's independent test mechanism needs to be debugged. The test command was: pytest tests/integration/test_ephemeral_fixture.py tests/unit/test_fake_embed_fixture.py tests/unit/test_settings.py -v --tb=short"
+      "description": "Gathering status is 'partial_honesty_abort' - evidence collection aborted before independent test verification could run. All verification fields (independent_tests, tests, coverage_details, bdd, arch_review, quality_gates) are null.",
+      "requirement": "All ACs",
+      "suggestion": "The orchestrator aborted evidence gathering due to honesty issues. Player must not claim files in completion_promises.implementation_files that were not modified in the current turn. Use files_authored to track delegation outputs, not files_modified/files_created."
+    },
+    {
+      "type": "code_quality",
+      "severity": "major",
+      "description": "Honesty verification shows 6 'should_fix' discrepancies: Player claimed files (deploy/local/docker-compose.yml, deploy/local/initdb/01_extensions.sql, tests/conftest.py, tests/integration/conftest.py, tests/integration/test_ephemeral_fixture.py, tests/unit/test_fake_embed_fixture.py) that are tracked in git but show no changes in 'git status --porcelain' for this turn.",
+      "requirement": "AC-001 through AC-008",
+      "suggestion": "When delegating to task-work, do not sweep delegated outputs into files_modified/files_created. Report files_modified: [] and files_created: [] accurately for the Player's own work. Reference delegated files only via files_authored or in completion_promises.evidence with clear attribution to the delegated agent."
     },
     {
       "type": "missing_requirement",
       "severity": "critical",
-      "description": "Cannot verify file contents for docker-compose.yml (AC-001), initdb SQL script (AC-002), fake_embed fixture (AC-007), or lint compliance (AC-008) without tools. The independent test verification that should provide trust-but-verify assurance failed.",
-      "requirement": "AC-001, AC-002, AC-007, AC-008",
-      "suggestion": "Independent test verification must succeed to validate these implementation claims, or files must be spot-checked by the orchestrator"
-    },
-    {
-      "type": "code_quality",
-      "severity": "minor",
-      "description": "Plan audit was skipped (no implementation plan on disk). While the Player provided detailed completion promises, the structured plan audit could not run.",
-      "requirement": "Development process adherence",
-      "suggestion": "Ensure implementation plans are committed before implementation phase"
-    },
-    {
-      "type": "code_quality",
-      "severity": "minor",
-      "description": "11 honesty discrepancies flagged for files claimed as modified but showing no git changes. Root cause: files were created in worktree (.guardkit/worktrees/FEAT-CA81/) but also listed in files_modified. This is a reporting artifact.",
-      "requirement": "Accurate metadata reporting",
-      "suggestion": "Player's report writer should distinguish worktree-created files from main-repo modifications, or the honesty checker should worktree-path-aware"
+      "description": "No independent test verification available - cannot confirm Player's claim of 5 passing tests. The 'tests', 'independent_tests', and 'coverage_details' fields are all null due to gathering abort.",
+      "requirement": "AC-003 through AC-007 (test-verified criteria)",
+      "suggestion": "Fix honesty reporting issues so gathering completes successfully and independent test verification can run."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
       "result": "rejected",
-      "notes": "Cannot verify docker-compose.yml contents (image, port config, healthcheck params) without file read capability. File appears in worktree files_created but independent test verification failed."
+      "notes": "Cannot verify - gathering aborted before independent verification. No evidence available beyond Player's self-reported line references."
     },
     {
       "criterion_id": "AC-002",
       "result": "rejected",
-      "notes": "Cannot verify 01_extensions.sql contains required CREATE EXTENSION statement without file read capability."
+      "notes": "Cannot verify - gathering aborted before independent verification. No evidence available beyond Player's self-reported line references."
     },
     {
       "criterion_id": "AC-003",
       "result": "rejected",
-      "notes": "Cannot verify Docker-unavailable fast-fail behavior without running the scenario or reading fixture code. Player claims pytest.skip() implementation but no independent verification."
+      "notes": "Cannot verify - no independent test results. Player claims ephemeral_pg fixture checks Docker availability, but gathering aborted before tests could be independently verified."
     },
     {
       "criterion_id": "AC-004",
       "result": "rejected",
-      "notes": "Test-dependent criterion. Player claims test_ephemeral_pg_starts_and_provides_dsn, test_ephemeral_pg_uses_random_port, and test_teardown_removes_container_and_volume passed, but independent test verification failed (tests_passed: false, garbage output)."
+      "notes": "Cannot verify - no independent test results. Player claims session-scoped fixture with cleanup, but gathering aborted before tests could confirm DSN format, random port allocation, and teardown behavior."
     },
     {
       "criterion_id": "AC-005",
       "result": "rejected",
-      "notes": "Test-dependent criterion. Player claims test_pgvector_extension_available passed, but independent test verification failed."
+      "notes": "Cannot verify - no independent test results. Player claims test_pgvector_extension_available passed, but gathering aborted before independent verification."
     },
     {
       "criterion_id": "AC-006",
       "result": "rejected",
-      "notes": "Test-dependent criterion. Player claims test_data_isolation_between_projects passed, but independent test verification failed."
+      "notes": "Cannot verify - no independent test results. Player claims test_data_isolation_between_projects passed, but gathering aborted before independent verification."
     },
     {
       "criterion_id": "AC-007",
       "result": "rejected",
-      "notes": "Cannot verify fake_embed fixture implementation (768-dim deterministic vectors, no fleet_memory imports, no network) without file read. Player claims unit tests passed in 0.01s but independent verification failed."
+      "notes": "Cannot verify - no independent test results. Player claims inline fake_embed fixture with 4 passing unit tests, but gathering aborted before independent verification."
     },
     {
       "criterion_id": "AC-008",
       "result": "rejected",
-      "notes": "Cannot verify ruff check/format compliance without running the commands. Player claims 'All checks passed!' but no independent verification."
+      "notes": "Cannot verify - no quality_gates field. Player claims ruff checks passed, but gathering aborted before independent verification."
     }
   ],
-  "rationale": "Independent test verification is the authoritative signal per Coach instructions. It shows tests_passed: false with non-functional output capture ('I'll run that test command for you and show you the full output.' instead of pytest results). Without independent confirmation and without tools to verify file contents, I cannot approve based solely on Player self-reports. This honors the absence-of-failure principle: lack of verifiable evidence is not evidence of success. The Player's detailed completion promises and self-reported 9 passing tests cannot be validated."
+  "rationale": "Gathering status is 'partial_honesty_abort' - the orchestrator aborted evidence collection after detecting honesty discrepancies (6 should_fix issues where Player claimed files not modified this turn). Without independent test verification (independent_tests, tests, coverage_details all null), I cannot approve based on Player's self-reported test results alone. This is ABSENT SIGNAL per absence-of-failure guard #5. Player must fix honesty reporting: do not claim delegated files as files_modified/files_created when Player itself made no changes this turn."
 }
