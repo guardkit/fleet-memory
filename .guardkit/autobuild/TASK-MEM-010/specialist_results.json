@@ -1,12 +1,12 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 119.5216378341429,
+    "duration_seconds": 91.72436900017783,
     "error": null,
     "tests_run": 78,
     "tests_failed": 1,
     "coverage_pct": 94.84,
-    "output_summary": "78 tests (77 passed, 1 failed); 95% coverage; startup failure test needs investigation",
+    "output_summary": "77/78 tests passed; 1 failure in test_startup_failure_with_unreachable_database (connection refused expected)",
     "quality_gates_passed": false
   },
   "phase_5": {

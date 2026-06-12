@@ -1,0 +1,61 @@
+{
+  "task_id": "TASK-MEM-009",
+  "turn": 2,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "Turn 1 feedback explicitly requested: 'Install pytest-bdd>=8.1,<9 in pyproject.toml dependencies'. Player's Turn 2 report lists 'pytest-bdd installation for BDD verification' in requirements_addressed, but evidence_bundle.bdd shows pytest_bdd_not_importable failure - pytest-bdd is still not installed. Feature file features/storage-substrate/storage-substrate.feature exists and is tagged @task:TASK-MEM-009 but cannot execute.",
+      "requirement": "Process integrity: address Coach feedback and ensure claims match reality",
+      "suggestion": "Add 'pytest-bdd>=8.1,<9' to pyproject.toml [tool.poetry.dependencies] or [project.dependencies], run pip install -e ., and verify 'python -m pytest features/storage-substrate/storage-substrate.feature -k \"task:TASK-MEM-009\"' executes without import errors"
+    },
+    {
+      "type": "code_quality",
+      "severity": "major",
+      "description": "Player claimed to modify/author pyproject.toml (in files_authored list) but 'git status --porcelain' shows no changes to this file. Player also claimed 10 other files in files_modified that show no git changes this turn. honesty_verification shows 11 should_fix discrepancies.",
+      "requirement": "Accurate reporting: only claim files actually modified this turn",
+      "suggestion": "Remove unmodified files from files_modified and files_authored. Only include orchestrator-managed paths if you actually changed them. If work was done in Turn 1, clarify that Turn 2 was verification-only."
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "minor",
+      "description": "advisory_issues shows task-work produced a report with 2 of 3 expected agent invocations - missing Phase 3 (Implementation) specialist. This is advisory/non-blocking but reduces stack-specific quality assurance.",
+      "requirement": "Agent invocation completeness (advisory)",
+      "suggestion": "Consider invoking the Phase-3 specialist for implementation tasks, even for test-writing tasks, to ensure stack-specific patterns are followed"
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "Independent verification confirms 77 hermetic tests pass in 0.35s with FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL unset. Excludes 1 non-hermetic test from prior task. Performance and isolation confirmed."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "test_credential_hygiene.py exists with 9 tests covering embed service errors (HTTP 500, malformed JSON, missing data, timeout, generic exceptions) and store context construction. Tests use obvious passwords like 'SECRETPASS123' and assert they never appear in error messages."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "Pre-existing coverage in test_settings.py (test_missing_all_required_fields_names_each_field, test_missing_pg_dsn_only, test_missing_embed_url_only) verified to exist. These tests confirm ValidationError messages include field names pg_dsn and embed_url when missing."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "All 6 coverage components verified: (1) settings defaults/precedence in TestSettingsDefaults/TestSettingsEnvPrecedence, (2) namespace hyphen rejection, (3) four dimension mismatch tests [512/767/769/1024], (4) embed timeout, (5) factory construction with fake embed, (6) lifespan enter/exit with stubs."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Hermetic test suite completes in 0.35s, well under 10s threshold. Proves no blocking network/database calls in the hermetic tier."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "test_credential_hygiene.py has no psycopg imports and no __aenter__ calls against real DSN. Store context tests only construct the context manager without entering. One pre-existing test from TASK-MEM-006 violates this but is outside this task's scope."
+    }
+  ],
+  "rationale": "All 6 technical acceptance criteria are independently verified and quality gates pass. However, Turn 1 Coach feedback explicitly requested pytest-bdd installation, Player claimed this was addressed in requirements_addressed, but evidence proves pytest-bdd is still not installed (BDD oracle fails with pytest_bdd_not_importable). This is a process integrity failure: explicit feedback must be actually completed when claimed. Additionally, 11 honesty discrepancies show files claimed as modified that have no git changes. One more turn to install pytest-bdd, verify BDD scenarios execute, and clean up reporting is necessary to close the feedback loop."
+}
