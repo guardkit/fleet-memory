@@ -1,6 +1,6 @@
 {
   "task_id": "TASK-MEM-002",
-  "timestamp": "2026-06-12T18:30:57.566108",
+  "timestamp": "2026-06-12T18:54:58.819496",
   "completed": true,
   "success": true,
   "implementation_mode": "direct",
@@ -12,7 +12,7 @@
   },
   "quality_gates": {
     "tests_passing": true,
-    "tests_passed": 0,
+    "tests_passed": 1,
     "tests_failed": 0,
     "coverage": null,
     "coverage_met": true,
@@ -20,25 +20,31 @@
     "all_passed": true
   },
   "files_modified": [],
-  "files_created": [],
-  "tests_written": [],
+  "files_created": [
+    ".env.example",
+    "src/fleet_memory/settings.py",
+    "tests/unit/test_settings.py"
+  ],
+  "tests_written": [
+    "tests/unit/test_settings.py"
+  ],
   "requirements_addressed": [
-    "AC-001: Settings class with all required fields and defaults verified via command",
-    "AC-002: Missing field validation raises ValidationError naming each field",
-    "AC-003: .env.example exists with mac-dev and test blocks, plain postgresql:// format, ASSUM placeholders",
-    "AC-004: All 20 unit tests pass covering validation, defaults, prefix isolation, env precedence",
-    "AC-005: Empty-string validation for both pg_dsn and embed_url",
-    "AC-006: No NATS/httpx/psycopg imports in settings.py",
-    "AC-007: All files pass ruff lint and format checks"
+    "Settings class with all required fields and defaults",
+    "ValidationError naming missing fields",
+    ".env.example with mac-dev and test blocks",
+    "Comprehensive unit test coverage",
+    "Empty-string validation for required fields",
+    "Pure pydantic-settings implementation (no forbidden imports)",
+    "All files pass lint/format checks"
   ],
   "requirements_met": [
-    "AC-001: Settings class with all required fields and defaults verified via command",
-    "AC-002: Missing field validation raises ValidationError naming each field",
-    "AC-003: .env.example exists with mac-dev and test blocks, plain postgresql:// format, ASSUM placeholders",
-    "AC-004: All 20 unit tests pass covering validation, defaults, prefix isolation, env precedence",
-    "AC-005: Empty-string validation for both pg_dsn and embed_url",
-    "AC-006: No NATS/httpx/psycopg imports in settings.py",
-    "AC-007: All files pass ruff lint and format checks"
+    "Settings class with all required fields and defaults",
+    "ValidationError naming missing fields",
+    ".env.example with mac-dev and test blocks",
+    "Comprehensive unit test coverage",
+    "Empty-string validation for required fields",
+    "Pure pydantic-settings implementation (no forbidden imports)",
+    "All files pass lint/format checks"
   ],
   "summary": "Direct mode implementation completed successfully",
   "completion_promises": [
@@ -46,7 +52,7 @@
       "criterion_id": "AC-001",
       "criterion_text": "[ ] `src/fleet_memory/settings.py` exports `Settings` with fields: `pg_dsn` (required), `embed_url` (required), `embed_model: str = \"nomic-embed-text-v1.5\"`, `embed_dims: int = 768`, `embed_timeout_s: float = 10.0`, `pg_pool_min: int = 2`, `pg_pool_max: int = 10`, `pg_connect_timeout_s: float = 10.0`, `nats_url: str = \"nats://localhost:4222\"`; verified by `python -c \"from fleet_memory.settings import Settings; s = Settings(FLEET_MEMORY_PG_DSN='postgresql://u:p@localhost/db', FLEET_MEMORY_EMBED_URL='http://localhost:9000'); assert s.pg_pool_max == 10 and s.embed_timeout_s == 10.0 and s.pg_connect_timeout_s == 10.0\"` exiting 0",
       "status": "complete",
-      "evidence": "Settings class implemented as pydantic-settings BaseSettings with all required fields. Verified via command: FLEET_MEMORY_PG_DSN='postgresql://u:p@localhost/db' FLEET_MEMORY_EMBED_URL='http://localhost:9000' python -c 'from fleet_memory.settings import Settings; s = Settings(); assert s.pg_pool_max == 10 and s.embed_timeout_s == 10.0 and s.pg_connect_timeout_s == 10.0' - exits with code 0 and prints 'AC-001 verification: PASSED'. All fields present with documented defaults: pg_dsn (required), embed_url (required), embed_model='nomic-embed-text-v1.5', embed_dims=768, embed_timeout_s=10.0, pg_pool_min=2, pg_pool_max=10, pg_connect_timeout_s=10.0, nats_url='nats://localhost:4222'.",
+      "evidence": "Created src/fleet_memory/settings.py with all required fields and defaults. The Settings class uses pydantic-settings BaseSettings with FLEET_MEMORY_ prefix. Verification command executes successfully: FLEET_MEMORY_PG_DSN='postgresql://u:p@localhost/db' FLEET_MEMORY_EMBED_URL='http://localhost:9000' python -c \"from fleet_memory.settings import Settings; s = Settings(); assert s.pg_pool_max == 10 and s.embed_timeout_s == 10.0 and s.pg_connect_timeout_s == 10.0\" exits with code 0.",
       "test_file": "tests/unit/test_settings.py",
       "implementation_files": [
         "src/fleet_memory/settings.py"
@@ -56,7 +62,7 @@
       "criterion_id": "AC-002",
       "criterion_text": "[ ] `python -c \"from fleet_memory.settings import Settings; Settings()\"` with no `FLEET_MEMORY_` env raises `ValidationError` whose message names each missing field",
       "status": "complete",
-      "evidence": "Missing required fields validation implemented using pydantic Field(...) for pg_dsn and embed_url. Verified via command that raises ValidationError with both field names in the error message. Test coverage: test_missing_all_required_fields_names_each_field confirms error message contains 'pg_dsn' and 'embed_url', test_missing_pg_dsn_only and test_missing_embed_url_only verify individual field validation.",
+      "evidence": "Implemented required field validation. When Settings() is called without FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL environment variables, pydantic raises ValidationError with both 'pg_dsn' and 'embed_url' named in the error message. Verified by test command and unit tests test_missing_all_required_fields_names_each_field, test_missing_pg_dsn_only, and test_missing_embed_url_only.",
       "test_file": "tests/unit/test_settings.py",
       "implementation_files": [
         "src/fleet_memory/settings.py"
@@ -66,7 +72,7 @@
       "criterion_id": "AC-003",
       "criterion_text": "[ ] `.env.example` exists with clearly labelled `mac-dev` and `test` blocks, documents every `FLEET_MEMORY_` field, uses plain `postgresql://` DSN format (psycopg3 conninfo \u2014 no `+asyncpg` suffix), and carries inline comments marking `pg_pool_max` / `pg_connect_timeout_s` / `embed_timeout_s` as ASSUM-004/006/008 placeholders pending verification (TASK-MEM-013)",
       "status": "complete",
-      "evidence": ".env.example created with clearly labeled sections: '# mac-dev: Local development on macOS' (lines 5-24) and '# test: Test environment configuration' (lines 27-39). All FLEET_MEMORY_ fields documented with values. Uses plain postgresql:// format: 'FLEET_MEMORY_PG_DSN=postgresql://fleet_user:fleet_pass@localhost:5432/fleet_memory' (no +asyncpg suffix). Inline comments present: 'FLEET_MEMORY_PG_POOL_MAX=10  # ASSUM-004 placeholder - pending verification in TASK-MEM-013', 'FLEET_MEMORY_PG_CONNECT_TIMEOUT_S=10.0  # ASSUM-006 placeholder - pending verification in TASK-MEM-013', 'FLEET_MEMORY_EMBED_TIMEOUT_S=10.0  # ASSUM-008 placeholder - pending verification in TASK-MEM-013'. Same placeholders in both mac-dev and test blocks.",
+      "evidence": "Created .env.example with clearly separated mac-dev and test configuration blocks. All nine FLEET_MEMORY_ fields are documented with inline comments. Uses plain postgresql:// DSN format without +asyncpg suffix. ASSUM-004, ASSUM-006, and ASSUM-008 placeholders are explicitly marked with inline comments on pg_pool_max, pg_connect_timeout_s, and embed_timeout_s fields, referencing TASK-MEM-013 for verification.",
       "test_file": null,
       "implementation_files": [
         ".env.example"
@@ -76,18 +82,17 @@
       "criterion_id": "AC-004",
       "criterion_text": "[ ] `python -m pytest tests/unit/test_settings.py -v` passes covering: missing-field error names each field, all defaults match the documented placeholders, `FLEET_MEMORY_` prefix isolation (unprefixed `PG_DSN` env is ignored), and OS env vars take precedence over `.env` file values (review risk R6)",
       "status": "complete",
-      "evidence": "All 20 tests pass in 0.05s: TestSettingsValidation (7 tests) validates missing fields name each field and empty/whitespace strings rejected. TestSettingsDefaults (2 tests) confirms all defaults match .env.example: embed_model='nomic-embed-text-v1.5', embed_dims=768, embed_timeout_s=10.0, pg_pool_min=2, pg_pool_max=10, pg_connect_timeout_s=10.0, nats_url='nats://localhost:4222'. TestSettingsPrefixIsolation (3 tests) verifies unprefixed PG_DSN/EMBED_URL/NATS_URL env vars are ignored. TestSettingsEnvPrecedence (2 tests) confirms OS env vars override .env file values (risk R6). TestSettingsNoForbiddenImports (3 tests) verifies no NATS/httpx/psycopg imports. TestSettingsIntegration (3 tests) validates realistic configs and AC-001 command.",
+      "evidence": "Comprehensive test suite with 20 tests passes successfully (0.09s runtime). Tests cover: (1) Missing field validation - test_missing_all_required_fields_names_each_field, test_missing_pg_dsn_only, test_missing_embed_url_only; (2) Defaults verification - test_all_defaults_match_documented_values, test_defaults_when_only_required_fields_provided; (3) Prefix isolation - test_unprefixed_pg_dsn_is_ignored, test_unprefixed_embed_url_is_ignored, test_unprefixed_optional_fields_ignored; (4) OS env precedence - test_os_env_overrides_env_file, test_env_file_used_when_no_os_env. All 20 tests pass.",
       "test_file": "tests/unit/test_settings.py",
       "implementation_files": [
-        "src/fleet_memory/settings.py",
-        "tests/unit/test_settings.py"
+        "src/fleet_memory/settings.py"
       ]
     },
     {
       "criterion_id": "AC-005",
       "criterion_text": "[ ] Empty-string `FLEET_MEMORY_PG_DSN` or `FLEET_MEMORY_EMBED_URL` raises `ValidationError`",
       "status": "complete",
-      "evidence": "Empty-string validation implemented via @field_validator on pg_dsn and embed_url that checks 'if not v or not v.strip(): raise ValueError'. Verified via commands: FLEET_MEMORY_PG_DSN='' raises 'pg_dsn cannot be empty', FLEET_MEMORY_EMBED_URL='' raises 'embed_url cannot be empty'. Test coverage: test_empty_string_pg_dsn_raises_validation_error, test_whitespace_only_pg_dsn_raises_validation_error, test_empty_string_embed_url_raises_validation_error, test_whitespace_only_embed_url_raises_validation_error all pass, confirming both empty strings and whitespace-only strings are rejected.",
+      "evidence": "Implemented field_validator for pg_dsn and embed_url that checks for empty or whitespace-only strings and raises ValueError with message '{field_name} cannot be empty'. Verified by tests test_empty_string_pg_dsn_raises_validation_error, test_whitespace_only_pg_dsn_raises_validation_error, test_empty_string_embed_url_raises_validation_error, test_whitespace_only_embed_url_raises_validation_error. Manual verification confirms both empty string and whitespace-only values raise ValidationError.",
       "test_file": "tests/unit/test_settings.py",
       "implementation_files": [
         "src/fleet_memory/settings.py"
@@ -97,7 +102,7 @@
       "criterion_id": "AC-006",
       "criterion_text": "[ ] `settings.py` imports no NATS, no httpx, no psycopg \u2014 pure pydantic-settings",
       "status": "complete",
-      "evidence": "settings.py imports only pydantic and pydantic_settings: 'from pydantic import Field, field_validator' and 'from pydantic_settings import BaseSettings, SettingsConfigDict'. Verified via grep: no matches for 'import nats', 'from nats', 'import httpx', 'from httpx', 'import psycopg', 'from psycopg'. Test coverage: test_settings_module_has_no_nats_imports, test_settings_module_has_no_httpx_imports, test_settings_module_has_no_psycopg_imports all pass by reading source code and asserting forbidden import statements are absent. Pure pydantic-settings implementation confirmed.",
+      "evidence": "settings.py contains only pydantic and pydantic_settings imports. Verified by grep -iE \"import (nats|httpx|psycopg)\" returning no matches. Unit tests test_settings_module_has_no_nats_imports, test_settings_module_has_no_httpx_imports, and test_settings_module_has_no_psycopg_imports confirm source code contains no forbidden imports. The implementation is pure pydantic-settings configuration.",
       "test_file": "tests/unit/test_settings.py",
       "implementation_files": [
         "src/fleet_memory/settings.py"
@@ -107,12 +112,11 @@
       "criterion_id": "AC-007",
       "criterion_text": "[ ] All modified files pass project-configured lint/format checks with zero errors",
       "status": "complete",
-      "evidence": "Ruff lint check passed: 'python -m ruff check src/fleet_memory/settings.py tests/unit/test_settings.py' returned 'All checks passed!'. Ruff format check passed: 'python -m ruff format --check src/fleet_memory/settings.py tests/unit/test_settings.py' returned '2 files already formatted'. No linting or formatting errors detected. Project uses ruff (configured in pyproject.toml with line-length=100, target-version=py312, select=[E,W,F,I,N,UP]) and all implementation files comply with configured rules.",
+      "evidence": "All files pass ruff linting and formatting checks. Executed 'python -m ruff check src/fleet_memory/settings.py tests/unit/test_settings.py' returns 'All checks passed!'. Executed 'python -m ruff format --check src/fleet_memory/settings.py tests/unit/test_settings.py' returns '2 files already formatted'. Initial linting issues (unused import, import ordering, unnecessary mode arguments) were auto-fixed with --fix flag.",
       "test_file": null,
       "implementation_files": [
         "src/fleet_memory/settings.py",
-        "tests/unit/test_settings.py",
-        ".env.example"
+        "tests/unit/test_settings.py"
       ]
     }
   ]
