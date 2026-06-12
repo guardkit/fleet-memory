@@ -1,0 +1,15 @@
+{
+  "task_id": "TASK-MEM-004",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "768b934a7f9f64c5e9050a7af88e3bb256b444c5",
+      "timestamp": "2026-06-12T18:32:13.510672",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
+      "from_prior_run": false
+    }
+  ],
+  "last_updated": "2026-06-12T18:32:13.510930"
+}
