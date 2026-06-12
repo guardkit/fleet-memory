@@ -2,22 +2,8 @@
   "task_id": "TASK-MEM-012",
   "turn": 1,
   "files_modified": [],
-  "files_created": [
-    ".claude/task-plans/TASK-MEM-011-implementation-plan.md",
-    ".claude/task-plans/TASK-MEM-012-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_concurrent_writes.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_metadata_filter.py",
-    "test_phase4_output.txt",
-    "tests/integration/test_concurrent_writes.py",
-    "tests/integration/test_embed_failures.py",
-    "tests/integration/test_injection_safety.py",
-    "tests/integration/test_metadata_filter.py",
-    "tests/integration/test_search_boundaries.py"
-  ],
-  "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_concurrent_writes.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_metadata_filter.py"
-  ],
+  "files_created": [],
+  "tests_written": [],
   "tests_run": true,
   "tests_passed": true,
   "test_output_summary": "",
@@ -32,13 +18,11 @@
     "AC-006: Parallel-isolation via UUID projects and random ports"
   ],
   "requirements_remaining": [],
-  "sdk_turns_used": 24,
+  "sdk_turns_used": 17,
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-012/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_concurrent_writes.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_metadata_filter.py"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-012/player_turn_4.json"
   ],
   "tests_passed_count": 32,
   "completion_promises": [
