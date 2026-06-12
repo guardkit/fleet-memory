@@ -1,0 +1,181 @@
+{
+  "task_id": "TASK-MEM-004",
+  "timestamp": "2026-06-12T18:26:30.234685",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation** in TDD mode.",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 9,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    ".claude/task-plans/TASK-MEM-004-implementation-plan.md",
+    ".env.example",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/conftest.py",
+    "deploy/local/docker-compose.yml",
+    "deploy/local/initdb/01_extensions.sql",
+    "src/fleet_memory/settings.py",
+    "tests/conftest.py",
+    "tests/integration/__init__.py",
+    "tests/integration/conftest.py",
+    "tests/integration/test_ephemeral_fixture.py",
+    "tests/unit/test_settings.py"
+  ],
+  "files_created": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-004/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/local/docker-compose.yml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/local/initdb/01_extensions.sql",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/conftest.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/conftest.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_ephemeral_fixture.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_fake_embed_fixture.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-004/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/local/docker-compose.yml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/local/initdb/01_extensions.sql",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/conftest.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/conftest.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_ephemeral_fixture.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_fake_embed_fixture.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/integration/test_ephemeral_fixture.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_fake_embed_fixture.py"
+  ],
+  "summary": "9 tests passed",
+  "sdk_turns": {
+    "turns_used": 40,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "infrastructure",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 1,
+    "missing_phases": [
+      "4",
+      "5"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 1 completed invocations\n\nMissing phases:\n  - Phase 4 (Testing)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 3 (Phase 3): Implementation** in TDD mode. (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-1",
+      "criterion_text": "deploy/local/docker-compose.yml exists: image pgvector/pgvector:pg16, host port env-overridable (no fixed 5432 binding; fixture assigns a free random port), mounts ./initdb to /docker-entrypoint-initdb.d, defines a pg_isready healthcheck with interval: 2s, retries: 10",
+      "status": "complete",
+      "evidence": "Created deploy/local/docker-compose.yml with pgvector/pgvector:pg16 image, PGPORT environment variable for dynamic port configuration, initdb volume mount, and healthcheck with pg_isready at 2s intervals with 10 retries and 5s start period",
+      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "implementation_files": [
+        "deploy/local/docker-compose.yml"
+      ]
+    },
+    {
+      "criterion_id": "AC-2",
+      "criterion_text": "deploy/local/initdb/01_extensions.sql contains CREATE EXTENSION IF NOT EXISTS vector;",
+      "status": "complete",
+      "evidence": "Created deploy/local/initdb/01_extensions.sql with the exact SQL command to create the pgvector extension",
+      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "implementation_files": [
+        "deploy/local/initdb/01_extensions.sql"
+      ]
+    },
+    {
+      "criterion_id": "AC-3",
+      "criterion_text": "With Docker unavailable, an explicit python -m pytest tests/integration/ -m integration run fails/skips quickly (no hang) with a message naming Docker / the container runtime as the missing prerequisite",
+      "status": "complete",
+      "evidence": "Implemented Docker availability check in ephemeral_pg fixture that calls pytest.skip() with clear message: 'Docker is not available. Integration tests require Docker or a compatible container runtime. Install Docker Desktop or configure your container runtime.' This ensures fast failure without hanging",
+      "test_file": null,
+      "implementation_files": [
+        "tests/integration/conftest.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-4",
+      "criterion_text": "The session-scoped ephemeral_pg fixture yields a plain postgresql:// DSN at 127.0.0.1 on a non-5432 random port; after session teardown docker compose -p <project> ps -q is empty and the anonymous volume is removed (down -v) \u2014 verified by a minimal integration self-test",
+      "status": "complete",
+      "evidence": "Implemented ephemeral_pg fixture that: (1) allocates random port via socket binding to port 0, (2) yields DSN in format postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory, (3) registers teardown via request.addfinalizer and atexit.register that calls 'docker compose down -v --remove-orphans'. Verified by test_ephemeral_pg_starts_and_provides_dsn, test_ephemeral_pg_uses_random_port, and test_teardown_removes_container_and_volume which passed",
+      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "implementation_files": [
+        "tests/integration/conftest.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-5",
+      "criterion_text": "After fixture startup, SELECT extname FROM pg_extension includes vector (init script ran on the fresh volume \u2014 review risk R3)",
+      "status": "complete",
+      "evidence": "Verified by test_pgvector_extension_available which queries pg_extension table and asserts vector extension is present. Test passed, confirming init script executed successfully",
+      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "implementation_files": [
+        "tests/integration/conftest.py",
+        "deploy/local/initdb/01_extensions.sql"
+      ]
+    },
+    {
+      "criterion_id": "AC-6",
+      "criterion_text": "Two fixture instantiations with distinct project uids yield DSNs on different ports with mutually invisible data (parallel-isolation self-test)",
+      "status": "complete",
+      "evidence": "Implemented ephemeral_pg_factory fixture that creates independent PostgreSQL instances with unique project UIDs. Verified by test_data_isolation_between_projects which: (1) creates data in first instance, (2) spawns second instance via factory, (3) confirms different ports, (4) confirms second instance cannot see first instance's tables. Test passed",
+      "test_file": "tests/integration/test_ephemeral_fixture.py",
+      "implementation_files": [
+        "tests/integration/conftest.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-7",
+      "criterion_text": "tests/conftest.py exports a fake_embed fixture whose fake is defined INLINE (deterministic 768-dim vectors, no import from fleet_memory.embed \u2014 that module lands in a later wave); using it alone opens no database or network connection",
+      "status": "complete",
+      "evidence": "Created tests/conftest.py with fake_embed fixture that returns deterministic 768-dimensional vectors using hash-seeded linear congruential generator. No external imports from fleet_memory modules. Verified by unit tests (test_fake_embed_produces_768_dim_vector, test_fake_embed_is_deterministic, test_fake_embed_different_inputs_differ, test_fake_embed_values_in_valid_range) which all passed in 0.01s with no database or network",
+      "test_file": "tests/unit/test_fake_embed_fixture.py",
+      "implementation_files": [
+        "tests/conftest.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-8",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran 'ruff check' and 'ruff format --check' on all created files. Fixed one f-string linting issue. Final check output: 'All checks passed!' and '4 files already formatted'",
+      "test_file": null,
+      "implementation_files": [
+        "tests/conftest.py",
+        "tests/integration/conftest.py",
+        "tests/integration/test_ephemeral_fixture.py",
+        "tests/unit/test_fake_embed_fixture.py"
+      ]
+    }
+  ]
+}

@@ -40,9 +40,7 @@ def _get_random_port() -> int:
     return port
 
 
-def _wait_for_pg_health(
-    project_name: str, compose_file: Path, timeout: int = 30
-) -> bool:
+def _wait_for_pg_health(project_name: str, compose_file: Path, timeout: int = 30) -> bool:
     """Poll docker compose health check until healthy or timeout."""
     start_time = time.time()
     while time.time() - start_time < timeout:
@@ -156,9 +154,7 @@ def ephemeral_pg(request: pytest.FixtureRequest) -> Generator[str, None, None]:
     )
 
     if start_result.returncode != 0:
-        raise RuntimeError(
-            f"Failed to start ephemeral PostgreSQL: {start_result.stderr}"
-        )
+        raise RuntimeError(f"Failed to start ephemeral PostgreSQL: {start_result.stderr}")
 
     # Wait for health check
     if not _wait_for_pg_health(project_name, compose_file, timeout=30):
@@ -247,15 +243,11 @@ def ephemeral_pg_factory(
         )
 
         if start_result.returncode != 0:
-            raise RuntimeError(
-                f"Failed to start ephemeral PostgreSQL: {start_result.stderr}"
-            )
+            raise RuntimeError(f"Failed to start ephemeral PostgreSQL: {start_result.stderr}")
 
         if not _wait_for_pg_health(project_name, compose_file, timeout=30):
             _teardown_compose(project_name, compose_file)
-            raise RuntimeError(
-                f"Ephemeral PostgreSQL did not become healthy within 30 seconds"
-            )
+            raise RuntimeError("Ephemeral PostgreSQL did not become healthy within 30 seconds")
 
         created_projects.append((project_name, compose_file))
         dsn = f"postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory"
