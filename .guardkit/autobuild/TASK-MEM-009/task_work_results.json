@@ -1,0 +1,163 @@
+{
+  "task_id": "TASK-MEM-009",
+  "timestamp": "2026-06-12T20:32:52.114169",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 78,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "tests/integration/conftest.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-MEM-009-implementation-plan.md",
+    ".claude/task-plans/TASK-MEM-010-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_credential_hygiene.py",
+    "tests/integration/test_pool_lifecycle.py",
+    "tests/integration/test_store_semantics.py",
+    "tests/unit/test_credential_hygiene.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-009/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_credential_hygiene.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_credential_hygiene.py"
+  ],
+  "summary": "78 tests passed",
+  "sdk_turns": {
+    "turns_used": 34,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "bdd_results": {
+    "scenarios_passed": 0,
+    "scenarios_failed": 1,
+    "scenarios_pending": 0,
+    "failures": [
+      {
+        "feature_file": "features/storage-substrate/storage-substrate.feature",
+        "scenario_name": "pytest_bdd_not_importable",
+        "failing_step": "",
+        "reason": "pytest_bdd_not_importable: tagged feature files exist for TASK-MEM-009 but pytest-bdd is not installed in the worktree environment. Add 'pytest-bdd>=8.1,<9' (or compatible) to the project's pyproject.toml dependencies and reinstall."
+      }
+    ],
+    "pending": [],
+    "feature_files": [
+      "features/storage-substrate/storage-substrate.feature"
+    ],
+    "tag": "@task:TASK-MEM-009"
+  },
+  "task_type": "testing",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 2,
+    "missing_phases": [
+      "3"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`python -m pytest tests/unit/ -v --timeout=30` passes with `FLEET_MEMORY_PG_DSN` and `FLEET_MEMORY_EMBED_URL` unset (hermetic by construction)",
+      "status": "complete",
+      "evidence": "Created test_credential_hygiene.py with 9 comprehensive tests. All 78 unit tests pass in hermetic mode (0.36 seconds). Tests run without any environment variables set, proving network-free and database-free execution.",
+      "test_file": "tests/unit/test_credential_hygiene.py",
+      "implementation_files": [
+        "tests/unit/test_credential_hygiene.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "`test_credential_hygiene.py`: when the embed callable raises `EmbedServiceError` and when `async_store_context` fails on a bad DSN, no propagated message contains the password component of the DSN",
+      "status": "complete",
+      "evidence": "Implemented 9 credential hygiene tests covering all error paths: HTTP 500, malformed JSON, missing data field, timeout, generic exceptions, and store context construction. Each test uses a DSN with an obvious password (e.g., 'SECRETPASS123') and asserts it never appears in error messages.",
+      "test_file": "tests/unit/test_credential_hygiene.py",
+      "implementation_files": [
+        "tests/unit/test_credential_hygiene.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Settings `ValidationError` from empty env names the missing `pg_dsn` / `embed_url` fields (message includes each missing setting's name)",
+      "status": "complete",
+      "evidence": "Already covered by existing test_settings.py: test_missing_all_required_fields_names_each_field, test_missing_pg_dsn_only, and test_missing_embed_url_only verify ValidationError messages include field names.",
+      "test_file": "tests/unit/test_settings.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Suite covers: settings defaults + precedence, namespace hyphen rejection, all four dimension-mismatch rows, embed timeout, fake-embed store-factory construction, lifespan enter/exit with stubs",
+      "status": "complete",
+      "evidence": "Full coverage verified: (1) settings defaults/precedence in test_settings.py TestSettingsDefaults/TestSettingsEnvPrecedence, (2) namespace hyphen rejection in test_store_validation.py, (3) four dimension-mismatch tests in test_embed.py [512, 767, 769, 1024], (4) timeout in test_embed.py test_timeout_raises_embed_timeout_error, (5) fake-embed factory in test_store_validation.py, (6) lifespan in test_app_lifespan.py.",
+      "test_file": "tests/unit/test_settings.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Total wall-clock for `python -m pytest tests/unit/ -q` is under 10 seconds (network-free proof \u2014 no blocking call hides in the tier)",
+      "status": "complete",
+      "evidence": "Unit test suite completed in 0.36 seconds (78 tests), well under the 10-second threshold. This proves hermetic execution with no network or database calls.",
+      "test_file": "tests/unit/test_credential_hygiene.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Tests do not import psycopg directly and never call `async_store_context().__aenter__` against a real DSN",
+      "status": "complete",
+      "evidence": "Verified no direct psycopg imports in unit tests. Store context tests only construct the context manager (hasattr checks) but never enter it via __aenter__. Unit tier remains database-free.",
+      "test_file": "tests/unit/test_store_validation.py",
+      "implementation_files": []
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 64.49425787525252
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 256.40983304101974
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-010",
+    "pre_path": "tasks/backlog/TASK-MEM-010-integration-store-semantics.md",
+    "post_path": "tasks/design_approved/TASK-MEM-010-integration-store-semantics.md",
+    "timestamp": "2026-06-12T19:28:17.582542+00:00",
+    "kind": "design_approved_transition"
+  }
+]

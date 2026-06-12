@@ -1,23 +1,29 @@
 ---
-id: TASK-MEM-009
-title: Unit test suite completion (hermetic tier)
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: testing
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 6
-implementation_mode: task-work
 complexity: 4
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-003
+- TASK-MEM-005
+- TASK-MEM-006
 estimated_minutes: 60
-dependencies: [TASK-MEM-003, TASK-MEM-005, TASK-MEM-006]
-tags: [unit-tests, hermetic, credential-hygiene]
+feature_id: FEAT-CA81
+id: TASK-MEM-009
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- unit-tests
+- hermetic
+- credential-hygiene
+task_type: testing
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Unit test suite completion (hermetic tier)
+updated: 2026-06-12 17:00:00+00:00
+wave: 6
 ---
 
 # Task: Unit test suite completion (hermetic tier)

@@ -269,3 +269,68 @@ def ephemeral_pg_factory(
 
     # Final cleanup
     cleanup_all()
+
+
+@pytest.fixture
+def test_settings(ephemeral_pg: str) -> Generator:
+    """Build Settings for integration tests using ephemeral_pg DSN.
+
+    Uses environment variables for embed_url (required) or falls back to fake embeddings.
+    Per-test namespace isolation with random UUID.
+    """
+    from fleet_memory.settings import Settings
+
+    # Check for real embed URL, allow fake embeddings if not provided
+    embed_url = os.environ.get("FLEET_MEMORY_EMBED_URL", "http://localhost:9000")
+
+    settings = Settings(
+        pg_dsn=ephemeral_pg,
+        embed_url=embed_url,
+        embed_dims=768,
+        pg_pool_min=2,
+        pg_pool_max=10,
+        pg_connect_timeout_s=10.0,
+    )
+
+    yield settings
+
+
+@pytest.fixture
+async def store_context(test_settings):
+    """Provide async_store_context with fake embeddings for non-ranking tests.
+
+    For ranking tests that need real embeddings, use store_context_real fixture.
+    Namespace per test: ("fleet_memory", "test_<uuid>", "memory")
+    """
+    from uuid import uuid4
+
+    from fleet_memory.embed import make_fake_embed
+    from fleet_memory.store import async_store_context
+
+    fake_embed = make_fake_embed(dims=test_settings.embed_dims)
+    test_namespace = ("fleet_memory", f"test_{uuid4().hex[:8]}", "memory")
+
+    async with async_store_context(test_settings, embed_fn=fake_embed) as store:
+        yield store, test_namespace
+
+
+@pytest.fixture
+async def store_context_real(test_settings):
+    """Provide async_store_context with REAL embeddings from embed_url.
+
+    Requires FLEET_MEMORY_EMBED_URL environment variable pointing to GB10 or test service.
+    Namespace per test: ("fleet_memory", "test_<uuid>", "memory")
+    """
+    from uuid import uuid4
+
+    from fleet_memory.store import async_store_context
+
+    # Check if real embed service is available
+    embed_url = os.environ.get("FLEET_MEMORY_EMBED_URL")
+    if not embed_url:
+        pytest.skip("FLEET_MEMORY_EMBED_URL not set - skipping real embedding test")
+
+    test_namespace = ("fleet_memory", f"test_{uuid4().hex[:8]}", "memory")
+
+    async with async_store_context(test_settings, embed_fn=None) as store:
+        yield store, test_namespace

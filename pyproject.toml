@@ -34,6 +34,8 @@ testpaths = ["tests"]
 addopts = "-m 'not integration'"
 markers = [
     "integration: marks tests as integration tests (deselected by default)",
+    "seam: cross-module contract tests",
+    "integration_contract: tests that verify integration contracts",
 ]
 asyncio_mode = "auto"
 

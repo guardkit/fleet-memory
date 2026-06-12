@@ -11,7 +11,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
-from langgraph.store.postgres.aio import AsyncPostgresStore
+from langgraph.store.postgres.aio import AsyncPostgresStore, PoolConfig
 
 from fleet_memory.embed import embed
 from fleet_memory.errors import NamespaceValidationError
@@ -98,43 +98,33 @@ async def async_store_context(
         "fields": ["content"],  # Index the "content" field in documents
     }
 
+    # AsyncPostgresStore.from_conn_string returns an async context manager
+    # Pool sizing: from settings.pg_pool_min and settings.pg_pool_max
+    # Connection timeout: settings.pg_connect_timeout_s provides ASSUM-006 control lever
+    #
+    # Driver verification (langgraph-checkpoint-postgres >=2.0):
+    # (a) Conninfo is plain postgresql:// psycopg3 format (verified in seam test)
+    # (b) Index config shape {dims, embed, fields} matches constructor signature
+    # (c) Pool min/max flow through from_conn_string pool_config parameter
+    pool_config = PoolConfig(
+        min_size=settings.pg_pool_min,
+        max_size=settings.pg_pool_max,
+        kwargs={"connect_timeout": settings.pg_connect_timeout_s},
+    )
+
     try:
-        # AsyncPostgresStore.from_conn_string handles pool construction internally
-        # Pool sizing: from settings.pg_pool_min and settings.pg_pool_max
-        # Connection timeout: settings.pg_connect_timeout_s provides ASSUM-006 control lever
-        #
-        # Driver verification (langgraph-checkpoint-postgres >=2.0):
-        # (a) Conninfo is plain postgresql:// psycopg3 format (verified in seam test)
-        # (b) Index config shape {dims, embed, fields} matches constructor signature
-        # (c) Pool min/max flow through from_conn_string kwargs (documented behavior)
-        store = AsyncPostgresStore.from_conn_string(
+        async with AsyncPostgresStore.from_conn_string(
             settings.pg_dsn,
             index=index_config,
-            pool_kwargs={
-                "min_size": settings.pg_pool_min,
-                "max_size": settings.pg_pool_max,
-                "timeout": settings.pg_connect_timeout_s,
-            },
-        )
+            pool_config=pool_config,
+        ) as store:
+            # Initialize schema (creates tables/indexes if not exists)
+            await store.setup()
 
-        # Initialize schema (creates tables/indexes if not exists)
-        await store.setup()
-
-        yield store
+            yield store
 
     except Exception:
         # Credential hygiene: password stripping handled by psycopg internally
         # The DSN may be interpolated into exception strings, but psycopg handles this
         # Don't re-raise with DSN in message - let original exception propagate
         raise
-    finally:
-        # Close pool cleanly on exit
-        # AsyncPostgresStore manages pool lifecycle - explicit close on context exit
-        try:
-            # Note: AsyncPostgresStore.__aexit__ handles pool closure
-            # This finally block documents the expected cleanup behavior
-            # The context manager protocol ensures pool is closed even on exception
-            pass
-        except Exception:
-            # Suppress cleanup errors to avoid masking original exception
-            pass

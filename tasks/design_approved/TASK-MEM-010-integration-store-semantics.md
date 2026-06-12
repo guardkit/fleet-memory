@@ -1,34 +1,43 @@
 ---
-id: TASK-MEM-010
-title: "Integration tests: store semantics and pool lifecycle"
-status: backlog
-created: 2026-06-12T17:00:00Z
-updated: 2026-06-12T17:00:00Z
-priority: high
-task_type: testing
-parent_review: TASK-REV-CA81
-feature_id: FEAT-CA81
-wave: 6
-implementation_mode: task-work
 complexity: 6
-estimated_minutes: 90
-dependencies: [TASK-MEM-004, TASK-MEM-005, TASK-MEM-006]
-tags: [integration-tests, marker-gated, pool, semantics]
 consumer_context:
-  - task: TASK-MEM-004
-    consumes: EPHEMERAL_PG_DSN
-    framework: "pytest session fixture (ephemeral_pg)"
-    driver: "docker compose + psycopg3"
-    format_note: "Plain postgresql:// DSN at 127.0.0.1 on a random non-5432 port; throwaway data; NEVER the NAS host"
-  - task: TASK-MEM-005
-    consumes: STORE_CONTEXT
-    framework: "langgraph AsyncPostgresStore"
-    driver: "psycopg3 + psycopg-pool"
-    format_note: "async_store_context(settings, embed_fn) yields a ready store; setup() idempotent"
+- consumes: EPHEMERAL_PG_DSN
+  driver: docker compose + psycopg3
+  format_note: Plain postgresql:// DSN at 127.0.0.1 on a random non-5432 port; throwaway
+    data; NEVER the NAS host
+  framework: pytest session fixture (ephemeral_pg)
+  task: TASK-MEM-004
+- consumes: STORE_CONTEXT
+  driver: psycopg3 + psycopg-pool
+  format_note: async_store_context(settings, embed_fn) yields a ready store; setup()
+    idempotent
+  framework: langgraph AsyncPostgresStore
+  task: TASK-MEM-005
+created: 2026-06-12 17:00:00+00:00
+dependencies:
+- TASK-MEM-004
+- TASK-MEM-005
+- TASK-MEM-006
+estimated_minutes: 90
+feature_id: FEAT-CA81
+id: TASK-MEM-010
+implementation_mode: task-work
+parent_review: TASK-REV-CA81
+priority: high
+status: design_approved
+tags:
+- integration-tests
+- marker-gated
+- pool
+- semantics
+task_type: testing
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: 'Integration tests: store semantics and pool lifecycle'
+updated: 2026-06-12 17:00:00+00:00
+wave: 6
 ---
 
 # Task: Integration tests — store semantics and pool lifecycle

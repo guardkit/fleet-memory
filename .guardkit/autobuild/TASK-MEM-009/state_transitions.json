@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MEM-009",
+    "pre_path": "tasks/backlog/TASK-MEM-009-unit-test-suite.md",
+    "post_path": "tasks/design_approved/TASK-MEM-009-unit-test-suite.md",
+    "timestamp": "2026-06-12T19:28:17.596181+00:00",
+    "kind": "design_approved_transition"
+  }
+]

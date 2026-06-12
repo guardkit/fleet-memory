@@ -1,0 +1,7 @@
+{
+  "tests_run": 78,
+  "tests_failed": 0,
+  "coverage_pct": 93.71069182389937,
+  "output_summary": "78 passed, 16 deselected in 0.41s - 94% coverage",
+  "quality_gates_passed": true
+}
