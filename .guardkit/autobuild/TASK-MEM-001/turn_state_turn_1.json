@@ -1,0 +1,30 @@
+{
+  "id": "TURN-FEAT-CA81-1",
+  "feature_id": "FEAT-CA81",
+  "task_id": "TASK-MEM-001",
+  "turn_number": 1,
+  "player_summary": "Implementation attempt",
+  "player_decision": "approve",
+  "coach_decision": "approve",
+  "coach_feedback": null,
+  "mode": "fresh_start",
+  "blockers_found": [],
+  "progress_summary": "Turn 1: approve",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    "pyproject.toml",
+    "src/fleet_memory/__init__.py",
+    "tests/__init__.py",
+    "tests/unit/__init__.py",
+    "tests/unit/test_scaffold.py"
+  ],
+  "tests_passed": 2,
+  "tests_failed": 0,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-06-12T18:15:19.737122",
+  "completed_at": "2026-06-12T18:15:19.737122",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}
