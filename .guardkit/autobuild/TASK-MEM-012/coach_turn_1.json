@@ -1,0 +1,68 @@
+{
+  "task_id": "TASK-MEM-012",
+  "turn": 1,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "Test files claimed in completion_promises do not exist on disk. Honesty verification reports: tests/integration/test_metadata_filter.py and tests/integration/test_concurrent_writes.py have path_exists=False. These are the primary deliverables for this task.",
+      "requirement": "AC-001, AC-002, AC-003",
+      "suggestion": "Actually create the test files tests/integration/test_metadata_filter.py and tests/integration/test_concurrent_writes.py with the implementations described in your completion_promises. Ensure they exist in the working tree, not in a worktree path."
+    },
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "Evidence gathering aborted with status 'partial_honesty_abort'. No independent test verification occurred because the claimed test files do not exist. Fields are null: tests, independent_tests, coverage_details, bdd, arch_review.",
+      "requirement": "AC-004",
+      "suggestion": "After creating the actual test files, ensure they can be discovered and run by pytest. The orchestrator must be able to independently verify test execution with: python -m pytest tests/integration/ -m integration -v --timeout=120"
+    },
+    {
+      "type": "code_quality",
+      "severity": "major",
+      "description": "Player claimed modifications to tests/integration/conftest.py and tests/integration/test_ephemeral_fixture.py in completion_promises for AC-006, but git status shows these files were not modified. Do not claim work on files you did not actually change.",
+      "requirement": "AC-006",
+      "suggestion": "If AC-006 relies on existing fixture behavior, reference the existing files without claiming you modified them. If new documentation is needed in conftest.py, actually add it."
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "No evidence available for AC-005 hermeticity verification (grep check for NAS references). Gathering aborted before this verification could run.",
+      "requirement": "AC-005",
+      "suggestion": "Once test files exist, the orchestrator will verify AC-005 automatically by running: grep -riE 'synology|nas_host|100\\.64\\.' tests/integration/"
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Claimed test file tests/integration/test_metadata_filter.py does not exist on disk (path_exists=False). Cannot verify metadata filtering behavior without the actual test implementation."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Claimed test file tests/integration/test_concurrent_writes.py does not exist on disk (path_exists=False). Cannot verify concurrent same-key write convergence without the actual test implementation."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Claimed test file tests/integration/test_concurrent_writes.py does not exist on disk (path_exists=False). Cannot verify read-during-write consistency without the actual test implementation."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "No independent test execution occurred. Evidence gathering aborted with status 'partial_honesty_abort'. The tests field is null, meaning the orchestrator could not run pytest to verify the integration tier passes."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "No hermeticity verification occurred. Evidence gathering aborted before the grep check could run. Cannot verify absence of NAS references without complete evidence collection."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Player claimed modifications to tests/integration/conftest.py for parallel-isolation documentation, but git status shows this file was not modified. Cannot verify the claimed documentation exists."
+    }
+  ],
+  "rationale": "Gathering aborted at honesty verification (status: partial_honesty_abort). The Player claimed test files tests/integration/test_metadata_filter.py and tests/integration/test_concurrent_writes.py exist and pass, but honesty verification reports path_exists=False for both files. No downstream evidence was gathered (tests, coverage, BDD all null). Per absence-of-failure guards (Guard 5: GATHERING-STATUS), null evidence fields are ABSENT SIGNAL and cannot support approval. The Player must create the actual test files and ensure they exist in the working tree before verification can proceed."
+}
