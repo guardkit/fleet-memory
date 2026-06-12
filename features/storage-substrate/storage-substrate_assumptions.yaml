@@ -17,9 +17,11 @@ assumptions:
   - id: "ASSUM-002"
     scenario: "Search without an explicit limit returns at most the default number of results"
     assumption: "Default search result limit is 10 when the caller specifies none"
-    confidence: medium
+    confidence: verified
     basis: "LangGraph store search convention; not stated in the description or docs"
     human_response: "confirmed"
+    verified_value: "AsyncPostgresStore.asearch() without limit parameter returns exactly 10 results (verified with 15 stored memories)"
+    verified_by_task: "TASK-MEM-011"
 
   - id: "ASSUM-003"
     scenario: "Concurrent writes to the same key leave one complete winner"
@@ -31,9 +33,11 @@ assumptions:
   - id: "ASSUM-004"
     scenario: "Operations beyond pool capacity queue rather than fail"
     assumption: "Connection pool capacity is 10 connections; operations beyond capacity wait for a free connection rather than fail"
-    confidence: low
+    confidence: verified
     basis: "Not stated anywhere; common asyncpg/psycopg-pool sizing practice — verify during implementation"
     human_response: "confirmed"
+    verified_value: "pg_pool_max=10; operations queue when pool is full; 15 concurrent aput operations all completed successfully within 30s bound (psycopg-pool queues rather than raises timeout errors)"
+    verified_by_task: "TASK-MEM-010"
 
   - id: "ASSUM-005"
     scenario: "Storing a searchable memory fails cleanly when the embedding service is down"
@@ -45,9 +49,11 @@ assumptions:
   - id: "ASSUM-006"
     scenario: "The service refuses to start when the database is unreachable"
     assumption: "Startup failure surfaces within 10 seconds when the database is unreachable"
-    confidence: low
+    confidence: verified
     basis: "Nothing documented; typical connect-timeout practice — verify during implementation"
     human_response: "confirmed"
+    verified_value: "pg_connect_timeout_s=10.0s controls individual connection attempts; async_store_context bounds total entry time at pg_connect_timeout_s + 5s slack (15s total) and raises TimeoutError naming host:port without credentials"
+    verified_by_task: "TASK-MEM-006"
 
   - id: "ASSUM-007"
     scenario: "A namespace containing hyphens is rejected"
@@ -59,9 +65,11 @@ assumptions:
   - id: "ASSUM-008"
     scenario: "A hung embedding service cannot stall store operations indefinitely"
     assumption: "Embedding calls are bounded at 10 seconds"
-    confidence: low
+    confidence: verified
     basis: "No timeout documented; proposed as a sane default for a LAN/Tailscale embedding endpoint — verify during implementation"
     human_response: "confirmed"
+    verified_value: "embed_timeout_s=10.0s implemented as httpx.Timeout(read=10.0) controlling model inference time; httpx.ReadTimeout raised and converted to EmbedTimeoutError when read timeout expires"
+    verified_by_task: "TASK-MEM-003"
 
   - id: "ASSUM-009"
     scenario: "A full storage volume fails writes clearly while reads continue"

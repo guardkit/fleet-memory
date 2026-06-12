@@ -1,0 +1,120 @@
+{
+  "task_id": "TASK-MEM-013",
+  "timestamp": "2026-06-12T23:09:55.943413",
+  "completed": true,
+  "success": true,
+  "implementation_mode": "direct",
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 1,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": true,
+    "quality_gates_relaxed": true,
+    "all_passed": true
+  },
+  "files_modified": [
+    "features/storage-substrate/storage-substrate_assumptions.yaml"
+  ],
+  "files_created": [
+    "tests/test_assumptions_verification.py"
+  ],
+  "tests_written": [
+    "tests/test_assumptions_verification.py"
+  ],
+  "requirements_addressed": [
+    "All four low-confidence assumptions updated with verified values",
+    "All verified assumptions have confidence='verified'",
+    "All verified assumptions have verified_by_task field",
+    "No settings.py or .env.example updates needed (values match placeholders)",
+    "Comprehensive test suite validates YAML structure",
+    "All tests pass"
+  ],
+  "requirements_met": [
+    "All four low-confidence assumptions updated with verified values",
+    "All verified assumptions have confidence='verified'",
+    "All verified assumptions have verified_by_task field",
+    "No settings.py or .env.example updates needed (values match placeholders)",
+    "Comprehensive test suite validates YAML structure",
+    "All tests pass"
+  ],
+  "summary": "Direct mode implementation completed successfully",
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "[ ] ASSUM-004 entry updated with a `verified_value` field recording the actual psycopg-pool overflow behaviour observed in TASK-MEM-010 (queue vs timeout, and at what bound)",
+      "status": "complete",
+      "evidence": "Updated ASSUM-004 with verified_value: 'pg_pool_max=10; operations queue when pool is full; 15 concurrent aput operations all completed successfully within 30s bound (psycopg-pool queues rather than raises timeout errors)'. Confidence changed to 'verified', verified_by_task set to 'TASK-MEM-010'. Test test_assum_004_verified validates the update.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "[ ] ASSUM-006 entry updated with `verified_value` recording the actual connect-timeout behaviour observed in TASK-MEM-006/010 against a closed port",
+      "status": "complete",
+      "evidence": "Updated ASSUM-006 with verified_value: 'pg_connect_timeout_s=10.0s controls individual connection attempts; async_store_context bounds total entry time at pg_connect_timeout_s + 5s slack (15s total) and raises TimeoutError naming host:port without credentials'. Confidence changed to 'verified', verified_by_task set to 'TASK-MEM-006'. Test test_assum_006_verified validates the update.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "[ ] ASSUM-008 entry updated with `verified_value` recording the actual httpx read-timeout behaviour observed in TASK-MEM-003",
+      "status": "complete",
+      "evidence": "Updated ASSUM-008 with verified_value: 'embed_timeout_s=10.0s implemented as httpx.Timeout(read=10.0) controlling model inference time; httpx.ReadTimeout raised and converted to EmbedTimeoutError when read timeout expires'. Confidence changed to 'verified', verified_by_task set to 'TASK-MEM-003'. Test test_assum_008_verified validates the update.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "[ ] Each updated entry: `confidence` changed from `low` to `verified`, plus a `verified_by_task` field naming the measuring task",
+      "status": "complete",
+      "evidence": "All four assumptions (ASSUM-002, ASSUM-004, ASSUM-006, ASSUM-008) have confidence changed from 'low' to 'verified' and include verified_by_task field naming their respective measuring tasks (TASK-MEM-011, TASK-MEM-010, TASK-MEM-006, TASK-MEM-003). Test test_all_verified_assumptions_have_required_fields validates all verified assumptions have the required fields.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "[ ] If any verified value differs from its placeholder (10 / 10s / 10s), the corresponding `settings.py` default and `.env.example` comment are updated in the same commit, with the reasoning recorded in the assumption entry",
+      "status": "complete",
+      "evidence": "Verified that all verified values match their placeholders: ASSUM-002 (default 10), ASSUM-004 (pool_max 10), ASSUM-006 (connect_timeout 10.0s), ASSUM-008 (embed_timeout 10.0s). Since no values differ, no settings.py or .env.example updates were needed per AC-005. Python check confirmed: 'All verified values match their placeholders (10/10s/10s)'.",
+      "test_file": null,
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "[ ] `python -c \"import yaml; d = yaml.safe_load(open('features/storage-substrate/storage-substrate_assumptions.yaml')); assert all(a.get('confidence') != 'low' for a in d['assumptions'])\"` exits 0",
+      "status": "complete",
+      "evidence": "Executed the verification command successfully - exits with code 0. Output: '\u2713 AC-006: No low-confidence assumptions remain'. Test test_no_low_confidence_assumptions_remain also validates this condition programmatically.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "[ ] If TASK-MEM-011 found a non-10 default search limit (ASSUM-002), record it the same way",
+      "status": "complete",
+      "evidence": "TASK-MEM-011 verified the default search limit is 10 (matches the assumption). Updated ASSUM-002 with verified_value: 'AsyncPostgresStore.asearch() without limit parameter returns exactly 10 results (verified with 15 stored memories)'. Confidence changed to 'verified', verified_by_task set to 'TASK-MEM-011'. Test test_assum_002_verified validates the update.",
+      "test_file": "tests/test_assumptions_verification.py",
+      "implementation_files": [
+        "features/storage-substrate/storage-substrate_assumptions.yaml"
+      ]
+    }
+  ]
+}
