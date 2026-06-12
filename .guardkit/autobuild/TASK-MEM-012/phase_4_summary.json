@@ -1,7 +1,7 @@
 {
   "tests_run": 110,
   "tests_failed": 0,
-  "coverage_pct": 96.49,
-  "output_summary": "110 tests passed (78 unit, 32 integration); 96% coverage; all quality gates green",
+  "coverage_pct": 96.0,
+  "output_summary": "110 tests passed (78 unit, 32 integration) in 32.24s; 96% coverage; all quality gates green",
   "quality_gates_passed": true
 }
