@@ -1,0 +1,54 @@
+{
+  "task_id": "TASK-MEM-012",
+  "turn": 3,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "missing_requirement",
+      "severity": "major",
+      "description": "AC-006 has no independent verification in the evidence bundle. Player claims parallel-isolation documentation exists in tests/integration/conftest.py (lines 12-29), but git status shows conftest.py was not modified this turn. Cannot verify whether the required documentation exists from a previous turn or is missing entirely.",
+      "requirement": "AC-006: Fixture parallel-isolation documentation",
+      "suggestion": "Use the Read tool to verify tests/integration/conftest.py contains the parallel-isolation documentation at lines 12-29. If it exists, quote the relevant lines in your report. If it was added in Task 010, note that explicitly. If it doesn't exist, add it now with documentation explaining UUID-based compose projects, random port allocation, and manual verification instructions for concurrent test runs."
+    },
+    {
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "files_modified includes 16 files that git status shows were not modified this turn (tests from tasks 010/011, orchestrator-managed .claude/task-plans/*.md and coverage*.json). This repeats the issue flagged in Turn 2 feedback.",
+      "requirement": "Accurate reporting (honesty verification)",
+      "suggestion": "List ONLY files you actually modified in this turn in files_modified. Do not include files from previous tasks or orchestrator-managed paths. If you didn't modify any files this turn (work was done in previous turns), files_modified should be empty or contain only coverage.json if you ran tests."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "test_metadata_filter_scopes_to_project_preserving_ranking validates asearch with filter={\"project\": \"project_a\"} returns only project_a memories while preserving semantic ranking and scores. Evidence shows proper filtering and ranking preservation."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "test_concurrent_same_key_writes_converge_on_one_winner validates asyncio.gather of two concurrent aput calls converges on exactly one complete version (v1 or v2), never a blend. Uses distinct content lengths and version markers to detect partial writes."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "test_read_during_write_observes_complete_version_only validates readers polling aget during concurrent writes observe only complete OLD or complete NEW versions, never blends. Includes asearch variant test. 50 polling iterations confirm atomicity."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "Full integration suite passes: 32 tests in 24.61s covering tasks 010 (ephemeral_pg fixture), 011 (injection safety, embed failures, search boundaries), and 012 (metadata filter, concurrent writes). No failures, no errors."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Hermeticity grep verified: grep -riE 'synology|nas_host|100.64.' finds only test assertions validating absence of these strings in test_store_semantics.py. No actual NAS references in DSNs, config, or connection strings."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "ABSENT SIGNAL: No independent verification in evidence bundle. Player claims documentation at conftest.py lines 12-29, but conftest.py not modified this turn and no evidence provided that documentation exists. Per .claude/rules/absence-of-failure-is-not-success.md, cannot approve on absence of evidence."
+    }
+  ],
+  "rationale": "Five of six acceptance criteria (AC-001 through AC-005) are independently verified and passing with comprehensive test coverage. However, AC-006 (parallel-isolation documentation) has no independent verification in the evidence bundle \u2014 this is an ABSENT SIGNAL that blocks approval per absence-of-failure guards. The Player must verify the documentation exists (by reading conftest.py) or add it. Secondary issue: files_modified reporting still incorrect despite Turn 2 feedback (16 files listed that weren't modified this turn)."
+}

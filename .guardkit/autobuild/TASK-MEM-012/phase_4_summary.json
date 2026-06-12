@@ -1,7 +1,7 @@
 {
-  "tests_run": 78,
+  "tests_run": 110,
   "tests_failed": 0,
-  "coverage_pct": 95.0,
-  "output_summary": "78 tests passed, 95% coverage (171 stmts, 9 missed), 32 integration tests deselected",
+  "coverage_pct": 96.49,
+  "output_summary": "110 tests passed (78 unit, 32 integration); 96% coverage; all quality gates green",
   "quality_gates_passed": true
 }

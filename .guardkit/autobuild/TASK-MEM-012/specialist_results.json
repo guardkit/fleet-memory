@@ -1,18 +1,18 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 53.67059912486002,
+    "duration_seconds": 145.91111233411357,
     "error": null,
-    "tests_run": 78,
+    "tests_run": 110,
     "tests_failed": 0,
-    "coverage_pct": 95.0,
-    "output_summary": "78 tests passed, 95% coverage (171 stmts, 9 missed), 32 integration tests deselected",
+    "coverage_pct": 96.49,
+    "output_summary": "110 tests passed (78 unit, 32 integration); 96% coverage; all quality gates green",
     "quality_gates_passed": true
   },
   "phase_5": {
-    "status": "passed",
-    "duration_seconds": 186.3834493337199,
-    "error": null,
+    "status": "failed",
+    "duration_seconds": 83.25912133324891,
+    "error": "SDKTimeoutError: Agent invocation exceeded 78s timeout",
     "issues": [],
     "quality_score": 0.0,
     "recommendations": [],
