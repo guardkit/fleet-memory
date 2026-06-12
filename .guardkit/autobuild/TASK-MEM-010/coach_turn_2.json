@@ -1,0 +1,68 @@
+{
+  "task_id": "TASK-MEM-010",
+  "turn": 2,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "BDD oracle failure: feature files exist at features/storage-substrate/storage-substrate.feature but pytest-bdd is not installed in the worktree environment. 0 scenarios passed, 1 failed with 'pytest_bdd_not_importable'. This is ABSENT SIGNAL - no BDD scenarios actually executed.",
+      "requirement": "BDD verification for TASK-MEM-010",
+      "suggestion": "Add pytest-bdd>=8.1,<9 to pyproject.toml dependencies and reinstall, then re-run to allow BDD scenarios to execute."
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "AC-001 (the pytest command requirement) is not independently verified. The evidence bundle shows AC-001 as 'Round-trip: aput then aget...' which is actually AC-002 from the original requirements. No independent evidence that 'python -m pytest tests/integration/ -m integration -v --timeout=120' actually passes. evidence_bundle.tests.tests_run is null and evidence_bundle.independent_tests was skipped.",
+      "requirement": "AC-001: python -m pytest tests/integration/ -m integration -v --timeout=120 passes",
+      "suggestion": "Ensure the evidence bundle captures independent verification of the pytest command execution. The fundamental requirement that integration tests run and pass must be independently verified."
+    },
+    {
+      "type": "test_failure",
+      "severity": "major",
+      "description": "evidence_bundle.tests.tests_run is null - no test count captured. While tests_required: false makes sense for a testing task, we need evidence that the tests were created and can execute.",
+      "requirement": "Test execution verification",
+      "suggestion": "Capture test execution count to verify tests were created and run successfully."
+    },
+    {
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "10 honesty discrepancies (should_fix severity): Player claimed files in files_modified that weren't actually modified this turn: .claude/task-plans/TASK-MEM-009-implementation-plan.md, .claude/task-plans/TASK-MEM-010-implementation-plan.md, coverage.json, pyproject.toml, src/fleet_memory/store.py, test_output.txt, tests/integration/conftest.py, tests/integration/test_pool_lifecycle.py, tests/integration/test_store_semantics.py, tests/unit/test_credential_hygiene.py. All show no changes in git status.",
+      "requirement": "Accurate reporting",
+      "suggestion": "Clean up files_modified to include only files actually modified this turn. Exclude orchestrator-managed paths (.claude/task-plans/) and unchanged files."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "No independent verification that 'python -m pytest tests/integration/ -m integration -v --timeout=120' passes. evidence_bundle.tests.tests_run is null, independent_tests was skipped, and this criterion is missing from the evidence bundle's requirements verification (which shows AC-001 as the round-trip test instead)."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "Evidence shows test_round_trip_preserves_content_and_timestamps implemented in tests/integration/test_store_semantics.py. Verifies byte-identical content and timestamp presence. (Note: appears as AC-001 in evidence bundle due to numbering mismatch)"
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "Evidence shows test_upsert_replaces_existing_record and test_delete_removes_from_get_and_search implemented. Verifies upsert semantics and delete behavior."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "Evidence shows test_semantic_search_ranking_with_real_embeddings implemented. Uses real embeddings via store_context_real fixture. Currently skips if FLEET_MEMORY_EMBED_URL not set, but test structure is correct."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Evidence shows test_pool_lifecycle_no_connection_leak, test_store_setup_is_idempotent, and test_connection_timeout_behavior with ASSUM-006 observations documented."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "Evidence shows test_pool_pressure_concurrent_operations implemented. ASSUM-004 verified: 15 concurrent operations against pool_max=10 queue successfully without errors."
+    }
+  ],
+  "rationale": "Cannot approve due to ABSENT SIGNAL violations: (1) BDD oracle cannot execute (pytest-bdd not installed) - 0 scenarios actually ran; (2) AC-001 (fundamental pytest command requirement) has no independent verification - evidence_bundle.tests.tests_run is null and independent_tests was skipped; (3) AC numbering mismatch in evidence bundle suggests requirements misalignment. While AC-002 through AC-006 show good implementation evidence, the fundamental requirement that the integration tests actually execute successfully is not independently verified. BDD scenarios must be runnable and AC-001 must be independently confirmed before approval. Per absence-of-failure-is-not-success.md: absence of test execution is not evidence of passing tests."
+}
