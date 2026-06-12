@@ -1,18 +1,18 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 79.80247008288279,
+    "duration_seconds": 57.47410370921716,
     "error": null,
     "tests_run": 26,
     "tests_failed": 0,
     "coverage_pct": 100.0,
-    "output_summary": "26 passed, 100% coverage, all quality gates green",
+    "output_summary": "26 passed, 0 failed, 100% coverage on fleet_memory package",
     "quality_gates_passed": true
   },
   "phase_5": {
-    "status": "passed",
-    "duration_seconds": 187.9625544170849,
-    "error": null,
+    "status": "failed",
+    "duration_seconds": 65.32717783283442,
+    "error": "SDKTimeoutError: Agent invocation exceeded 60s timeout",
     "issues": [],
     "quality_score": 0.0,
     "recommendations": [],
