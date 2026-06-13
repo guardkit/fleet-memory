@@ -1,80 +1,35 @@
 ---
-id: TASK-MCP-002
-title: Shared tool-error envelope and graceful-degradation helper
-status: in_review
-created: 2026-06-13 16:30:00+00:00
-updated: 2026-06-13 16:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-MEM06
-feature_id: FEAT-MEM-06
-wave: 2
-implementation_mode: task-work
 complexity: 4
-estimated_minutes: 50
+consumer_context:
+- consumes: ServerContext
+  driver: fastmcp
+  format_note: Tools receive the wired ServerContext (store, writer, settings) built
+    lazily in the lifespan
+  framework: FastMCP (stdio server)
+  task: TASK-MCP-001
+created: 2026-06-13 16:30:00+00:00
 dependencies:
 - TASK-MCP-001
+estimated_minutes: 50
+feature_id: FEAT-MEM-06
+id: TASK-MCP-002
+implementation_mode: task-work
+parent_review: TASK-REV-MEM06
+priority: high
+status: design_approved
 tags:
 - mcp
 - degradation
 - error-handling
 - reliability
-consumer_context:
-- task: TASK-MCP-001
-  consumes: ServerContext
-  framework: FastMCP (stdio server)
-  driver: fastmcp
-  format_note: Tools receive the wired ServerContext (store, writer, settings) built
-    lazily in the lifespan
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
-autobuild_state:
-  current_turn: 2
-  max_turns: 5
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
-  base_branch: main
-  started_at: '2026-06-13T19:55:05.247177'
-  last_updated: '2026-06-13T20:19:44.875474'
-  turns:
-  - turn: 1
-    decision: feedback
-    feedback: '- Deterministic honesty record (claim_audit, severity=critical): Player
-      claim: Player claimed file tests/unit/test_mcp_degradation.py::test_embed_error_returns_temporarily_unavailable.
-      Actual: Path absent from ''git status --porcelain'' so ''git add -A'' would
-      not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no.
-      Most likely cause: the Player claimed work on a file that does not exist on
-      disk..
-
-      - Deterministic honesty record (claim_audit, severity=critical): Player claim:
-      Player claimed file tests/unit/test_mcp_degradation.py::test_messages_have_no_credentials.
-      Actual: Path absent from ''git status --porcelain'' so ''git add -A'' would
-      not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no.
-      Most likely cause: the Player claimed work on a file that does not exist on
-      disk..
-
-      - Deterministic honesty record (claim_audit, severity=critical): Player claim:
-      Player claimed file tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable.
-      Actual: Path absent from ''git status --porcelain'' so ''git add -A'' would
-      not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no.
-      Most likely cause: the Player claimed work on a file that does not exist on
-      disk..
-
-      ... and 4 more issues'
-    timestamp: '2026-06-13T19:55:05.247177'
-    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
-      actual: 0'
-    player_success: true
-    coach_success: true
-  - turn: 2
-    decision: approve
-    feedback: null
-    timestamp: '2026-06-13T20:12:03.388441'
-    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
-      actual: 0'
-    player_success: true
-    coach_success: true
+  status: pending
+title: Shared tool-error envelope and graceful-degradation helper
+updated: 2026-06-13 16:30:00+00:00
+wave: 2
 ---
 
 # Task: Shared tool-error envelope and graceful-degradation helper

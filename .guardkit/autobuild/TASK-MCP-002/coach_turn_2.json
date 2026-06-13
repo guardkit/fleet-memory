@@ -1,0 +1,74 @@
+{
+  "task_id": "TASK-MCP-002",
+  "turn": 2,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "Structured tool-error result type (ToolResult dataclass)",
+      "tool_safe decorator with sync/async support",
+      "TimeoutError \u2192 infrastructure error with store unavailable message",
+      "EmbedServiceError \u2192 infrastructure error with temporarily unavailable message",
+      "ValueError \u2192 client error with sanitized validation message",
+      "Client vs infrastructure error distinction (error_type field)",
+      "Credential hygiene via message sanitization",
+      "No-crash guarantee (decorator never re-raises)",
+      "Comprehensive test coverage (11 tests)",
+      "Lint/format compliance (ruff checks pass)"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest tests/unit/test_mcp_degradation.py -v --tb=short",
+    "test_output_summary": "11 passed in 0.54s - all exception types covered (TimeoutError, EmbedServiceError, EmbedTimeoutError, ValueError variants), no-crash guarantee verified, credential hygiene verified, async support verified, ServerContext seam test passed",
+    "code_quality": "Excellent - clean separation of concerns, comprehensive exception mapping, robust sanitization, proper type hints with Python 3.14 syntax, zero lint errors",
+    "edge_cases_covered": [
+      "TimeoutError (infrastructure degradation)",
+      "EmbedServiceError (infrastructure degradation)",
+      "EmbedTimeoutError (infrastructure degradation)",
+      "NamespaceValidationError (client error)",
+      "UnknownPayloadTypeError (client error)",
+      "Generic ValueError (client error)",
+      "Async function wrapping",
+      "Successful execution (no error)",
+      "Credential stripping (DSN, URL with credentials, host:port)",
+      "ServerContext seam contract"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "File src/fleet_memory/mcp/degradation.py exists with ToolResult dataclass (is_error, error_type, message, value fields) and tool_safe decorator supporting both sync and async functions. Verified by independent evidence."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "TimeoutError caught and mapped to ToolResult(is_error=True, error_type='infrastructure', message='The memory store is unavailable'). Decorator never re-raises. Verified by independent test test_store_timeout_returns_unavailable (passed)."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "EmbedServiceError and EmbedTimeoutError caught and mapped to ToolResult(is_error=True, error_type='infrastructure', message='The operation is temporarily unavailable'). Verified by independent tests test_embed_error_returns_temporarily_unavailable and test_embed_timeout_returns_temporarily_unavailable (both passed)."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "ValueError, NamespaceValidationError, and UnknownPayloadTypeError mapped to ToolResult(is_error=True, error_type='client', message=<sanitized validation message>). Error type 'client' distinguishes from 'infrastructure'. Verified by independent tests test_validation_error_returns_client_error, test_unknown_payload_type_returns_client_error, test_generic_value_error_returns_client_error (all passed)."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Message sanitization via _sanitize_message() strips postgresql:// DSNs, http(s):// URLs with credentials, host:port patterns, and secret file paths. All error messages pass through sanitizer. Verified by independent test test_messages_have_no_credentials (passed)."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "Test file tests/unit/test_mcp_degradation.py contains 11 test cases covering all three exception classes (TimeoutError, EmbedServiceError, EmbedTimeoutError), validation errors (ValueError variants), no-crash guarantee (test_wrapper_never_reraises), credential hygiene, async support, and ServerContext seam. All 11 tests passed in independent run."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "verified",
+      "notes": "Both src/fleet_memory/mcp/degradation.py and tests/unit/test_mcp_degradation.py pass ruff check and ruff format --check with zero errors. Python 3.14 type parameter syntax applied, imports properly organized."
+    }
+  ],
+  "rationale": "All seven acceptance criteria verified by independent evidence. Orchestrator's independent test run confirms 11/11 tests pass, covering all required exception types, no-crash guarantee, and credential hygiene. All quality gates pass (tests, coverage, arch review, plan audit). Honesty discrepancies are reporting hygiene issues (should_fix severity) regarding orchestrator-managed paths incorrectly listed in files_modified, not work fabrication. The implementation is complete, correct, and production-ready."
+}

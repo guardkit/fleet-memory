@@ -1,0 +1,114 @@
+{
+  "task_id": "TASK-MCP-002",
+  "turn": 1,
+  "decision": "feedback",
+  "issues": [
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_degradation.py::test_embed_error_returns_temporarily_unavailable. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_degradation.py::test_embed_error_returns_temporarily_unavailable",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_degradation.py::test_messages_have_no_credentials. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_degradation.py::test_messages_have_no_credentials",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_degradation.py::test_validation_error_returns_client_error. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_degradation.py::test_validation_error_returns_client_error",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "type": "code_quality",
+      "severity": "critical",
+      "description": "Evidence gathering aborted (partial_honesty_abort) before independent verification could run. All evidence fields (tests, coverage_details, quality_gates, independent_tests) are null - this is ABSENT SIGNAL per Guard #5, not a passing result.",
+      "requirement": "All ACs",
+      "suggestion": "Fix the honesty verification issues (test_file format) so evidence gathering can complete and provide independent test verification."
+    },
+    {
+      "type": "code_quality",
+      "severity": "critical",
+      "description": "Completion promises use pytest node IDs (file::test_function) in test_file fields instead of simple file paths. This caused honesty checker to flag them as missing files. Examples: 'tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable' should be 'tests/unit/test_mcp_degradation.py'",
+      "requirement": "AC-002, AC-003, AC-004, AC-005",
+      "suggestion": "In completion_promises, set test_file to just the file path, not the full pytest node ID. Use the node ID format only for test execution, not for file path references."
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "No independent test verification available (tests: null, independent_tests: null). Cannot verify Player's claim of '11 tests passed' without independent execution.",
+      "requirement": "AC-006",
+      "suggestion": "Ensure tests run independently via the orchestrator's pytest execution after honesty verification passes."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Cannot verify without independent evidence. Evidence gathering aborted; no file inspection or import verification ran."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Cannot verify without independent test results. Player claims test exists (test_store_timeout_returns_unavailable) but test field is null - ABSENT SIGNAL."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Cannot verify without independent test results. Player claims test exists (test_embed_error_returns_temporarily_unavailable) but test field is null - ABSENT SIGNAL."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Cannot verify without independent test results. Player claims test exists (test_validation_error_returns_client_error) but test field is null - ABSENT SIGNAL."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Cannot verify without independent test results. Player claims test exists (test_messages_have_no_credentials) but test field is null - ABSENT SIGNAL."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Cannot verify test coverage without independent test execution. Tests field is null; coverage_details is null - ABSENT SIGNAL per Guard #5."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "rejected",
+      "notes": "Cannot verify lint/format compliance without independent quality_gates run. Quality_gates field is null - ABSENT SIGNAL per Guard #5."
+    }
+  ],
+  "rationale": "Evidence gathering aborted (partial_honesty_abort) before independent verification could run. Per Guard #5 (GATHERING-STATUS GUARD), when gathering_status != 'complete', treat all null fields as ABSENT SIGNAL and do NOT approve. All evidence fields (tests, coverage_details, quality_gates, independent_tests) are null, meaning we have no independent verification of the Player's claims. Additionally, completion_promises contain formatting errors (pytest node IDs instead of file paths in test_file fields), which triggered honesty verification failures. Cannot approve any AC without independent evidence. Player must fix test_file format to allow evidence gathering to complete."
+}

@@ -1,0 +1,84 @@
+{
+  "task_id": "TASK-MCP-006",
+  "turn": 1,
+  "files_modified": [
+    "src/fleet_memory/mcp/server.py"
+  ],
+  "files_created": [
+    "src/fleet_memory/mcp/resources.py",
+    "tests/unit/test_mcp_projects_resource.py"
+  ],
+  "tests_written": [
+    "tests/unit/test_mcp_projects_resource.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "All 8 tests in test_mcp_projects_resource.py passed. Tests cover: listing projects from store namespace, graceful degradation when store is down or None, empty store handling, project deduplication, resource registration, JSON response format, and seam test for URI contract. All related MCP tests (22 total) pass.",
+  "implementation_notes": "Implemented memory://projects resource that lists projects with memories by querying the store's namespace structure. The resource uses list_namespaces() with prefix=('fleet_memory',) and max_depth=2 to discover distinct project identifiers. Applied the tool_safe degradation wrapper to ensure graceful handling when the store is unreachable. Registered the resource via register_projects_resource() function called from register_all() extension point. The resource returns JSON-formatted responses with either the project list or a structured error envelope.",
+  "concerns": [],
+  "requirements_addressed": [
+    "AC-001: Created src/fleet_memory/mcp/resources.py with register_projects_resource function",
+    "AC-002: Resource returns distinct projects from store namespace via list_namespaces",
+    "AC-003: Listing is derived dynamically from store, not hardcoded",
+    "AC-004: Store failures return structured degradation via tool_safe wrapper",
+    "AC-005: All files pass ruff check and format checks"
+  ],
+  "requirements_remaining": [],
+  "implementation_mode": "direct",
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`src/fleet_memory/mcp/resources.py` exists and registers a resource at URI `memory://projects` via the TASK-MCP-001 extension point",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/mcp/resources.py with register_projects_resource() function that uses @mcp.resource('memory://projects') decorator. Updated server.py register_all() to call register_projects_resource(mcp, context), integrating with the TASK-MCP-001 extension point.",
+      "test_file": "tests/unit/test_mcp_projects_resource.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/resources.py",
+        "src/fleet_memory/mcp/server.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Reading the resource returns the set of projects that have memories (e.g. includes `guardkit` and `nats-core` when both have records)",
+      "status": "complete",
+      "evidence": "Implemented _read_projects() that calls store.list_namespaces(prefix=('fleet_memory',), max_depth=2) to get namespace tuples, extracts unique project names from second element of tuples, and returns sorted list. Test test_lists_projects_with_memories verifies this with mock store returning multiple projects.",
+      "test_file": "tests/unit/test_mcp_projects_resource.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/resources.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "The listing is derived from the store namespace, not a hardcoded list",
+      "status": "complete",
+      "evidence": "Implementation uses AsyncPostgresStore.list_namespaces() to dynamically query the namespace structure. No hardcoded project lists exist. The function extracts projects by set comprehension over namespace tuples: {ns[1] for ns in namespaces if len(ns) >= 2}.",
+      "test_file": "tests/unit/test_mcp_projects_resource.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/resources.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "When the store is unreachable the resource read returns a structured degradation result rather than crashing the server",
+      "status": "complete",
+      "evidence": "Applied @tool_safe decorator to _read_projects() function, which catches TimeoutError and other exceptions and converts them to ToolResult with is_error=True and appropriate error_type. The resource handler checks for error results and returns JSON-formatted error envelope. Tests test_store_down_degrades and test_store_none_degrades verify graceful degradation.",
+      "test_file": "tests/unit/test_mcp_projects_resource.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/resources.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran ruff check and ruff format --check on all modified files (src/fleet_memory/mcp/resources.py, tests/unit/test_mcp_projects_resource.py, src/fleet_memory/mcp/server.py). All checks passed with zero errors. Fixed one unused import warning in test file.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/mcp/resources.py",
+        "tests/unit/test_mcp_projects_resource.py",
+        "src/fleet_memory/mcp/server.py"
+      ]
+    }
+  ],
+  "success": true
+}

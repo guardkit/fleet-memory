@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MCP-004",
+    "pre_path": "tasks/backlog/TASK-MCP-004-memory-write-payload-tool.md",
+    "post_path": "tasks/design_approved/TASK-MCP-004-memory-write-payload-tool.md",
+    "timestamp": "2026-06-13T19:19:47.382070+00:00",
+    "kind": "design_approved_transition"
+  }
+]

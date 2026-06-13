@@ -1,0 +1,153 @@
+{
+  "task_id": "TASK-MCP-002",
+  "timestamp": "2026-06-13T20:13:46.052894",
+  "completed": false,
+  "phases": {},
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    ".claude/task-plans/TASK-MCP-002-implementation-plan.md",
+    "coverage_mcp_degradation.json",
+    "src/fleet_memory/mcp/degradation.py",
+    "tests/unit/test_mcp_degradation.py"
+  ],
+  "files_created": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
+  ],
+  "tests_written": [],
+  "summary": "Implementation completed",
+  "sdk_turns": {
+    "turns_used": 5,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "feature",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 2,
+    "missing_phases": [
+      "3"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`src/fleet_memory/mcp/degradation.py` exists exposing a structured tool-error result type and a `tool_safe` decorator (or equivalent context wrapper)",
+      "status": "complete",
+      "evidence": "File src/fleet_memory/mcp/degradation.py exists with ToolResult dataclass (structured result type with is_error, error_type, message, value fields) and tool_safe decorator that wraps both sync and async functions.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "A wrapped tool that raises `TimeoutError` returns a structured tool-error result whose message states the memory store is unavailable, and the wrapper does not re-raise (server stays running)",
+      "status": "complete",
+      "evidence": "The _map_exception_to_result() function catches TimeoutError and returns ToolResult(is_error=True, error_type='infrastructure', message='The memory store is unavailable'). The tool_safe decorator never re-raises exceptions, ensuring server stability. Verified by test_store_timeout_returns_unavailable.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "A wrapped tool that raises `EmbedServiceError` returns a structured tool-error result whose message states the operation is temporarily unavailable / could not be completed",
+      "status": "complete",
+      "evidence": "Both EmbedServiceError and EmbedTimeoutError are caught and return ToolResult(is_error=True, error_type='infrastructure', message='The operation is temporarily unavailable'). Verified by test_embed_error_returns_temporarily_unavailable and test_embed_timeout_returns_temporarily_unavailable.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "A wrapped tool that raises a validation `ValueError` returns a structured client-error result carrying the validation message (distinguishable from an infrastructure-degradation result)",
+      "status": "complete",
+      "evidence": "ValueError, NamespaceValidationError, and UnknownPayloadTypeError are caught and return ToolResult(is_error=True, error_type='client', message=<sanitized validation message>). The error_type='client' distinguishes these from error_type='infrastructure'. Verified by test_validation_error_returns_client_error, test_unknown_payload_type_returns_client_error, and test_generic_value_error_returns_client_error.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "No tool-error message contains a DSN, host, port, or credential substring (assert against a representative error)",
+      "status": "complete",
+      "evidence": "The _sanitize_message() function uses regex patterns to strip postgresql:// DSNs, http(s):// URLs (including embedded credentials), host:port patterns, and secret file paths. All error messages pass through this sanitizer before inclusion in ToolResult. Verified by test_messages_have_no_credentials which tests against DSNs, URLs with credentials, and host:port patterns.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "`tests/unit/test_mcp_degradation.py` covers all three exception classes and the no-crash guarantee",
+      "status": "complete",
+      "evidence": "Created comprehensive test suite with 11 test cases covering: TimeoutError (test_store_timeout_returns_unavailable), EmbedServiceError (test_embed_error_returns_temporarily_unavailable), EmbedTimeoutError (test_embed_timeout_returns_temporarily_unavailable), ValueError/NamespaceValidationError/UnknownPayloadTypeError (3 tests), no-crash guarantee (test_wrapper_never_reraises), credential hygiene (test_messages_have_no_credentials), async support (test_async_tool_support), successful execution (test_successful_execution_returns_result), and ServerContext seam test (test_server_context_shape). All 11 tests pass.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "tests/unit/test_mcp_degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Executed 'ruff check' and 'ruff format --check' on both src/fleet_memory/mcp/degradation.py and tests/unit/test_mcp_degradation.py. All checks pass with zero errors. Fixed linting issues in Turn 1: imported Callable from collections.abc, used Python 3.14 type parameter syntax (def tool_safe[T]), removed unused imports, applied ruff formatting.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py",
+        "tests/unit/test_mcp_degradation.py"
+      ]
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 73.08870512526482
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 166.14667499996722
+    }
+  ]
+}

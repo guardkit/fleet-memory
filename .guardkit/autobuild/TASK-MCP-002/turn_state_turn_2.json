@@ -1,0 +1,29 @@
+{
+  "id": "TURN-FEAT-MEM-06-2",
+  "feature_id": "FEAT-MEM-06",
+  "task_id": "TASK-MCP-002",
+  "turn_number": 2,
+  "player_summary": "Implementation attempt",
+  "player_decision": "approve",
+  "coach_decision": "approve",
+  "coach_feedback": null,
+  "mode": "continuing_work",
+  "blockers_found": [],
+  "progress_summary": "Turn 2: approve",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    ".claude/task-plans/TASK-MCP-002-implementation-plan.md",
+    "coverage_mcp_degradation.json",
+    "src/fleet_memory/mcp/degradation.py",
+    "tests/unit/test_mcp_degradation.py"
+  ],
+  "tests_passed": 11,
+  "tests_failed": 0,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-06-13T20:19:44.763854",
+  "completed_at": "2026-06-13T20:19:44.763854",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}

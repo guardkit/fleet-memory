@@ -1,0 +1,28 @@
+{
+  "id": "TURN-FEAT-MEM-06-1",
+  "feature_id": "FEAT-MEM-06",
+  "task_id": "TASK-MCP-006",
+  "turn_number": 1,
+  "player_summary": "Implementation attempt",
+  "player_decision": "approve",
+  "coach_decision": "approve",
+  "coach_feedback": null,
+  "mode": "fresh_start",
+  "blockers_found": [],
+  "progress_summary": "Turn 1: approve",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    "src/fleet_memory/mcp/server.py",
+    "src/fleet_memory/mcp/resources.py",
+    "tests/unit/test_mcp_projects_resource.py"
+  ],
+  "tests_passed": 8,
+  "tests_failed": 0,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-06-13T20:25:03.661912",
+  "completed_at": "2026-06-13T20:25:03.661912",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}

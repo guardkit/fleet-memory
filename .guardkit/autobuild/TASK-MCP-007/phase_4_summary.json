@@ -1,0 +1,7 @@
+{
+  "tests_run": 31,
+  "tests_failed": 0,
+  "coverage_pct": 26.0,
+  "output_summary": "31 scenarios bound to pytest-bdd: 29 passed, 2 skipped (integration), 0 failures, 26% coverage",
+  "quality_gates_passed": true
+}

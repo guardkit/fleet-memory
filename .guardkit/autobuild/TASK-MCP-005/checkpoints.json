@@ -1,0 +1,36 @@
+{
+  "task_id": "TASK-MCP-005",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "b7eeaa5d232e8b431ce1f9e0ef916a25346ee326",
+      "timestamp": "2026-06-13T20:30:46.866271",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    },
+    {
+      "turn": 2,
+      "commit_hash": "7b6a453cbe08876fc24b232038a1616f50e0db9e",
+      "timestamp": "2026-06-13T20:38:12.501601",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 2 complete (tests: fail)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    },
+    {
+      "turn": 3,
+      "commit_hash": "2103e6fbb7e34e9f5350a7a0cc17e5f8977d7c51",
+      "timestamp": "2026-06-13T20:51:52.375417",
+      "tests_passed": true,
+      "test_count": 36,
+      "message": "[guardkit-checkpoint] Turn 3 complete (tests: pass)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-06-13T20:51:52.375623"
+}

@@ -1,0 +1,118 @@
+{
+  "task_id": "TASK-MCP-002",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-MCP-002-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
+    "src/fleet_memory/mcp/degradation.py",
+    "tests/unit/test_mcp_degradation.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Structured tool-error result type (ToolResult dataclass)",
+    "tool_safe decorator with graceful degradation",
+    "Exception mapping for TimeoutError, EmbedServiceError, EmbedTimeoutError",
+    "Client vs infrastructure error distinction",
+    "Credential hygiene (message sanitization)",
+    "Support for both sync and async functions",
+    "No-crash guarantee (never re-raises)",
+    "Comprehensive test coverage (11 tests)",
+    "Seam test for ServerContext contract",
+    "Lint/format compliance"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 31,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+  ],
+  "tests_passed_count": 11,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`src/fleet_memory/mcp/degradation.py` exists exposing a structured tool-error result type and a `tool_safe` decorator (or equivalent context wrapper)",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/mcp/degradation.py with ToolResult dataclass and tool_safe decorator. ToolResult provides is_error, error_type, message, and value fields. The tool_safe decorator supports both sync and async functions.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "A wrapped tool that raises `TimeoutError` returns a structured tool-error result whose message states the memory store is unavailable, and the wrapper does not re-raise (server stays running)",
+      "status": "complete",
+      "evidence": "Implemented _map_exception_to_result() to catch TimeoutError and return ToolResult with error_type='infrastructure' and message='The memory store is unavailable'. The tool_safe decorator catches all exceptions and never re-raises, ensuring the server stays running.",
+      "test_file": "tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "A wrapped tool that raises `EmbedServiceError` returns a structured tool-error result whose message states the operation is temporarily unavailable / could not be completed",
+      "status": "complete",
+      "evidence": "Both EmbedServiceError and EmbedTimeoutError are caught and mapped to ToolResult with error_type='infrastructure' and message='The operation is temporarily unavailable'. These are distinguished from TimeoutError to handle embedding service failures separately.",
+      "test_file": "tests/unit/test_mcp_degradation.py::test_embed_error_returns_temporarily_unavailable",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "A wrapped tool that raises a validation `ValueError` returns a structured client-error result carrying the validation message (distinguishable from an infrastructure-degradation result)",
+      "status": "complete",
+      "evidence": "ValueError, NamespaceValidationError, and UnknownPayloadTypeError are caught and mapped to ToolResult with error_type='client' (vs 'infrastructure' for degradation). The validation message is preserved and sanitized before being included in the result, making client errors distinguishable from infrastructure errors.",
+      "test_file": "tests/unit/test_mcp_degradation.py::test_validation_error_returns_client_error",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "No tool-error message contains a DSN, host, port, or credential substring (assert against a representative error)",
+      "status": "complete",
+      "evidence": "Implemented _sanitize_message() function that uses regex to strip postgresql:// DSNs, http(s):// URLs (including credentials), host:port patterns, and file paths containing secrets. All error messages pass through this sanitizer before being included in ToolResult.",
+      "test_file": "tests/unit/test_mcp_degradation.py::test_messages_have_no_credentials",
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "`tests/unit/test_mcp_degradation.py` covers all three exception classes and the no-crash guarantee",
+      "status": "complete",
+      "evidence": "Created comprehensive test suite with 11 tests covering: TimeoutError, EmbedServiceError, EmbedTimeoutError, ValueError, NamespaceValidationError, UnknownPayloadTypeError, no-crash guarantee (test_wrapper_never_reraises), credential hygiene, async support, and successful execution. All tests pass.",
+      "test_file": "tests/unit/test_mcp_degradation.py",
+      "implementation_files": [
+        "tests/unit/test_mcp_degradation.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran ruff check and ruff format on both implementation and test files. Fixed all linting issues including: importing Callable from collections.abc, using Python 3.14 type parameter syntax, removing unused imports. All checks now pass with zero errors.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/mcp/degradation.py",
+        "tests/unit/test_mcp_degradation.py"
+      ]
+    }
+  ]
+}
