@@ -26,6 +26,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: Core path — a vector query returns project memories ranked by relevance
   # [ASSUMPTION: confidence=high] Ranking is cosine similarity from the pgvector index, descending
+  @task:TASK-RA-002
   @key-example @smoke
   Scenario: A query returns the project's memories ranked by relevance to the query
     Given memories about retry handling and about logging exist for "guardkit"
@@ -34,6 +35,7 @@ Feature: Retrieval API + Context Assembly
     And the most relevant memory should rank above less relevant ones
 
   # Why: Payload-type filter narrows the search to chosen types only
+  @task:TASK-RA-002
   @key-example @smoke
   Scenario: Filtering by payload type returns only memories of those types
     Given the project has both pattern memories and warning memories
@@ -42,6 +44,7 @@ Feature: Retrieval API + Context Assembly
     And no memory of any other type should appear
 
   # Why: Domain-tag filter narrows the search to tagged memories
+  @task:TASK-RA-002
   @key-example
   Scenario: Filtering by domain tag returns only memories carrying that tag
     Given some memories are tagged "concurrency" and others are not
@@ -50,6 +53,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: Assembly is the product — a single budgeted context block, not a raw list
   # [ASSUMPTION: confidence=medium] Token budget is measured with tiktoken (cl100k_base encoding)
+  @task:TASK-RA-003
   @key-example @smoke
   Scenario: A search assembles a single context block within the token budget
     Given the project has more relevant memories than fit a small budget
@@ -59,6 +63,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: Supersession exclusion is the default safety property (RD-6, AC-2)
   # [ASSUMPTION: confidence=high] Superseded records are excluded by default; include_superseded defaults to false
+  @task:TASK-RA-002
   @key-example @smoke
   Scenario: Superseded memories are excluded from results by default
     Given a pattern memory that has been superseded by a newer pattern
@@ -68,6 +73,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: Coverage score is the observability hook feeding the probe-set evaluation
   # [ASSUMPTION: confidence=medium] Coverage score is a fraction 0.0-1.0 of budget filled plus the set of contributing payload types
+  @task:TASK-RA-003
   @key-example
   Scenario: A search reports a coverage score describing how the budget was filled
     Given a search that assembles patterns and warnings into the budget
@@ -77,6 +83,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: The guardkit port — composition shifts with the job's complexity band
   # [ASSUMPTION: confidence=low] Complexity bands are "simple", "standard", "complex" controlling type mix and budget share
+  @task:TASK-RA-004
   @key-example
   Scenario: Job-specific assembly composes context differently by complexity band
     Given identical matching memories across overview, patterns, and warnings
@@ -86,6 +93,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: The 15-query parity gate is the acceptance instrument for the whole feature (AC-3)
   # [ASSUMPTION: confidence=high] The parity gate requires a frozen probe set of at least 15 fixed queries
+  @task:TASK-RA-005
   @key-example
   Scenario: The probe-set harness runs the fixed query set and emits a parity report
     Given the frozen probe set of fixed retrieval queries with recorded baseline answers
@@ -96,6 +104,7 @@ Feature: Retrieval API + Context Assembly
   # ───────────────────── Boundary conditions ─────────────────────────
 
   # Why: Just-inside — a block measured at exactly the budget is accepted (tiktoken-measured, AC-1)
+  @task:TASK-RA-003
   @boundary
   Scenario: An assembled block measured at exactly the token budget is accepted
     Given matching memories whose assembled size is exactly 2000 tokens
@@ -104,6 +113,7 @@ Feature: Retrieval API + Context Assembly
     And the assembled block should measure exactly 2000 tokens
 
   # Why: Just-outside — content beyond the budget is dropped, never overflows (AC-1)
+  @task:TASK-RA-003
   @boundary @negative
   Scenario: Content that would push the block past the budget is dropped rather than overflowing
     Given matching memories whose full assembly would measure 2100 tokens
@@ -112,6 +122,7 @@ Feature: Retrieval API + Context Assembly
     And the lowest-ranked memories should be the ones omitted
 
   # Why: Boundary — a zero budget yields an empty block, not an error
+  @task:TASK-RA-003
   @boundary
   Scenario: A search with a zero token budget returns an empty context block
     Given matching memories exist for the query
@@ -120,6 +131,7 @@ Feature: Retrieval API + Context Assembly
     And the coverage score should report that nothing was filled
 
   # Why: Just-inside the parity gate — exactly the minimum fixed queries satisfies it (AC-3)
+  @task:TASK-RA-005
   @boundary
   Scenario: A probe set of exactly the minimum number of queries satisfies the gate
     Given a frozen probe set of exactly 15 fixed queries
@@ -127,6 +139,7 @@ Feature: Retrieval API + Context Assembly
     Then the gate should consider the probe set complete
 
   # Why: Just-outside the parity gate — fewer than the minimum fixed queries fails it
+  @task:TASK-RA-005
   @boundary @negative
   Scenario: A probe set smaller than the minimum number of queries fails the gate
     Given a frozen probe set of only 14 fixed queries
@@ -134,6 +147,7 @@ Feature: Retrieval API + Context Assembly
     Then the gate should report the probe set as below the required size
 
   # Why: Filter boundary — no payload-type filter searches across every registered type
+  @task:TASK-RA-002
   @boundary
   Scenario Outline: The payload-type filter accepts none, one, or many types
     Given memories of several payload types exist for the project
@@ -149,6 +163,7 @@ Feature: Retrieval API + Context Assembly
   # ─────────────────────── Negative cases ────────────────────────────
 
   # Why: An empty project is a normal state, not an error — return nothing gracefully
+  @task:TASK-RA-002
   @negative
   Scenario: A search against a project with no memories returns an empty result
     Given the project "empty_project" has no memories
@@ -157,6 +172,7 @@ Feature: Retrieval API + Context Assembly
     And no error should be raised
 
   # Why: An unknown payload type cannot be silently ignored (registry contract)
+  @task:TASK-RA-001
   @negative
   Scenario: A search filtering on an unknown payload type is rejected
     Given the typed payload registry knows the seven canonical types
@@ -165,6 +181,7 @@ Feature: Retrieval API + Context Assembly
     And the error should name the unknown payload type
 
   # Why: Underscores-everywhere — a hyphenated project filter is rejected (scope constraint)
+  @task:TASK-RA-001
   @negative
   Scenario: A search whose project filter contains a hyphen is rejected
     When I search the project "guard-kit" for anything
@@ -172,6 +189,7 @@ Feature: Retrieval API + Context Assembly
     And the error should state that identifiers must use underscores
 
   # Why: A negative budget is meaningless and must fail rather than assemble nonsense
+  @task:TASK-RA-001
   @negative
   Scenario: A search with a negative token budget is rejected
     When I search "guardkit" with a token budget of -1 tokens
@@ -180,6 +198,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: A search with neither a query nor any filter has nothing to retrieve on
   # [ASSUMPTION: confidence=low] At least one of query or filter is required; a fully empty request is rejected
+  @task:TASK-RA-001
   @negative
   Scenario: A search with neither a query nor any filter is rejected
     When I search "guardkit" with no query and no filters
@@ -189,6 +208,7 @@ Feature: Retrieval API + Context Assembly
   # ──────────────────────── Edge cases ───────────────────────────────
 
   # Why: include_superseded is the deliberate escape hatch from the default exclusion (AC-2)
+  @task:TASK-RA-002
   @edge-case
   Scenario: Asking for superseded records includes them, marked as superseded
     Given a pattern memory that has been superseded by a newer pattern
@@ -197,6 +217,7 @@ Feature: Retrieval API + Context Assembly
     And the superseded memory should be marked as superseded
 
   # Why: Ranking must be deterministic so identical queries are reproducible (parity depends on it)
+  @task:TASK-RA-002
   @edge-case @regression
   Scenario: Two memories with equal relevance are ordered deterministically
     Given two memories that score equally against the query
@@ -204,6 +225,7 @@ Feature: Retrieval API + Context Assembly
     Then the two memories should appear in the same order every time
 
   # Why: When the budget forces a cut, rank decides survival — a high-ranked warning beats a low-ranked overview
+  @task:TASK-RA-003
   @edge-case
   Scenario: When the budget forces a cut the higher-ranked memory is kept
     Given a highly relevant warning and a barely relevant overview that cannot both fit the budget
@@ -213,6 +235,7 @@ Feature: Retrieval API + Context Assembly
 
   # Why: A single memory larger than the whole budget is an under-fill case the coverage score must reflect
   # [ASSUMPTION: confidence=low] A memory larger than the entire budget is omitted whole, not truncated mid-content
+  @task:TASK-RA-003
   @edge-case
   Scenario: A single memory larger than the entire budget is omitted rather than truncated
     Given the only matching memory is larger than the whole token budget
@@ -221,6 +244,7 @@ Feature: Retrieval API + Context Assembly
     And the coverage score should report that the budget could not be filled
 
   # Why: The parity report must surface a regression, not hide it (the relationship-query risk)
+  @task:TASK-RA-005
   @edge-case @regression
   Scenario: The parity report flags a probe query whose answer diverges from its baseline
     Given a probe query whose result no longer matches its recorded baseline answer
@@ -229,6 +253,7 @@ Feature: Retrieval API + Context Assembly
     And the report should not mark the overall run as full parity
 
   # Why: Coverage under-fill — fewer memories than the budget allows is reported honestly, not padded
+  @task:TASK-RA-003
   @edge-case
   Scenario: A search that cannot fill the budget reports partial coverage honestly
     Given only one small memory matches the query under a large budget
@@ -239,6 +264,7 @@ Feature: Retrieval API + Context Assembly
   # ──────────────── Edge cases — security / injection ─────────────────
 
   # Why: Untrusted query text must never act as a control instruction — it is only ever search text
+  @task:TASK-RA-002
   @edge-case @negative
   Scenario: Query text resembling a filter instruction is treated as search text only
     Given memories exist for the project
@@ -247,6 +273,7 @@ Feature: Retrieval API + Context Assembly
     And superseded records should still be excluded
 
   # Why: A tag filter is an exact-match facet — delimiter or injection text must not widen the match
+  @task:TASK-RA-001
   @edge-case @negative
   Scenario: A domain-tag filter containing injection characters is rejected
     When I search "guardkit" restricted to the domain tag "concurrency' OR '1'='1"
@@ -256,6 +283,7 @@ Feature: Retrieval API + Context Assembly
   # ──────────── Edge cases — concurrency / data integrity ─────────────
 
   # Why: A record superseded mid-search must resolve to one state, never appear current and superseded at once
+  @task:TASK-RA-002
   @edge-case @regression
   Scenario: A record superseded during an in-flight search never appears in both states
     Given a memory that is superseded while a search for it is in flight
@@ -264,6 +292,7 @@ Feature: Retrieval API + Context Assembly
     And it should never appear as both current and superseded in the same result
 
   # Why: Determinism under repeated access is what makes the parity gate trustworthy
+  @task:TASK-RA-003
   @edge-case @regression
   Scenario: Repeated searches over an unchanged corpus return identical assembled blocks
     Given the corpus does not change between searches
@@ -273,6 +302,7 @@ Feature: Retrieval API + Context Assembly
   # ──────────────── Edge cases — integration boundaries ───────────────
 
   # Why: The embed service is a hard dependency of the query path — its absence must fail cleanly (degradation contract)
+  @task:TASK-RA-002
   @edge-case @negative
   Scenario: A search fails cleanly when the embedding service is unavailable
     Given the embedding service is unavailable
@@ -281,6 +311,7 @@ Feature: Retrieval API + Context Assembly
     And the message should not expose any connection credentials
 
   # Why: Postgres unreachable must degrade gracefully, mirroring the storage-substrate contract (FEAT-MEM-01)
+  @task:TASK-RA-002
   @edge-case @negative
   Scenario: A search degrades gracefully when the store is unreachable
     Given the memory store is unreachable

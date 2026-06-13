@@ -1,0 +1,187 @@
+id: FEAT-MEM-05
+name: Retrieval API + Context Assembly
+description: 'FEAT-MEM-05 read path: filtered, vector-ranked, token-budgeted search
+  assembling a single context block; default supersession exclusion; guardkit job-specific
+  composition by complexity band; coverage score; probe-set parity harness for the
+  >=15-query retrieval-parity gate.'
+created: '2026-06-13T14:24:17.235604'
+status: completed
+complexity: 7
+estimated_tasks: 7
+tasks:
+- id: TASK-RA-001
+  name: SearchRequest model and validation
+  file_path: tasks/backlog/retrieval-api/TASK-RA-001-search-request-model-validation.md
+  complexity: 4
+  dependencies: []
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T16:13:41.475205'
+  completed_at: '2026-06-13T16:23:03.487356'
+- id: TASK-RA-002
+  name: Filtered vector search core
+  file_path: tasks/backlog/retrieval-api/TASK-RA-002-filtered-vector-search-core.md
+  complexity: 7
+  dependencies:
+  - TASK-RA-001
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 170
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T16:23:03.503224'
+  completed_at: '2026-06-13T16:33:18.865343'
+- id: TASK-RA-003
+  name: Token-budgeted assembly and coverage
+  file_path: tasks/backlog/retrieval-api/TASK-RA-003-budgeted-assembly-coverage.md
+  complexity: 6
+  dependencies:
+  - TASK-RA-002
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T17:00:49.400194'
+  completed_at: '2026-06-13T17:09:17.926001'
+- id: TASK-RA-004
+  name: Job-specific composition by complexity band
+  file_path: tasks/backlog/retrieval-api/TASK-RA-004-job-specific-composition.md
+  complexity: 6
+  dependencies:
+  - TASK-RA-003
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T17:09:26.603977'
+  completed_at: '2026-06-13T17:25:02.631381'
+- id: TASK-RA-005
+  name: Probe-set parity harness
+  file_path: tasks/backlog/retrieval-api/TASK-RA-005-probe-set-parity-harness.md
+  complexity: 6
+  dependencies:
+  - TASK-RA-003
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T17:09:26.608526'
+  completed_at: '2026-06-13T17:25:02.635615'
+- id: TASK-RA-006
+  name: Unit security and concurrency tests
+  file_path: tasks/backlog/retrieval-api/TASK-RA-006-unit-security-concurrency-tests.md
+  complexity: 4
+  dependencies:
+  - TASK-RA-004
+  - TASK-RA-005
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T17:25:11.526458'
+  completed_at: '2026-06-13T17:36:05.222304'
+- id: TASK-RA-007
+  name: Integration tests
+  file_path: tasks/backlog/retrieval-api/TASK-RA-007-integration-tests.md
+  complexity: 4
+  dependencies:
+  - TASK-RA-004
+  - TASK-RA-005
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T17:25:11.531014'
+  completed_at: '2026-06-13T17:36:05.226536'
+orchestration:
+  parallel_groups:
+  - - TASK-RA-001
+  - - TASK-RA-002
+  - - TASK-RA-003
+  - - TASK-RA-004
+    - TASK-RA-005
+  - - TASK-RA-006
+    - TASK-RA-007
+  estimated_duration_minutes: 659
+  recommended_parallel: 2
+smoke_gates:
+  after_wave:
+  - 3
+  - 4
+  command: 'set -e
+
+    pytest tests/unit -x
+
+    '
+  expected_exit: 0
+  timeout: 120
+  exit5_is_hard_fail: false
+preflight_strict: false
+evidence_repos: []
+execution:
+  started_at: '2026-06-13T16:13:41.108325'
+  completed_at: '2026-06-13T17:36:05.234457'
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05
+  total_turns: 7
+  tasks_completed: 7
+  tasks_failed: 0
+  current_wave: 5
+  completed_waves:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  last_updated: '2026-06-13T17:36:05.230347'
+  archived_at: null
+  archived_to: null
