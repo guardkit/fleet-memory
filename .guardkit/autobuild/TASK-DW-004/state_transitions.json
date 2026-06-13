@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-DW-004",
+    "pre_path": "tasks/backlog/TASK-DW-004-idempotency-zero-llm-tests.md",
+    "post_path": "tasks/design_approved/TASK-DW-004-idempotency-zero-llm-tests.md",
+    "timestamp": "2026-06-13T12:02:24.626751+00:00",
+    "kind": "design_approved_transition"
+  }
+]

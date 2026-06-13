@@ -1,0 +1,133 @@
+{
+  "task_id": "TASK-DW-005",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_supersession.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-DW-005-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_supersession.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_supersession.py",
+    "tests/integration/test_writer_supersession.py",
+    "tests/unit/test_writer_supersession.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_supersession.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_supersession.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Supersede-and-link and excluded-but-addressable cases",
+    "Supersession-count outline for 0, 1, 5 predecessors",
+    "Forward supersession (ASSUM-008)",
+    "Cross-project supersession",
+    "Idempotent re-declaration",
+    "Chain-collapse traceability",
+    "Racing successors resolution",
+    "Unit/integration test separation with proper markers"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 42,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-005/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_supersession.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_supersession.py"
+  ],
+  "tests_passed_count": 10,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "Supersede-and-link and excluded-but-addressable cases pass.",
+      "status": "complete",
+      "evidence": "Implemented test_supersede_and_link_marks_predecessor and test_superseded_record_excluded_but_addressable in both unit and integration test suites. Unit tests verify mock store behavior, integration tests verify against real Postgres. All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Supersession-count outline passes for {0, 1, 5}.",
+      "status": "complete",
+      "evidence": "Implemented test_supersession_count_outline parametrized test with count=[0, 1, 5] in both unit and integration suites. All 6 parameterized tests pass (3 unit + 3 integration).",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Forward-supersession case passes: write succeeds, link applied when the key later appears (ASSUM-008).",
+      "status": "complete",
+      "evidence": "Implemented test_forward_supersession_applied_when_key_appears in unit tests and test_forward_supersession_with_real_store in integration tests. Tests verify successor can declare supersession of non-existent key, and when predecessor is later written, it is marked superseded. All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Cross-project supersession case passes.",
+      "status": "complete",
+      "evidence": "Implemented test_cross_project_supersession in unit tests and test_cross_project_supersession_with_real_store in integration tests. Tests verify successor in one project can retire predecessor from another project's namespace. All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Idempotent re-declaration case passes (superseded exactly once, no extra record).",
+      "status": "complete",
+      "evidence": "Implemented test_idempotent_redeclaration in unit tests and test_idempotent_redeclaration_with_real_store in integration tests. Tests verify re-declaring same supersession keeps predecessor superseded exactly once. All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Chain-collapse case passes: only C visible, chain to A traceable.",
+      "status": "complete",
+      "evidence": "Implemented test_chain_collapse_traceable in unit tests and test_chain_collapse_traceable_with_real_store in integration tests. Tests verify chain A\u2190B\u2190C where only C is unsuperseded but full chain remains traceable. All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "Racing-successors case resolves to exactly one recorded successor.",
+      "status": "complete",
+      "evidence": "Implemented test_racing_successors_resolve_to_one in unit tests and test_racing_successors_with_real_store in integration tests. Tests verify when two successors race for same predecessor, exactly one is recorded (last write wins). All tests pass.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "Unit tests pass with no infrastructure; integration tests are gated behind @pytest.mark.integration and pass against the ephemeral Postgres fixture.",
+      "status": "complete",
+      "evidence": "All unit tests use mock store (AsyncMock) requiring no infrastructure. All integration tests decorated with @pytest.mark.integration and use ephemeral_pg fixture. Unit tests: 10 passed. Integration tests: 10 passed with real Postgres+pgvector.",
+      "test_file": "tests/unit/test_writer_supersession.py, tests/integration/test_writer_supersession.py",
+      "implementation_files": [
+        "tests/unit/test_writer_supersession.py",
+        "tests/integration/test_writer_supersession.py"
+      ]
+    }
+  ]
+}

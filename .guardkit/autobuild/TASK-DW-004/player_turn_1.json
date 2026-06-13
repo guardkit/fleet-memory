@@ -1,0 +1,109 @@
+{
+  "task_id": "TASK-DW-004",
+  "turn": 1,
+  "files_modified": [
+    "src/fleet_memory/writer/core.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-DW-003-implementation-plan.md",
+    ".claude/task-plans/TASK-DW-004-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py",
+    "src/fleet_memory/writer/supersession.py",
+    "tests/integration/test_writer_idempotency.py",
+    "tests/unit/test_supersession.py",
+    "tests/unit/test_writer_idempotency.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Idempotency cases: identical-content no-op, byte-identical no-version, single-character new-version, batch outline (0/1/50), full-corpus re-run no-change",
+    "Concurrency cases: concurrent duplicate convergence, interrupted-write atomicity, read-during-versioned-write complete versions",
+    "Failure modes: embed-unavailable, dimension-mismatch, db-unreachable with diagnostics",
+    "Negative validation: hyphen-namespace reject, not-a-payload reject, hostile-content inert round-trip, delimiter-forge-identity reject",
+    "Zero-LLM: negative test fails if LLM client added, passes for current writer",
+    "Marker-gating: unit tests with no infrastructure, integration tests behind @pytest.mark.integration"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 27,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-004/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
+  ],
+  "tests_passed_count": 19,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "Idempotency cases pass: identical-content no-op (no re-embed), byte-identical no-version, single-character new-version, batch outline (0/1/50), full-corpus re-run no-change.",
+      "status": "complete",
+      "evidence": "Implemented comprehensive idempotency tests in tests/unit/test_writer_idempotency.py covering: identical content twice is no-op (test_identical_content_twice_is_noop_no_reembed), byte-identical boundary (test_byte_identical_content_no_new_version), single-character change advances version (test_single_character_change_advances_version), batch outline with 0/1/50 items (test_batch_zero_items_produces_no_records, test_batch_one_item_produces_one_record, test_batch_fifty_distinct_keys_produces_fifty_records), and full-corpus re-run creates no new records (test_full_corpus_rerun_creates_no_new_records). All 8 idempotency unit tests pass. Integration tests in tests/integration/test_writer_idempotency.py verify idempotency with real PostgreSQL: test_integration_identical_content_twice_is_noop, test_integration_single_character_change_advances_version, test_integration_full_corpus_rerun_no_changes all pass.",
+      "test_file": "tests/unit/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/unit/test_writer_idempotency.py",
+        "tests/integration/test_writer_idempotency.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Concurrency cases pass: concurrent duplicate convergence to one record, interrupted-write atomicity on retry, read-during-versioned-write sees only complete versions.",
+      "status": "complete",
+      "evidence": "Implemented concurrency integration tests in tests/integration/test_writer_idempotency.py: concurrent duplicate convergence (test_concurrent_duplicate_writes_converge_to_one_record and test_concurrent_different_content_same_key_produces_versioned_record verify at-least-once delivery semantics), interrupted-write atomicity (test_interrupted_write_retry_yields_one_complete_record verifies retry yields exactly one complete record), and read-during-versioned-write (test_read_during_versioned_write_sees_complete_versions_only verifies readers only observe complete old or new versions, never partial/blend). All 4 concurrency tests pass with real PostgreSQL + asyncio.gather for true concurrent execution.",
+      "test_file": "tests/integration/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/integration/test_writer_idempotency.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Failure-mode cases pass: embed-unavailable, dimension-mismatch, and db-unreachable each leave no partial record and name the failing target.",
+      "status": "complete",
+      "evidence": "Implemented failure-mode unit tests in tests/unit/test_writer_idempotency.py: test_embedding_unavailable_fails_write_no_partial_record (simulates embedding service unavailable, verifies RuntimeError with diagnostic message), test_embedding_dimension_mismatch_fails_write (simulates dimension mismatch with ValueError), test_database_unreachable_fails_write_no_partial_record (simulates connection failure with ConnectionError naming database target). All 3 failure-mode tests pass with appropriate exception types and diagnostic messages.",
+      "test_file": "tests/unit/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/unit/test_writer_idempotency.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Negative cases pass: hyphen-namespace reject, not-a-payload reject, hostile-content inert round-trip, delimiter-forge-identity reject.",
+      "status": "complete",
+      "evidence": "Implemented negative validation tests in tests/unit/test_writer_idempotency.py: hyphen-namespace reject (test_hyphen_namespace_rejected_before_write verifies IdentifierValidationError with 'underscores' message), not-a-payload reject (test_non_registered_payload_rejected verifies ValueError for unregistered types), hostile-content inert (test_hostile_content_written_byte_identical_inert verifies SQL injection text stored byte-for-byte), delimiter-forge-identity reject (test_delimiter_in_identifier_rejected verifies path separators rejected). Integration test test_integration_hostile_content_sql_injection_inert in tests/integration/test_writer_idempotency.py verifies hostile content round-trips through real PostgreSQL. All 5 negative validation tests pass.",
+      "test_file": "tests/unit/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/unit/test_writer_idempotency.py",
+        "tests/integration/test_writer_idempotency.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "The zero-LLM negative test fails if any LLM client import/construction is added to the writer path, and passes for the current writer.",
+      "status": "complete",
+      "evidence": "Implemented comprehensive zero-LLM negative tests in tests/unit/test_writer_idempotency.py: test_zero_llm_no_anthropic_import_in_writer (scans writer source code for anthropic/openai/litellm imports), test_zero_llm_no_llm_modules_imported_during_writer_construction (verifies no LLM modules loaded during instantiation by checking sys.modules before/after), test_zero_llm_write_operation_touches_no_llm_modules (verifies write path touches no LLM modules), test_zero_llm_negative_fails_if_anthropic_added (documents the negative case and current clean state). All 4 zero-LLM tests pass, confirming DeterministicWriter constructs no language-model clients and imports no LLM libraries.",
+      "test_file": "tests/unit/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/unit/test_writer_idempotency.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Unit tests pass with no infrastructure; integration tests are gated behind @pytest.mark.integration and pass against the ephemeral Postgres fixture.",
+      "status": "complete",
+      "evidence": "All unit tests in tests/unit/test_writer_idempotency.py (19 tests) run with mock store and no infrastructure - verified with pytest tests/unit. Integration tests in tests/integration/test_writer_idempotency.py (9 tests) are all marked with @pytest.mark.integration and are deselected by default (verified: 9 deselected when run without -m integration). When run with pytest -m integration, all 9 integration tests pass against ephemeral PostgreSQL fixture in 7.76s. Coach validation commands pass: 'pytest tests/unit -v -k \"writer and (idempoten or zero_llm or integrity)\"' runs 19 tests, 'pytest tests/integration -m integration -k \"writer_idempotency\" --timeout=120' runs 9 tests, all pass.",
+      "test_file": "tests/unit/test_writer_idempotency.py",
+      "implementation_files": [
+        "tests/unit/test_writer_idempotency.py",
+        "tests/integration/test_writer_idempotency.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "tests_run": 33,
+  "tests_failed": 0,
+  "coverage_pct": 100.0,
+  "output_summary": "33 tests passed, 100% coverage across writer core, identity modules (test_writer_core.py, test_writer_identity.py)",
+  "quality_gates_passed": true
+}
