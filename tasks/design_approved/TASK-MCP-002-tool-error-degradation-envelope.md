@@ -1,29 +1,35 @@
 ---
-id: TASK-MCP-002
-title: Shared tool-error envelope and graceful-degradation helper
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-MEM06
-feature_id: FEAT-MEM-06
-wave: 2
-implementation_mode: task-work
 complexity: 4
-estimated_minutes: 50
-dependencies: [TASK-MCP-001]
-tags: [mcp, degradation, error-handling, reliability]
 consumer_context:
-  - task: TASK-MCP-001
-    consumes: ServerContext
-    framework: "FastMCP (stdio server)"
-    driver: "fastmcp"
-    format_note: "Tools receive the wired ServerContext (store, writer, settings) built lazily in the lifespan"
+- consumes: ServerContext
+  driver: fastmcp
+  format_note: Tools receive the wired ServerContext (store, writer, settings) built
+    lazily in the lifespan
+  framework: FastMCP (stdio server)
+  task: TASK-MCP-001
+created: 2026-06-13 16:30:00+00:00
+dependencies:
+- TASK-MCP-001
+estimated_minutes: 50
+feature_id: FEAT-MEM-06
+id: TASK-MCP-002
+implementation_mode: task-work
+parent_review: TASK-REV-MEM06
+priority: high
+status: design_approved
+tags:
+- mcp
+- degradation
+- error-handling
+- reliability
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Shared tool-error envelope and graceful-degradation helper
+updated: 2026-06-13 16:30:00+00:00
+wave: 2
 ---
 
 # Task: Shared tool-error envelope and graceful-degradation helper
