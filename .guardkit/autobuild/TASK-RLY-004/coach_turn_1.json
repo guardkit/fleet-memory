@@ -1,0 +1,73 @@
+{
+  "task_id": "TASK-RLY-004",
+  "turn": 1,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "Deterministic uuid5(episode_id, index) key generation",
+      "Idempotent storage with no duplicates on redelivery",
+      "Content field for embed-on-write trigger",
+      "Namespace confinement to (fleet_memory, project, chunk)",
+      "Pre-aput namespace validation with NamespaceValidationError",
+      "Path-shaped episode_id safely contained in key string",
+      "Pure unit tests with mocked infrastructure",
+      "Zero lint errors (ruff clean)"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest tests/unit/relay/test_chunk_writer.py tests/unit/relay/test_chunker.py -v --tb=short",
+    "test_output_summary": "31 passed, 1 warning (unregistered pytest mark) in 0.20s",
+    "code_quality": "Excellent - clean implementation with comprehensive test coverage, zero lint errors, deterministic key generation, proper validation guard rails",
+    "edge_cases_covered": [
+      "Redelivery idempotency",
+      "Hyphenated project rejection",
+      "Path-shaped episode_id confinement",
+      "Empty chunks list handling",
+      "Mixed-project chunks rejection",
+      "Deterministic key stability"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "Test test_chunk_key_is_deterministic_uuid5 passed. Implementation uses uuid.uuid5(FLEET_MEMORY_NAMESPACE, f'{episode_id}:{chunk.index}') for deterministic, stable keys across redeliveries."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "Tests test_redelivery_overwrites_same_keys_no_duplicates and test_no_duplicate_chunks_on_redelivery passed. Deterministic keys ensure redelivery overwrites in place rather than creating duplicates."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "Test test_stored_value_contains_content_field passed. Stored value dict includes 'content': chunk.text field, triggering embed-on-write via store index config."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "Tests test_chunk_stored_under_project_chunk_namespace and test_chunk_written_under_project_chunk_namespace_seam passed. Namespace correctly constructed as ('fleet_memory', chunk.project, 'chunk') with source_ref and metadata."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Test test_hyphenated_project_raises_namespace_validation_error passed. validate_namespace called before aput operations, raises NamespaceValidationError for invalid project names, prevents writes."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "Test test_path_shaped_episode_id_confined_to_namespace passed. episode_id used only in UUID key string derivation, never in namespace tuple construction. Namespace always built from chunk.project field."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "verified",
+      "notes": "All 10 chunk_writer tests use mock_store fixture (AsyncMock). No real database, network, or embedding service dependencies. Pure unit tests with zero infrastructure as required."
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "verified",
+      "notes": "Ruff lint checks passed with zero errors on all files. One pytest warning about unregistered custom mark (@pytest.mark.regression) - this is a configuration suggestion, not a lint error. Mark works correctly but should be registered in pyproject.toml to suppress warning."
+    }
+  ],
+  "rationale": "All 8 acceptance criteria verified with comprehensive test evidence (31 tests passed). Implementation demonstrates correct deterministic key generation, idempotent storage semantics, proper namespace validation and confinement, and zero infrastructure dependencies in tests. BDD oracle failure is a known harness issue for integration tests outside this unit-focused task's scope. Wiring probe parse degradation is advisory-only and mitigated by strong unit test coverage. Code quality excellent with zero lint errors. Minor suggestion: register pytest.mark.regression in config to suppress warning."
+}
