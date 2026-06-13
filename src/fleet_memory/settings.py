@@ -56,6 +56,16 @@ class Settings(BaseSettings):
         description="NATS server URL",
     )
 
+    # Chunking configuration
+    chunk_target_tokens: int = Field(
+        default=500,
+        description="Target chunk size in tokens for prose chunking",
+    )
+    chunk_overlap_ratio: float = Field(
+        default=0.15,
+        description="Overlap ratio for prose chunks (0.0-1.0)",
+    )
+
     @field_validator("pg_dsn", "embed_url")
     @classmethod
     def validate_not_empty(cls, v: str, info) -> str:

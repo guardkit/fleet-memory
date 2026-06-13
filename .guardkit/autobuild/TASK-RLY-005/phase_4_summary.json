@@ -1,0 +1,7 @@
+{
+  "tests_run": 20,
+  "tests_failed": 0,
+  "coverage_pct": 98.03921568627452,
+  "output_summary": "20 relay service tests passed with 98% coverage",
+  "quality_gates_passed": true
+}

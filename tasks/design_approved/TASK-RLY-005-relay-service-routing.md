@@ -1,54 +1,62 @@
 ---
-id: TASK-RLY-005
-title: RelayService.ingest - content_format routing and two-layer idempotency
-task_type: feature
-parent_review: TASK-REV-RLY04
-feature_id: FEAT-MEM-04
-wave: 3
-implementation_mode: task-work
 complexity: 7
-dependencies:
-  - TASK-RLY-001
-  - TASK-RLY-002
-  - TASK-RLY-003
-  - TASK-RLY-004
-tags:
-  - routing
-  - service
-  - idempotency
-  - relay
-  - fleet-memory
 consumer_context:
-  - task: TASK-RLY-001
-    consumes: MemoryEpisodeV1 / ContentFormat
-    framework: Pydantic v2 envelope
-    driver: pydantic>=2
-    format_note: "Routes on episode.content_format; only json/markdown/text are recognized, anything else raises PoisonEpisodeError."
-  - task: TASK-RLY-002
-    consumes: PoisonEpisodeError / TransientIngestError
-    framework: typed exceptions
-    driver: stdlib
-    format_note: "Raise PoisonEpisodeError(reason=...) for deterministic failures; let/raise TransientIngestError for recoverable ones. Unenumerated exceptions must propagate as transient."
-  - task: TASK-RLY-003
-    consumes: chunk_prose
-    framework: pure function returning list[Chunk]
-    driver: stdlib/pydantic
-    format_note: "Call with target_tokens/overlap_ratio from Settings; empty result => zero chunks => success (ack)."
-  - task: TASK-RLY-004
-    consumes: ChunkWriter.write_chunks
-    framework: async store writer
-    driver: langgraph AsyncPostgresStore
-    format_note: "write_chunks(episode_id, chunks) is idempotent via uuid5(episode_id, index)."
-  - task: TASK-TPR-003
-    consumes: PAYLOAD_REGISTRY / get_model_for_type
-    framework: Pydantic v2 BasePayload dispatch
-    driver: pydantic>=2
-    format_note: "Unknown payload_type raises UnknownPayloadTypeError -> map to PoisonEpisodeError naming the type. No silent fallback."
-  - task: TASK-DW-002
-    consumes: DeterministicWriter.write
-    framework: idempotent content-hash upsert
-    driver: langgraph AsyncPostgresStore
-    format_note: "Structured path builds a registered BasePayload then calls writer.write(); natural-key upsert makes redelivery inert (idempotency layer 1)."
+- consumes: MemoryEpisodeV1 / ContentFormat
+  driver: pydantic>=2
+  format_note: Routes on episode.content_format; only json/markdown/text are recognized,
+    anything else raises PoisonEpisodeError.
+  framework: Pydantic v2 envelope
+  task: TASK-RLY-001
+- consumes: PoisonEpisodeError / TransientIngestError
+  driver: stdlib
+  format_note: Raise PoisonEpisodeError(reason=...) for deterministic failures; let/raise
+    TransientIngestError for recoverable ones. Unenumerated exceptions must propagate
+    as transient.
+  framework: typed exceptions
+  task: TASK-RLY-002
+- consumes: chunk_prose
+  driver: stdlib/pydantic
+  format_note: Call with target_tokens/overlap_ratio from Settings; empty result =>
+    zero chunks => success (ack).
+  framework: pure function returning list[Chunk]
+  task: TASK-RLY-003
+- consumes: ChunkWriter.write_chunks
+  driver: langgraph AsyncPostgresStore
+  format_note: write_chunks(episode_id, chunks) is idempotent via uuid5(episode_id,
+    index).
+  framework: async store writer
+  task: TASK-RLY-004
+- consumes: PAYLOAD_REGISTRY / get_model_for_type
+  driver: pydantic>=2
+  format_note: Unknown payload_type raises UnknownPayloadTypeError -> map to PoisonEpisodeError
+    naming the type. No silent fallback.
+  framework: Pydantic v2 BasePayload dispatch
+  task: TASK-TPR-003
+- consumes: DeterministicWriter.write
+  driver: langgraph AsyncPostgresStore
+  format_note: Structured path builds a registered BasePayload then calls writer.write();
+    natural-key upsert makes redelivery inert (idempotency layer 1).
+  framework: idempotent content-hash upsert
+  task: TASK-DW-002
+dependencies:
+- TASK-RLY-001
+- TASK-RLY-002
+- TASK-RLY-003
+- TASK-RLY-004
+feature_id: FEAT-MEM-04
+id: TASK-RLY-005
+implementation_mode: task-work
+parent_review: TASK-REV-RLY04
+status: design_approved
+tags:
+- routing
+- service
+- idempotency
+- relay
+- fleet-memory
+task_type: feature
+title: RelayService.ingest - content_format routing and two-layer idempotency
+wave: 3
 ---
 
 # Task: RelayService.ingest - content_format routing and two-layer idempotency

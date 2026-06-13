@@ -1,0 +1,99 @@
+{
+  "task_id": "TASK-RLY-005",
+  "turn": 1,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "content_format routing (json/markdown/text)",
+      "Idempotency layer 1 (DeterministicWriter content-hash upsert)",
+      "Idempotency layer 2 (ChunkWriter uuid5 keys)",
+      "Exception taxonomy mapping (poison vs transient)",
+      "Zero LLM calls (deterministic routing only)",
+      "Zero NATS/faststream imports (pure service)",
+      "Proper error handling for all failure modes",
+      "Comprehensive test coverage (20 tests)",
+      "Settings integration for chunking parameters",
+      "Lint and format compliance"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest tests/unit/relay/test_service.py -v --tb=short",
+    "test_output_summary": "20 passed in 0.07s - all acceptance criteria covered via independent unit tests including json routing, markdown/text chunking, poison error handling, transient error classification, idempotency, zero LLM calls, and NATS import prohibition",
+    "code_quality": "Clean implementation with comprehensive exception mapping, settings-driven configuration, and proper separation of concerns. No NATS coupling. All files pass ruff checks.",
+    "edge_cases_covered": [
+      "Unknown payload_type",
+      "Missing required payload fields",
+      "Unrecognized content_format (yaml)",
+      "Hyphenated project namespace (both paths)",
+      "Embedding service failures (transient)",
+      "Empty markdown body",
+      "Episode redelivery (both structured and chunked)",
+      "None payload_type",
+      "Unparseable JSON body",
+      "Embed dimension mismatch"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "Test test_json_episode_writes_typed_payload passed - verifies json episodes dispatch through registry to DeterministicWriter.write with typed payload construction"
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "Tests test_markdown_episode_chunks_and_writes and test_text_episode_chunks_and_writes passed - both formats use identical _ingest_prose path via chunk_prose \u2192 ChunkWriter.write_chunks"
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "Test test_unknown_payload_type_raises_poison_error passed - UnknownPayloadTypeError mapped to PoisonEpisodeError with type name in reason"
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "Test test_invalid_payload_raises_poison_error passed - Pydantic ValidationError mapped to PoisonEpisodeError with 'payload validation failed' reason"
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "Tests test_unrecognized_content_format_raises_poison_error and test_unknown_format_is_poison passed - yaml and other unrecognized formats raise PoisonEpisodeError"
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "Tests test_hyphenated_project_raises_poison_on_json_path and test_hyphenated_project_raises_poison_on_chunk_path passed - NamespaceValidationError and IdentifierValidationError both mapped to PoisonEpisodeError"
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "verified",
+      "notes": "Tests test_embed_service_error_raises_transient and test_embed_timeout_raises_transient passed - EmbedServiceError and EmbedTimeoutError mapped to TransientIngestError (recoverable)"
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "verified",
+      "notes": "Test test_empty_markdown_returns_cleanly passed - chunk_prose returns empty list for whitespace-only input, write_chunks handles gracefully"
+    },
+    {
+      "criterion_id": "AC-009",
+      "result": "verified",
+      "notes": "Tests test_redelivery_json_is_idempotent and test_redelivery_chunks_is_idempotent passed - DeterministicWriter content-hash upsert and ChunkWriter uuid5 keys provide two-layer idempotency"
+    },
+    {
+      "criterion_id": "AC-010",
+      "result": "verified",
+      "notes": "Test test_no_llm_calls passed - implementation is deterministic routing only, no LLM client imports, embedding happens at store layer"
+    },
+    {
+      "criterion_id": "AC-011",
+      "result": "verified",
+      "notes": "Test test_no_nats_imports passed - source inspection confirms zero faststream/NATS imports, pure service layer"
+    },
+    {
+      "criterion_id": "AC-012",
+      "result": "verified",
+      "notes": "Player executed ruff check and ruff format successfully on all modified files - requirements evidence shows 'All checks passed!'"
+    }
+  ],
+  "rationale": "All 12 acceptance criteria verified via 20 passing independent unit tests with comprehensive edge case coverage. Implementation demonstrates proper error taxonomy (poison vs transient), two-layer idempotency (content-hash upsert + uuid5 keys), deterministic routing with zero LLM calls, and clean separation from NATS infrastructure. BDD oracle failure is a GuardKit harness issue (pytest_runner_error) per memory context, not a code defect. Wiring probe parse degradation is advisory only. Ground truth unit tests provide complete behavioral verification."
+}

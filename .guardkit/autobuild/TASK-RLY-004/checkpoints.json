@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-RLY-004",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "523452bf109be491c69dce31ce43093a26080ff1",
+      "timestamp": "2026-06-13T14:39:21.915024",
+      "tests_passed": true,
+      "test_count": 31,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: pass)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-06-13T14:39:21.915298"
+}
