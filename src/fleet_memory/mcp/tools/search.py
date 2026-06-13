@@ -124,7 +124,7 @@ async def memory_search(
     }
 
 
-def register(mcp: Any, context: "ServerContext") -> None:
+def register(mcp: Any, context: Any) -> None:
     """Register memory_search tool on the FastMCP server.
 
     Extension point for TASK-MCP-001's register_all dispatcher.
@@ -138,12 +138,53 @@ def register(mcp: Any, context: "ServerContext") -> None:
         from fleet_memory.mcp.tools import search_tool
         search_tool.register(mcp, context)
     """
-    # Bind the context to the tool function
-    # FastMCP tools receive arguments from the client + context from server
-    from functools import partial
 
-    bound_tool = partial(memory_search, context=context)
+    @mcp.tool()
+    async def memory_search_tool(
+        project: str,
+        query: str | None = None,
+        payload_types: list[str] | None = None,
+        domain_tags: list[str] | None = None,
+        token_budget: int | None = None,
+        include_superseded: bool = False,
+    ) -> dict[str, Any]:
+        """Search fleet-memory and return token-budgeted context block.
 
-    # Register with FastMCP
-    # The @mcp.tool decorator equivalent for programmatic registration
-    mcp.tool(bound_tool)
+        Args:
+            project: Project identifier (underscores only, no hyphens)
+            query: Search query string (optional if filters provided)
+            payload_types: Filter by payload types (empty = all types)
+            domain_tags: Filter by domain tags (empty = no tag filter)
+            token_budget: Max tokens in assembled block (default: 2000)
+            include_superseded: Include superseded memories (default: False)
+
+        Returns:
+            Dict with context_block, coverage_score, contributing_types, tokens_used
+        """
+        # Get context from server state
+        state = mcp.get_state()
+        store = state.get("store")
+
+        # Build ServerContext from state
+        from fleet_memory.mcp.server import ServerContext
+
+        server_context = ServerContext(
+            store=store,
+            writer=state.get("writer"),
+            settings=state.get("settings"),
+        )
+
+        # Call the core search function (wrapped by @tool_safe)
+        result = await memory_search(
+            project=project,
+            query=query,
+            payload_types=payload_types,
+            domain_tags=domain_tags,
+            token_budget=token_budget,
+            include_superseded=include_superseded,
+            search_callable=None,  # Use real search
+            context=server_context,
+        )
+
+        # Return the result (already wrapped by @tool_safe)
+        return result

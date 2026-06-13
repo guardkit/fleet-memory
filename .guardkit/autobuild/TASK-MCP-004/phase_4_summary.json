@@ -1,0 +1,7 @@
+{
+  "tests_run": 9,
+  "tests_failed": 0,
+  "coverage_pct": 35.32,
+  "output_summary": "9 tests passed, 35% coverage on fleet_memory.mcp module",
+  "quality_gates_passed": true
+}
