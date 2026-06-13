@@ -1,20 +1,27 @@
 ---
-id: TASK-TPR-003
-title: Payload dispatch registry and round-trip
-task_type: feature
-parent_review: TASK-REV-C42F
-feature_id: FEAT-MEM-02
-wave: 3
-implementation_mode: task-work
 complexity: 5
-dependencies: [TASK-TPR-002]
-tags: [registry, dispatch, serialization, fleet-memory]
 consumer_context:
-  - task: TASK-TPR-002
-    consumes: payload model classes
-    framework: "Pydantic v2 (model_validate / model_dump)"
-    driver: "pydantic>=2"
-    format_note: "Registry maps each canonical payload_type name to exactly one model class (bijection); round-trip rebuilds via registry[name].model_validate(serialized)"
+- consumes: payload model classes
+  driver: pydantic>=2
+  format_note: Registry maps each canonical payload_type name to exactly one model
+    class (bijection); round-trip rebuilds via registry[name].model_validate(serialized)
+  framework: Pydantic v2 (model_validate / model_dump)
+  task: TASK-TPR-002
+dependencies:
+- TASK-TPR-002
+feature_id: FEAT-MEM-02
+id: TASK-TPR-003
+implementation_mode: task-work
+parent_review: TASK-REV-C42F
+status: design_approved
+tags:
+- registry
+- dispatch
+- serialization
+- fleet-memory
+task_type: feature
+title: Payload dispatch registry and round-trip
+wave: 3
 ---
 
 # Task: Payload dispatch registry and round-trip

@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-TPR-002",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "cc9c3bd9748c8e4c5a62fa43b0b7f2a7be6524e0",
+      "timestamp": "2026-06-13T11:10:47.571951",
+      "tests_passed": true,
+      "test_count": 37,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: pass)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-06-13T11:10:47.572225"
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-TPR-003",
+    "pre_path": "tasks/backlog/TASK-TPR-003-dispatch-registry.md",
+    "post_path": "tasks/design_approved/TASK-TPR-003-dispatch-registry.md",
+    "timestamp": "2026-06-13T10:13:15.261354+00:00",
+    "kind": "design_approved_transition"
+  }
+]
