@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RA-001",
+    "pre_path": "tasks/backlog/TASK-RA-001-search-request-model-validation.md",
+    "post_path": "tasks/design_approved/TASK-RA-001-search-request-model-validation.md",
+    "timestamp": "2026-06-13T15:13:44.158134+00:00",
+    "kind": "design_approved_transition"
+  }
+]

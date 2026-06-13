@@ -1,0 +1,96 @@
+{
+  "task_id": "TASK-RA-004",
+  "turn": 1,
+  "files_modified": [
+    ".claude/task-plans/TASK-RA-004-implementation-plan.md",
+    ".claude/task-plans/TASK-RA-005-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
+    "coverage_ra_005.json",
+    "src/fleet_memory/retrieval/composition.py",
+    "src/fleet_memory/retrieval/probe_harness.py",
+    "tests/unit/test_composition.py",
+    "tests/unit/test_probe_harness.py"
+  ],
+  "files_created": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_composition.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_composition.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Complexity band parameter (simple/standard/complex)",
+    "Type mix adjustment based on complexity",
+    "Complex jobs include more patterns/warnings than simple jobs",
+    "Token budget enforcement preserved",
+    "Single source of truth for band names",
+    "Linting compliance"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 29,
+  "sdk_max_turns": 160,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-004/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_composition.py"
+  ],
+  "tests_passed_count": 8,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`search`/assembly accepts a complexity band of `simple`, `standard`, or `complex` that controls the type mix and per-type budget share.",
+      "status": "complete",
+      "evidence": "Implemented ComplexityBand enum with SIMPLE, STANDARD, COMPLEX values and compose_by_complexity() function that accepts complexity_band parameter and adjusts type mix using weighted allocation (_TYPE_MIX_WEIGHTS dictionary controls per-type budget share).",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/composition.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Given identical matching memories, the `complex` job's block includes more patterns and warnings than the `simple` job's block.",
+      "status": "complete",
+      "evidence": "Implemented weighted composition with COMPLEX band having pattern_warning weight of 2.0 vs SIMPLE band's 0.3. Tests test_simple_band_reduces_pattern_and_warning_share and test_complex_band_increases_pattern_and_warning_share verify that complex jobs get more patterns/warnings than simple jobs.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/composition.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Both the `simple` and `complex` blocks remain within their token budgets (composition never overrides the AC-1 budget guarantee).",
+      "status": "complete",
+      "evidence": "Composition returns a filtered/reordered list that is passed to assembly's assemble_context() which enforces token budget. Test test_composition_respects_token_budget verifies all bands respect budget, and seam test test_composition_respects_budget_from_assembly confirms composition doesn't bypass assembly's budget enforcement.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/composition.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "The three band names are defined as a single source of truth (enum/constant), not scattered string literals.",
+      "status": "complete",
+      "evidence": "Implemented ComplexityBand enum (inheriting from str, Enum) as single source of truth with SIMPLE='simple', STANDARD='standard', COMPLEX='complex'. Test test_complexity_band_enum_exists verifies enum values. All code references the enum, not string literals.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/composition.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors.",
+      "status": "complete",
+      "evidence": "Ran 'ruff check src/fleet_memory/retrieval/' which returned 'All checks passed!' with zero errors.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/retrieval/composition.py"
+      ]
+    }
+  ]
+}

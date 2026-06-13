@@ -1,0 +1,7 @@
+{
+  "tests_run": 14,
+  "tests_failed": 0,
+  "coverage_pct": 91.48936170212765,
+  "output_summary": "14 tests passed, 91% coverage on retrieval module (core.py 98%, search_request.py 85%)",
+  "quality_gates_passed": true
+}

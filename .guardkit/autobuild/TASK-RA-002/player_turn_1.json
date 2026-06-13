@@ -1,0 +1,172 @@
+{
+  "task_id": "TASK-RA-002",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_search_core.py",
+    "src/fleet_memory/retrieval/__init__.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RA-002-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/core.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_search_core.py",
+    "src/fleet_memory/retrieval/core.py",
+    "tests/unit/test_search_core.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_search_core.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Filtered vector search over AsyncPostgresStore",
+    "Project-scoped retrieval via namespace prefix",
+    "Payload type filtering (0/1/many)",
+    "Domain tag filtering",
+    "Supersession handling (exclude by default, include if requested)",
+    "Deterministic ordering for equal relevance scores",
+    "Empty result handling",
+    "Query text treated as text only (no special parsing)",
+    "Embed service error handling with credential hygiene",
+    "Store unreachable error handling with credential hygiene",
+    "Mid-search supersession consistency",
+    "Lint/format compliance"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 36,
+  "sdk_max_turns": 170,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-002/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/core.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_search_core.py"
+  ],
+  "tests_passed_count": 14,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "A query returns only the requested project's memories, ranked by cosine similarity descending (most relevant first).",
+      "status": "complete",
+      "evidence": "Implemented search() function that uses store.asearch() with project-scoped namespace prefix ('fleet_memory', project). Results are sorted by score descending using _sort_key() helper. Test test_search_returns_only_requested_project_memories_ranked_descending verifies ranking.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Restricting to payload types returns only those types; none/one/many is honoured (0 \u2192 all registered types).",
+      "status": "complete",
+      "evidence": "Implemented _matches_payload_types() helper that handles empty list (all types), single type, and multiple types. Filters results based on natural_key payload type prefix. Tests cover 0/1/many scenarios: test_search_with_zero_payload_types_returns_all_types, test_search_with_one_payload_type_returns_only_that_type, test_search_with_many_payload_types_returns_those_types.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Restricting to a domain tag returns only memories carrying that tag.",
+      "status": "complete",
+      "evidence": "Implemented _matches_domain_tags() helper that filters results based on domain_tags field in item.value. Test test_search_with_domain_tag_returns_only_tagged_memories verifies only memories with requested tag are returned.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Superseded records are excluded by default; only current successors return.",
+      "status": "complete",
+      "evidence": "Implemented _is_superseded() helper that checks for superseded_by field. When include_superseded=False (default), filter removes all superseded items. Test test_search_excludes_superseded_records_by_default verifies exclusion.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "include_superseded=True returns both the superseded record and its successor, with the superseded one marked as superseded.",
+      "status": "complete",
+      "evidence": "When include_superseded=True, supersession filter is skipped and both superseded and current records are returned. The superseded_by field in value dict marks superseded items. Test test_search_includes_superseded_when_requested verifies both are returned and superseded one is marked.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Two memories of equal relevance are ordered deterministically \u2014 identical across repeated runs. Tie-break on a stable key after the similarity score.",
+      "status": "complete",
+      "evidence": "Implemented _sort_key() that returns tuple (negated_score, natural_key) for sorting. This ensures descending score order with deterministic natural_key tie-breaking. Test test_search_orders_equal_relevance_deterministically verifies items with equal scores are sorted by natural_key.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "A search against a project with no memories returns an empty result with no error raised.",
+      "status": "complete",
+      "evidence": "When store.asearch() returns empty list, search() returns empty list without raising. Test test_search_empty_project_returns_empty_result verifies this behavior.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "Query text that resembles a filter instruction (payload_type:adr OR include_superseded=true) is matched only as query text; superseded records are still excluded.",
+      "status": "complete",
+      "evidence": "Query string is passed directly to store.asearch() without parsing for special syntax. Filter logic is driven only by SearchRequest fields, not query text content. Test test_search_treats_filter_syntax_in_query_as_text verifies query with filter-like syntax still applies normal filtering.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "When the embedding service is unavailable the search fails with a clear message that exposes no connection credentials.",
+      "status": "complete",
+      "evidence": "EmbedServiceError raised by store.asearch() propagates unchanged. The error is raised by embed.py which already strips credentials. Test test_search_raises_clear_error_when_embed_service_unavailable verifies error propagation and credential hygiene.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-010",
+      "criterion_text": "When the store is unreachable the caller receives a clear failure (no crash) with no credentials in the message.",
+      "status": "complete",
+      "evidence": "TimeoutError raised by store.asearch() propagates unchanged. The error is raised by async_store_context in store.py which already strips credentials per FEAT-MEM-01 contract. Test test_search_raises_clear_error_when_store_unreachable verifies error propagation and credential hygiene.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-011",
+      "criterion_text": "A record superseded mid-search resolves to exactly one state \u2014 never both current and superseded in the same result.",
+      "status": "complete",
+      "evidence": "Implemented deduplication by key after filtering. seen_keys set tracks keys and only first occurrence (highest scored after sorting) is kept. Test test_search_mid_search_supersession_resolves_to_one_state verifies duplicate keys resolve to single result.",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-012",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors.",
+      "status": "complete",
+      "evidence": "Ran 'ruff check src/fleet_memory/retrieval/' and 'ruff check tests/unit/test_search_core.py' - both passed with zero errors. All code follows project style guide (Black formatting, type hints, docstrings).",
+      "test_file": "tests/unit/test_search_core.py",
+      "implementation_files": [
+        "src/fleet_memory/retrieval/core.py",
+        "src/fleet_memory/retrieval/__init__.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RA-004",
+    "pre_path": "tasks/backlog/TASK-RA-004-job-specific-composition.md",
+    "post_path": "tasks/design_approved/TASK-RA-004-job-specific-composition.md",
+    "timestamp": "2026-06-13T16:09:27.936856+00:00",
+    "kind": "design_approved_transition"
+  }
+]

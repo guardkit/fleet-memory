@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RA-003",
+    "pre_path": "tasks/backlog/TASK-RA-003-budgeted-assembly-coverage.md",
+    "post_path": "tasks/design_approved/TASK-RA-003-budgeted-assembly-coverage.md",
+    "timestamp": "2026-06-13T15:33:19.769190+00:00",
+    "kind": "design_approved_transition"
+  }
+]

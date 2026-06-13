@@ -1,0 +1,99 @@
+{
+  "task_id": "TASK-RA-007",
+  "turn": 1,
+  "files_modified": [],
+  "files_created": [
+    ".claude/task-plans/TASK-RA-006-implementation-plan.md",
+    ".claude/task-plans/TASK-RA-007-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py",
+    "tests/integration/test_retrieval_pipeline.py",
+    "tests/unit/test_retrieval_suite.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "AC-001: Integration marker gates tests from hermetic unit runs",
+    "AC-002: Real store + real embed returns project-scoped, cosine-ranked results",
+    "AC-003: Supersession exclusion holds end-to-end",
+    "AC-004: Budgeted assembly stays within budget",
+    "AC-005: Probe-set harness runs and emits parity report",
+    "AC-006: Tests use throwaway, random-port instance"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 28,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-007/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
+  ],
+  "tests_passed_count": 49,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "Integration tests are marker-gated (`@pytest.mark.integration`) and excluded from the hermetic unit gate.",
+      "status": "complete",
+      "evidence": "All tests in test_retrieval_pipeline.py are decorated with @pytest.mark.integration. Verified by running pytest without -m integration flag, which deselected all 5 tests (0 selected, 5 deselected). The pyproject.toml configuration excludes integration tests by default via addopts = '-m \"not integration\"'.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "A populated ephemeral store + real embed returns project-scoped, cosine-ranked results for a real query.",
+      "status": "complete",
+      "evidence": "Implemented test_real_embed_returns_project_scoped_ranked_results which writes 3 documents with varying relevance to 'database connection pooling' query, executes search with real embeddings via store_context_real fixture, and verifies: (1) all results are project-scoped, (2) results ordered by cosine score descending, (3) most relevant document ranks highest. Uses DeterministicWriter and real embed service.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Supersession exclusion holds end-to-end against records written by the deterministic writer (FEAT-MEM-03).",
+      "status": "complete",
+      "evidence": "Implemented test_supersession_exclusion_end_to_end which writes doc v1, then doc v2 with supersedes=[v1] via DeterministicWriter. Verifies: (1) search with include_superseded=False excludes v1, includes v2, (2) search with include_superseded=True includes both v1 and v2. Tests full end-to-end supersession flow from writer through search.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Budgeted assembly stays within budget when measured against a real assembled block (AC-1) over real corpus content.",
+      "status": "complete",
+      "evidence": "Implemented test_budgeted_assembly_respects_token_limit which writes 10 technical documents with substantial content, searches with token_budget=200, and assembles context. Verifies: (1) assembly.tokens_used <= 200 (strict budget compliance), (2) coverage_score in [0.0, 1.0], (3) context_block non-empty, (4) contributing_types metadata populated. Tests real token measurement against actual corpus.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "The probe-set harness runs the frozen query set against the real (re-indexed) corpus and emits a parity report.",
+      "status": "complete",
+      "evidence": "Implemented test_probe_harness_runs_against_real_corpus which writes known corpus, defines frozen probe set with baseline answers, executes run_probe_harness with search and assemble functions, and verifies ParityReport structure: total_probes, divergences_count, full_parity, meets_minimum_size, divergent_queries fields. Confirms harness runs end-to-end and generates structured report.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Tests use a throwaway, random-port instance (no NAS dependency).",
+      "status": "complete",
+      "evidence": "All tests use ephemeral_pg fixture which creates UUID-based Docker Compose project with random port allocation. Implemented test_ephemeral_fixture_uses_random_port to verify DSN uses non-5432 port in valid ephemeral range (1024-65536). Confirmed by running all integration tests - each gets isolated throwaway instance on random port.",
+      "test_file": "tests/integration/test_retrieval_pipeline.py",
+      "implementation_files": [
+        "tests/integration/test_retrieval_pipeline.py"
+      ]
+    }
+  ]
+}

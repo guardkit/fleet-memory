@@ -1,0 +1,7 @@
+{
+  "tests_run": 8,
+  "tests_failed": 0,
+  "coverage_pct": 95.94594594594595,
+  "output_summary": "8 tests passed, 96% coverage on composition module",
+  "quality_gates_passed": true
+}

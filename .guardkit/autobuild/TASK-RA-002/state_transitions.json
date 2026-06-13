@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RA-002",
+    "pre_path": "tasks/backlog/TASK-RA-002-filtered-vector-search-core.md",
+    "post_path": "tasks/design_approved/TASK-RA-002-filtered-vector-search-core.md",
+    "timestamp": "2026-06-13T15:23:04.360394+00:00",
+    "kind": "design_approved_transition"
+  }
+]

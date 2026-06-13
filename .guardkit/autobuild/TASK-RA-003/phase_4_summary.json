@@ -1,0 +1,7 @@
+{
+  "tests_run": 394,
+  "tests_failed": 0,
+  "coverage_pct": 96.0,
+  "output_summary": "394 tests passed, 96% coverage (709/742 lines), retrieval.assembly at 94% coverage",
+  "quality_gates_passed": true
+}
