@@ -21,7 +21,7 @@ consumer_context:
   driver: pydantic>=2
   format_note: Registry maps each canonical payload_type name to exactly one model
     class (bijection); round-trip rebuilds via registry[name].model_validate(serialized)
-status: in_review
+status: completed
 autobuild_state:
   current_turn: 1
   max_turns: 5

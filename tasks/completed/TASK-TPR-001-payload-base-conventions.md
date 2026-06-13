@@ -12,7 +12,7 @@ tags:
 - pydantic
 - schema
 - fleet-memory
-status: in_review
+status: completed
 autobuild_state:
   current_turn: 1
   max_turns: 5

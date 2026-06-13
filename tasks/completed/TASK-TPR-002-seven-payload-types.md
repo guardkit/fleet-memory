@@ -20,7 +20,7 @@ consumer_context:
   driver: pydantic>=2
   format_note: Each type subclasses BasePayload and sets a canonical underscore `payload_type`
     classvar; shared validators are inherited, not re-declared
-status: in_review
+status: completed
 autobuild_state:
   current_turn: 1
   max_turns: 5
