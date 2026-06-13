@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 68.00075450027362,
+    "duration_seconds": 98.13231100002304,
     "error": null,
-    "tests_run": 14,
+    "tests_run": 394,
     "tests_failed": 0,
-    "coverage_pct": 93.87755102040816,
-    "output_summary": "14 tests passed with 94% coverage on retrieval.assembly module",
+    "coverage_pct": 97.0,
+    "output_summary": "All 394 tests passed; retrieval module coverage 97% (144/144 lines, 4 missed); no failures",
     "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 146.3929175841622,
+    "duration_seconds": 135.06279437523335,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
