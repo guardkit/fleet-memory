@@ -1,0 +1,55 @@
+{
+  "task_id": "TASK-RLY-002",
+  "turn": 1,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "Add TransientIngestError exception class for recoverable failures",
+      "Add PoisonEpisodeError exception class for non-recoverable failures",
+      "Follow existing error class patterns in fleet_memory.errors",
+      "Verify exceptions are not in the same inheritance subtree",
+      "Ensure exceptions are distinguishable by type",
+      "Document default-to-transient policy in module docstring"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest tests/unit/relay/test_errors.py tests/unit/relay/test_schema.py -v --tb=short",
+    "test_output_summary": "29 passed in 0.05s - All error taxonomy tests passed including inheritance verification, attribute accessibility, type-based catching, and policy documentation checks",
+    "code_quality": "Follows existing fleet_memory.errors patterns; comprehensive test coverage including edge cases for exception subtree independence; module docstring clearly documents default-to-transient policy",
+    "edge_cases_covered": [
+      "Exception inheritance verification via issubclass()",
+      "Type-based exception catching prevents cross-catching",
+      "PoisonEpisodeError carries both required reason and optional detail",
+      "Module docstring explicitly states unenumerated exception policy",
+      "Both exceptions can be raised and caught independently"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "Both PoisonEpisodeError and TransientIngestError subclass Exception, consistent with existing fleet_memory.errors module. Verified by passing tests: test_poison_episode_error_subclasses_exception and test_transient_ingest_error_subclasses_exception."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "PoisonEpisodeError.__init__ accepts required 'reason' parameter stored as self.reason attribute, suitable for DLQ recording. Verified by passing tests: test_poison_episode_error_carries_reason, test_poison_episode_error_carries_optional_detail, and test_poison_episode_error_detail_is_optional."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "PoisonEpisodeError and TransientIngestError are separate class definitions with no inheritance relationship, enabling reliable type-based exception handling. Verified by passing tests: test_exceptions_are_not_in_same_subtree, test_poison_episode_error_can_be_raised_and_caught, and test_transient_ingest_error_can_be_raised_and_caught."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "Module docstring in errors.py includes Exception Taxonomy section documenting default-to-transient policy: 'Any *unenumerated* exception escaping the service layer is treated as transient (nak + redeliver), never as poison. Losing data is worse than redelivering.' Verified by passing test: test_module_docstring_states_default_to_transient_policy."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "test_exceptions_are_not_in_same_subtree verifies: (1) neither exception is a subclass of the other via issubclass(), (2) attempting to catch PoisonEpisodeError as TransientIngestError fails, (3) attempting to catch TransientIngestError as PoisonEpisodeError fails. This ensures no accidental cross-catching. Test passed in independent verification."
+    }
+  ],
+  "rationale": "All 5 acceptance criteria independently verified through 29 passing tests. No honesty discrepancies detected (score: 1.0). All quality gates passed. Implementation follows existing patterns, includes comprehensive edge case coverage, and clearly documents the default-to-transient policy. The exception taxonomy is correctly designed with no inheritance relationship between PoisonEpisodeError and TransientIngestError, preventing accidental cross-catching."
+}
