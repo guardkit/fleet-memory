@@ -1,0 +1,7 @@
+{
+  "tests_run": 16,
+  "tests_failed": 0,
+  "coverage_pct": 100.0,
+  "output_summary": "16 tests passed, 100% coverage on writer.identity module",
+  "quality_gates_passed": true
+}

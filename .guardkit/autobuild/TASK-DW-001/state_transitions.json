@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-DW-001",
+    "pre_path": "tasks/backlog/TASK-DW-001-identity-content-hash.md",
+    "post_path": "tasks/design_approved/TASK-DW-001-identity-content-hash.md",
+    "timestamp": "2026-06-13T11:41:00.589401+00:00",
+    "kind": "design_approved_transition"
+  }
+]
