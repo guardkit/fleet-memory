@@ -4,7 +4,7 @@
 ## Companion: [phase-core-scope.md](phase-core-scope.md) — thesis, success criteria, what's in/out of scope
 ## Predecessor: Memory Relay scope at [`nats-infrastructure/docs/design/specs/memory-relay/memory-relay-scope.md`](../../../../nats-infrastructure/docs/design/specs/memory-relay/memory-relay-scope.md) (capture/buffer layer; D1–D11 inherited except where superseded below)
 ## Prerequisites: repo initialized from `nats-asyncio-service` (done 2026-06-12); capture hook wired (done); Fable 5 window open (~10 days from 2026-06-12); always-on nomic-embed at llama-swap :9000; NATS JetStream live.
-## Status as of 2026-06-12: nothing landed; FEAT-MEM-01 is first.
+## Status as of 2026-06-13: FEAT-MEM-01 **Landed** (FEAT-CA81, merged to `main` @ `2a8ae61`); FEAT-MEM-02 **Spec'd** (`/feature-spec` → `features/typed-payload-registry/`, uncommitted on `main`) — `/feature-plan` is next. NAS deploy (TASK-MEM-008) outstanding as an operator handoff.
 ## Plan-update convention (for context-switch resilience):
 ##   - **After `/feature-spec` lands:** flip the feature's row in "Feature Summary" to **Spec'd** with the GuardKit feature id; add a `**Status:**` line at the top of that feature's section noting the spec commit + features/<slug>/ path.
 ##   - **After `/feature-plan` lands:** flip the row to **Plan'd**; update the `**Status:**` line with plan commit + `.guardkit/features/FEAT-XXXX.yaml` + task-tree path.
@@ -37,8 +37,8 @@ Nine features. 01–03 are the spine (store, schemas, writer); 04–06 are the s
 
 | Feature | Title | Status | GuardKit ID |
 |---|---|---|---|
-| FEAT-MEM-01 | Storage substrate (Postgres+pgvector, AsyncPostgresStore, embed fn) | **Plan'd** | FEAT-CA81 |
-| FEAT-MEM-02 | Typed payload registry | Not started | — |
+| FEAT-MEM-01 | Storage substrate (Postgres+pgvector, AsyncPostgresStore, embed fn) | **Landed** (NAS deploy pending op) | FEAT-CA81 |
+| FEAT-MEM-02 | Typed payload registry | **Spec'd** | — (assigned at plan) |
 | FEAT-MEM-03 | Deterministic writer | Not started | — |
 | FEAT-MEM-04 | Relay integration (MEMORY consumer + chunk/embed path) | Not started | — |
 | FEAT-MEM-05 | Retrieval API + context assembly | Not started | — |
@@ -60,7 +60,7 @@ Nine features. 01–03 are the spine (store, schemas, writer); 04–06 are the s
 
 ## FEAT-MEM-01: Storage Substrate
 
-**Status:** Plan'd 2026-06-12 — `/feature-plan` executed (review TASK-REV-CA81); feature **FEAT-CA81** at `.guardkit/features/FEAT-CA81.yaml`; task tree at `tasks/backlog/storage-substrate/` (13 tasks, 8 waves; TASK-MEM-008 NAS deploy is operator_handoff). All 34 scenarios `@task:`-tagged (R2 oracle live); smoke gate `pytest tests/unit` after every wave (R3). The 3 low-confidence placeholders are encoded as settings defaults with verify-and-record ACs (TASK-MEM-013 closes them). Plan commit pending. Next: `/feature-build FEAT-CA81`.
+**Status:** Landed 2026-06-13 — `/feature-build FEAT-CA81` complete (all 13 tasks Coach-approved across 8 waves); merged to `main` via fast-forward @ `2a8ae61`; project scaffolding + coach config @ `0ca7feb`. Post-merge verification on `main`: **78 unit tests** (hermetic, NAS off) + **32 integration tests** (ephemeral Postgres 16 + pgvector, real nomic over Tailscale) green. 5/6 ACs met — NAS-deploy AC pending operator handoff **TASK-MEM-008** (deferred; `deploy/nas/deploy.sh` + `smoke.sh` ready, run from the Mac, then `/task-complete TASK-MEM-008`). One real bug fixed in-build: lifespan ignored `pg_connect_timeout_s` (psycopg-pool retried for its 30s default) — `async_store_context` now bounds context entry at `pg_connect_timeout_s + 5s` and raises a credential-free `TimeoutError`. The 3 low-confidence placeholders were verified and recorded by TASK-MEM-013 (`features/storage-substrate/storage-substrate_assumptions.yaml`, all `confidence: verified`). Prior: Plan'd 2026-06-12 (`/feature-plan`, review TASK-REV-CA81); all 34 scenarios `@task:`-tagged (R2), per-wave `pytest tests/unit` smoke gate (R3).
 
 Postgres 16 + pgvector (durable instance on the Synology NAS per RD-4), `langgraph` `AsyncPostgresStore` with index config `{dims: 768, embed: <nomic via llama-swap :9000>}`, lifespan wiring, pydantic-settings (`FLEET_MEMORY_PG_DSN`, `FLEET_MEMORY_EMBED_URL`, `FLEET_MEMORY_EMBED_MODEL`), store smoke tests (put/get/search round-trip with real embeddings, marker-gated integration tests).
 
@@ -92,22 +92,24 @@ Embeddings always come from GB10 llama-swap `:9000` (Mac reaches it over Tailsca
 
 ### Acceptance Criteria
 
-- [ ] `store.aput` / `asearch` round-trip with real nomic embeddings against the ephemeral instance
-- [ ] Full test suite passes on the MacBook with the NAS powered off (hermeticity proven)
-- [ ] NAS instance deployed via the runbook's scripted path (`deploy.sh`); `smoke.sh` (G2–G5) passes from the Mac; volume on a backed-up share; 5432 not exposed beyond LAN/Tailscale
-- [ ] Vector index created at 768 dims; search returns by similarity with metadata filter
-- [ ] No hyphens in any Postgres identifier; namespace tuples use underscores
-- [ ] Connection pool opens/closes cleanly under lifespan; settings via env only
+- [x] `store.aput` / `asearch` round-trip with real nomic embeddings against the ephemeral instance
+- [x] Full test suite passes on the MacBook with the NAS powered off (hermeticity proven)
+- [ ] NAS instance deployed via the runbook's scripted path (`deploy.sh`); `smoke.sh` (G2–G5) passes from the Mac; volume on a backed-up share; 5432 not exposed beyond LAN/Tailscale — **pending operator handoff TASK-MEM-008** (files ready in `deploy/nas/`)
+- [x] Vector index created at 768 dims; search returns by similarity with metadata filter
+- [x] No hyphens in any Postgres identifier; namespace tuples use underscores
+- [x] Connection pool opens/closes cleanly under lifespan; settings via env only
 
 ## FEAT-MEM-02: Typed Payload Registry
+
+**Status:** Spec'd 2026-06-13 via `/feature-spec` → `features/typed-payload-registry/` (29 scenarios; 11 assumptions — 4 low-confidence flagged REVIEW REQUIRED: domain_tags format, version-stamp semantics, source_ref optionality, self/cross-project supersession; `related_keys` deliberately deferred to retrieval/writer). Uncommitted on `main`. `/feature-plan` next.
 
 Pydantic models in the Schemas layer: `AdrPayload`, `ReviewReportPayload`, `BuildOutcomePayload`, `PatternPayload`, `WarningPayload`, `SeedModulePayload`, `DocumentPayload` (generic). Conventions: `natural_key` property per type (e.g. `adr:guardkit:ADR_SP_007`), `supersedes: list[str]`, `domain_tags: list[str]`, `source_ref`, version stamp. Registry maps `payload_type` string → model class (the writer and the relay consumer both dispatch through it).
 
 ### Spec & Plan Commands
 
 ```
-/feature-spec "Typed payload registry: Pydantic models for ADR, review report, build outcome, pattern, warning, seed module, generic document; natural-key + declared-supersession + domain-tags conventions; payload_type dispatch registry; exhaustive validation tests"
-/feature-plan FEAT-XXXX
+# /feature-spec done 2026-06-13 → features/typed-payload-registry/ (29 scenarios, 11 assumptions)
+/feature-plan "Typed Payload Registry" --context features/typed-payload-registry/typed-payload-registry_summary.md
 ```
 
 ### Acceptance Criteria
@@ -231,8 +233,8 @@ GuardKit's coach context builder, feature-plan context, and CLI retrieval point 
 
 | Day | Focus |
 |---|---|
-| 1 (Fri 12) | This pair; `/feature-spec` + `/feature-plan` FEAT-MEM-01; relay P1 spec in nats-core (on instruction) |
-| 2–3 (wknd) | FEAT-MEM-01 + FEAT-MEM-02 build; Postgres live on NAS; relay P2 stream definitions land |
+| 1 (Fri 12) | This pair; ~~`/feature-spec` + `/feature-plan` FEAT-MEM-01~~ ✅; relay P1 spec in nats-core (on instruction) |
+| 2–3 (wknd) | ~~FEAT-MEM-01 build~~ ✅ (landed 06-13 @ `2a8ae61`; NAS deploy pending op) + FEAT-MEM-02 build; ~~Postgres live on NAS~~ (pending TASK-MEM-008); relay P2 stream definitions land |
 | 4 (Mon 15) | FEAT-MEM-03 writer |
 | 5 (Tue 16) | FEAT-MEM-04 relay consumer; first end-to-end publish→store |
 | 6 (Wed 17) | FEAT-MEM-05 retrieval + probe harness; record Graphiti baseline answers before any freeze |

@@ -1,0 +1,57 @@
+id: FEAT-MEM-02
+name: Typed Payload Registry
+description: Seven Pydantic v2 payload types sharing natural-key, supersession, domain-tag
+  and source-ref conventions, plus a payload_type to model dispatch registry for deterministic
+  fleet-memory writes.
+created: '2026-06-13T10:44:24.190395'
+status: planned
+complexity: 6
+estimated_tasks: 4
+tasks:
+- id: TASK-TPR-001
+  name: Payload base conventions and validators
+  file_path: tasks/backlog/typed-payload-registry/TASK-TPR-001-payload-base-conventions.md
+  complexity: 6
+  dependencies: []
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 113
+- id: TASK-TPR-002
+  name: Seven concrete payload types
+  file_path: tasks/backlog/typed-payload-registry/TASK-TPR-002-seven-payload-types.md
+  complexity: 4
+  dependencies:
+  - TASK-TPR-001
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-TPR-003
+  name: Payload dispatch registry and round-trip
+  file_path: tasks/backlog/typed-payload-registry/TASK-TPR-003-dispatch-registry.md
+  complexity: 5
+  dependencies:
+  - TASK-TPR-002
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-TPR-004
+  name: BDD scenario suite for typed payload registry
+  file_path: tasks/backlog/typed-payload-registry/TASK-TPR-004-bdd-scenario-suite.md
+  complexity: 4
+  dependencies:
+  - TASK-TPR-003
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+orchestration:
+  parallel_groups:
+  - - TASK-TPR-001
+  - - TASK-TPR-002
+  - - TASK-TPR-003
+  - - TASK-TPR-004
+  estimated_duration_minutes: 288
+  recommended_parallel: 1
