@@ -20,6 +20,7 @@ Feature: Deterministic Writer
   # ───────────────────────── Key examples ────────────────────────────
 
   # Why: Core write — defines what "writing a payload" produces
+  @task:TASK-DW-002
   @key-example @smoke
   Scenario: Writing a typed payload stores it as a retrievable record in its project namespace
     Given a typed payload for project "guardkit"
@@ -29,6 +30,7 @@ Feature: Deterministic Writer
 
   # Why: Stable identity is what makes dedup a key lookup, not a model judgement
   # [ASSUMPTION: confidence=high] Record identity is a UUIDv5 derived from the payload's natural key
+  @task:TASK-DW-001
   @key-example @smoke
   Scenario: A record's identity is derived deterministically from the payload's natural key
     Given a typed payload with a natural key
@@ -37,6 +39,7 @@ Feature: Deterministic Writer
 
   # Why: Idempotent no-op — same key, unchanged content writes once (the core §9.8 elimination)
   # [ASSUMPTION: confidence=medium] An unchanged re-write leaves the stored record untouched and does not re-embed
+  @task:TASK-DW-002
   @key-example @smoke
   Scenario: Writing identical payload content twice leaves a single record
     Given a typed payload that has already been written
@@ -46,6 +49,7 @@ Feature: Deterministic Writer
 
   # Why: Same key, new content is a versioned update — deterministic, no LLM temporal judgement
   # [ASSUMPTION: confidence=medium] The version stamp is a monotonic integer advanced by the writer only when content changes
+  @task:TASK-DW-002
   @key-example
   Scenario: Writing changed content under the same natural key replaces and versions the record
     Given a typed payload already written at version 1
@@ -55,6 +59,7 @@ Feature: Deterministic Writer
     And only one record should exist for that natural key
 
   # Why: Embed-on-write — content is made semantically searchable as part of the write
+  @task:TASK-DW-002
   @key-example @smoke
   Scenario: A written payload is immediately findable by semantic search
     Given a typed payload with searchable content
@@ -64,6 +69,7 @@ Feature: Deterministic Writer
 
   # Why: Declared supersession replaces Graphiti's LLM temporal invalidation with a dictionary update
   # [ASSUMPTION: confidence=high] A superseded record carries a superseded_by link to its successor
+  @task:TASK-DW-003
   @key-example @smoke
   Scenario: Writing a payload that declares a supersession retires the predecessor and links the successor
     Given a predecessor record already written under a natural key
@@ -72,6 +78,7 @@ Feature: Deterministic Writer
     And the successor should record which key it superseded
 
   # Why: Acceptance criterion — superseded records drop out of default retrieval but stay addressable
+  @task:TASK-DW-003
   @key-example
   Scenario: A superseded record is excluded from default retrieval but remains addressable by key
     Given a record that has been superseded by a successor
@@ -80,6 +87,7 @@ Feature: Deterministic Writer
     And it should still be retrievable directly by its key
 
   # Why: The thesis — zero LLM on the structured write path, by construction
+  @task:TASK-DW-002
   @key-example @smoke
   Scenario: A structured payload is written with no language-model call
     Given a typed structured payload
@@ -89,6 +97,7 @@ Feature: Deterministic Writer
   # ───────────────────── Boundary conditions ─────────────────────────
 
   # Why: Supersession-count boundary — none, one, and many declared predecessors are all retired
+  @task:TASK-DW-003
   @boundary
   Scenario Outline: A payload retires every predecessor it declares, for any number of declarations
     Given <count> predecessor records already written
@@ -103,6 +112,7 @@ Feature: Deterministic Writer
 
   # Why: Just-inside "same content" — byte-identical content is the same record, no new version
   # [ASSUMPTION: confidence=medium] The no-op decision is a hash over the payload's semantic content, excluding version and write-time metadata
+  @task:TASK-DW-002
   @boundary
   Scenario: Byte-identical content under the same key creates no new version
     Given a typed payload already written
@@ -111,6 +121,7 @@ Feature: Deterministic Writer
     And one record should remain for that key
 
   # Why: Just-outside "same content" — a one-character difference is new content
+  @task:TASK-DW-002
   @boundary
   Scenario: Content differing by a single character under the same key is treated as new content
     Given a typed payload already written
@@ -120,6 +131,7 @@ Feature: Deterministic Writer
 
   # Why: Batch boundary — empty, single, and many; the writer batches the re-index corpus
   # [ASSUMPTION: confidence=low] The writer accepts a batch and produces one record per distinct natural key
+  @task:TASK-DW-002
   @boundary
   Scenario Outline: A batch write produces exactly one record per distinct payload
     Given a batch of <size> payloads with distinct natural keys
@@ -136,6 +148,7 @@ Feature: Deterministic Writer
 
   # Why: Underscores-everywhere constraint — validated before any write reaches the store
   # [ASSUMPTION: confidence=high] The per-project namespace tuple is ("fleet_memory", project, payload_type)
+  @task:TASK-DW-002
   @negative
   Scenario: A payload whose project namespace contains a hyphen is rejected before any write
     Given a typed payload for project "guard-kit"
@@ -146,6 +159,7 @@ Feature: Deterministic Writer
 
   # Why: Embed-on-write atomicity — an embedding outage must not leave a half-written record
   # [ASSUMPTION: confidence=medium] A write that cannot be embedded fails as a whole, leaving no partial record
+  @task:TASK-DW-002
   @negative
   Scenario: A write fails as a whole when the embedding service is unavailable
     Given the embedding service is unavailable
@@ -154,12 +168,14 @@ Feature: Deterministic Writer
     And no partial record should be left behind
 
   # Why: Zero-LLM acceptance criterion as an enforceable negative (the negative import test)
+  @task:TASK-DW-004
   @negative @regression
   Scenario: The write path cannot construct a language-model client
     Given the deterministic writer
     Then no code path in the writer should be able to construct a language-model client
 
   # Why: The writer only accepts registered typed payloads — no untyped free-form writes
+  @task:TASK-DW-002
   @negative
   Scenario: An input that is not a recognized typed payload is rejected
     Given an input that is not a registered typed payload
@@ -170,6 +186,7 @@ Feature: Deterministic Writer
   # ──────────────────────── Edge cases ───────────────────────────────
 
   # Why: THE claim — at-least-once delivery plus natural-key upsert makes double-write impossible
+  @task:TASK-DW-004
   @edge-case @regression
   Scenario: Concurrent duplicate writes of the same payload converge to a single record
     Given the same payload delivered twice at the same time under at-least-once delivery
@@ -178,6 +195,7 @@ Feature: Deterministic Writer
     And no duplicate record should ever be created
 
   # Why: Write atomicity under interruption — no observer ever sees a half-written record
+  @task:TASK-DW-004
   @edge-case
   Scenario: A write interrupted before it commits leaves no partial record
     Given a payload whose write is interrupted after embedding but before it is committed
@@ -186,6 +204,7 @@ Feature: Deterministic Writer
     And the retried write should produce exactly one complete record
 
   # Why: Supersession is a declared fact — re-declaring it must be idempotent, not cumulative
+  @task:TASK-DW-005
   @edge-case
   Scenario: Re-declaring the same supersession does not retire the predecessor twice
     Given a successor that has already superseded a predecessor
@@ -195,6 +214,7 @@ Feature: Deterministic Writer
 
   # Why: Out-of-order capture is real — a successor can arrive before its predecessor exists
   # [ASSUMPTION: confidence=low] A declared supersession of a not-yet-written key is recorded and applied if that key later appears
+  @task:TASK-DW-005
   @edge-case
   Scenario: Declaring a supersession of a key that does not yet exist still succeeds
     Given no record exists yet under a referenced natural key
@@ -203,6 +223,7 @@ Feature: Deterministic Writer
     And the declared supersession should be recorded for when that key appears
 
   # Why: Cross-project supersession is a deliberate link that must cross namespace boundaries
+  @task:TASK-DW-005
   @edge-case
   Scenario: A cross-project supersession retires a predecessor in another project namespace
     Given a predecessor record under project "guardkit"
@@ -211,6 +232,7 @@ Feature: Deterministic Writer
     And the successor should remain in the fleet_memory namespace
 
   # Why: Re-index idempotency — a second full corpus run is the regression guard for the whole feature
+  @task:TASK-DW-004
   @edge-case @regression
   Scenario: Re-running a full corpus write produces no new records and no changes
     Given an entire corpus of payloads already written once
@@ -219,6 +241,7 @@ Feature: Deterministic Writer
     And no existing record should change
 
   # Why: A supersession chain must collapse to one current record while staying traceable
+  @task:TASK-DW-005
   @edge-case
   Scenario: A supersession chain leaves only the latest record in default retrieval
     Given a record A superseded by B and B superseded by C
@@ -229,6 +252,7 @@ Feature: Deterministic Writer
   # ──────────────── Edge cases — security / data integrity ────────────
 
   # Why: Memory content is data, never instructions — hostile text must round-trip inert
+  @task:TASK-DW-004
   @edge-case @negative
   Scenario: Hostile payload content is written verbatim and stays inert
     Given a payload whose content contains database commands and injection-shaped text
@@ -237,6 +261,7 @@ Feature: Deterministic Writer
     And no other record or store structure should be affected
 
   # Why: Record identity is derived data — delimiter text in a field must not forge a different identity
+  @task:TASK-DW-004
   @edge-case @negative
   Scenario: Delimiter text smuggled into a payload field cannot forge a different record identity
     Given a payload whose identifier field carries key-delimiter or path-shaped text
@@ -247,6 +272,7 @@ Feature: Deterministic Writer
   # ──────────────────── Edge cases — concurrency ──────────────────────
 
   # Why: Two successors racing for the same predecessor must converge on one supersession outcome
+  @task:TASK-DW-005
   @edge-case
   Scenario: Two successors racing to supersede the same predecessor resolve to one consistent outcome
     Given two different successor payloads each declaring they supersede the same predecessor
@@ -255,6 +281,7 @@ Feature: Deterministic Writer
     And no contradictory supersession state should remain
 
   # Why: Readers must never observe a half-applied versioned update
+  @task:TASK-DW-004
   @edge-case
   Scenario: A read during a concurrent versioned write never sees a partial record
     Given a record being rewritten under the same key with new content
@@ -264,6 +291,7 @@ Feature: Deterministic Writer
   # ─────────────── Edge cases — integration boundaries ────────────────
 
   # Why: Embedding-dimension drift must fail the write loudly, never store a malformed record
+  @task:TASK-DW-004
   @edge-case @negative
   Scenario: A write whose embedding has the wrong dimensions fails with no partial record
     Given the store is configured for its fixed embedding dimensions
@@ -272,6 +300,7 @@ Feature: Deterministic Writer
     And no partial record should be left behind
 
   # Why: A database outage must fail the write fast, never half-apply a payload
+  @task:TASK-DW-004
   @edge-case @negative
   Scenario: When the database is unreachable the write fails fast without half-applying the payload
     Given the configured database cannot be reached

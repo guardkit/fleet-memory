@@ -5,7 +5,7 @@ feature_id: FEAT-MEM-03
 id: TASK-DW-001
 implementation_mode: task-work
 parent_review: TASK-REV-DW03
-status: design_approved
+status: completed
 tags:
 - identity
 - hashing

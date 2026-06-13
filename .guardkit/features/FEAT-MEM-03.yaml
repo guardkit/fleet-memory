@@ -1,0 +1,141 @@
+id: FEAT-MEM-03
+name: Deterministic Writer
+description: 'Typed payload to AsyncPostgresStore records: UUIDv5 natural-key identity,
+  content-hash idempotent upsert, declared supersession linking, embed-on-write, per-project
+  namespaces; zero LLM by construction.'
+created: '2026-06-13T12:33:07.998348'
+status: completed
+complexity: 6
+estimated_tasks: 5
+tasks:
+- id: TASK-DW-001
+  name: Record identity and content-hash helpers
+  file_path: tasks/backlog/deterministic-writer/TASK-DW-001-identity-content-hash.md
+  complexity: 4
+  dependencies: []
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T12:40:57.958992'
+  completed_at: '2026-06-13T12:50:01.567914'
+- id: TASK-DW-002
+  name: Deterministic writer core - idempotent content-hash upsert
+  file_path: tasks/backlog/deterministic-writer/TASK-DW-002-writer-core-idempotent-upsert.md
+  complexity: 7
+  dependencies:
+  - TASK-DW-001
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 170
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T12:50:01.582560'
+  completed_at: '2026-06-13T13:02:23.536959'
+- id: TASK-DW-003
+  name: Declared supersession linking
+  file_path: tasks/backlog/deterministic-writer/TASK-DW-003-supersession-linking.md
+  complexity: 6
+  dependencies:
+  - TASK-DW-002
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T13:02:23.552046'
+  completed_at: '2026-06-13T13:15:30.949332'
+- id: TASK-DW-004
+  name: Idempotency and zero-LLM test suite
+  file_path: tasks/backlog/deterministic-writer/TASK-DW-004-idempotency-zero-llm-tests.md
+  complexity: 4
+  dependencies:
+  - TASK-DW-002
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T13:02:23.555846'
+  completed_at: '2026-06-13T13:15:30.953087'
+- id: TASK-DW-005
+  name: Supersession test suite
+  file_path: tasks/backlog/deterministic-writer/TASK-DW-005-supersession-tests.md
+  complexity: 4
+  dependencies:
+  - TASK-DW-003
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T13:15:39.258859'
+  completed_at: '2026-06-13T13:27:33.804278'
+orchestration:
+  parallel_groups:
+  - - TASK-DW-001
+  - - TASK-DW-002
+  - - TASK-DW-003
+    - TASK-DW-004
+  - - TASK-DW-005
+  estimated_duration_minutes: 433
+  recommended_parallel: 2
+smoke_gates:
+  after_wave: 3
+  command: 'set -e
+
+    pytest tests/unit -x
+
+    '
+  expected_exit: 0
+  timeout: 120
+  exit5_is_hard_fail: false
+preflight_strict: false
+evidence_repos: []
+execution:
+  started_at: '2026-06-13T12:40:57.582632'
+  completed_at: '2026-06-13T13:27:33.812590'
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
+  total_turns: 5
+  tasks_completed: 5
+  tasks_failed: 0
+  current_wave: 4
+  completed_waves:
+  - 1
+  - 2
+  - 3
+  - 4
+  last_updated: '2026-06-13T13:27:33.808147'
+  archived_at: null
+  archived_to: null
