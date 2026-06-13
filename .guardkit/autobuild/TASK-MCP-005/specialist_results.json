@@ -1,13 +1,13 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 55.388644667342305,
+    "duration_seconds": 72.13019858300686,
     "error": null,
-    "tests_run": 50,
-    "tests_failed": 1,
-    "coverage_pct": 77.0,
-    "output_summary": "49/50 tests passed; 1 failure in test_register_all (SearchRequest forward ref); 77% coverage on MCP tools",
-    "quality_gates_passed": false
+    "tests_run": 486,
+    "tests_failed": 0,
+    "coverage_pct": 92.0,
+    "output_summary": "486 passed, 59 deselected, 156 warnings in 9.34s; 92% line coverage",
+    "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",

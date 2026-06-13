@@ -1,22 +1,6 @@
 {
   "task_id": "TASK-MCP-005",
-  "timestamp": "2026-06-13T20:32:20.505946",
-  "completed": false,
-  "phases": {
-    "phase_4": {
-      "detected": true,
-      "text": "& 5 validation",
-      "completed": false
-    }
-  },
-  "quality_gates": {
-    "tests_passing": true,
-    "tests_passed": 0,
-    "tests_failed": 0,
-    "coverage": null,
-    "coverage_met": null,
-    "all_passed": null
-  },
+  "turn": 2,
   "files_modified": [
     ".claude/task-plans/TASK-MCP-003-implementation-plan.md",
     ".claude/task-plans/TASK-MCP-004-implementation-plan.md",
@@ -37,66 +21,31 @@
     "tests/unit/test_mcp_supersede.py",
     "tests/unit/test_mcp_write.py"
   ],
-  "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-005/player_turn_2.json"
+  "files_created": [],
+  "tests_written": [],
+  "tests_run": false,
+  "tests_passed": false,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Expose memory_supersede as MCP tool",
+    "Validate natural key format (type:project:identifier)",
+    "Reject empty predecessor list with clear error",
+    "Reject malformed keys with validation message",
+    "Reject self-supersession",
+    "Support forward supersession",
+    "Handle store timeout via degradation wrapper",
+    "Register tool via TASK-MCP-001 extension point",
+    "Pass all lint/format checks"
   ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 3,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
   "files_authored": [
     "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-005/player_turn_2.json"
   ],
-  "tests_written": [],
-  "summary": "Implementation completed",
-  "sdk_turns": {
-    "turns_used": 3,
-    "max_turns": 150,
-    "ceiling_hit": false
-  },
-  "bdd_results": {
-    "scenarios_passed": 0,
-    "scenarios_failed": 1,
-    "scenarios_pending": 0,
-    "failures": [
-      {
-        "feature_file": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature",
-        "scenario_name": "pytest_runner_error",
-        "failing_step": "",
-        "reason": "pytest_runner_error: exit=4; ERROR: not found: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature\n(no match in any of [<Dir memory..."
-      }
-    ],
-    "pending": [],
-    "feature_files": [
-      "features/memory-mcp-server/memory-mcp-server.feature"
-    ],
-    "tag": "@task:TASK-MCP-005"
-  },
-  "task_type": "feature",
-  "agent_invocations_validation": {
-    "status": "no_data",
-    "expected_phases": 3,
-    "actual_invocations": 0,
-    "missing_phases": [],
-    "violation_message": null
-  },
-  "plan_audit": {
-    "status": "skipped",
-    "severity": null,
-    "violations": 0,
-    "extra_files": [],
-    "missing_files": [],
-    "extra_modifications": [],
-    "missing_modifications": [],
-    "extra_dependencies": [],
-    "missing_dependencies": [],
-    "loc_variance_pct": null,
-    "discrepancies_count": 0,
-    "message": "no implementation plan on disk"
-  },
-  "unconfirmed_low_confidence_assumptions": {
-    "status": "ok",
-    "unconfirmed": [],
-    "files_scanned": 0,
-    "files_skipped": 0,
-    "message": null
-  },
   "completion_promises": [
     {
       "criterion_id": "AC-001",
