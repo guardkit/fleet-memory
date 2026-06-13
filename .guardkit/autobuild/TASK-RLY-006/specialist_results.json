@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 47.25879587512463,
+    "duration_seconds": 82.89042029110715,
     "error": null,
-    "tests_run": 85,
-    "tests_failed": 4,
-    "coverage_pct": 83.43,
-    "output_summary": "4 handler tests failed due to Settings validation at import; 81/85 passed, 83% relay coverage",
+    "tests_run": 346,
+    "tests_failed": 1,
+    "coverage_pct": 93.81,
+    "output_summary": "345/346 tests passed, 93.81% coverage. 1 failure in test_app_lifespan: DeterministicWriter missing settings argument",
     "quality_gates_passed": false
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 251.04804233275354,
+    "duration_seconds": 188.72209320776165,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
