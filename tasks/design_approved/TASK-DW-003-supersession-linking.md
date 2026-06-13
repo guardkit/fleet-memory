@@ -1,32 +1,33 @@
 ---
-id: TASK-DW-003
-title: Declared supersession linking
-task_type: feature
-parent_review: TASK-REV-DW03
-feature_id: FEAT-MEM-03
-wave: 3
-implementation_mode: task-work
 complexity: 6
+consumer_context:
+- consumes: DeterministicWriter upsert path
+  driver: internal
+  format_note: Supersession extends the same write transaction; declared links come
+    from payload.supersedes (list of natural keys, FEAT-MEM-02 SupersessionValidation).
+  framework: writer core (namespace + content-hash upsert)
+  task: TASK-DW-002
+- consumes: AsyncPostgresStore record contract
+  driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
+  format_note: A superseded record carries a superseded_by link to its successor and
+    is excluded from default retrieval but remains addressable directly by key.
+  framework: langgraph AsyncPostgresStore via async_store_context
+  task: TASK-MEM-005
 dependencies:
 - TASK-DW-002
+feature_id: FEAT-MEM-03
+id: TASK-DW-003
+implementation_mode: task-work
+parent_review: TASK-REV-DW03
+status: design_approved
 tags:
 - supersession
 - linking
 - retrieval
 - fleet-memory
-consumer_context:
-- task: TASK-DW-002
-  consumes: DeterministicWriter upsert path
-  framework: writer core (namespace + content-hash upsert)
-  driver: internal
-  format_note: Supersession extends the same write transaction; declared links come
-    from payload.supersedes (list of natural keys, FEAT-MEM-02 SupersessionValidation).
-- task: TASK-MEM-005
-  consumes: AsyncPostgresStore record contract
-  framework: langgraph AsyncPostgresStore via async_store_context
-  driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
-  format_note: A superseded record carries a superseded_by link to its successor and
-    is excluded from default retrieval but remains addressable directly by key.
+task_type: feature
+title: Declared supersession linking
+wave: 3
 ---
 
 # Task: Declared supersession linking

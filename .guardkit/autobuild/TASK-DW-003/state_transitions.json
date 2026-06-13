@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-DW-003",
+    "pre_path": "tasks/backlog/TASK-DW-003-supersession-linking.md",
+    "post_path": "tasks/design_approved/TASK-DW-003-supersession-linking.md",
+    "timestamp": "2026-06-13T12:02:24.864942+00:00",
+    "kind": "design_approved_transition"
+  }
+]

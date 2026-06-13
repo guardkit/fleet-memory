@@ -1,20 +1,21 @@
 ---
-id: TASK-DW-004
-title: Idempotency and zero-LLM test suite
-task_type: testing
-parent_review: TASK-REV-DW03
-feature_id: FEAT-MEM-03
-wave: 3
-implementation_mode: task-work
 complexity: 4
 dependencies:
 - TASK-DW-002
+feature_id: FEAT-MEM-03
+id: TASK-DW-004
+implementation_mode: task-work
+parent_review: TASK-REV-DW03
+status: design_approved
 tags:
 - testing
 - idempotency
 - zero-llm
 - integrity
 - fleet-memory
+task_type: testing
+title: Idempotency and zero-LLM test suite
+wave: 3
 ---
 
 # Task: Idempotency and zero-LLM test suite

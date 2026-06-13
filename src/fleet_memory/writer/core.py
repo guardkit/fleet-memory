@@ -18,6 +18,10 @@ from fleet_memory.payloads.base import BasePayload
 from fleet_memory.payloads.registry import PAYLOAD_REGISTRY
 from fleet_memory.store import validate_namespace
 from fleet_memory.writer.identity import content_hash, record_identity
+from fleet_memory.writer.supersession import (
+    apply_supersessions,
+    check_and_apply_forward_supersession,
+)
 
 if TYPE_CHECKING:
     from langgraph.store.postgres.aio import AsyncPostgresStore
@@ -55,6 +59,7 @@ class DeterministicWriter:
         3. Compute identity and content_hash
         4. Check for existing record
         5. Apply upsert logic (no-op if same hash, version++ if different)
+        6. Apply declared supersessions (if any)
 
         Args:
             payload: A registered BasePayload subclass instance
@@ -98,12 +103,21 @@ class DeterministicWriter:
             if existing_hash == new_hash:
                 # Same content hash - no-op (ASSUM-004)
                 # Do NOT re-embed or update timestamps
+                # But still apply supersessions if they changed
+                if payload.supersedes:
+                    await apply_supersessions(
+                        self.store, natural_key, payload.supersedes
+                    )
                 return
             else:
                 # Different content hash - versioned update (ASSUM-005)
                 existing_version = existing_value.get("version", 1)
                 new_version = existing_version + 1
                 await self._write_record(namespace, store_key, payload, new_hash, new_version)
+
+        # Step 6: Apply declared supersessions (if any)
+        if payload.supersedes:
+            await apply_supersessions(self.store, natural_key, payload.supersedes)
 
     async def write_batch(self, payloads: list[BasePayload]) -> None:
         """Write a batch of payloads with within-batch duplicate key collapsing.
@@ -167,6 +181,15 @@ class DeterministicWriter:
             "project": payload.project,
             "identifier": payload.identifier,
         }
+
+        # Include supersedes list if present (TASK-DW-003)
+        if payload.supersedes:
+            stored_value["supersedes"] = payload.supersedes
+
+        # Check for forward supersession (if another record already declared it supersedes this one)
+        stored_value = await check_and_apply_forward_supersession(
+            self.store, payload.natural_key, namespace, store_key, stored_value
+        )
 
         # Write to store (triggers embedding via index config)
         await self.store.aput(namespace, store_key, stored_value)
