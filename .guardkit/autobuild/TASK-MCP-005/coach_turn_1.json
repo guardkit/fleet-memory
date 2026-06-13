@@ -1,0 +1,290 @@
+{
+  "task_id": "TASK-MCP-005",
+  "turn": 1,
+  "decision": "feedback",
+  "issues": [
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-MCP-003-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file .claude/task-plans/TASK-MCP-003-implementation-plan.md",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-MCP-004-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file .claude/task-plans/TASK-MCP-004-implementation-plan.md",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-MCP-005-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file .claude/task-plans/TASK-MCP-005-implementation-plan.md",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .guardkit/bdd/TASK-MCP-005_junit.xml. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file .guardkit/bdd/TASK-MCP-005_junit.xml",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/resources.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/mcp/resources.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/server.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/mcp/server.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/tools/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/mcp/tools/__init__.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/tools/supersede.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/mcp/tools/supersede.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/tools/write.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/mcp/tools/write.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/test_mcp_projects_resource.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file tests/unit/test_mcp_projects_resource.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/test_mcp_search.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file tests/unit/test_mcp_search.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/test_mcp_supersede.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_empty_predecessor_list_rejected. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_empty_predecessor_list_rejected",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_forward_supersession_accepted. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_forward_supersession_accepted",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_malformed_predecessor_rejected. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_malformed_predecessor_rejected",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_self_supersession_rejected. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_self_supersession_rejected",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_single_predecessor_accepted. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_single_predecessor_accepted",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "must_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file tests/unit/test_mcp_supersede.py::test_store_timeout_degrades_gracefully. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit",
+        "player_claim": "Player claimed file tests/unit/test_mcp_supersede.py::test_store_timeout_degrades_gracefully",
+        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
+        "severity": "critical"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/test_mcp_write.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file tests/unit/test_mcp_write.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "type": "missing_requirement",
+      "severity": "critical",
+      "description": "Evidence gathering aborted at 'partial_honesty_abort' stage. Independent test results, coverage data, quality gates, and other verification signals are not available. Without these signals, acceptance criteria cannot be verified.",
+      "requirement": "All acceptance criteria require independent verification through automated tests and quality gates",
+      "suggestion": "Fix reporting hygiene: (1) Do not claim orchestrator-managed files (files under .guardkit/, .claude/task-plans/, etc.) in files_created or files_modified. (2) In completion_promises test_file fields, use file paths only (e.g., 'tests/unit/test_mcp_supersede.py'), not pytest test identifiers with :: notation (e.g., 'tests/unit/test_mcp_supersede.py::test_name') - the honesty checker treats these as file paths and flags them as non-existent."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Cannot verify: Evidence gathering aborted before independent verification could run. File existence and registration require code reading or test verification, neither available."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm supersession marking behavior."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm single-predecessor acceptance."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm empty predecessor list rejection with correct error message."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm malformed predecessor rejection with correct error message."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm self-supersession rejection with correct error message."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm forward supersession acceptance."
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "rejected",
+      "notes": "Cannot verify: No independent test results available to confirm timeout handling with correct degradation message."
+    },
+    {
+      "criterion_id": "AC-009",
+      "result": "rejected",
+      "notes": "Cannot verify: No quality gate results available (gathering aborted). Player claims ruff and black passed but no independent verification available."
+    }
+  ],
+  "rationale": "Evidence gathering aborted at 'partial_honesty_abort' stage due to honesty discrepancies in the Player's report. Without independent test results, coverage data, quality gates, and other verification signals, none of the acceptance criteria can be verified. The honesty issues appear to be reporting hygiene problems: (1) claiming orchestrator-managed files, and (2) using pytest test identifiers (file::test_name format) in test_file fields, which the honesty checker incorrectly treated as file paths. Per absence-of-failure guard #5: 'If evidence_bundle.gathering_status != complete: evidence collection aborted before all fields were populated. Treat any null/None field as ABSENT SIGNAL \u2014 do NOT approve.' The Player must fix reporting hygiene and allow evidence gathering to complete successfully."
+}
