@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-TPR-001",
+    "pre_path": "tasks/backlog/TASK-TPR-001-payload-base-conventions.md",
+    "post_path": "tasks/design_approved/TASK-TPR-001-payload-base-conventions.md",
+    "timestamp": "2026-06-13T09:49:39.729010+00:00",
+    "kind": "design_approved_transition"
+  }
+]
