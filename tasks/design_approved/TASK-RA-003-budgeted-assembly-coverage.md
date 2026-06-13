@@ -1,20 +1,22 @@
 ---
-id: TASK-RA-003
-title: Token-budgeted context assembly and coverage score
-task_type: feature
-parent_review: TASK-REV-RA05
-feature_id: FEAT-MEM-05
-wave: 3
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RA-002
 consumer_context:
-  - task: TASK-RA-002
-    consumes: RankedResults
-    framework: "In-process list of ranked, supersession-resolved memories with scores"
-    driver: "fleet_memory.retrieval search-core return type"
-    format_note: "Ordered most-relevant-first; assembly drops from the tail to fit the budget"
+- consumes: RankedResults
+  driver: fleet_memory.retrieval search-core return type
+  format_note: Ordered most-relevant-first; assembly drops from the tail to fit the
+    budget
+  framework: In-process list of ranked, supersession-resolved memories with scores
+  task: TASK-RA-002
+dependencies:
+- TASK-RA-002
+feature_id: FEAT-MEM-05
+id: TASK-RA-003
+implementation_mode: task-work
+parent_review: TASK-REV-RA05
+status: design_approved
+task_type: feature
+title: Token-budgeted context assembly and coverage score
+wave: 3
 ---
 
 # Task: Token-budgeted context assembly and coverage score
