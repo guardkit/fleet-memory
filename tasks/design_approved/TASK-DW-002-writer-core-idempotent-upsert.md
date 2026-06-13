@@ -1,40 +1,42 @@
 ---
-id: TASK-DW-002
-title: Deterministic writer core - idempotent content-hash upsert
-task_type: feature
-parent_review: TASK-REV-DW03
-feature_id: FEAT-MEM-03
-wave: 2
-implementation_mode: task-work
 complexity: 7
+consumer_context:
+- consumes: record_identity / content_hash
+  driver: stdlib
+  format_note: Identity is uuid5(NAMESPACE, natural_key); content_hash excludes version
+    and write-time metadata so an unchanged re-write hashes identically.
+  framework: Python pure functions (uuid5, hashlib)
+  task: TASK-DW-001
+- consumes: AsyncPostgresStore record contract
+  driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
+  format_note: Namespace tuple is ("fleet_memory", project, payload_type); the stored
+    value MUST carry a "content" string field so the index config (fields=["content"])
+    embeds it on write. Validate the namespace with validate_namespace before any
+    put.
+  framework: langgraph AsyncPostgresStore via async_store_context (store.aput/aget)
+  task: TASK-MEM-005
+- consumes: typed payload registry
+  driver: pydantic>=2
+  format_note: Only registered BasePayload subclasses are writable; unregistered input
+    is rejected with an error naming the unrecognized type (no free-form writes).
+  framework: Pydantic v2 BasePayload + PAYLOAD_REGISTRY dispatch
+  task: TASK-TPR-003
 dependencies:
 - TASK-DW-001
+feature_id: FEAT-MEM-03
+id: TASK-DW-002
+implementation_mode: task-work
+parent_review: TASK-REV-DW03
+status: design_approved
 tags:
 - writer
 - idempotency
 - upsert
 - embed-on-write
 - fleet-memory
-consumer_context:
-- task: TASK-DW-001
-  consumes: record_identity / content_hash
-  framework: Python pure functions (uuid5, hashlib)
-  driver: stdlib
-  format_note: Identity is uuid5(NAMESPACE, natural_key); content_hash excludes version
-    and write-time metadata so an unchanged re-write hashes identically.
-- task: TASK-MEM-005
-  consumes: AsyncPostgresStore record contract
-  framework: langgraph AsyncPostgresStore via async_store_context (store.aput/aget)
-  driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
-  format_note: Namespace tuple is ("fleet_memory", project, payload_type); the stored
-    value MUST carry a "content" string field so the index config (fields=["content"])
-    embeds it on write. Validate the namespace with validate_namespace before any put.
-- task: TASK-TPR-003
-  consumes: typed payload registry
-  framework: Pydantic v2 BasePayload + PAYLOAD_REGISTRY dispatch
-  driver: pydantic>=2
-  format_note: Only registered BasePayload subclasses are writable; unregistered input
-    is rejected with an error naming the unrecognized type (no free-form writes).
+task_type: feature
+title: Deterministic writer core - idempotent content-hash upsert
+wave: 2
 ---
 
 # Task: Deterministic writer core - idempotent content-hash upsert
