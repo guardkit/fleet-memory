@@ -1,32 +1,36 @@
 ---
-id: TASK-RLY-006
-title: Thin MEMORY-stream durable consumer - ack/nak/DLQ dispatch and settings
-task_type: feature
-parent_review: TASK-REV-RLY04
-feature_id: FEAT-MEM-04
-wave: 4
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RLY-002
-  - TASK-RLY-005
-tags:
-  - handler
-  - faststream
-  - durable-consumer
-  - ack-nak-dlq
-  - fleet-memory
 consumer_context:
-  - task: TASK-RLY-005
-    consumes: RelayService.ingest
-    framework: pure async service
-    driver: python
-    format_note: "Handler awaits service.ingest(episode); clean return => ACK. Handler owns ONLY ack/nak/DLQ dispatch, no business logic."
-  - task: TASK-RLY-002
-    consumes: PoisonEpisodeError / TransientIngestError
-    framework: typed exceptions
-    driver: stdlib
-    format_note: "PoisonEpisodeError => RejectMessage to DLQ subject recording reason; TransientIngestError (and unenumerated) => NackMessage for redelivery. ACK only on clean return."
+- consumes: RelayService.ingest
+  driver: python
+  format_note: Handler awaits service.ingest(episode); clean return => ACK. Handler
+    owns ONLY ack/nak/DLQ dispatch, no business logic.
+  framework: pure async service
+  task: TASK-RLY-005
+- consumes: PoisonEpisodeError / TransientIngestError
+  driver: stdlib
+  format_note: PoisonEpisodeError => RejectMessage to DLQ subject recording reason;
+    TransientIngestError (and unenumerated) => NackMessage for redelivery. ACK only
+    on clean return.
+  framework: typed exceptions
+  task: TASK-RLY-002
+dependencies:
+- TASK-RLY-002
+- TASK-RLY-005
+feature_id: FEAT-MEM-04
+id: TASK-RLY-006
+implementation_mode: task-work
+parent_review: TASK-REV-RLY04
+status: design_approved
+tags:
+- handler
+- faststream
+- durable-consumer
+- ack-nak-dlq
+- fleet-memory
+task_type: feature
+title: Thin MEMORY-stream durable consumer - ack/nak/DLQ dispatch and settings
+wave: 4
 ---
 
 # Task: Thin MEMORY-stream durable consumer - ack/nak/DLQ dispatch and settings

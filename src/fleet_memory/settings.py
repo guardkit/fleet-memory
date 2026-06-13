@@ -56,10 +56,20 @@ class Settings(BaseSettings):
         description="NATS server URL",
     )
 
+    # DLQ configuration
+    dlq_subject: str = Field(
+        default="MEMORY.DLQ",
+        description="Dead-letter queue subject for poison episodes (ASSUM-006)",
+    )
+    max_deliver: int = Field(
+        default=5,
+        description="Maximum delivery attempts before parking (ASSUM-005)",
+    )
+
     # Chunking configuration
     chunk_target_tokens: int = Field(
-        default=500,
-        description="Target chunk size in tokens for prose chunking",
+        default=1000,
+        description="Target chunk size in tokens for prose chunking (OD-1)",
     )
     chunk_overlap_ratio: float = Field(
         default=0.15,

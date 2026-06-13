@@ -43,7 +43,8 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
         Entry:
             - Enters async_store_context with real embed callable (from settings)
             - Runs store.setup() to initialize schema
-            - Stores reference in broker.context for handler access
+            - Constructs RelayService with writer dependencies
+            - Stores references in broker.context for handler access
 
         Exit:
             - Closes connection pool cleanly
@@ -55,17 +56,40 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
         # Enter store context with real embed callable
         # (async_store_context constructs it from settings)
         async with async_store_context(settings) as store:
-            # Expose store via broker state for future handlers
+            # Import dependencies for RelayService construction
+            from fleet_memory.relay.chunk_writer import ChunkWriter
+            from fleet_memory.relay.service import RelayService
+            from fleet_memory.writer.core import DeterministicWriter
+
+            # Construct writer dependencies
+            deterministic_writer = DeterministicWriter(store=store)
+            chunk_writer = ChunkWriter(store=store)
+
+            # Construct RelayService with all dependencies
+            relay_service = RelayService(
+                writer=deterministic_writer,
+                chunk_writer=chunk_writer,
+                settings=settings,
+            )
+
+            # Expose store, service, and settings via broker state for handlers
             # Use set_global to add to broker context
             broker_instance.context.set_global("store", store)
+            broker_instance.context.set_global("relay_service", relay_service)
+            broker_instance.context.set_global("settings", settings)
 
-            # Yield to run the app - store is available during service lifetime
+            # Set service on handler module for handler access
+            # (module-level singleton pattern for service instances)
+            from fleet_memory.relay import handler
+
+            handler.service = relay_service
+
+            # Yield to run the app - store and service are available during lifetime
             yield
 
             # Exit: async_store_context.__aexit__ closes pool cleanly
 
     # FastStream app with lifespan
-    # No subscribers registered yet - FEAT-MEM-04 adds MEMORY-stream consumer
     app_instance = FastStream(broker_instance, lifespan=lifespan)
 
     return broker_instance, app_instance
@@ -74,3 +98,7 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
 # Module-level exports - lazy construction via factory
 # Import-time side effects minimal: Settings() only happens when factory is called
 broker, app = _create_app()
+
+# Import handlers to register subscribers on the broker via import side-effects
+# Must occur after broker is created (import-time registration)
+import fleet_memory.relay.handler  # noqa: F401, E402

@@ -1,0 +1,81 @@
+{
+  "task_id": "TASK-RLY-006",
+  "turn": 1,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "4 of 5 unit tests fail with ValidationError at import time. The handler imports broker from app.py, which calls _create_app() at module level (line 100), which instantiates Settings() (line 34) requiring pg_dsn and embed_url. Unit tests cannot provide these without full infrastructure setup, violating test isolation.",
+      "requirement": "AC-009: Unit tests use TestNatsBroker with proper isolation",
+      "suggestion": "Refactor app.py to defer Settings() instantiation until the lifespan context manager runs, not at module-load time. Options: (1) Use lazy initialization pattern, (2) Accept settings as a parameter to _create_app(), (3) Move broker creation inside the lifespan. This will allow unit tests to import the handler module without triggering full app initialization."
+    },
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "BDD oracle executed zero scenarios (scenarios_passed=0, one pytest_runner_error finding the feature file). This is ABSENT SIGNAL per absence-of-failure guard #1.",
+      "requirement": "BDD verification of relay integration behavior",
+      "suggestion": "Ensure the BDD feature file at features/relay-integration/relay-integration.feature is discoverable by pytest-bdd. Check the pytest collection path configuration and verify the feature file exists at the expected location."
+    },
+    {
+      "type": "code_quality",
+      "severity": "major",
+      "description": "Wiring analysis shows parse_degraded status for app.py, handler.py, and settings.py. Cannot independently verify the @broker.subscriber registration path and import side-effect wiring.",
+      "requirement": "AC-001: Durable subscriber registered and wired via import side-effect",
+      "suggestion": "After fixing the Settings instantiation issue, verify the wiring analysis can successfully parse the files and confirm the registration path."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Cannot verify: tests fail at import, wiring status is parse_degraded (ABSENT SIGNAL)"
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Cannot verify: test_clean_ingest_return_acks_message FAILED due to Settings validation error at import"
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Cannot verify: test_poison_error_routes_to_dlq FAILED due to Settings validation error at import"
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Cannot verify: test_transient_error_naks_for_redelivery FAILED due to Settings validation error at import"
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Cannot verify: no test executed successfully to demonstrate redelivery behavior"
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Cannot verify: no test evidence for head-of-stream poison episode parking behavior, other tests failed"
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "verified",
+      "notes": "VERIFIED: test_settings_expose_dlq_configuration PASSED. Settings correctly exposes dlq_subject='MEMORY.DLQ', max_deliver=5, chunk_target_tokens=1000, chunk_overlap_ratio=0.15 with FLEET_MEMORY_ prefix."
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "rejected",
+      "notes": "Cannot verify: wiring parse_degraded (ABSENT SIGNAL), tests failed preventing code path verification"
+    },
+    {
+      "criterion_id": "AC-009",
+      "result": "rejected",
+      "notes": "REJECTED: Tests fail at import time before TestNatsBroker setup can execute. This violates unit test isolation principles \u2014 handler cannot be imported without triggering full app initialization."
+    },
+    {
+      "criterion_id": "AC-010",
+      "result": "verified",
+      "notes": "Likely verified: Player reports 'ruff check' passed. Linting is orthogonal to test failures, though cannot independently confirm without tool access."
+    }
+  ],
+  "rationale": "Rejecting due to critical test failures (4 of 5 tests FAILED, 80% failure rate) caused by module-level Settings() instantiation in app.py. This violates test isolation \u2014 unit tests cannot import the handler without providing database and embed service configuration. AC-007 verified (Settings test passed), AC-010 likely verified (linting), but AC-001 through AC-006, AC-008, and AC-009 cannot be verified due to ABSENT SIGNAL from failed tests and parse_degraded wiring status. BDD oracle also shows zero scenarios executed (ABSENT SIGNAL). The architectural issue must be fixed to enable test execution and proper verification of all acceptance criteria."
+}
