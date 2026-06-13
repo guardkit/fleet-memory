@@ -1,19 +1,20 @@
 ---
-id: TASK-DW-005
-title: Supersession test suite
-task_type: testing
-parent_review: TASK-REV-DW03
-feature_id: FEAT-MEM-03
-wave: 4
-implementation_mode: task-work
 complexity: 4
 dependencies:
 - TASK-DW-003
+feature_id: FEAT-MEM-03
+id: TASK-DW-005
+implementation_mode: task-work
+parent_review: TASK-REV-DW03
+status: design_approved
 tags:
 - testing
 - supersession
 - retrieval
 - fleet-memory
+task_type: testing
+title: Supersession test suite
+wave: 4
 ---
 
 # Task: Supersession test suite
