@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RIP-002",
+    "pre_path": "tasks/backlog/TASK-RIP-002-episode-publisher.md",
+    "post_path": "tasks/design_approved/TASK-RIP-002-episode-publisher.md",
+    "timestamp": "2026-06-13T21:39:18.568086+00:00",
+    "kind": "design_approved_transition"
+  }
+]

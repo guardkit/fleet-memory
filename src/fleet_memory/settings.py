@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     pg_dsn: str = Field(..., description="PostgreSQL connection DSN")
     embed_url: str = Field(..., description="Embedding service URL")
 
+    # Corpus configuration
+    corpus_root: str = Field(
+        default="./corpus",
+        description="Root directory for corpus documents (FLEET_MEMORY_CORPUS_ROOT)",
+    )
+
     # Embedding configuration
     embed_model: str = Field(
         default="nomic-embed-text-v1.5",
