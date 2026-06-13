@@ -1,20 +1,22 @@
 ---
-id: TASK-RA-002
-title: Filtered vector search core
-task_type: feature
-parent_review: TASK-REV-RA05
-feature_id: FEAT-MEM-05
-wave: 2
-implementation_mode: task-work
 complexity: 7
-dependencies:
-  - TASK-RA-001
 consumer_context:
-  - task: TASK-RA-001
-    consumes: SearchRequest
-    framework: "Pydantic v2 model passed in-process to the search service"
-    driver: "fleet_memory.retrieval.SearchRequest"
-    format_note: "Request is already validated; search core must not re-validate, only execute"
+- consumes: SearchRequest
+  driver: fleet_memory.retrieval.SearchRequest
+  format_note: Request is already validated; search core must not re-validate, only
+    execute
+  framework: Pydantic v2 model passed in-process to the search service
+  task: TASK-RA-001
+dependencies:
+- TASK-RA-001
+feature_id: FEAT-MEM-05
+id: TASK-RA-002
+implementation_mode: task-work
+parent_review: TASK-REV-RA05
+status: design_approved
+task_type: feature
+title: Filtered vector search core
+wave: 2
 ---
 
 # Task: Filtered vector search core

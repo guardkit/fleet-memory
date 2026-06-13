@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-RA-001",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "71969dbb1124b7044b87e935bacd98847aba1826",
+      "timestamp": "2026-06-13T16:23:03.479736",
+      "tests_passed": true,
+      "test_count": 20,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: pass)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-06-13T16:23:03.480060"
+}
