@@ -6,6 +6,8 @@ and forward compatibility (extra="ignore"). Covers all TASK-TPR-001 acceptance c
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 from pydantic import ValidationError
 
@@ -19,7 +21,7 @@ from fleet_memory.payloads.base import (
 class ConcretePayload(BasePayload):
     """Concrete implementation for testing BasePayload behavior."""
 
-    payload_type: str = "test_payload"
+    payload_type: ClassVar[str] = "test_payload"
 
 
 class TestNaturalKeyConstruction:
@@ -271,3 +273,158 @@ class TestRequiredFields:
                 source_ref="test",
             )
         assert "identifier" in str(exc_info.value)
+
+
+# TASK-TPR-002: Tests for seven concrete payload types
+class TestConcretePayloadTypes:
+    """Test the seven concrete payload type implementations."""
+
+    def test_adr_natural_key_format(self) -> None:
+        """ADR for guardkit/adr_sp_007 yields adr:guardkit:adr_sp_007 (AC-002)."""
+        from fleet_memory.payloads.models import ADRPayload
+
+        payload = ADRPayload(
+            project="guardkit",
+            identifier="adr_sp_007",
+            source_ref="test",
+            decision="Use event sourcing",
+            status="accepted",
+        )
+        assert payload.natural_key == "adr:guardkit:adr_sp_007"
+        assert payload.payload_type == "adr"
+
+    def test_document_accepts_no_type_specific_fields(self) -> None:
+        """Generic Document is accepted with no type-specific fields (AC-003)."""
+        from fleet_memory.payloads.models import DocumentPayload
+
+        payload = DocumentPayload(
+            project="my_project",
+            identifier="my_doc",
+            source_ref="test",
+        )
+        assert payload.natural_key == "document:my_project:my_doc"
+        assert payload.payload_type == "document"
+
+    def test_review_report_requires_verdict(self) -> None:
+        """ReviewReport without verdict is rejected with clear error (AC-004)."""
+        from fleet_memory.payloads.models import ReviewReportPayload
+
+        with pytest.raises(ValidationError) as exc_info:
+            ReviewReportPayload(  # type: ignore[call-arg]
+                project="my_project",
+                identifier="review_001",
+                source_ref="test",
+            )
+        error_msg = str(exc_info.value)
+        assert "verdict" in error_msg.lower()
+
+    def test_review_report_with_verdict_accepted(self) -> None:
+        """ReviewReport with verdict is accepted."""
+        from fleet_memory.payloads.models import ReviewReportPayload
+
+        payload = ReviewReportPayload(
+            project="my_project",
+            identifier="review_001",
+            source_ref="test",
+            verdict="approved",
+        )
+        assert payload.natural_key == "review_report:my_project:review_001"
+        assert payload.verdict == "approved"
+
+    def test_build_outcome_payload(self) -> None:
+        """BuildOutcome payload works correctly."""
+        from fleet_memory.payloads.models import BuildOutcomePayload
+
+        payload = BuildOutcomePayload(
+            project="my_project",
+            identifier="build_123",
+            source_ref="test",
+            status="success",
+            duration_seconds=42,
+        )
+        assert payload.natural_key == "build_outcome:my_project:build_123"
+        assert payload.payload_type == "build_outcome"
+
+    def test_pattern_payload(self) -> None:
+        """Pattern payload works correctly."""
+        from fleet_memory.payloads.models import PatternPayload
+
+        payload = PatternPayload(
+            project="my_project",
+            identifier="singleton_pattern",
+            source_ref="test",
+            pattern_name="Singleton",
+            category="creational",
+        )
+        assert payload.natural_key == "pattern:my_project:singleton_pattern"
+        assert payload.payload_type == "pattern"
+
+    def test_warning_payload(self) -> None:
+        """Warning payload works correctly."""
+        from fleet_memory.payloads.models import WarningPayload
+
+        payload = WarningPayload(
+            project="my_project",
+            identifier="warn_001",
+            source_ref="test",
+            severity="high",
+            message="Deprecated API usage detected",
+        )
+        assert payload.natural_key == "warning:my_project:warn_001"
+        assert payload.payload_type == "warning"
+
+    def test_seed_module_payload(self) -> None:
+        """SeedModule payload works correctly."""
+        from fleet_memory.payloads.models import SeedModulePayload
+
+        payload = SeedModulePayload(
+            project="my_project",
+            identifier="auth_module",
+            source_ref="test",
+            module_path="src/auth",
+        )
+        assert payload.natural_key == "seed_module:my_project:auth_module"
+        assert payload.payload_type == "seed_module"
+
+    def test_all_types_inherit_base_validators(self) -> None:
+        """All concrete types inherit BasePayload validators (AC-005)."""
+        from fleet_memory.payloads.models import (
+            ADRPayload,
+            DocumentPayload,
+            PatternPayload,
+        )
+
+        # Test that identifier validation is inherited
+        with pytest.raises(IdentifierValidationError):
+            ADRPayload(
+                project="my-project-with-hyphens",
+                identifier="adr_001",
+                source_ref="test",
+                decision="test",
+                status="proposed",
+            )
+
+        # Test that supersession validation is inherited
+        with pytest.raises(SupersessionValidationError):
+            DocumentPayload(
+                project="my_project",
+                identifier="doc_001",
+                source_ref="test",
+                supersedes=["invalid_ref"],
+            )
+
+        # Test that domain_tags, source_ref, version, supersedes are inherited
+        payload = PatternPayload(
+            project="my_project",
+            identifier="pattern_001",
+            source_ref="test_source",
+            pattern_name="Factory",
+            category="creational",
+            domain_tags=["design", "patterns"],
+            version=2,
+            supersedes=["pattern:old_project:old_pattern"],
+        )
+        assert payload.domain_tags == ["design", "patterns"]
+        assert payload.source_ref == "test_source"
+        assert payload.version == 2
+        assert payload.supersedes == ["pattern:old_project:old_pattern"]

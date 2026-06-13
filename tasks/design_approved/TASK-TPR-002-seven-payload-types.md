@@ -1,20 +1,26 @@
 ---
-id: TASK-TPR-002
-title: Seven concrete payload types
-task_type: declarative
-parent_review: TASK-REV-C42F
-feature_id: FEAT-MEM-02
-wave: 2
-implementation_mode: task-work
 complexity: 4
-dependencies: [TASK-TPR-001]
-tags: [pydantic, schema, fleet-memory]
 consumer_context:
-  - task: TASK-TPR-001
-    consumes: BasePayload
-    framework: "Pydantic v2 (BaseModel subclassing)"
-    driver: "pydantic>=2"
-    format_note: "Each type subclasses BasePayload and sets a canonical underscore `payload_type` classvar; shared validators are inherited, not re-declared"
+- consumes: BasePayload
+  driver: pydantic>=2
+  format_note: Each type subclasses BasePayload and sets a canonical underscore `payload_type`
+    classvar; shared validators are inherited, not re-declared
+  framework: Pydantic v2 (BaseModel subclassing)
+  task: TASK-TPR-001
+dependencies:
+- TASK-TPR-001
+feature_id: FEAT-MEM-02
+id: TASK-TPR-002
+implementation_mode: task-work
+parent_review: TASK-REV-C42F
+status: design_approved
+tags:
+- pydantic
+- schema
+- fleet-memory
+task_type: declarative
+title: Seven concrete payload types
+wave: 2
 ---
 
 # Task: Seven concrete payload types
