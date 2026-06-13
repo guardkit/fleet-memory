@@ -7,14 +7,37 @@ feature_id: FEAT-MEM-02
 wave: 3
 implementation_mode: task-work
 complexity: 5
-dependencies: [TASK-TPR-002]
-tags: [registry, dispatch, serialization, fleet-memory]
+dependencies:
+- TASK-TPR-002
+tags:
+- registry
+- dispatch
+- serialization
+- fleet-memory
 consumer_context:
-  - task: TASK-TPR-002
-    consumes: payload model classes
-    framework: "Pydantic v2 (model_validate / model_dump)"
-    driver: "pydantic>=2"
-    format_note: "Registry maps each canonical payload_type name to exactly one model class (bijection); round-trip rebuilds via registry[name].model_validate(serialized)"
+- task: TASK-TPR-002
+  consumes: payload model classes
+  framework: Pydantic v2 (model_validate / model_dump)
+  driver: pydantic>=2
+  format_note: Registry maps each canonical payload_type name to exactly one model
+    class (bijection); round-trip rebuilds via registry[name].model_validate(serialized)
+status: in_review
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
+  base_branch: main
+  started_at: '2026-06-13T11:10:47.602282'
+  last_updated: '2026-06-13T11:55:04.574674'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T11:10:47.602282'
+    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
+      actual: 0'
+    player_success: true
+    coach_success: true
 ---
 
 # Task: Payload dispatch registry and round-trip

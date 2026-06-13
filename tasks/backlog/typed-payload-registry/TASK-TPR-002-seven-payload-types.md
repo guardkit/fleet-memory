@@ -7,14 +7,36 @@ feature_id: FEAT-MEM-02
 wave: 2
 implementation_mode: task-work
 complexity: 4
-dependencies: [TASK-TPR-001]
-tags: [pydantic, schema, fleet-memory]
+dependencies:
+- TASK-TPR-001
+tags:
+- pydantic
+- schema
+- fleet-memory
 consumer_context:
-  - task: TASK-TPR-001
-    consumes: BasePayload
-    framework: "Pydantic v2 (BaseModel subclassing)"
-    driver: "pydantic>=2"
-    format_note: "Each type subclasses BasePayload and sets a canonical underscore `payload_type` classvar; shared validators are inherited, not re-declared"
+- task: TASK-TPR-001
+  consumes: BasePayload
+  framework: Pydantic v2 (BaseModel subclassing)
+  driver: pydantic>=2
+  format_note: Each type subclasses BasePayload and sets a canonical underscore `payload_type`
+    classvar; shared validators are inherited, not re-declared
+status: in_review
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
+  base_branch: main
+  started_at: '2026-06-13T11:00:35.062050'
+  last_updated: '2026-06-13T11:10:47.577135'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T11:00:35.062050'
+    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
+      actual: 0'
+    player_success: true
+    coach_success: true
 ---
 
 # Task: Seven concrete payload types

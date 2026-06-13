@@ -4,7 +4,7 @@ description: Seven Pydantic v2 payload types sharing natural-key, supersession, 
   and source-ref conventions, plus a payload_type to model dispatch registry for deterministic
   fleet-memory writes.
 created: '2026-06-13T10:44:24.190395'
-status: planned
+status: in_progress
 complexity: 6
 estimated_tasks: 4
 tasks:
@@ -13,40 +13,72 @@ tasks:
   file_path: tasks/backlog/typed-payload-registry/TASK-TPR-001-payload-base-conventions.md
   complexity: 6
   dependencies: []
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T10:49:37.132007'
+  completed_at: '2026-06-13T11:00:35.032879'
 - id: TASK-TPR-002
   name: Seven concrete payload types
   file_path: tasks/backlog/typed-payload-registry/TASK-TPR-002-seven-payload-types.md
   complexity: 4
   dependencies:
   - TASK-TPR-001
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T11:00:35.048166'
+  completed_at: '2026-06-13T11:10:47.580441'
 - id: TASK-TPR-003
   name: Payload dispatch registry and round-trip
   file_path: tasks/backlog/typed-payload-registry/TASK-TPR-003-dispatch-registry.md
   complexity: 5
   dependencies:
   - TASK-TPR-002
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T11:10:47.594094'
+  completed_at: '2026-06-13T11:55:04.578087'
 - id: TASK-TPR-004
   name: BDD scenario suite for typed payload registry
   file_path: tasks/backlog/typed-payload-registry/TASK-TPR-004-bdd-scenario-suite.md
   complexity: 4
   dependencies:
   - TASK-TPR-003
-  status: pending
-  description: ''
+  status: in_progress
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 1
+  started_at: '2026-06-13T11:55:04.593933'
+  completed_at: null
 orchestration:
   parallel_groups:
   - - TASK-TPR-001
@@ -55,3 +87,20 @@ orchestration:
   - - TASK-TPR-004
   estimated_duration_minutes: 288
   recommended_parallel: 1
+preflight_strict: false
+evidence_repos: []
+execution:
+  started_at: '2026-06-13T10:49:36.778760'
+  completed_at: null
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
+  total_turns: 0
+  tasks_completed: 3
+  tasks_failed: 0
+  current_wave: 4
+  completed_waves:
+  - 1
+  - 2
+  - 3
+  last_updated: '2026-06-13T11:55:04.593937'
+  archived_at: null
+  archived_to: null
