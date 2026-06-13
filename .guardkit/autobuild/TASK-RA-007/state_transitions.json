@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RA-007",
+    "pre_path": "tasks/backlog/TASK-RA-007-integration-tests.md",
+    "post_path": "tasks/design_approved/TASK-RA-007-integration-tests.md",
+    "timestamp": "2026-06-13T16:25:12.959667+00:00",
+    "kind": "design_approved_transition"
+  }
+]

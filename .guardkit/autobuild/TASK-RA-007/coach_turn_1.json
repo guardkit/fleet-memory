@@ -1,0 +1,60 @@
+{
+  "task_id": "TASK-RA-007",
+  "turn": 1,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "AC-001: Integration tests marker-gated and excluded from hermetic unit gate",
+      "AC-002: Real embed returns project-scoped, cosine-ranked results",
+      "AC-003: Supersession exclusion holds end-to-end",
+      "AC-004: Budgeted assembly stays within token budget",
+      "AC-005: Probe-set harness runs and emits parity report",
+      "AC-006: Tests use throwaway, random-port instance"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest (via Player execution, honesty-verified)",
+    "test_output_summary": "49 tests passing, integration tests properly marker-gated",
+    "code_quality": "Integration tests follow established patterns: marker-gating, ephemeral fixtures, DeterministicWriter usage, real embed service integration",
+    "edge_cases_covered": [
+      "Supersession exclusion both with and without include_superseded flag",
+      "Budget enforcement with real token measurement",
+      "Random port allocation verification",
+      "Project-scoped results with real embeddings",
+      "Parity report structure validation"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "All tests decorated with @pytest.mark.integration, pytest without -m integration deselected all 5 tests, pyproject.toml configured to exclude integration tests by default"
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "test_real_embed_returns_project_scoped_ranked_results verifies project-scoping, cosine-ranked ordering, and most-relevant-first using real embed service and DeterministicWriter"
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "test_supersession_exclusion_end_to_end writes v1 and v2 with supersession link, verifies both include_superseded=False (excludes v1) and include_superseded=True (includes both)"
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "test_budgeted_assembly_respects_token_limit writes 10 documents, assembles with token_budget=200, verifies tokens_used <= 200 and validates coverage_score, context_block, contributing_types"
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "test_probe_harness_runs_against_real_corpus executes run_probe_harness with frozen query set, verifies ParityReport structure including total_probes, divergences_count, full_parity, divergent_queries"
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "verified",
+      "notes": "All tests use ephemeral_pg fixture with UUID-based Docker Compose and random port allocation, test_ephemeral_fixture_uses_random_port verifies non-5432 port in range 1024-65536"
+    }
+  ],
+  "rationale": "All 6 acceptance criteria verified with concrete test evidence. Quality gates passed. Honesty verification clean (score 1.0, zero discrepancies). Integration tests properly implement marker-gating, ephemeral fixtures, supersession testing, budget enforcement, probe harness, and random-port isolation. The advisory regarding Phase 3 specialist invocation is non-blocking. Approval granted."
+}

@@ -1,15 +1,16 @@
 ---
-id: TASK-RA-007
-title: Marker-gated integration tests against real store and embed
-task_type: testing
-parent_review: TASK-REV-RA05
-feature_id: FEAT-MEM-05
-wave: 5
-implementation_mode: task-work
 complexity: 4
 dependencies:
-  - TASK-RA-004
-  - TASK-RA-005
+- TASK-RA-004
+- TASK-RA-005
+feature_id: FEAT-MEM-05
+id: TASK-RA-007
+implementation_mode: task-work
+parent_review: TASK-REV-RA05
+status: design_approved
+task_type: testing
+title: Marker-gated integration tests against real store and embed
+wave: 5
 ---
 
 # Task: Marker-gated integration tests against real store and embed

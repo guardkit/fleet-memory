@@ -1,0 +1,7 @@
+{
+  "tests_run": 27,
+  "tests_failed": 0,
+  "coverage_pct": 37.0,
+  "output_summary": "27 tests passed, 0 failed, 37% coverage - all quality gates green",
+  "quality_gates_passed": true
+}
