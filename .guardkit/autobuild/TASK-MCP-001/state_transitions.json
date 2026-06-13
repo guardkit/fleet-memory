@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MCP-001",
+    "pre_path": "tasks/backlog/TASK-MCP-001-scaffold-fastmcp-server.md",
+    "post_path": "tasks/design_approved/TASK-MCP-001-scaffold-fastmcp-server.md",
+    "timestamp": "2026-06-13T18:20:07.915271+00:00",
+    "kind": "design_approved_transition"
+  }
+]
