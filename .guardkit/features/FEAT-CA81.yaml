@@ -1,0 +1,316 @@
+id: FEAT-CA81
+name: Memory Storage Substrate
+description: LangGraph AsyncPostgresStore on Postgres 16 + pgvector with 768-dim nomic
+  embed function via llama-swap; dual deploy targets (ephemeral local for hermetic
+  gates, durable NAS); lifespan-managed pool; pydantic-settings profiles; three-tier
+  test strategy. FEAT-MEM-01 of Phase CORE.
+created: '2026-06-12T18:02:54.527621'
+status: completed
+complexity: 6
+estimated_tasks: 13
+tasks:
+- id: TASK-MEM-001
+  name: Scaffold project layout
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-001-scaffold-project-layout.md
+  complexity: 3
+  dependencies: []
+  status: completed
+  implementation_mode: direct
+  estimated_minutes: 33
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T18:11:20.757541'
+  completed_at: '2026-06-12T18:15:19.851863'
+- id: TASK-MEM-002
+  name: Settings class and env profiles
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-002-settings-class-env-profiles.md
+  complexity: 3
+  dependencies:
+  - TASK-MEM-001
+  status: completed
+  implementation_mode: direct
+  estimated_minutes: 33
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T18:52:05.366252'
+  completed_at: '2026-06-12T19:22:22.366532'
+- id: TASK-MEM-003
+  name: Embed callable with dimension guard
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-003-embed-callable-dimension-guard.md
+  complexity: 4
+  dependencies:
+  - TASK-MEM-002
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T19:22:23.417674'
+  completed_at: '2026-06-12T19:33:59.750963'
+- id: TASK-MEM-004
+  name: Local ephemeral compose and pytest fixtures
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-004-local-ephemeral-compose-fixtures.md
+  complexity: 5
+  dependencies:
+  - TASK-MEM-001
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 3
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 3
+  current_turn: 0
+  started_at: '2026-06-12T18:52:05.375598'
+  completed_at: '2026-06-12T19:22:22.372959'
+- id: TASK-MEM-005
+  name: Store factory and namespace validation
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-005-store-factory-namespace-validation.md
+  complexity: 5
+  dependencies:
+  - TASK-MEM-002
+  - TASK-MEM-003
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T19:34:00.705529'
+  completed_at: '2026-06-12T19:44:53.274648'
+- id: TASK-MEM-006
+  name: App shell with lifespan-managed store
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-006-app-shell-lifespan.md
+  complexity: 4
+  dependencies:
+  - TASK-MEM-003
+  - TASK-MEM-005
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T20:17:33.496358'
+  completed_at: '2026-06-12T20:28:15.361043'
+- id: TASK-MEM-007
+  name: NAS deploy files
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-007-nas-deploy-files.md
+  complexity: 4
+  dependencies:
+  - TASK-MEM-004
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T19:22:23.424418'
+  completed_at: '2026-06-12T19:33:59.756692'
+- id: TASK-MEM-008
+  name: NAS deploy execution and smoke by operator
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-008-nas-deploy-operator-execution.md
+  complexity: 1
+  dependencies:
+  - TASK-MEM-007
+  status: deferred
+  implementation_mode: direct
+  estimated_minutes: 15
+  requires_infrastructure: []
+  result:
+    total_turns: 0
+    final_decision: deferred
+    error: null
+    deferred_reason: "operator follow-up \u2014 runtime verification required"
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: '2026-06-12T22:42:24.506208'
+- id: TASK-MEM-009
+  name: Unit test suite completion
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-009-unit-test-suite.md
+  complexity: 4
+  dependencies:
+  - TASK-MEM-003
+  - TASK-MEM-005
+  - TASK-MEM-006
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T21:13:01.246043'
+  completed_at: '2026-06-12T21:45:03.629868'
+- id: TASK-MEM-010
+  name: Integration tests for store semantics and pool lifecycle
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-010-integration-store-semantics.md
+  complexity: 6
+  dependencies:
+  - TASK-MEM-004
+  - TASK-MEM-005
+  - TASK-MEM-006
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T21:57:19.772128'
+  completed_at: '2026-06-12T22:08:59.318227'
+- id: TASK-MEM-011
+  name: Integration tests for search boundaries and embed failures
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-011-integration-boundaries-embed-failures.md
+  complexity: 5
+  dependencies:
+  - TASK-MEM-010
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T22:09:07.299652'
+  completed_at: '2026-06-12T22:41:00.155004'
+- id: TASK-MEM-012
+  name: Integration tests for metadata filters and concurrency
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-012-integration-metadata-concurrency.md
+  complexity: 5
+  dependencies:
+  - TASK-MEM-010
+  status: completed
+  implementation_mode: task-work
+  estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 2
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 2
+  current_turn: 0
+  started_at: '2026-06-12T22:42:48.181453'
+  completed_at: '2026-06-12T23:05:54.343314'
+- id: TASK-MEM-013
+  name: Assumption verification record
+  file_path: tasks/backlog/storage-substrate/TASK-MEM-013-assumption-verification-record.md
+  complexity: 1
+  dependencies:
+  - TASK-MEM-009
+  - TASK-MEM-010
+  - TASK-MEM-011
+  - TASK-MEM-012
+  status: completed
+  implementation_mode: direct
+  estimated_minutes: 15
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-12T23:06:02.626719'
+  completed_at: '2026-06-12T23:11:22.929390'
+orchestration:
+  parallel_groups:
+  - - TASK-MEM-001
+  - - TASK-MEM-002
+    - TASK-MEM-004
+  - - TASK-MEM-003
+    - TASK-MEM-007
+  - - TASK-MEM-005
+    - TASK-MEM-008
+  - - TASK-MEM-006
+  - - TASK-MEM-009
+    - TASK-MEM-010
+  - - TASK-MEM-011
+    - TASK-MEM-012
+  - - TASK-MEM-013
+  estimated_duration_minutes: 709
+  recommended_parallel: 2
+smoke_gates:
+  after_wave: all
+  command: 'set -e
+
+    python -c "import fleet_memory"
+
+    python -m pytest tests/unit -q
+
+    '
+  expected_exit: 0
+  timeout: 120
+  exit5_is_hard_fail: false
+preflight_strict: false
+execution:
+  started_at: '2026-06-12T18:11:20.714478'
+  completed_at: '2026-06-12T23:11:31.099209'
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+  total_turns: 15
+  tasks_completed: 13
+  tasks_failed: 0
+  current_wave: 8
+  completed_waves:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  last_updated: '2026-06-12T23:11:22.936582'
+  archived_at: null
+  archived_to: null

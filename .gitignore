@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Claude Code hook state (capture_slash_command.py session stash + log)
+.claude/hooks/.state/
