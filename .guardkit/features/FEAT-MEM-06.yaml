@@ -6,7 +6,7 @@ description: 'FEAT-MEM-06 FastMCP server over stdio: memory_search, memory_write
   to relay writes); failures surfaced as structured tool-error results (graceful degradation,
   no crash).'
 created: '2026-06-13T19:06:07.479915'
-status: planned
+status: completed
 complexity: 6
 estimated_tasks: 7
 tasks:
@@ -15,60 +15,114 @@ tasks:
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-001-scaffold-fastmcp-server.md
   complexity: 5
   dependencies: []
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T19:16:03.750801'
+  completed_at: '2026-06-13T19:55:02.856068'
 - id: TASK-MCP-002
   name: Shared tool-error and degradation envelope
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-002-tool-error-degradation-envelope.md
   complexity: 4
   dependencies:
   - TASK-MCP-001
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 2
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 2
+  current_turn: 0
+  started_at: '2026-06-13T19:55:05.234649'
+  completed_at: '2026-06-13T20:19:44.879396'
 - id: TASK-MCP-003
   name: memory_search tool over retrieval API
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-003-memory-search-tool.md
   complexity: 5
   dependencies:
   - TASK-MCP-002
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T20:19:44.898980'
+  completed_at: '2026-06-13T20:51:52.388449'
 - id: TASK-MCP-004
   name: memory_write_payload tool through deterministic writer
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-004-memory-write-payload-tool.md
   complexity: 6
   dependencies:
   - TASK-MCP-002
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 113
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T20:19:44.904429'
+  completed_at: '2026-06-13T20:51:52.392627'
 - id: TASK-MCP-005
   name: memory_supersede tool declared supersession
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-005-memory-supersede-tool.md
   complexity: 5
   dependencies:
   - TASK-MCP-002
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 3
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 3
+  current_turn: 0
+  started_at: '2026-06-13T20:19:44.909253'
+  completed_at: '2026-06-13T20:51:52.396157'
 - id: TASK-MCP-006
   name: memory projects listing resource
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-006-projects-resource.md
   complexity: 3
   dependencies:
   - TASK-MCP-002
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: direct
   estimated_minutes: 33
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T20:19:44.914398'
+  completed_at: '2026-06-13T20:51:52.399723'
 - id: TASK-MCP-007
   name: Wire BDD scenario suite and integration tests
   file_path: tasks/backlog/memory-mcp-server/TASK-MCP-007-bdd-and-integration-tests.md
@@ -78,10 +132,19 @@ tasks:
   - TASK-MCP-004
   - TASK-MCP-005
   - TASK-MCP-006
-  status: pending
-  description: ''
+  status: completed
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result:
+    total_turns: 1
+    final_decision: approved
+    error: null
+    deferred_reason: null
+  turns_completed: 1
+  current_turn: 0
+  started_at: '2026-06-13T20:52:01.589845'
+  completed_at: '2026-06-13T21:07:22.590274'
 orchestration:
   parallel_groups:
   - - TASK-MCP-001
@@ -94,9 +157,32 @@ orchestration:
   estimated_duration_minutes: 496
   recommended_parallel: 4
 smoke_gates:
-  after_wave: [3, 4]
-  command: |
-    set -e
+  after_wave:
+  - 3
+  - 4
+  command: 'set -e
+
     pytest tests/unit tests/bdd -x
+
+    '
   expected_exit: 0
   timeout: 180
+  exit5_is_hard_fail: false
+preflight_strict: false
+evidence_repos: []
+execution:
+  started_at: '2026-06-13T19:16:03.369589'
+  completed_at: '2026-06-13T21:07:32.107061'
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  total_turns: 10
+  tasks_completed: 7
+  tasks_failed: 0
+  current_wave: 4
+  completed_waves:
+  - 1
+  - 2
+  - 3
+  - 4
+  last_updated: '2026-06-13T21:07:22.594724'
+  archived_at: null
+  archived_to: null

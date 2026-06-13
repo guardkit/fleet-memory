@@ -1,0 +1,150 @@
+id: FEAT-MEM-07
+name: Re-index Pipeline
+description: 'FEAT-MEM-07: deterministic re-index of guardkit''s authoritative markdown
+  corpus (seed modules, ADRs, review reports, task outcomes) into typed payloads published
+  as MemoryEpisodeV1 (json + payload_type) through the live relay into the FEAT-MEM-03
+  deterministic writer; idempotency/dedup enforced downstream by content-hash upsert;
+  plus an operator-gated sidecar review staging area for Fable-authored backfill (DECISION-DF-001,
+  zero cloud on the publish path).'
+created: '2026-06-13T20:10:46.411479'
+status: planned
+complexity: 7
+estimated_tasks: 11
+tasks:
+- id: TASK-RIP-001
+  name: Reindex package and path-safe corpus walker
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-001-corpus-walker.md
+  complexity: 4
+  dependencies: []
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-RIP-002
+  name: Episode publisher helper json payload_type
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-002-episode-publisher.md
+  complexity: 5
+  dependencies: []
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-RIP-003
+  name: Front-matter reader classifier and parser dispatch
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-003-classify-dispatch.md
+  complexity: 5
+  dependencies:
+  - TASK-RIP-001
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-RIP-004
+  name: Deterministic typed parsers
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-004-typed-parsers.md
+  complexity: 6
+  dependencies:
+  - TASK-RIP-003
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 113
+- id: TASK-RIP-005
+  name: Re-index orchestrator and run-report accounting
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-005-orchestrator-run-report.md
+  complexity: 6
+  dependencies:
+  - TASK-RIP-002
+  - TASK-RIP-004
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 113
+- id: TASK-RIP-006
+  name: Backfill staging and sidecar review-gate
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-006-backfill-review-gate.md
+  complexity: 5
+  dependencies:
+  - TASK-RIP-002
+  - TASK-RIP-005
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-RIP-007
+  name: Stream-vs-store audit script
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-007-stream-store-audit.md
+  complexity: 5
+  dependencies:
+  - TASK-RIP-005
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-RIP-008
+  name: Probe-set parity report generator
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-008-probe-parity-report.md
+  complexity: 5
+  dependencies:
+  - TASK-RIP-005
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-RIP-009
+  name: Re-index CLI entrypoint fail-loud resumable
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-009-cli-entrypoint.md
+  complexity: 4
+  dependencies:
+  - TASK-RIP-005
+  - TASK-RIP-006
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-RIP-010
+  name: Integration tests idempotency concurrency resilience
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-010-integration-tests.md
+  complexity: 6
+  dependencies:
+  - TASK-RIP-006
+  - TASK-RIP-007
+  - TASK-RIP-008
+  - TASK-RIP-009
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 113
+- id: TASK-RIP-011
+  name: Operator run full guardkit corpus re-index verification
+  file_path: tasks/backlog/re-index-pipeline/TASK-RIP-011-operator-full-corpus-run.md
+  complexity: 3
+  dependencies:
+  - TASK-RIP-009
+  - TASK-RIP-010
+  status: pending
+  description: ''
+  implementation_mode: direct
+  estimated_minutes: 33
+orchestration:
+  parallel_groups:
+  - - TASK-RIP-001
+    - TASK-RIP-002
+  - - TASK-RIP-003
+  - - TASK-RIP-004
+  - - TASK-RIP-005
+  - - TASK-RIP-006
+    - TASK-RIP-007
+    - TASK-RIP-008
+  - - TASK-RIP-009
+  - - TASK-RIP-010
+  - - TASK-RIP-011
+  estimated_duration_minutes: 847
+  recommended_parallel: 3
+smoke_gates:
+  after_wave: [4, 6]
+  command: |
+    set -e
+    pytest tests/unit -q
+  expected_exit: 0
+  timeout: 180

@@ -1,9 +1,9 @@
 ---
 id: TASK-MCP-004
 title: memory_write_payload tool through the deterministic writer
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
+status: in_review
+created: 2026-06-13 16:30:00+00:00
+updated: 2026-06-13 16:30:00+00:00
 priority: high
 task_type: feature
 parent_review: TASK-REV-MEM06
@@ -12,23 +12,46 @@ wave: 3
 implementation_mode: task-work
 complexity: 6
 estimated_minutes: 90
-dependencies: [TASK-MCP-002]
-tags: [mcp, write, deterministic-writer, registry, parity]
+dependencies:
+- TASK-MCP-002
+tags:
+- mcp
+- write
+- deterministic-writer
+- registry
+- parity
 consumer_context:
-  - task: TASK-MCP-001
-    consumes: ServerContext
-    framework: "FastMCP (stdio server)"
-    driver: "fastmcp"
-    format_note: "Tool reads the DeterministicWriter from the wired ServerContext"
-  - task: TASK-MCP-002
-    consumes: ToolErrorEnvelope
-    framework: "FastMCP tool handler"
-    driver: "fleet_memory.mcp.degradation"
-    format_note: "Tool body wrapped by tool_safe; writer raises propagate to structured tool-error results"
+- task: TASK-MCP-001
+  consumes: ServerContext
+  framework: FastMCP (stdio server)
+  driver: fastmcp
+  format_note: Tool reads the DeterministicWriter from the wired ServerContext
+- task: TASK-MCP-002
+  consumes: ToolErrorEnvelope
+  framework: FastMCP tool handler
+  driver: fleet_memory.mcp.degradation
+  format_note: Tool body wrapped by tool_safe; writer raises propagate to structured
+    tool-error results
 test_results:
   status: pending
   coverage: null
   last_run: null
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  base_branch: main
+  started_at: '2026-06-13T20:19:44.938812'
+  last_updated: '2026-06-13T20:30:39.435709'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T20:19:44.938812'
+    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
+      actual: 0'
+    player_success: true
+    coach_success: true
 ---
 
 # Task: memory_write_payload tool through the deterministic writer

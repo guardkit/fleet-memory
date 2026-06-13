@@ -1,9 +1,9 @@
 ---
 id: TASK-MCP-006
 title: memory://projects listing resource
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
+status: in_review
+created: 2026-06-13 16:30:00+00:00
+updated: 2026-06-13 16:30:00+00:00
 priority: medium
 task_type: feature
 parent_review: TASK-REV-MEM06
@@ -12,23 +12,48 @@ wave: 3
 implementation_mode: direct
 complexity: 3
 estimated_minutes: 40
-dependencies: [TASK-MCP-002]
-tags: [mcp, resource, projects]
+dependencies:
+- TASK-MCP-002
+tags:
+- mcp
+- resource
+- projects
 consumer_context:
-  - task: TASK-MCP-001
-    consumes: ServerContext
-    framework: "FastMCP (stdio server)"
-    driver: "fastmcp"
-    format_note: "Resource reads the store from the wired ServerContext"
-  - task: TASK-MCP-002
-    consumes: ToolErrorEnvelope
-    framework: "FastMCP resource handler"
-    driver: "fleet_memory.mcp.degradation"
-    format_note: "Resource read wrapped so store outage degrades gracefully"
+- task: TASK-MCP-001
+  consumes: ServerContext
+  framework: FastMCP (stdio server)
+  driver: fastmcp
+  format_note: Resource reads the store from the wired ServerContext
+- task: TASK-MCP-002
+  consumes: ToolErrorEnvelope
+  framework: FastMCP resource handler
+  driver: fleet_memory.mcp.degradation
+  format_note: Resource read wrapped so store outage degrades gracefully
 test_results:
   status: pending
   coverage: null
   last_run: null
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  base_branch: main
+  started_at: '2026-06-13T20:19:44.936387'
+  last_updated: '2026-06-13T20:25:03.812990'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T20:19:44.936387'
+    player_summary: Implemented memory://projects resource that lists projects with
+      memories by querying the store's namespace structure. The resource uses list_namespaces()
+      with prefix=('fleet_memory',) and max_depth=2 to discover distinct project identifiers.
+      Applied the tool_safe degradation wrapper to ensure graceful handling when the
+      store is unreachable. Registered the resource via register_projects_resource()
+      function called from register_all() extension point. The resource returns JSON-formatted
+      responses w
+    player_success: true
+    coach_success: true
 ---
 
 # Task: memory://projects listing resource

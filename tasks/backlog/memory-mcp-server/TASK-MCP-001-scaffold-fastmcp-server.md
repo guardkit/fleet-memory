@@ -1,9 +1,9 @@
 ---
 id: TASK-MCP-001
 title: Scaffold FastMCP server, add fastmcp dependency, wire lifespan
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
+status: in_review
+created: 2026-06-13 16:30:00+00:00
+updated: 2026-06-13 16:30:00+00:00
 priority: high
 task_type: scaffolding
 parent_review: TASK-REV-MEM06
@@ -13,11 +13,32 @@ implementation_mode: task-work
 complexity: 5
 estimated_minutes: 60
 dependencies: []
-tags: [mcp, fastmcp, stdio, scaffolding, lifespan]
+tags:
+- mcp
+- fastmcp
+- stdio
+- scaffolding
+- lifespan
 test_results:
   status: pending
   coverage: null
   last_run: null
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  base_branch: main
+  started_at: '2026-06-13T19:16:03.759371'
+  last_updated: '2026-06-13T19:55:02.852692'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T19:16:03.759371'
+    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
+      actual: 0'
+    player_success: true
+    coach_success: true
 ---
 
 # Task: Scaffold FastMCP server, add fastmcp dependency, wire lifespan

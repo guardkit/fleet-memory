@@ -1,9 +1,9 @@
 ---
 id: TASK-MCP-007
 title: Wire the BDD scenario suite and end-to-end integration tests
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
+status: in_review
+created: 2026-06-13 16:30:00+00:00
+updated: 2026-06-13 16:30:00+00:00
 priority: high
 task_type: testing
 parent_review: TASK-REV-MEM06
@@ -12,12 +12,37 @@ wave: 4
 implementation_mode: task-work
 complexity: 5
 estimated_minutes: 90
-dependencies: [TASK-MCP-003, TASK-MCP-004, TASK-MCP-005, TASK-MCP-006]
-tags: [mcp, bdd, pytest-bdd, integration, tests]
+dependencies:
+- TASK-MCP-003
+- TASK-MCP-004
+- TASK-MCP-005
+- TASK-MCP-006
+tags:
+- mcp
+- bdd
+- pytest-bdd
+- integration
+- tests
 test_results:
   status: pending
   coverage: null
   last_run: null
+autobuild_state:
+  current_turn: 1
+  max_turns: 5
+  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  base_branch: main
+  started_at: '2026-06-13T20:52:01.599248'
+  last_updated: '2026-06-13T21:07:22.587833'
+  turns:
+  - turn: 1
+    decision: approve
+    feedback: null
+    timestamp: '2026-06-13T20:52:01.599248'
+    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
+      actual: 0'
+    player_success: true
+    coach_success: true
 ---
 
 # Task: Wire the BDD scenario suite and end-to-end integration tests
