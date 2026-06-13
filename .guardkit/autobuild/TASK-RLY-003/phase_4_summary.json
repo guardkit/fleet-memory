@@ -1,0 +1,7 @@
+{
+  "tests_run": 21,
+  "tests_failed": 0,
+  "coverage_pct": 82.08955223880596,
+  "output_summary": "21 tests passed, 82% coverage on chunker.py (55/67 statements covered)",
+  "quality_gates_passed": true
+}

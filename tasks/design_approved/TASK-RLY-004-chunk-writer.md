@@ -1,31 +1,35 @@
 ---
-id: TASK-RLY-004
-title: Chunk writer - episode_id-derived ids, embed-on-write, idempotent storage
-task_type: feature
-parent_review: TASK-REV-RLY04
-feature_id: FEAT-MEM-04
-wave: 2
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RLY-001
-tags:
-  - chunks
-  - storage
-  - idempotency
-  - relay
-  - fleet-memory
 consumer_context:
-  - task: TASK-RLY-001
-    consumes: Chunk
-    framework: Pydantic v2 frozen Chunk value object
-    driver: pydantic>=2
-    format_note: "Consumes list[Chunk]; writes each under namespace ('fleet_memory', project, 'chunk') with key uuid5(episode_id, str(index))."
-  - task: TASK-MEM-005
-    consumes: AsyncPostgresStore record contract
-    framework: langgraph AsyncPostgresStore via async_store_context (store.aput)
-    driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
-    format_note: "Stored value MUST carry a 'content' string field so the index config (fields=['content']) embeds it on write. Validate namespace with validate_namespace before any put."
+- consumes: Chunk
+  driver: pydantic>=2
+  format_note: Consumes list[Chunk]; writes each under namespace ('fleet_memory',
+    project, 'chunk') with key uuid5(episode_id, str(index)).
+  framework: Pydantic v2 frozen Chunk value object
+  task: TASK-RLY-001
+- consumes: AsyncPostgresStore record contract
+  driver: langgraph-checkpoint-postgres>=2.0 (psycopg3)
+  format_note: Stored value MUST carry a 'content' string field so the index config
+    (fields=['content']) embeds it on write. Validate namespace with validate_namespace
+    before any put.
+  framework: langgraph AsyncPostgresStore via async_store_context (store.aput)
+  task: TASK-MEM-005
+dependencies:
+- TASK-RLY-001
+feature_id: FEAT-MEM-04
+id: TASK-RLY-004
+implementation_mode: task-work
+parent_review: TASK-REV-RLY04
+status: design_approved
+tags:
+- chunks
+- storage
+- idempotency
+- relay
+- fleet-memory
+task_type: feature
+title: Chunk writer - episode_id-derived ids, embed-on-write, idempotent storage
+wave: 2
 ---
 
 # Task: Chunk writer - episode_id-derived ids, embed-on-write, idempotent storage

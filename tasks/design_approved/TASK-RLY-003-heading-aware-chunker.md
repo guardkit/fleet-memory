@@ -1,25 +1,28 @@
 ---
-id: TASK-RLY-003
-title: Heading-aware prose chunker with size and overlap
-task_type: feature
-parent_review: TASK-REV-RLY04
-feature_id: FEAT-MEM-04
-wave: 2
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RLY-001
-tags:
-  - chunking
-  - prose
-  - relay
-  - fleet-memory
 consumer_context:
-  - task: TASK-RLY-001
-    consumes: Chunk / MemoryEpisodeV1
-    framework: Pydantic v2 value objects (frozen Chunk model)
-    driver: pydantic>=2
-    format_note: "Chunker returns list[Chunk] with monotonic index starting at 0; each Chunk carries text, index, source_ref, project. Empty/whitespace body returns []."
+- consumes: Chunk / MemoryEpisodeV1
+  driver: pydantic>=2
+  format_note: Chunker returns list[Chunk] with monotonic index starting at 0; each
+    Chunk carries text, index, source_ref, project. Empty/whitespace body returns
+    [].
+  framework: Pydantic v2 value objects (frozen Chunk model)
+  task: TASK-RLY-001
+dependencies:
+- TASK-RLY-001
+feature_id: FEAT-MEM-04
+id: TASK-RLY-003
+implementation_mode: task-work
+parent_review: TASK-REV-RLY04
+status: design_approved
+tags:
+- chunking
+- prose
+- relay
+- fleet-memory
+task_type: feature
+title: Heading-aware prose chunker with size and overlap
+wave: 2
 ---
 
 # Task: Heading-aware prose chunker with size and overlap
