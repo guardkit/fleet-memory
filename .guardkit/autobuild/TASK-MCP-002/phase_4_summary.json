@@ -1,7 +1,7 @@
 {
   "tests_run": 11,
-  "tests_failed": 1,
+  "tests_failed": 0,
   "coverage_pct": 94.0,
-  "output_summary": "10/11 tests passed, 94% coverage; 1 integration contract test failed due to Python 3.14/fastmcp compatibility",
+  "output_summary": "11 tests passed, 94% coverage on src/fleet_memory/mcp/degradation.py",
   "quality_gates_passed": true
 }

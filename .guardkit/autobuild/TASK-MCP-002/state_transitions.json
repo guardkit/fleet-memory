@@ -5,5 +5,12 @@
     "post_path": "tasks/design_approved/TASK-MCP-002-tool-error-degradation-envelope.md",
     "timestamp": "2026-06-13T18:57:57.821483+00:00",
     "kind": "design_approved_transition"
+  },
+  {
+    "task_id": "TASK-MCP-002",
+    "pre_path": "tasks/backlog/memory-mcp-server/TASK-MCP-002-tool-error-degradation-envelope.md",
+    "post_path": "tasks/design_approved/TASK-MCP-002-tool-error-degradation-envelope.md",
+    "timestamp": "2026-06-13T19:12:03.395220+00:00",
+    "kind": "design_approved_transition"
   }
 ]
