@@ -39,7 +39,7 @@ Nine features. 01–03 are the spine (store, schemas, writer); 04–06 are the s
 |---|---|---|---|
 | FEAT-MEM-01 | Storage substrate (Postgres+pgvector, AsyncPostgresStore, embed fn) | **Landed** (NAS deploy pending op) | FEAT-CA81 |
 | FEAT-MEM-02 | Typed payload registry | **Spec'd** | — (assigned at plan) |
-| FEAT-MEM-03 | Deterministic writer | Not started | — |
+| FEAT-MEM-03 | Deterministic writer | **Spec'd** | — (assigned at plan) |
 | FEAT-MEM-04 | Relay integration (MEMORY consumer + chunk/embed path) | Not started | — |
 | FEAT-MEM-05 | Retrieval API + context assembly | Not started | — |
 | FEAT-MEM-06 | MCP server module | Not started | — |
@@ -121,13 +121,15 @@ Pydantic models in the Schemas layer: `AdrPayload`, `ReviewReportPayload`, `Buil
 
 ## FEAT-MEM-03: Deterministic Writer
 
+**Status:** Spec'd 2026-06-13 via `/feature-spec` → `features/deterministic-writer/` (29 scenarios; 10 assumptions — 2 low-confidence flagged REVIEW REQUIRED: forward supersession of a not-yet-written key (ASSUM-008), batch-write / partial-batch failure mode (ASSUM-010)). Zero-LLM guarantee captured as an enforceable negative scenario; idempotency, supersession, and re-index-idempotency suites covered. Uncommitted on `main`. `/feature-plan` next.
+
 Service: typed payload → store record(s). UUIDv5 from natural key; idempotent upsert (same key + same content hash = no-op; same key + new content = versioned update); supersession handling (mark superseded record, link successor — a dict update, no LLM); embed-on-write via the store's index config; per-project namespace tuples `("fleet_memory", project, payload_type)`.
 
 ### Spec & Plan Commands
 
 ```
-/feature-spec "Deterministic writer service: typed payload to AsyncPostgresStore records with UUIDv5 natural-key idempotency, content-hash upsert semantics, declared supersession linking, embed-on-write, per-project namespaces; zero LLM calls by construction; idempotency and supersession test suites"
-/feature-plan FEAT-XXXX
+# /feature-spec done 2026-06-13 → features/deterministic-writer/ (29 scenarios, 10 assumptions)
+/feature-plan "Deterministic Writer" --context features/deterministic-writer/deterministic-writer_summary.md
 ```
 
 ### Acceptance Criteria
