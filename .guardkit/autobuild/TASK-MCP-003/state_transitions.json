@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-MCP-003",
+    "pre_path": "tasks/backlog/TASK-MCP-003-memory-search-tool.md",
+    "post_path": "tasks/design_approved/TASK-MCP-003-memory-search-tool.md",
+    "timestamp": "2026-06-13T19:19:47.342424+00:00",
+    "kind": "design_approved_transition"
+  }
+]

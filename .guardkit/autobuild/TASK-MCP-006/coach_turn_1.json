@@ -1,0 +1,54 @@
+{
+  "task_id": "TASK-MCP-006",
+  "turn": 1,
+  "decision": "approve",
+  "validation_results": {
+    "requirements_met": [
+      "AC-001",
+      "AC-002",
+      "AC-003",
+      "AC-004",
+      "AC-005"
+    ],
+    "tests_run": true,
+    "tests_passed": true,
+    "test_command": "pytest tests/unit/test_mcp_projects_resource.py -v --tb=short",
+    "test_output_summary": "8 passed in 0.60s - all tests for projects resource passed including listing, degradation, deduplication, registration, JSON format, and URI contract",
+    "code_quality": "All files pass ruff check and format with zero errors",
+    "edge_cases_covered": [
+      "store unreachable (TimeoutError)",
+      "store None",
+      "empty store",
+      "duplicate projects in namespace",
+      "multiple projects"
+    ]
+  },
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "verified",
+      "notes": "src/fleet_memory/mcp/resources.py exists with register_projects_resource() function using @mcp.resource('memory://projects') decorator. server.py register_all() calls it. Independent tests test_resource_registration and test_projects_resource_uri passed."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "verified",
+      "notes": "Implementation uses list_namespaces(prefix=('fleet_memory',), max_depth=2) to extract project names from namespace tuples. Test test_lists_projects_with_memories passed, verifying multiple projects are returned."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "verified",
+      "notes": "Listing derived dynamically from AsyncPostgresStore.list_namespaces() via set comprehension {ns[1] for ns in namespaces if len(ns) >= 2}. No hardcoded project lists present."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "verified",
+      "notes": "@tool_safe decorator applied to _read_projects() providing structured degradation. Tests test_store_down_degrades and test_store_none_degrades both passed, confirming graceful error handling with JSON error envelope instead of crashes."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "verified",
+      "notes": "All modified files (src/fleet_memory/mcp/resources.py, tests/unit/test_mcp_projects_resource.py, src/fleet_memory/mcp/server.py) passed ruff check and ruff format --check with zero errors."
+    }
+  ],
+  "rationale": "All five acceptance criteria verified through independent test execution (8/8 passed), requirements evidence, and quality gates. Honesty verification shows no discrepancies (score 1.0). Implementation correctly uses list_namespaces() for dynamic project discovery, applies tool_safe for graceful degradation, integrates with TASK-MCP-001 extension point, and passes all lint/format checks. Edge cases for store failures, empty stores, and deduplication are all tested and passing."
+}

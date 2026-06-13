@@ -1,34 +1,41 @@
 ---
-id: TASK-MCP-004
-title: memory_write_payload tool through the deterministic writer
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-MEM06
-feature_id: FEAT-MEM-06
-wave: 3
-implementation_mode: task-work
 complexity: 6
-estimated_minutes: 90
-dependencies: [TASK-MCP-002]
-tags: [mcp, write, deterministic-writer, registry, parity]
 consumer_context:
-  - task: TASK-MCP-001
-    consumes: ServerContext
-    framework: "FastMCP (stdio server)"
-    driver: "fastmcp"
-    format_note: "Tool reads the DeterministicWriter from the wired ServerContext"
-  - task: TASK-MCP-002
-    consumes: ToolErrorEnvelope
-    framework: "FastMCP tool handler"
-    driver: "fleet_memory.mcp.degradation"
-    format_note: "Tool body wrapped by tool_safe; writer raises propagate to structured tool-error results"
+- consumes: ServerContext
+  driver: fastmcp
+  format_note: Tool reads the DeterministicWriter from the wired ServerContext
+  framework: FastMCP (stdio server)
+  task: TASK-MCP-001
+- consumes: ToolErrorEnvelope
+  driver: fleet_memory.mcp.degradation
+  format_note: Tool body wrapped by tool_safe; writer raises propagate to structured
+    tool-error results
+  framework: FastMCP tool handler
+  task: TASK-MCP-002
+created: 2026-06-13 16:30:00+00:00
+dependencies:
+- TASK-MCP-002
+estimated_minutes: 90
+feature_id: FEAT-MEM-06
+id: TASK-MCP-004
+implementation_mode: task-work
+parent_review: TASK-REV-MEM06
+priority: high
+status: design_approved
+tags:
+- mcp
+- write
+- deterministic-writer
+- registry
+- parity
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: memory_write_payload tool through the deterministic writer
+updated: 2026-06-13 16:30:00+00:00
+wave: 3
 ---
 
 # Task: memory_write_payload tool through the deterministic writer

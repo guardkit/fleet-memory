@@ -1,39 +1,48 @@
 ---
-id: TASK-MCP-003
-title: memory_search tool over the retrieval API
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
-priority: high
-task_type: feature
-parent_review: TASK-REV-MEM06
-feature_id: FEAT-MEM-06
-wave: 3
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 70
-dependencies: [TASK-MCP-002]
-tags: [mcp, search, retrieval, token-budget]
 consumer_context:
-  - task: TASK-MCP-001
-    consumes: ServerContext
-    framework: "FastMCP (stdio server)"
-    driver: "fastmcp"
-    format_note: "Tool reads store + settings from the wired ServerContext"
-  - task: TASK-MCP-002
-    consumes: ToolErrorEnvelope
-    framework: "FastMCP tool handler"
-    driver: "fleet_memory.mcp.degradation"
-    format_note: "Tool body is wrapped by tool_safe; raises propagate to structured tool-error results"
-  - task: FEAT-MEM-05
-    consumes: search
-    framework: "fleet_memory.retrieval (search + assemble_context) — MERGED to src/ (commit bb92ed2)"
-    driver: "fleet_memory.retrieval"
-    format_note: "search(SearchRequest, store) -> list[SearchResult]; assemble_context(results, token_budget) -> AssemblyResult(context_block, coverage_score, ...). Default token_budget=2000 when client omits it (ASSUM-001)."
+- consumes: ServerContext
+  driver: fastmcp
+  format_note: Tool reads store + settings from the wired ServerContext
+  framework: FastMCP (stdio server)
+  task: TASK-MCP-001
+- consumes: ToolErrorEnvelope
+  driver: fleet_memory.mcp.degradation
+  format_note: Tool body is wrapped by tool_safe; raises propagate to structured tool-error
+    results
+  framework: FastMCP tool handler
+  task: TASK-MCP-002
+- consumes: search
+  driver: fleet_memory.retrieval
+  format_note: search(SearchRequest, store) -> list[SearchResult]; assemble_context(results,
+    token_budget) -> AssemblyResult(context_block, coverage_score, ...). Default token_budget=2000
+    when client omits it (ASSUM-001).
+  framework: fleet_memory.retrieval (search + assemble_context) — MERGED to src/ (commit
+    bb92ed2)
+  task: FEAT-MEM-05
+created: 2026-06-13 16:30:00+00:00
+dependencies:
+- TASK-MCP-002
+estimated_minutes: 70
+feature_id: FEAT-MEM-06
+id: TASK-MCP-003
+implementation_mode: task-work
+parent_review: TASK-REV-MEM06
+priority: high
+status: design_approved
+tags:
+- mcp
+- search
+- retrieval
+- token-budget
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: memory_search tool over the retrieval API
+updated: 2026-06-13 16:30:00+00:00
+wave: 3
 ---
 
 # Task: memory_search tool over the retrieval API

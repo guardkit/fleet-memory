@@ -1,0 +1,127 @@
+{
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "src/fleet_memory/mcp/tools/write.py exists and registers memory_write_payload via the TASK-MCP-001 extension point",
+      "status": "complete",
+      "evidence": "Created src/fleet_memory/mcp/tools/write.py with memory_write_payload function and register() function. Added registration call to server.py register_all() function importing write module.",
+      "test_file": null,
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py", "src/fleet_memory/mcp/server.py"]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "The tool resolves the payload type through the registry (get_model_for_type / PAYLOAD_REGISTRY) and instantiates the typed model before writing",
+      "status": "complete",
+      "evidence": "Tool calls get_model_for_type(payload_type) from the registry and instantiates model_class(**payload_dict) before passing to writer.write(). This is validated by test_derived_identity_ack and test_unknown_type_rejected.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "On success the result acknowledges the stored memory's derived identity (natural key type:project:identifier)",
+      "status": "complete",
+      "evidence": "Function returns payload.natural_key on success (line 87). Verified by test_derived_identity_ack which asserts result.value == 'adr:my_project:ADR_001'.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "An unknown payload type (e.g. meeting_notes) is rejected with a 'type not recognised' tool-error and nothing is persisted",
+      "status": "complete",
+      "evidence": "get_model_for_type raises UnknownPayloadTypeError for unknown types, which is caught by tool_safe decorator and mapped to client error. Verified by test_unknown_type_rejected which confirms error_type=='client', message contains 'meeting_notes', and writes list is empty.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "A payload whose identifier contains invalid characters (e.g. spaces) is rejected with an 'identifier is invalid' tool-error and nothing is persisted",
+      "status": "complete",
+      "evidence": "BasePayload model validation raises IdentifierValidationError for invalid identifiers (e.g. 'ADR 001'), which is caught and converted to ValueError with 'invalid' message. Verified by test_invalid_identifier_rejected which confirms error message contains 'identifier' and 'invalid', and nothing is persisted.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "A payload missing a required field (e.g. project) is rejected naming the missing field, nothing persisted",
+      "status": "complete",
+      "evidence": "Pydantic ValidationError is caught and converted to ValueError with field name in message (lines 71-79). Verified by test_missing_field_rejected which tests missing 'project' field and confirms error message contains 'project' or 'required', and nothing is persisted.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "An untyped / free-form write (not a registered payload type) is rejected as untyped",
+      "status": "complete",
+      "evidence": "Missing payload_type is caught at line 56-59, raising ValueError with 'payload_type is required' message. Verified by test_untyped_rejected which confirms error for payload missing payload_type field, and nothing is persisted.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "A client-supplied stored identity is ignored; the record is stored under the server-derived key (forged-identity scenario)",
+      "status": "complete",
+      "evidence": "Pydantic BaseModel with ConfigDict(extra='ignore') silently discards the 'stored_identity' field. The tool returns payload.natural_key which is server-derived. Verified by test_forged_identity_ignored which passes stored_identity='forged:fake:key' and confirms result is server-derived 'adr:my_project:ADR_001'.",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "Writing the same payload twice results in a single record; the second write is acknowledged as idempotent",
+      "status": "complete",
+      "evidence": "Tool dispatches to DeterministicWriter.write() which implements idempotent content-hash upsert. Both writes return the same natural key. Verified by test_idempotent_double_write which writes same payload twice and confirms both return same natural key (idempotency logic is in the writer, tool correctly delegates).",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-010",
+      "criterion_text": "When the store raises TimeoutError the tool returns 'memory store unavailable' and the server stays running; when embeddings are unavailable the write is rejected with a retryable message leaving no partial record (ASSUM-009)",
+      "status": "complete",
+      "evidence": "tool_safe decorator catches TimeoutError and EmbedServiceError, mapping them to infrastructure errors with appropriate messages. The writer raises these errors before any partial write. Verified by test_store_down_degrades (TimeoutError -> infrastructure error) and test_embed_down_no_partial_write (EmbedServiceError -> infrastructure error, writes list empty).",
+      "test_file": "tests/unit/test_mcp_write.py",
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py"]
+    },
+    {
+      "criterion_id": "AC-011",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran 'ruff check' and 'ruff format' on all modified files. All checks passed with zero errors after auto-fixing unused imports.",
+      "test_file": null,
+      "implementation_files": ["src/fleet_memory/mcp/tools/write.py", "tests/unit/test_mcp_write.py", "src/fleet_memory/mcp/server.py"]
+    }
+  ],
+  "task_id": "TASK-MCP-004",
+  "turn": 1,
+  "files_modified": [
+    "src/fleet_memory/mcp/server.py"
+  ],
+  "files_created": [
+    "src/fleet_memory/mcp/tools/write.py",
+    "tests/unit/test_mcp_write.py",
+    "src/fleet_memory/mcp/tools/__init__.py"
+  ],
+  "tests_written": [
+    "tests/unit/test_mcp_write.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "9 tests passed in 0.61s: test_derived_identity_ack, test_unknown_type_rejected, test_invalid_identifier_rejected, test_missing_field_rejected, test_untyped_rejected, test_forged_identity_ignored, test_idempotent_double_write, test_store_down_degrades, test_embed_down_no_partial_write. All lint checks passed.",
+  "implementation_notes": "Implemented memory_write_payload MCP tool in TDD mode following RED-GREEN-REFACTOR cycle. The tool validates typed payloads at the boundary using the PAYLOAD_REGISTRY, instantiates Pydantic models (which provides automatic validation of required fields and identifier format), and dispatches to the existing DeterministicWriter.write() for the single write path. The tool_safe decorator provides graceful degradation for infrastructure errors (TimeoutError, EmbedServiceError). On success, returns the server-derived natural key (never trusts client-supplied identity). Idempotency is inherited from the writer's content-hash upsert logic. Registered the tool in server.py register_all() function following the existing pattern from supersede.py.",
+  "concerns": [],
+  "requirements_addressed": [
+    "Expose memory_write_payload as MCP tool",
+    "Validate typed payloads at boundary",
+    "Resolve payload type through registry",
+    "Instantiate typed model before writing",
+    "Dispatch through existing DeterministicWriter.write (single write path)",
+    "Return derived identity on success",
+    "Reject unknown payload types",
+    "Reject invalid identifiers",
+    "Reject missing required fields",
+    "Reject untyped writes",
+    "Ignore forged client-supplied identities",
+    "Support idempotent double writes",
+    "Graceful degradation when store/embeddings unavailable",
+    "All lint/format checks passing"
+  ],
+  "requirements_remaining": []
+}

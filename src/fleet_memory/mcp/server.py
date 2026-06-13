@@ -110,11 +110,10 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
 
 
 def register_all(mcp: FastMCP, context: ServerContext) -> None:
-    """Register all MCP tools on the given server instance.
+    """Register all MCP tools and resources on the given server instance.
 
     Extension point for Wave-3 tool registration tasks. Each tool task
-    will add one import + registration call here. For Wave-1 (scaffolding),
-    this is a no-op.
+    will add one import + registration call here.
 
     Args:
         mcp: FastMCP server instance
@@ -125,6 +124,14 @@ def register_all(mcp: FastMCP, context: ServerContext) -> None:
         search_tool.register(mcp, context)
         store_tool.register(mcp, context)
     """
-    # Wave-1: No tools registered yet
-    # Wave-3 tasks will add registrations here
-    pass
+    # Register resources
+    from fleet_memory.mcp.resources import register_projects_resource
+
+    register_projects_resource(mcp, context)
+
+    # Wave-3 tool registrations
+    from fleet_memory.mcp.tools import search, supersede, write
+
+    search.register(mcp, context)
+    supersede.register(mcp, context)
+    write.register(mcp, context)
