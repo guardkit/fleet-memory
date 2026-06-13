@@ -1,7 +1,7 @@
 {
-  "tests_run": 525,
+  "tests_run": 10,
   "tests_failed": 0,
-  "coverage_pct": 83.13,
-  "output_summary": "525 passed, 2 skipped, 65 deselected (integration), 0 failures, 83.13% coverage in 9.89s",
+  "coverage_pct": 83.67,
+  "output_summary": "10 passed, 0 failed, 84% coverage on reindex module",
   "quality_gates_passed": true
 }
