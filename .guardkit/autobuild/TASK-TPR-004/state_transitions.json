@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-TPR-004",
+    "pre_path": "tasks/backlog/TASK-TPR-004-bdd-scenario-suite.md",
+    "post_path": "tasks/design_approved/TASK-TPR-004-bdd-scenario-suite.md",
+    "timestamp": "2026-06-13T10:58:18.442694+00:00",
+    "kind": "design_approved_transition"
+  }
+]

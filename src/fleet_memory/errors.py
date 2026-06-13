@@ -87,3 +87,23 @@ class NamespaceValidationError(ValueError):
         )
         self.namespace = namespace
         self.invalid_parts = invalid_parts
+
+
+class UnknownPayloadTypeError(ValueError):
+    """Raised when payload_type lookup fails in the dispatch registry.
+
+    The registry only recognizes canonical payload types.
+    Lookup is case-sensitive; no silent fallback to Document (ASSUM-010).
+    """
+
+    def __init__(self, payload_type: str) -> None:
+        """Initialize with the unknown payload type name.
+
+        Args:
+            payload_type: The unrecognized type name that was rejected
+        """
+        super().__init__(
+            f"Unknown payload type '{payload_type}': not found in dispatch registry. "
+            f"Lookup is case-sensitive."
+        )
+        self.payload_type = payload_type

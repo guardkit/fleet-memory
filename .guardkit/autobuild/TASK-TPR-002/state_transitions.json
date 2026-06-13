@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-TPR-002",
+    "pre_path": "tasks/backlog/TASK-TPR-002-seven-payload-types.md",
+    "post_path": "tasks/design_approved/TASK-TPR-002-seven-payload-types.md",
+    "timestamp": "2026-06-13T10:00:54.435369+00:00",
+    "kind": "design_approved_transition"
+  }
+]
