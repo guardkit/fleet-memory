@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 72.13019858300686,
+    "duration_seconds": 131.32123816711828,
     "error": null,
     "tests_run": 486,
     "tests_failed": 0,
-    "coverage_pct": 92.0,
-    "output_summary": "486 passed, 59 deselected, 156 warnings in 9.34s; 92% line coverage",
+    "coverage_pct": 92.07,
+    "output_summary": "486 tests passed, 0 failed, 92.07% coverage exceeds 80% minimum by 12 percentage points",
     "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 195.90777950035408,
+    "duration_seconds": 238.0399439157918,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
