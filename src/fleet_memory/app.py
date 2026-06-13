@@ -78,7 +78,7 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
             from fleet_memory.writer.core import DeterministicWriter
 
             # Construct writer dependencies
-            deterministic_writer = DeterministicWriter(store=store)
+            deterministic_writer = DeterministicWriter(store=store, settings=settings)
             chunk_writer = ChunkWriter(store=store)
 
             # Construct RelayService with all dependencies
