@@ -1,14 +1,20 @@
 ---
-id: TASK-TPR-004
-title: BDD scenario suite for typed payload registry
-task_type: testing
-parent_review: TASK-REV-C42F
-feature_id: FEAT-MEM-02
-wave: 4
-implementation_mode: task-work
 complexity: 4
-dependencies: [TASK-TPR-003]
-tags: [testing, bdd, pytest-bdd, fleet-memory]
+dependencies:
+- TASK-TPR-003
+feature_id: FEAT-MEM-02
+id: TASK-TPR-004
+implementation_mode: task-work
+parent_review: TASK-REV-C42F
+status: design_approved
+tags:
+- testing
+- bdd
+- pytest-bdd
+- fleet-memory
+task_type: testing
+title: BDD scenario suite for typed payload registry
+wave: 4
 ---
 
 # Task: BDD scenario suite for typed payload registry

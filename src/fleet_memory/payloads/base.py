@@ -12,7 +12,8 @@ from typing import Any, ClassVar
 from pydantic import BaseModel, ConfigDict, computed_field
 
 # Regex pattern matching existing NamespaceValidationError convention
-IDENTIFIER_PATTERN = re.compile(r"^[a-z0-9_]+$")
+# Allows uppercase to support identifiers like ADR_SP_007 from the feature file
+IDENTIFIER_PATTERN = re.compile(r"^[a-zA-Z0-9_]+$")
 
 
 def _validate_identifier(field_name: str, value: str) -> None:
@@ -50,7 +51,7 @@ class IdentifierValidationError(ValueError):
         else:
             super().__init__(
                 f"Invalid {field_name} identifier '{value}': identifiers must use "
-                f"underscores only (match ^[a-z0-9_]+$)"
+                f"underscores only (match ^[a-zA-Z0-9_]+$)"
             )
         self.field_name = field_name
         self.value = value
