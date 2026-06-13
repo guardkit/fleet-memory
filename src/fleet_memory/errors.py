@@ -1,4 +1,25 @@
-"""Exceptions for fleet-memory embedding operations."""
+"""Exceptions for fleet-memory embedding operations.
+
+## Exception Taxonomy for Relay Handlers
+
+When processing episodes from NATS subjects, exceptions are classified into two
+mutually exclusive categories that determine retry vs dead-letter behavior:
+
+1. **PoisonEpisodeError**: Deterministic, non-recoverable failures. The episode
+   will never succeed on redelivery and must be parked on the DLQ. Examples:
+   unparseable body, unknown payload_type, payload validation failure,
+   unrecognized content_format, hyphenated/invalid project, wrong-dimension
+   embedding (EmbedDimensionError).
+
+2. **TransientIngestError**: Recoverable downstream failures. Must be
+   negatively-acknowledged for redelivery, never dead-lettered. Examples:
+   embedding service unavailable (EmbedServiceError), store unreachable,
+   connection drop, timeout (EmbedTimeoutError).
+
+**Default-to-transient policy**: Any *unenumerated* exception escaping the
+service layer is treated as transient (nak + redeliver), never as poison.
+Losing data is worse than redelivering.
+"""
 
 
 class EmbedDimensionError(ValueError):
@@ -107,3 +128,52 @@ class UnknownPayloadTypeError(ValueError):
             f"Lookup is case-sensitive."
         )
         self.payload_type = payload_type
+
+
+class PoisonEpisodeError(Exception):
+    """Raised when an episode has a deterministic, non-recoverable failure.
+
+    The episode will never succeed on redelivery and must be parked on the DLQ.
+    Triggers dead-letter behavior in the relay handler (TASK-RLY-006).
+
+    Examples: unparseable body, unknown payload_type, payload validation failure,
+    unrecognized content_format, hyphenated/invalid project, wrong-dimension embedding.
+
+    Never includes database credentials.
+    """
+
+    def __init__(self, reason: str, detail: str | None = None) -> None:
+        """Initialize with reason and optional detail.
+
+        Args:
+            reason: Human-readable failure reason suitable for DLQ recording
+            detail: Optional additional diagnostic information
+        """
+        msg = f"Poison episode: {reason}"
+        if detail is not None:
+            msg += f" - {detail}"
+        super().__init__(msg)
+        self.reason = reason
+        self.detail = detail
+
+
+class TransientIngestError(Exception):
+    """Raised when a recoverable downstream failure occurs.
+
+    Must be negatively-acknowledged for redelivery, never dead-lettered.
+    Triggers nak behavior in the relay handler (TASK-RLY-006).
+
+    Examples: embedding service unavailable, store unreachable, connection drop,
+    timeout during external service call.
+
+    Never includes database credentials.
+    """
+
+    def __init__(self, message: str) -> None:
+        """Initialize with error message.
+
+        Args:
+            message: Human-readable description of the transient failure
+        """
+        super().__init__(f"Transient ingest error: {message}")
+        self.message = message

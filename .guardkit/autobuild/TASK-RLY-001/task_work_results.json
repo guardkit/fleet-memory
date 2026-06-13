@@ -1,0 +1,155 @@
+{
+  "task_id": "TASK-RLY-001",
+  "timestamp": "2026-06-13T14:24:39.789782",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation (TDD Mode)**",
+      "completed": false
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 17,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "src/fleet_memory/errors.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RLY-001-implementation-plan.md",
+    ".claude/task-plans/TASK-RLY-002-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py",
+    "src/fleet_memory/relay/__init__.py",
+    "src/fleet_memory/relay/schema.py",
+    "tests/unit/relay/__init__.py",
+    "tests/unit/relay/test_errors.py",
+    "tests/unit/relay/test_schema.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/.guardkit/autobuild/TASK-RLY-001/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
+  ],
+  "summary": "17 tests passed",
+  "sdk_turns": {
+    "turns_used": 22,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "declarative",
+  "agent_invocations_validation": {
+    "status": "passed",
+    "expected_phases": 2,
+    "actual_invocations": 2,
+    "missing_phases": [],
+    "violation_message": null
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "ContentFormat enum defines exactly json, markdown, text and nothing else",
+      "status": "complete",
+      "evidence": "Created ContentFormat string enum in src/fleet_memory/relay/schema.py with exactly three values: JSON='json', MARKDOWN='markdown', TEXT='text'. Tests test_content_format_has_exactly_three_values and test_content_format_values_are_lowercase verify this.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "MemoryEpisodeV1 parses a valid structured-JSON envelope and a valid markdown envelope without error",
+      "status": "complete",
+      "evidence": "MemoryEpisodeV1 model successfully parses both JSON and markdown envelopes with all required fields. Tests test_parses_valid_json_envelope_without_error and test_parses_valid_markdown_envelope_without_error demonstrate error-free parsing.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "content_format is stored as-is (an unrecognized value like \"yaml\" does NOT raise at parse time \u2014 it is routed/parked downstream)",
+      "status": "complete",
+      "evidence": "content_format field is declared as str (not validated against ContentFormat enum), allowing any value to be stored. Test test_content_format_stored_as_is_for_unrecognized_value verifies that unrecognized values like 'yaml' are accepted at parse time.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "MemoryEpisodeV1 uses ConfigDict(extra=\"ignore\") so unknown envelope fields are dropped, not rejected",
+      "status": "complete",
+      "evidence": "MemoryEpisodeV1 uses model_config = ConfigDict(extra='ignore') for forward compatibility. Test test_extra_fields_ignored_not_rejected verifies unknown fields are silently dropped during parsing.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Chunk is immutable (frozen) and carries index, text, source_ref, project",
+      "status": "complete",
+      "evidence": "Chunk model uses ConfigDict(frozen=True) for immutability and defines all four required fields: index (int), text (str), source_ref (str | None), project (str). Tests test_chunk_is_frozen_immutable and test_chunk_carries_all_required_fields verify immutability and field presence.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Unit tests assert round-trip parse for each ContentFormat and the extra-field-ignore behaviour",
+      "status": "complete",
+      "evidence": "Created comprehensive unit tests covering round-trip parsing for all three ContentFormat values (json, markdown, text) in tests test_round_trip_parse_for_json_format, test_round_trip_parse_for_markdown_format, and test_round_trip_parse_for_text_format. Test test_round_trip_parse_preserves_extra_field_ignore_behavior verifies extra field handling during round-trip.",
+      "test_file": "tests/unit/relay/test_schema.py",
+      "implementation_files": [
+        "src/fleet_memory/relay/schema.py"
+      ]
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 61.87318129185587
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 112.56369529198855
+    }
+  ]
+}

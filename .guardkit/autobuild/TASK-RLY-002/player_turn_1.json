@@ -1,0 +1,96 @@
+{
+  "task_id": "TASK-RLY-002",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/errors.py",
+    "src/fleet_memory/errors.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RLY-001-implementation-plan.md",
+    ".claude/task-plans/TASK-RLY-002-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_errors.py",
+    "src/fleet_memory/relay/__init__.py",
+    "src/fleet_memory/relay/schema.py",
+    "tests/unit/relay/__init__.py",
+    "tests/unit/relay/test_errors.py",
+    "tests/unit/relay/test_schema.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_errors.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Add PoisonEpisodeError exception class for non-recoverable failures",
+    "Add TransientIngestError exception class for recoverable failures",
+    "Document default-to-transient policy in module docstring",
+    "Ensure exceptions are distinguishable by type",
+    "Verify exceptions are not in the same inheritance subtree",
+    "Follow existing error class patterns in fleet_memory.errors"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 21,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/.guardkit/autobuild/TASK-RLY-002/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/errors.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_errors.py"
+  ],
+  "tests_passed_count": 12,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "PoisonEpisodeError and TransientIngestError subclass the existing fleet-memory error base",
+      "status": "complete",
+      "evidence": "Both PoisonEpisodeError and TransientIngestError now subclass Exception, consistent with existing error classes in fleet_memory.errors module. Verified by test_poison_episode_error_subclasses_exception and test_transient_ingest_error_subclasses_exception.",
+      "test_file": "tests/unit/relay/test_errors.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "PoisonEpisodeError carries a reason string suitable for recording on the dead-letter subject",
+      "status": "complete",
+      "evidence": "PoisonEpisodeError.__init__ accepts a required 'reason' parameter stored as self.reason attribute, accessible for DLQ recording. Verified by test_poison_episode_error_carries_reason.",
+      "test_file": "tests/unit/relay/test_errors.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "The two classes are distinguishable by type (not by message string)",
+      "status": "complete",
+      "evidence": "PoisonEpisodeError and TransientIngestError are separate class definitions with no inheritance relationship between them. Type-based exception handling can distinguish them reliably without string parsing. Verified by test_exceptions_are_not_in_same_subtree.",
+      "test_file": "tests/unit/relay/test_errors.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Module docstring states the default-to-transient policy for unenumerated exceptions",
+      "status": "complete",
+      "evidence": "Updated module docstring in errors.py to include comprehensive Exception Taxonomy section documenting the default-to-transient policy: 'Any *unenumerated* exception escaping the service layer is treated as transient (nak + redeliver), never as poison. Losing data is worse than redelivering.' Verified by test_module_docstring_states_default_to_transient_policy.",
+      "test_file": "tests/unit/relay/test_errors.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Unit test asserts the two are not in the same subtree such that a TransientIngestError could be caught as poison (or vice versa)",
+      "status": "complete",
+      "evidence": "Created test_exceptions_are_not_in_same_subtree which verifies: (1) neither is a subclass of the other using issubclass(), (2) attempting to catch PoisonEpisodeError as TransientIngestError fails, (3) attempting to catch TransientIngestError as PoisonEpisodeError fails. This ensures no accidental cross-catching.",
+      "test_file": "tests/unit/relay/test_errors.py",
+      "implementation_files": [
+        "src/fleet_memory/errors.py"
+      ]
+    }
+  ]
+}

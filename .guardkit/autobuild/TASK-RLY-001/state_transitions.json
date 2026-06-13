@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RLY-001",
+    "pre_path": "tasks/backlog/TASK-RLY-001-memory-episode-schema.md",
+    "post_path": "tasks/design_approved/TASK-RLY-001-memory-episode-schema.md",
+    "timestamp": "2026-06-13T13:21:29.086477+00:00",
+    "kind": "design_approved_transition"
+  }
+]
