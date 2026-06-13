@@ -1,23 +1,32 @@
 ---
-id: TASK-MCP-007
-title: Wire the BDD scenario suite and end-to-end integration tests
-status: backlog
-created: 2026-06-13T16:30:00Z
-updated: 2026-06-13T16:30:00Z
-priority: high
-task_type: testing
-parent_review: TASK-REV-MEM06
-feature_id: FEAT-MEM-06
-wave: 4
-implementation_mode: task-work
 complexity: 5
+created: 2026-06-13 16:30:00+00:00
+dependencies:
+- TASK-MCP-003
+- TASK-MCP-004
+- TASK-MCP-005
+- TASK-MCP-006
 estimated_minutes: 90
-dependencies: [TASK-MCP-003, TASK-MCP-004, TASK-MCP-005, TASK-MCP-006]
-tags: [mcp, bdd, pytest-bdd, integration, tests]
+feature_id: FEAT-MEM-06
+id: TASK-MCP-007
+implementation_mode: task-work
+parent_review: TASK-REV-MEM06
+priority: high
+status: design_approved
+tags:
+- mcp
+- bdd
+- pytest-bdd
+- integration
+- tests
+task_type: testing
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Wire the BDD scenario suite and end-to-end integration tests
+updated: 2026-06-13 16:30:00+00:00
+wave: 4
 ---
 
 # Task: Wire the BDD scenario suite and end-to-end integration tests
