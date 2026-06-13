@@ -1,20 +1,22 @@
 ---
-id: TASK-RA-005
-title: Probe-set evaluation harness and parity report
-task_type: feature
-parent_review: TASK-REV-RA05
-feature_id: FEAT-MEM-05
-wave: 4
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RA-003
 consumer_context:
-  - task: TASK-RA-003
-    consumes: AssembledContext
-    framework: "Calls the assembled search() entry point per probe query"
-    driver: "fleet_memory.retrieval.search"
-    format_note: "Harness compares each probe's assembled result to a recorded baseline answer"
+- consumes: AssembledContext
+  driver: fleet_memory.retrieval.search
+  format_note: Harness compares each probe's assembled result to a recorded baseline
+    answer
+  framework: Calls the assembled search() entry point per probe query
+  task: TASK-RA-003
+dependencies:
+- TASK-RA-003
+feature_id: FEAT-MEM-05
+id: TASK-RA-005
+implementation_mode: task-work
+parent_review: TASK-REV-RA05
+status: design_approved
+task_type: feature
+title: Probe-set evaluation harness and parity report
+wave: 4
 ---
 
 # Task: Probe-set evaluation harness and parity report

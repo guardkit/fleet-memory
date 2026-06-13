@@ -1,0 +1,68 @@
+{
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`search`/assembly accepts a complexity band of `simple`, `standard`, or `complex` that controls the type mix and per-type budget share.",
+      "status": "complete",
+      "evidence": "Implemented ComplexityBand enum with SIMPLE, STANDARD, COMPLEX values and compose_by_complexity() function that accepts complexity_band parameter and adjusts type mix using weighted allocation (_TYPE_MIX_WEIGHTS dictionary controls per-type budget share).",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": ["src/fleet_memory/retrieval/composition.py"]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Given identical matching memories, the `complex` job's block includes more patterns and warnings than the `simple` job's block.",
+      "status": "complete",
+      "evidence": "Implemented weighted composition with COMPLEX band having pattern_warning weight of 2.0 vs SIMPLE band's 0.3. Tests test_simple_band_reduces_pattern_and_warning_share and test_complex_band_increases_pattern_and_warning_share verify that complex jobs get more patterns/warnings than simple jobs.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": ["src/fleet_memory/retrieval/composition.py"]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Both the `simple` and `complex` blocks remain within their token budgets (composition never overrides the AC-1 budget guarantee).",
+      "status": "complete",
+      "evidence": "Composition returns a filtered/reordered list that is passed to assembly's assemble_context() which enforces token budget. Test test_composition_respects_token_budget verifies all bands respect budget, and seam test test_composition_respects_budget_from_assembly confirms composition doesn't bypass assembly's budget enforcement.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": ["src/fleet_memory/retrieval/composition.py"]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "The three band names are defined as a single source of truth (enum/constant), not scattered string literals.",
+      "status": "complete",
+      "evidence": "Implemented ComplexityBand enum (inheriting from str, Enum) as single source of truth with SIMPLE='simple', STANDARD='standard', COMPLEX='complex'. Test test_complexity_band_enum_exists verifies enum values. All code references the enum, not string literals.",
+      "test_file": "tests/unit/test_composition.py",
+      "implementation_files": ["src/fleet_memory/retrieval/composition.py"]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors.",
+      "status": "complete",
+      "evidence": "Ran 'ruff check src/fleet_memory/retrieval/' which returned 'All checks passed!' with zero errors.",
+      "test_file": null,
+      "implementation_files": ["src/fleet_memory/retrieval/composition.py"]
+    }
+  ],
+  "task_id": "TASK-RA-004",
+  "turn": 1,
+  "files_modified": [],
+  "files_created": [
+    "src/fleet_memory/retrieval/composition.py",
+    "tests/unit/test_composition.py"
+  ],
+  "tests_written": [
+    "tests/unit/test_composition.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "8 tests passed, 1 warning (Pydantic V1 compatibility warning with Python 3.14). All acceptance criteria verified: complexity band enum, simple/standard/complex type mix differences, budget enforcement, and linting.",
+  "implementation_notes": "Implemented job-specific composition by complexity band using TDD approach. Created ComplexityBand enum (SIMPLE/STANDARD/COMPLEX) as single source of truth. Implemented compose_by_complexity() function that adjusts type mix based on complexity band using weighted allocation: SIMPLE (pattern_warning: 0.3, other: 1.0), STANDARD (balanced 1.0/1.0), COMPLEX (pattern_warning: 2.0, other: 0.6). Composition filters and reorders search results before assembly, ensuring complex jobs get more patterns/warnings while all bands respect token budgets enforced by assembly layer.",
+  "concerns": [],
+  "requirements_addressed": [
+    "Complexity band parameter (simple/standard/complex)",
+    "Type mix adjustment based on complexity",
+    "Complex jobs include more patterns/warnings than simple jobs",
+    "Token budget enforcement preserved",
+    "Single source of truth for band names",
+    "Linting compliance"
+  ],
+  "requirements_remaining": []
+}

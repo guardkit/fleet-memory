@@ -1,20 +1,22 @@
 ---
-id: TASK-RA-004
-title: Job-specific composition by complexity band
-task_type: feature
-parent_review: TASK-REV-RA05
-feature_id: FEAT-MEM-05
-wave: 4
-implementation_mode: task-work
 complexity: 6
-dependencies:
-  - TASK-RA-003
 consumer_context:
-  - task: TASK-RA-003
-    consumes: AssembledContext
-    framework: "In-process assembled-block + coverage result from the assembly task"
-    driver: "fleet_memory.retrieval assembly return type"
-    format_note: "Composition adjusts type mix and per-type budget share before assembly renders the block"
+- consumes: AssembledContext
+  driver: fleet_memory.retrieval assembly return type
+  format_note: Composition adjusts type mix and per-type budget share before assembly
+    renders the block
+  framework: In-process assembled-block + coverage result from the assembly task
+  task: TASK-RA-003
+dependencies:
+- TASK-RA-003
+feature_id: FEAT-MEM-05
+id: TASK-RA-004
+implementation_mode: task-work
+parent_review: TASK-REV-RA05
+status: design_approved
+task_type: feature
+title: Job-specific composition by complexity band
+wave: 4
 ---
 
 # Task: Job-specific composition by complexity band
