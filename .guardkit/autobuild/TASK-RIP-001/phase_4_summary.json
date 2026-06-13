@@ -1,7 +1,7 @@
 {
   "tests_run": 10,
   "tests_failed": 0,
-  "coverage_pct": 84.0,
+  "coverage_pct": 83.67,
   "output_summary": "All 10 reindex tests passed; 84% coverage (publisher 100%, walker 76%)",
   "quality_gates_passed": true
 }
