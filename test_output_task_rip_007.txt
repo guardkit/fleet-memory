@@ -1,0 +1,728 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.1.0, pluggy-1.6.0 -- /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07
+configfile: pyproject.toml
+plugins: cov-7.1.0, timeout-2.4.0, asyncio-1.4.0, langsmith-0.8.15, bdd-8.1.0, anyio-4.13.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 634 items / 65 deselected / 569 selected
+
+tests/bdd/test_memory_mcp_server.py::test_an_mcp_client_writes_a_typed_adr_and_then_finds_it_by_search PASSED [  0%]
+tests/bdd/test_memory_mcp_server.py::test_the_search_tool_returns_project_memories_ranked_by_relevance PASSED [  0%]
+tests/bdd/test_memory_mcp_server.py::test_the_write_tool_persists_a_typed_payload_through_the_deterministic_writer PASSED [  0%]
+tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_marks_a_predecessor_memory_as_superseded PASSED [  0%]
+tests/bdd/test_memory_mcp_server.py::test_the_project_resource_lists_the_projects_that_have_memories PASSED [  0%]
+tests/bdd/test_memory_mcp_server.py::test_a_payload_written_through_the_tool_is_byteidentical_in_store_form_to_a_relay_write PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_search_excludes_superseded_memories_by_default PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_the_search_tool_assembles_a_context_block_within_an_explicit_token_budget PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_a_search_with_no_token_budget_applies_the_default_budget PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_accepts_a_single_predecessor PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_an_empty_predecessor_list PASSED [  1%]
+tests/bdd/test_memory_mcp_server.py::test_a_search_that_matches_no_memories_returns_an_empty_result PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_an_unknown_payload_type PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_a_payload_whose_identifier_contains_invalid_characters PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_a_payload_missing_a_required_field PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_a_malformed_predecessor_reference PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_a_memory_superseding_itself PASSED [  2%]
+tests/bdd/test_memory_mcp_server.py::test_an_untyped_freeform_write_is_not_accepted PASSED [  3%]
+tests/bdd/test_memory_mcp_server.py::test_the_search_tool_degrades_gracefully_when_the_store_is_unreachable PASSED [  3%]
+tests/bdd/test_memory_mcp_server.py::test_the_write_tool_degrades_gracefully_when_the_store_is_unreachable PASSED [  3%]
+tests/bdd/test_memory_mcp_server.py::test_the_search_tool_degrades_gracefully_when_the_embedding_service_is_unavailable PASSED [  3%]
+tests/bdd/test_memory_mcp_server.py::test_writing_the_same_payload_twice_produces_a_single_memory_record PASSED [  3%]
+tests/bdd/test_memory_mcp_server.py::test_superseding_a_predecessor_that_does_not_yet_exist_is_accepted PASSED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_the_server_communicates_over_stdio_for_a_claude_desktop_client SKIPPED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_the_server_exposes_the_memory_tools_that_replace_the_graphiti_mcp PASSED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_a_clientsupplied_stored_identity_is_ignored_in_favour_of_the_derived_key PASSED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_a_search_query_containing_instructionlike_text_is_treated_as_an_opaque_query PASSED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_two_clients_writing_the_same_memory_at_the_same_time_produce_a_single_record PASSED [  4%]
+tests/bdd/test_memory_mcp_server.py::test_an_mcp_write_racing_a_relay_write_of_the_same_payload_yields_one_record PASSED [  5%]
+tests/bdd/test_memory_mcp_server.py::test_a_write_is_handled_cleanly_when_the_embedding_service_is_unavailable PASSED [  5%]
+tests/bdd/test_memory_mcp_server.py::test_the_server_starts_even_when_the_store_is_unreachable_at_launch SKIPPED [  5%]
+tests/bdd/test_typed_payload_registry.py::test_a_typed_payload_exposes_a_natural_key_built_from_its_type_project_and_identifier PASSED [  5%]
+tests/bdd/test_typed_payload_registry.py::test_the_registry_resolves_a_payload_type_name_to_its_model PASSED [  5%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[adr] PASSED [  5%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[review_report] PASSED [  6%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[build_outcome] PASSED [  6%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[pattern] PASSED [  6%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[warning] PASSED [  6%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[seed_module] PASSED [  6%]
+tests/bdd/test_typed_payload_registry.py::test_every_declared_payload_type_is_registered_and_dispatchable[document] PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_declares_the_keys_it_supersedes PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_carries_its_domain_tags_and_source_reference PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_the_generic_document_payload_accepts_content_that_fits_no_specific_type PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_survives_a_round_trip_through_its_serialized_form_and_back PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_a_natural_key_with_exactly_its_three_required_segments_is_well_formed PASSED [  7%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_with_an_empty_identifier_is_rejected PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_may_declare_any_number_of_supersessions[0] PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_may_declare_any_number_of_supersessions[1] PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_may_declare_any_number_of_supersessions[5] PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_with_no_domain_tags_is_valid PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_supersession_reference_with_the_wrong_number_of_segments_is_rejected[ADR_SP_007] PASSED [  8%]
+tests/bdd/test_typed_payload_registry.py::test_a_supersession_reference_with_the_wrong_number_of_segments_is_rejected[adr:ADR_SP_007] PASSED [  9%]
+tests/bdd/test_typed_payload_registry.py::test_a_supersession_reference_with_the_wrong_number_of_segments_is_rejected[adr:guardkit:ADR_SP_007:extra] PASSED [  9%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_whose_project_contains_a_hyphen_is_rejected PASSED [  9%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_whose_identifier_contains_a_hyphen_is_rejected PASSED [  9%]
+tests/bdd/test_typed_payload_registry.py::test_looking_up_an_unknown_payload_type_is_rejected PASSED [  9%]
+tests/bdd/test_typed_payload_registry.py::test_a_supersession_reference_that_is_not_naturalkey_shaped_is_rejected PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_a_typed_payload_missing_a_required_field_is_rejected PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_a_natural_key_is_stable_across_repeated_serialization_round_trips PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_unknown_extra_fields_on_an_incoming_payload_are_ignored PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_that_supersedes_its_own_natural_key_is_rejected PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_duplicate_supersession_references_are_collapsed_to_one PASSED [ 10%]
+tests/bdd/test_typed_payload_registry.py::test_a_payload_reports_the_registered_type_name_it_dispatches_under PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_two_payloads_with_identical_type_project_and_identifier_share_one_natural_key PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_a_naturalkey_segment_containing_keydelimiter_or_injection_text_is_rejected PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_a_supersession_reference_pointing_at_another_project_is_accepted_as_a_deliberate_crossproject_link PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_the_same_payload_serialized_by_either_write_surface_produces_identical_serialized_form PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_reauthoring_a_payload_under_the_same_natural_key_advances_its_version_deterministically PASSED [ 11%]
+tests/bdd/test_typed_payload_registry.py::test_payload_type_lookup_is_casesensitive PASSED [ 12%]
+tests/bdd/test_typed_payload_registry.py::test_the_registry_maps_each_type_name_to_exactly_one_model_and_each_model_to_exactly_one_name PASSED [ 12%]
+tests/test_assumptions_verification.py::test_no_low_confidence_assumptions_remain PASSED [ 12%]
+tests/test_assumptions_verification.py::test_assum_004_verified PASSED   [ 12%]
+tests/test_assumptions_verification.py::test_assum_006_verified PASSED   [ 12%]
+tests/test_assumptions_verification.py::test_assum_008_verified PASSED   [ 13%]
+tests/test_assumptions_verification.py::test_assum_002_verified PASSED   [ 13%]
+tests/test_assumptions_verification.py::test_all_verified_assumptions_have_required_fields PASSED [ 13%]
+tests/test_payloads_registry.py::test_payload_round_trip_is_deterministic PASSED [ 13%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_review_report_resolves_to_model PASSED [ 13%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[adr-ADRPayload] PASSED [ 13%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[review_report-ReviewReportPayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[build_outcome-BuildOutcomePayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[pattern-PatternPayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[warning-WarningPayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[seed_module-SeedModulePayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryCompleteness::test_all_seven_types_registered[document-DocumentPayload] PASSED [ 14%]
+tests/test_payloads_registry.py::TestRegistryBijection::test_every_name_maps_to_exactly_one_model PASSED [ 15%]
+tests/test_payloads_registry.py::TestRegistryBijection::test_no_two_names_map_to_same_model PASSED [ 15%]
+tests/test_payloads_registry.py::TestModelToNameMapping::test_payload_reports_its_dispatch_name PASSED [ 15%]
+tests/test_payloads_registry.py::TestModelToNameMapping::test_get_type_for_model_returns_canonical_name PASSED [ 15%]
+tests/test_payloads_registry.py::TestUnknownTypeRejection::test_unknown_type_raises_error_with_name PASSED [ 15%]
+tests/test_payloads_registry.py::TestUnknownTypeRejection::test_case_sensitive_lookup_rejects_wrong_case PASSED [ 15%]
+tests/test_payloads_registry.py::TestUnknownTypeRejection::test_registry_direct_access_raises_keyerror PASSED [ 16%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>0] PASSED [ 16%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>1] PASSED [ 16%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>2] PASSED [ 16%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>3] PASSED [ 16%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>4] PASSED [ 17%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>5] PASSED [ 17%]
+tests/test_payloads_registry.py::TestRoundTripEquality::test_round_trip_preserves_equality_and_natural_key[<lambda>6] PASSED [ 17%]
+tests/test_payloads_registry.py::TestRoundTripDeterminism::test_repeated_round_trips_produce_identical_natural_key PASSED [ 17%]
+tests/test_payloads_registry.py::TestWriteSurfaceEquivalence::test_same_payload_produces_identical_serialization PASSED [ 17%]
+tests/test_payloads_registry.py::TestVersionAdvancement::test_version_advance_preserves_natural_key PASSED [ 17%]
+tests/test_payloads_registry.py::TestExtraFieldIgnored::test_extra_fields_ignored_during_rebuild PASSED [ 18%]
+tests/test_payloads_registry.py::TestNaturalKeyDeduplication::test_identical_coordinates_produce_same_natural_key PASSED [ 18%]
+tests/unit/reindex/test_audit.py::test_all_stored_reports_100_percent PASSED [ 18%]
+tests/unit/reindex/test_audit.py::test_dlq_episode_counts_as_accounted PASSED [ 18%]
+tests/unit/reindex/test_audit.py::test_missing_record_reported_unaccounted PASSED [ 18%]
+tests/unit/reindex/test_backfill.py::test_has_review_marker_present PASSED [ 18%]
+tests/unit/reindex/test_backfill.py::test_has_review_marker_absent PASSED [ 19%]
+tests/unit/reindex/test_backfill.py::test_reviewed_payload_publishes PASSED [ 19%]
+tests/unit/reindex/test_backfill.py::test_unreviewed_payload_gated PASSED [ 19%]
+tests/unit/reindex/test_backfill.py::test_self_asserted_review_without_marker_gated PASSED [ 19%]
+tests/unit/reindex/test_backfill.py::test_reviewed_backfill_uses_same_routing PASSED [ 19%]
+tests/unit/reindex/test_classify.py::test_malformed_frontmatter_reports_reason PASSED [ 20%]
+tests/unit/reindex/test_classify.py::test_unrecognized_kind_reported PASSED [ 20%]
+tests/unit/reindex/test_classify.py::test_each_known_kind_dispatches_to_a_parser PASSED [ 20%]
+tests/unit/reindex/test_classify.py::test_missing_frontmatter_yields_unrecognized PASSED [ 20%]
+tests/unit/reindex/test_classify.py::test_seed_module_recognized PASSED  [ 20%]
+tests/unit/reindex/test_classify.py::test_adr_recognized PASSED          [ 20%]
+tests/unit/reindex/test_classify.py::test_review_report_recognized PASSED [ 21%]
+tests/unit/reindex/test_classify.py::test_completed_task_recognized PASSED [ 21%]
+tests/unit/reindex/test_parity.py::test_parity_report_shape PASSED       [ 21%]
+tests/unit/reindex/test_parity.py::test_aggregate_parity_calculation PASSED [ 21%]
+tests/unit/reindex/test_parity.py::test_aggregate_parity_with_divergences PASSED [ 21%]
+tests/unit/reindex/test_parity.py::test_parity_reuses_probe_harness PASSED [ 21%]
+tests/unit/reindex/test_parity.py::test_partial_parity PASSED            [ 22%]
+tests/unit/reindex/test_parsers.py::TestSeedModuleParser::test_seed_module_parses_to_canonical_payload PASSED [ 22%]
+tests/unit/reindex/test_parsers.py::TestSeedModuleParser::test_seed_module_missing_module_path_is_unparseable PASSED [ 22%]
+tests/unit/reindex/test_parsers.py::TestADRParser::test_adr_parses_to_canonical_payload PASSED [ 22%]
+tests/unit/reindex/test_parsers.py::TestADRParser::test_adr_missing_decision_is_unparseable PASSED [ 22%]
+tests/unit/reindex/test_parsers.py::TestADRParser::test_adr_missing_status_is_unparseable PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestReviewReportParser::test_review_report_parses_to_canonical_payload PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestReviewReportParser::test_review_report_missing_verdict_is_unparseable PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestBuildOutcomeParser::test_build_outcome_parses_to_canonical_payload PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestBuildOutcomeParser::test_build_outcome_missing_status_is_unparseable PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestBuildOutcomeParser::test_build_outcome_missing_duration_is_unparseable PASSED [ 23%]
+tests/unit/reindex/test_parsers.py::TestBuildOutcomeParser::test_build_outcome_non_integer_duration_is_unparseable PASSED [ 24%]
+tests/unit/reindex/test_parsers.py::TestIdentifierNormalization::test_hyphenated_guardkit_id_normalized_to_underscores PASSED [ 24%]
+tests/unit/reindex/test_parsers.py::TestIdentifierNormalization::test_colon_in_identifier_normalized_to_underscores PASSED [ 24%]
+tests/unit/reindex/test_parsers.py::TestInjectionSafety::test_injection_body_carried_verbatim PASSED [ 24%]
+tests/unit/reindex/test_parsers.py::TestMissingRequiredFieldBoundaries::test_missing_required_field_is_unparseable_with_reason PASSED [ 24%]
+tests/unit/reindex/test_parsers.py::TestDocumentWithExactRequiredFields::test_document_with_exact_required_fields_parses PASSED [ 24%]
+tests/unit/reindex/test_pipeline.py::test_full_corpus_publishes_one_episode_per_recognized_doc PASSED [ 25%]
+tests/unit/reindex/test_pipeline.py::test_single_unparseable_doc_does_not_abort_run PASSED [ 25%]
+tests/unit/reindex/test_pipeline.py::test_empty_corpus_publishes_nothing PASSED [ 25%]
+tests/unit/reindex/test_pipeline.py::test_report_accounts_for_every_walked_document PASSED [ 25%]
+tests/unit/reindex/test_publisher.py::test_episode_is_json_with_payload_type PASSED [ 25%]
+tests/unit/reindex/test_publisher.py::test_body_round_trips_through_registry PASSED [ 26%]
+tests/unit/reindex/test_publisher.py::test_episode_id_deterministic_for_natural_key PASSED [ 26%]
+tests/unit/reindex/test_publisher.py::test_no_network_calls_during_publish PASSED [ 26%]
+tests/unit/reindex/test_publisher.py::test_source_ref_preserved PASSED   [ 26%]
+tests/unit/reindex/test_walker.py::test_empty_corpus_yields_nothing PASSED [ 26%]
+tests/unit/reindex/test_walker.py::test_path_traversal_entry_not_read PASSED [ 26%]
+tests/unit/reindex/test_walker.py::test_walk_corpus_yields_markdown_documents PASSED [ 27%]
+tests/unit/reindex/test_walker.py::test_symlink_escape_not_read PASSED   [ 27%]
+tests/unit/reindex/test_walker.py::test_resolved_path_returned PASSED    [ 27%]
+tests/unit/relay/test_chunk_writer.py::test_chunk_key_is_deterministic_uuid5 PASSED [ 27%]
+tests/unit/relay/test_chunk_writer.py::test_redelivery_overwrites_same_keys_no_duplicates PASSED [ 27%]
+tests/unit/relay/test_chunk_writer.py::test_stored_value_contains_content_field PASSED [ 27%]
+tests/unit/relay/test_chunk_writer.py::test_chunk_stored_under_project_chunk_namespace PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_hyphenated_project_raises_namespace_validation_error PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_path_shaped_episode_id_confined_to_namespace PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_chunk_written_under_project_chunk_namespace_seam PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_no_duplicate_chunks_on_redelivery PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_empty_chunks_list_writes_nothing PASSED [ 28%]
+tests/unit/relay/test_chunk_writer.py::test_chunks_must_share_same_project PASSED [ 29%]
+tests/unit/relay/test_chunker.py::TestChunkProseUnderTargetSize::test_short_body_returns_single_chunk PASSED [ 29%]
+tests/unit/relay/test_chunker.py::TestChunkProseUnderTargetSize::test_body_exactly_at_target_returns_single_chunk PASSED [ 29%]
+tests/unit/relay/test_chunker.py::TestChunkProseOverTargetSize::test_body_just_over_target_returns_two_chunks PASSED [ 29%]
+tests/unit/relay/test_chunker.py::TestChunkProseOverTargetSize::test_two_chunks_have_overlapping_content PASSED [ 29%]
+tests/unit/relay/test_chunker.py::TestChunkProseHeadingAware::test_splits_at_heading_boundaries_when_possible PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseHeadingAware::test_heading_never_orphaned_from_section PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseOverlap::test_each_chunk_after_first_has_overlap PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseEmptyBody::test_empty_string_returns_empty_list PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseEmptyBody::test_whitespace_only_returns_empty_list PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseEmptyBody::test_only_newlines_returns_empty_list PASSED [ 30%]
+tests/unit/relay/test_chunker.py::TestChunkProseMetadata::test_chunk_index_monotonic_from_zero PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProseMetadata::test_source_ref_propagates_to_all_chunks PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProseMetadata::test_project_propagates_to_all_chunks PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProseMetadata::test_source_ref_none_propagates PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProsePurity::test_deterministic_same_input_same_output PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProsePurity::test_no_side_effects_input_unchanged PASSED [ 31%]
+tests/unit/relay/test_chunker.py::TestChunkProseMultipleChunks::test_very_long_document_produces_multiple_chunks PASSED [ 32%]
+tests/unit/relay/test_chunker.py::test_chunk_contract_shape PASSED       [ 32%]
+tests/unit/relay/test_chunker.py::TestChunkProseEdgeCases::test_single_word_body PASSED [ 32%]
+tests/unit/relay/test_chunker.py::TestChunkProseEdgeCases::test_zero_overlap_ratio PASSED [ 32%]
+tests/unit/relay/test_chunker.py::TestChunkProseEdgeCases::test_high_overlap_ratio PASSED [ 32%]
+tests/unit/relay/test_errors.py::test_import_poison_episode_error PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_import_transient_ingest_error PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_poison_episode_error_subclasses_exception PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_transient_ingest_error_subclasses_exception PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_poison_episode_error_carries_reason PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_poison_episode_error_carries_optional_detail PASSED [ 33%]
+tests/unit/relay/test_errors.py::test_poison_episode_error_detail_is_optional PASSED [ 34%]
+tests/unit/relay/test_errors.py::test_transient_ingest_error_has_message PASSED [ 34%]
+tests/unit/relay/test_errors.py::test_exceptions_are_not_in_same_subtree PASSED [ 34%]
+tests/unit/relay/test_errors.py::test_module_docstring_states_default_to_transient_policy PASSED [ 34%]
+tests/unit/relay/test_errors.py::test_poison_episode_error_can_be_raised_and_caught PASSED [ 34%]
+tests/unit/relay/test_errors.py::test_transient_ingest_error_can_be_raised_and_caught PASSED [ 34%]
+tests/unit/relay/test_handler.py::test_clean_ingest_return_acks_message PASSED [ 35%]
+tests/unit/relay/test_handler.py::test_poison_error_routes_to_dlq PASSED [ 35%]
+tests/unit/relay/test_handler.py::test_transient_error_naks_for_redelivery PASSED [ 35%]
+tests/unit/relay/test_handler.py::test_unenumerated_exception_treated_as_transient PASSED [ 35%]
+tests/unit/relay/test_handler.py::test_settings_expose_dlq_configuration PASSED [ 35%]
+tests/unit/relay/test_schema.py::TestContentFormat::test_content_format_has_exactly_three_values PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestContentFormat::test_content_format_values_are_lowercase PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_parses_valid_json_envelope_without_error PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_parses_valid_markdown_envelope_without_error PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_parses_text_envelope_without_error PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_content_format_stored_as_is_for_unrecognized_value PASSED [ 36%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_extra_fields_ignored_not_rejected PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_round_trip_parse_for_json_format PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_round_trip_parse_for_markdown_format PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_round_trip_parse_for_text_format PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_round_trip_parse_preserves_extra_field_ignore_behavior PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestMemoryEpisodeV1::test_required_fields_are_enforced PASSED [ 37%]
+tests/unit/relay/test_schema.py::TestChunk::test_chunk_is_frozen_immutable PASSED [ 38%]
+tests/unit/relay/test_schema.py::TestChunk::test_chunk_carries_all_required_fields PASSED [ 38%]
+tests/unit/relay/test_schema.py::TestChunk::test_chunk_with_none_source_ref PASSED [ 38%]
+tests/unit/relay/test_schema.py::TestChunk::test_chunk_validates_required_fields PASSED [ 38%]
+tests/unit/relay/test_schema.py::TestImportability::test_can_import_all_schema_types PASSED [ 38%]
+tests/unit/relay/test_service.py::test_json_episode_writes_typed_payload PASSED [ 39%]
+tests/unit/relay/test_service.py::test_markdown_episode_chunks_and_writes PASSED [ 39%]
+tests/unit/relay/test_service.py::test_text_episode_chunks_and_writes PASSED [ 39%]
+tests/unit/relay/test_service.py::test_unknown_payload_type_raises_poison_error PASSED [ 39%]
+tests/unit/relay/test_service.py::test_invalid_payload_raises_poison_error PASSED [ 39%]
+tests/unit/relay/test_service.py::test_unrecognized_content_format_raises_poison_error PASSED [ 39%]
+tests/unit/relay/test_service.py::test_hyphenated_project_raises_poison_on_json_path PASSED [ 40%]
+tests/unit/relay/test_service.py::test_hyphenated_project_raises_poison_on_chunk_path PASSED [ 40%]
+tests/unit/relay/test_service.py::test_embed_service_error_raises_transient PASSED [ 40%]
+tests/unit/relay/test_service.py::test_embed_timeout_raises_transient PASSED [ 40%]
+tests/unit/relay/test_service.py::test_empty_markdown_returns_cleanly PASSED [ 40%]
+tests/unit/relay/test_service.py::test_redelivery_json_is_idempotent PASSED [ 40%]
+tests/unit/relay/test_service.py::test_redelivery_chunks_is_idempotent PASSED [ 41%]
+tests/unit/relay/test_service.py::test_no_llm_calls PASSED               [ 41%]
+tests/unit/relay/test_service.py::test_no_nats_imports PASSED            [ 41%]
+tests/unit/relay/test_service.py::test_unknown_format_is_poison PASSED   [ 41%]
+tests/unit/relay/test_service.py::test_embed_dimension_error_raises_poison PASSED [ 41%]
+tests/unit/relay/test_service.py::test_unenumerated_exception_raises_transient PASSED [ 42%]
+tests/unit/relay/test_service.py::test_json_episode_with_none_payload_type_raises_poison PASSED [ 42%]
+tests/unit/relay/test_service.py::test_unparseable_json_body_raises_poison PASSED [ 42%]
+tests/unit/test_app_lifespan.py::test_lifespan_enters_and_exits_cleanly_with_fake_store PASSED [ 42%]
+tests/unit/test_app_lifespan.py::test_startup_failure_with_unreachable_database PASSED [ 42%]
+tests/unit/test_app_lifespan.py::test_app_import_succeeds_with_valid_env PASSED [ 42%]
+tests/unit/test_app_lifespan.py::test_no_subscribers_registered_on_broker PASSED [ 43%]
+tests/unit/test_assembly.py::test_empty_results_returns_empty_block PASSED [ 43%]
+tests/unit/test_assembly.py::test_zero_budget_returns_empty_block PASSED [ 43%]
+tests/unit/test_assembly.py::test_single_item_within_budget PASSED       [ 43%]
+tests/unit/test_assembly.py::test_assembled_block_never_exceeds_budget PASSED [ 43%]
+tests/unit/test_assembly.py::test_exactly_at_budget_returns_full PASSED  [ 43%]
+tests/unit/test_assembly.py::test_over_budget_drops_lowest_ranked PASSED [ 44%]
+tests/unit/test_assembly.py::test_single_memory_larger_than_budget_omitted PASSED [ 44%]
+tests/unit/test_assembly.py::test_higher_ranked_kept_over_lower PASSED   [ 44%]
+tests/unit/test_assembly.py::test_coverage_score_reported PASSED         [ 44%]
+tests/unit/test_assembly.py::test_partial_coverage_reported_honestly PASSED [ 44%]
+tests/unit/test_assembly.py::test_deterministic_assembly PASSED          [ 44%]
+tests/unit/test_assembly.py::test_contributing_types_extracted PASSED    [ 45%]
+tests/unit/test_assembly.py::test_coverage_score_calculation PASSED      [ 45%]
+tests/unit/test_assembly.py::test_assembly_consumes_ranked_results_in_order PASSED [ 45%]
+tests/unit/test_composition.py::test_complexity_band_enum_exists PASSED  [ 45%]
+tests/unit/test_composition.py::test_simple_band_reduces_pattern_and_warning_share PASSED [ 45%]
+tests/unit/test_composition.py::test_complex_band_increases_pattern_and_warning_share PASSED [ 46%]
+tests/unit/test_composition.py::test_composition_respects_token_budget PASSED [ 46%]
+tests/unit/test_composition.py::test_composition_preserves_empty_results PASSED [ 46%]
+tests/unit/test_composition.py::test_composition_with_only_documents PASSED [ 46%]
+tests/unit/test_composition.py::test_composition_with_only_patterns_and_warnings PASSED [ 46%]
+tests/unit/test_composition.py::test_composition_respects_budget_from_assembly PASSED [ 46%]
+tests/unit/test_credential_hygiene.py::TestEmbedServiceErrorHygiene::test_http_500_error_does_not_leak_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestEmbedServiceErrorHygiene::test_malformed_json_error_does_not_leak_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestEmbedServiceErrorHygiene::test_missing_data_field_error_does_not_leak_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestEmbedServiceErrorHygiene::test_timeout_error_does_not_leak_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestEmbedServiceErrorHygiene::test_generic_exception_does_not_leak_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestStoreContextErrorHygiene::test_store_context_construction_does_not_expose_password PASSED [ 47%]
+tests/unit/test_credential_hygiene.py::TestStoreContextErrorHygiene::test_settings_repr_does_not_expose_password_in_plain_text PASSED [ 48%]
+tests/unit/test_credential_hygiene.py::TestErrorMessageFormat::test_embed_service_error_includes_safe_details PASSED [ 48%]
+tests/unit/test_credential_hygiene.py::TestErrorMessageFormat::test_multiple_embed_errors_never_leak_password PASSED [ 48%]
+tests/unit/test_embed.py::test_successful_embed_single_text PASSED       [ 48%]
+tests/unit/test_embed.py::test_successful_embed_multiple_texts PASSED    [ 48%]
+tests/unit/test_embed.py::test_embed_request_format PASSED               [ 49%]
+tests/unit/test_embed.py::test_embed_url_normalization PASSED            [ 49%]
+tests/unit/test_embed.py::test_dimension_mismatch_raises_error[512] PASSED [ 49%]
+tests/unit/test_embed.py::test_dimension_mismatch_raises_error[767] PASSED [ 49%]
+tests/unit/test_embed.py::test_dimension_mismatch_raises_error[769] PASSED [ 49%]
+tests/unit/test_embed.py::test_dimension_mismatch_raises_error[1024] PASSED [ 49%]
+tests/unit/test_embed.py::test_http_500_raises_embed_service_error PASSED [ 50%]
+tests/unit/test_embed.py::test_malformed_json_raises_embed_service_error PASSED [ 50%]
+tests/unit/test_embed.py::test_missing_data_field_raises_embed_service_error PASSED [ 50%]
+tests/unit/test_embed.py::test_timeout_raises_embed_timeout_error PASSED [ 50%]
+tests/unit/test_embed.py::test_embed_service_error_includes_url_not_credentials PASSED [ 50%]
+tests/unit/test_embed.py::test_make_fake_embed_default_dims PASSED       [ 50%]
+tests/unit/test_embed.py::test_make_fake_embed_custom_dims PASSED        [ 51%]
+tests/unit/test_embed.py::test_make_fake_embed_deterministic PASSED      [ 51%]
+tests/unit/test_embed.py::test_make_fake_embed_different_texts_different_vectors PASSED [ 51%]
+tests/unit/test_embed.py::test_make_fake_embed_unit_norm PASSED          [ 51%]
+tests/unit/test_fake_embed_fixture.py::test_fake_embed_produces_768_dim_vector PASSED [ 51%]
+tests/unit/test_fake_embed_fixture.py::test_fake_embed_is_deterministic PASSED [ 52%]
+tests/unit/test_fake_embed_fixture.py::test_fake_embed_different_inputs_differ PASSED [ 52%]
+tests/unit/test_fake_embed_fixture.py::test_fake_embed_values_in_valid_range PASSED [ 52%]
+tests/unit/test_mcp_degradation.py::test_store_timeout_returns_unavailable PASSED [ 52%]
+tests/unit/test_mcp_degradation.py::test_embed_error_returns_temporarily_unavailable PASSED [ 52%]
+tests/unit/test_mcp_degradation.py::test_embed_timeout_returns_temporarily_unavailable PASSED [ 52%]
+tests/unit/test_mcp_degradation.py::test_validation_error_returns_client_error PASSED [ 53%]
+tests/unit/test_mcp_degradation.py::test_unknown_payload_type_returns_client_error PASSED [ 53%]
+tests/unit/test_mcp_degradation.py::test_generic_value_error_returns_client_error PASSED [ 53%]
+tests/unit/test_mcp_degradation.py::test_wrapper_never_reraises PASSED   [ 53%]
+tests/unit/test_mcp_degradation.py::test_messages_have_no_credentials PASSED [ 53%]
+tests/unit/test_mcp_degradation.py::test_successful_execution_returns_result PASSED [ 53%]
+tests/unit/test_mcp_degradation.py::test_async_tool_support PASSED       [ 54%]
+tests/unit/test_mcp_degradation.py::test_server_context_shape PASSED     [ 54%]
+tests/unit/test_mcp_projects_resource.py::test_lists_projects_with_memories PASSED [ 54%]
+tests/unit/test_mcp_projects_resource.py::test_store_down_degrades PASSED [ 54%]
+tests/unit/test_mcp_projects_resource.py::test_store_none_degrades PASSED [ 54%]
+tests/unit/test_mcp_projects_resource.py::test_empty_store_returns_empty_list PASSED [ 55%]
+tests/unit/test_mcp_projects_resource.py::test_deduplicates_projects PASSED [ 55%]
+tests/unit/test_mcp_projects_resource.py::test_resource_registration PASSED [ 55%]
+tests/unit/test_mcp_projects_resource.py::test_projects_resource_returns_json PASSED [ 55%]
+tests/unit/test_mcp_projects_resource.py::test_projects_resource_uri PASSED [ 55%]
+tests/unit/test_mcp_search.py::test_retrieval_search_contract PASSED     [ 55%]
+tests/unit/test_mcp_search.py::test_default_budget_application PASSED    [ 56%]
+tests/unit/test_mcp_search.py::test_empty_result_not_error PASSED        [ 56%]
+tests/unit/test_mcp_search.py::test_project_scoping PASSED               [ 56%]
+tests/unit/test_mcp_search.py::test_ranking_order PASSED                 [ 56%]
+tests/unit/test_mcp_search.py::test_exclude_superseded_default PASSED    [ 56%]
+tests/unit/test_mcp_search.py::test_opaque_query PASSED                  [ 56%]
+tests/unit/test_mcp_search.py::test_store_down_degrades PASSED           [ 57%]
+tests/unit/test_mcp_search.py::test_embed_down_degrades PASSED           [ 57%]
+tests/unit/test_mcp_server.py::test_server_builds_without_store PASSED   [ 57%]
+tests/unit/test_mcp_server.py::test_stdio_entrypoint_importable PASSED   [ 57%]
+tests/unit/test_mcp_server.py::test_register_all_is_no_op_without_tools PASSED [ 57%]
+tests/unit/test_mcp_supersede.py::test_single_predecessor_accepted PASSED [ 57%]
+tests/unit/test_mcp_supersede.py::test_multiple_predecessors_accepted PASSED [ 58%]
+tests/unit/test_mcp_supersede.py::test_empty_predecessor_list_rejected PASSED [ 58%]
+tests/unit/test_mcp_supersede.py::test_malformed_predecessor_rejected PASSED [ 58%]
+tests/unit/test_mcp_supersede.py::test_malformed_successor_rejected PASSED [ 58%]
+tests/unit/test_mcp_supersede.py::test_self_supersession_rejected PASSED [ 58%]
+tests/unit/test_mcp_supersede.py::test_self_supersession_in_list_rejected PASSED [ 59%]
+tests/unit/test_mcp_supersede.py::test_store_timeout_degrades_gracefully PASSED [ 59%]
+tests/unit/test_mcp_supersede.py::test_forward_supersession_accepted PASSED [ 59%]
+tests/unit/test_mcp_supersede.py::test_apply_supersessions_contract PASSED [ 59%]
+tests/unit/test_mcp_write.py::test_derived_identity_ack PASSED           [ 59%]
+tests/unit/test_mcp_write.py::test_unknown_type_rejected PASSED          [ 59%]
+tests/unit/test_mcp_write.py::test_invalid_identifier_rejected PASSED    [ 60%]
+tests/unit/test_mcp_write.py::test_missing_field_rejected PASSED         [ 60%]
+tests/unit/test_mcp_write.py::test_untyped_rejected PASSED               [ 60%]
+tests/unit/test_mcp_write.py::test_forged_identity_ignored PASSED        [ 60%]
+tests/unit/test_mcp_write.py::test_idempotent_double_write PASSED        [ 60%]
+tests/unit/test_mcp_write.py::test_store_down_degrades PASSED            [ 60%]
+tests/unit/test_mcp_write.py::test_embed_down_no_partial_write PASSED    [ 61%]
+tests/unit/test_payloads.py::TestNaturalKeyConstruction::test_natural_key_is_three_colon_separated_segments PASSED [ 61%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_valid_identifiers_with_underscores_accepted[valid_project-valid_id] PASSED [ 61%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_valid_identifiers_with_underscores_accepted[project123-id456] PASSED [ 61%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_valid_identifiers_with_underscores_accepted[a_b_c-x_y_z] PASSED [ 61%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_valid_identifiers_with_underscores_accepted[project_2026-item_42] PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_hyphens_and_colons_rejected_with_clear_error[my-project-valid_id-project] PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_hyphens_and_colons_rejected_with_clear_error[valid_project-my-id-identifier] PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_hyphens_and_colons_rejected_with_clear_error[ADR:SP:007-valid_id-project] PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_hyphens_and_colons_rejected_with_clear_error[valid_project-ID:INJECT-identifier] PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_empty_identifier_rejected PASSED [ 62%]
+tests/unit/test_payloads.py::TestIdentifierValidation::test_empty_project_rejected PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_valid_three_segment_references_accepted PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_malformed_references_rejected[only_two:segments] PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_malformed_references_rejected[too:many:segments:here] PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_malformed_references_rejected[single] PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_malformed_references_rejected[four:segments:are:invalid] PASSED [ 63%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_malformed_references_rejected[free text description] PASSED [ 64%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_self_supersession_rejected PASSED [ 64%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_cross_project_supersession_accepted PASSED [ 64%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_duplicate_supersession_collapsed PASSED [ 64%]
+tests/unit/test_payloads.py::TestSupersessionValidation::test_empty_supersedes_accepted PASSED [ 64%]
+tests/unit/test_payloads.py::TestDefaultValues::test_domain_tags_defaults_to_empty PASSED [ 65%]
+tests/unit/test_payloads.py::TestDefaultValues::test_version_defaults_to_1 PASSED [ 65%]
+tests/unit/test_payloads.py::TestDefaultValues::test_supersedes_defaults_to_empty PASSED [ 65%]
+tests/unit/test_payloads.py::TestForwardCompatibility::test_unknown_fields_ignored PASSED [ 65%]
+tests/unit/test_payloads.py::TestRequiredFields::test_source_ref_required PASSED [ 65%]
+tests/unit/test_payloads.py::TestRequiredFields::test_project_required PASSED [ 65%]
+tests/unit/test_payloads.py::TestRequiredFields::test_identifier_required PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_adr_natural_key_format PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_document_accepts_no_type_specific_fields PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_review_report_requires_verdict PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_review_report_with_verdict_accepted PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_build_outcome_payload PASSED [ 66%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_pattern_payload PASSED [ 67%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_warning_payload PASSED [ 67%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_seed_module_payload PASSED [ 67%]
+tests/unit/test_payloads.py::TestConcretePayloadTypes::test_all_types_inherit_base_validators PASSED [ 67%]
+tests/unit/test_probe_harness.py::test_named_constants PASSED            [ 67%]
+tests/unit/test_probe_harness.py::test_minimum_probe_set_satisfies_gate PASSED [ 68%]
+tests/unit/test_probe_harness.py::test_below_minimum_probe_set_fails_gate PASSED [ 68%]
+tests/unit/test_probe_harness.py::test_divergent_result_clears_full_parity PASSED [ 68%]
+tests/unit/test_probe_harness.py::test_matching_results_achieves_full_parity PASSED [ 68%]
+tests/unit/test_probe_harness.py::test_parity_report_structure PASSED    [ 68%]
+tests/unit/test_probe_harness.py::test_harness_consumes_search_results PASSED [ 68%]
+tests/unit/test_retrieval_suite.py::TestValidationRejections::test_hyphen_project_rejected PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestValidationRejections::test_unknown_payload_type_rejected PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestValidationRejections::test_malformed_domain_tag_rejected PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestValidationRejections::test_negative_budget_rejected PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestValidationRejections::test_empty_request_rejected PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_payload_type_filter_zero_returns_all_types PASSED [ 69%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_payload_type_filter_one_returns_only_that_type PASSED [ 70%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_payload_type_filter_three_returns_those_types PASSED [ 70%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_domain_tag_filter_returns_only_tagged_memories PASSED [ 70%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_cosine_desc_ordering PASSED [ 70%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_supersession_exclusion_by_default PASSED [ 70%]
+tests/unit/test_retrieval_suite.py::TestFilteringAndRanking::test_include_superseded_marking PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestBudgetBoundaries::test_exactly_budget_returns_full PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestBudgetBoundaries::test_over_budget_drops_lowest_ranked PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestBudgetBoundaries::test_zero_budget_returns_empty PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestBudgetBoundaries::test_memory_larger_than_budget_omitted_whole PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestBudgetBoundaries::test_partial_coverage_honesty PASSED [ 71%]
+tests/unit/test_retrieval_suite.py::TestSecurityAndInjection::test_query_resembling_filter_is_search_text_only PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestSecurityAndInjection::test_injection_domain_tag_rejected PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestConcurrencyAndDeterminism::test_equal_relevance_deterministic_ordering PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestConcurrencyAndDeterminism::test_supersede_mid_search_resolves_to_one_state PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestConcurrencyAndDeterminism::test_repeated_concurrent_searches_return_identical_blocks PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestDegradation::test_embed_unavailable_fails_cleanly_without_credentials PASSED [ 72%]
+tests/unit/test_retrieval_suite.py::TestDegradation::test_store_unreachable_fails_cleanly_without_credentials PASSED [ 73%]
+tests/unit/test_retrieval_suite.py::TestEndToEndWithFakeEmbed::test_full_retrieval_flow_with_fake_embed PASSED [ 73%]
+tests/unit/test_retrieval_suite.py::TestEndToEndWithFakeEmbed::test_fake_embed_deterministic_across_calls PASSED [ 73%]
+tests/unit/test_retrieval_suite.py::TestEndToEndWithFakeEmbed::test_fake_embed_different_texts_different_vectors PASSED [ 73%]
+tests/unit/test_scaffold.py::test_package_imports PASSED                 [ 73%]
+tests/unit/test_scaffold.py::test_langgraph_store_import PASSED          [ 73%]
+tests/unit/test_search_core.py::test_search_returns_only_requested_project_memories_ranked_descending PASSED [ 74%]
+tests/unit/test_search_core.py::test_search_with_zero_payload_types_returns_all_types PASSED [ 74%]
+tests/unit/test_search_core.py::test_search_with_one_payload_type_returns_only_that_type PASSED [ 74%]
+tests/unit/test_search_core.py::test_search_with_many_payload_types_returns_those_types PASSED [ 74%]
+tests/unit/test_search_core.py::test_search_with_domain_tag_returns_only_tagged_memories PASSED [ 74%]
+tests/unit/test_search_core.py::test_search_excludes_superseded_records_by_default PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_includes_superseded_when_requested PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_orders_equal_relevance_deterministically PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_empty_project_returns_empty_result PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_treats_filter_syntax_in_query_as_text PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_raises_clear_error_when_embed_service_unavailable PASSED [ 75%]
+tests/unit/test_search_core.py::test_search_raises_clear_error_when_store_unreachable PASSED [ 76%]
+tests/unit/test_search_core.py::test_search_mid_search_supersession_resolves_to_one_state PASSED [ 76%]
+tests/unit/test_search_core.py::test_search_core_consumes_validated_request PASSED [ 76%]
+tests/unit/test_search_request.py::TestSearchRequestBasicFields::test_minimal_valid_request PASSED [ 76%]
+tests/unit/test_search_request.py::TestSearchRequestBasicFields::test_all_fields_populated PASSED [ 76%]
+tests/unit/test_search_request.py::TestProjectValidation::test_project_with_hyphen_rejected PASSED [ 76%]
+tests/unit/test_search_request.py::TestProjectValidation::test_project_with_underscore_accepted PASSED [ 77%]
+tests/unit/test_search_request.py::TestProjectValidation::test_project_lowercase_alphanumeric_accepted PASSED [ 77%]
+tests/unit/test_search_request.py::TestPayloadTypeValidation::test_unknown_payload_type_rejected PASSED [ 77%]
+tests/unit/test_search_request.py::TestPayloadTypeValidation::test_valid_payload_types_accepted PASSED [ 77%]
+tests/unit/test_search_request.py::TestPayloadTypeValidation::test_empty_payload_types_means_all PASSED [ 77%]
+tests/unit/test_search_request.py::TestPayloadTypeValidation::test_mixed_valid_and_invalid_types_rejected PASSED [ 78%]
+tests/unit/test_search_request.py::TestDomainTagValidation::test_malformed_domain_tag_rejected PASSED [ 78%]
+tests/unit/test_search_request.py::TestDomainTagValidation::test_valid_domain_tags_accepted PASSED [ 78%]
+tests/unit/test_search_request.py::TestDomainTagValidation::test_domain_tag_with_quotes_rejected PASSED [ 78%]
+tests/unit/test_search_request.py::TestDomainTagValidation::test_domain_tag_with_operators_rejected PASSED [ 78%]
+tests/unit/test_search_request.py::TestTokenBudgetValidation::test_negative_token_budget_rejected PASSED [ 78%]
+tests/unit/test_search_request.py::TestTokenBudgetValidation::test_zero_token_budget_accepted PASSED [ 79%]
+tests/unit/test_search_request.py::TestTokenBudgetValidation::test_positive_token_budget_accepted PASSED [ 79%]
+tests/unit/test_search_request.py::TestQueryOrFilterRequired::test_request_with_neither_query_nor_filter_rejected PASSED [ 79%]
+tests/unit/test_search_request.py::TestQueryOrFilterRequired::test_request_with_query_only_accepted PASSED [ 79%]
+tests/unit/test_search_request.py::TestQueryOrFilterRequired::test_request_with_payload_types_only_accepted PASSED [ 79%]
+tests/unit/test_search_request.py::TestQueryOrFilterRequired::test_request_with_domain_tags_only_accepted PASSED [ 79%]
+tests/unit/test_settings.py::TestSettingsValidation::test_missing_all_required_fields_names_each_field PASSED [ 80%]
+tests/unit/test_settings.py::TestSettingsValidation::test_missing_pg_dsn_only PASSED [ 80%]
+tests/unit/test_settings.py::TestSettingsValidation::test_missing_embed_url_only PASSED [ 80%]
+tests/unit/test_settings.py::TestSettingsValidation::test_empty_string_pg_dsn_raises_validation_error PASSED [ 80%]
+tests/unit/test_settings.py::TestSettingsValidation::test_whitespace_only_pg_dsn_raises_validation_error PASSED [ 80%]
+tests/unit/test_settings.py::TestSettingsValidation::test_empty_string_embed_url_raises_validation_error PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsValidation::test_whitespace_only_embed_url_raises_validation_error PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsDefaults::test_all_defaults_match_documented_values PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsDefaults::test_defaults_when_only_required_fields_provided PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsPrefixIsolation::test_unprefixed_pg_dsn_is_ignored PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsPrefixIsolation::test_unprefixed_embed_url_is_ignored PASSED [ 81%]
+tests/unit/test_settings.py::TestSettingsPrefixIsolation::test_unprefixed_optional_fields_ignored PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsEnvPrecedence::test_os_env_overrides_env_file PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsEnvPrecedence::test_env_file_used_when_no_os_env PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsNoForbiddenImports::test_settings_module_has_no_nats_imports PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsNoForbiddenImports::test_settings_module_has_no_httpx_imports PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsNoForbiddenImports::test_settings_module_has_no_psycopg_imports PASSED [ 82%]
+tests/unit/test_settings.py::TestSettingsIntegration::test_ac001_verification_command PASSED [ 83%]
+tests/unit/test_settings.py::TestSettingsIntegration::test_realistic_mac_dev_config PASSED [ 83%]
+tests/unit/test_settings.py::TestSettingsIntegration::test_custom_override_values PASSED [ 83%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace0-True] PASSED [ 83%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace1-True] PASSED [ 83%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace2-True] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace3-True] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace4-True] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace5-True] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace6-False] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace7-False] PASSED [ 84%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace8-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace9-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace10-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace11-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace12-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace13-False] PASSED [ 85%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_namespace_validation_table[namespace14-False] PASSED [ 86%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_hyphen_namespace_explicit PASSED [ 86%]
+tests/unit/test_store_validation.py::TestNamespaceValidation::test_valid_namespace_explicit PASSED [ 86%]
+tests/unit/test_store_validation.py::TestStoreFactory::test_factory_construction_with_fake_embed PASSED [ 86%]
+tests/unit/test_store_validation.py::TestStoreFactory::test_factory_construction_without_embed_fn PASSED [ 86%]
+tests/unit/test_store_validation.py::test_pg_dsn_format_is_psycopg3_conninfo PASSED [ 86%]
+tests/unit/test_store_validation.py::test_embed_callable_returns_768_dim_vectors PASSED [ 87%]
+tests/unit/test_supersession.py::test_write_successor_marks_predecessor_superseded_by PASSED [ 87%]
+tests/unit/test_supersession.py::test_superseded_record_excluded_from_default_retrieval PASSED [ 87%]
+tests/unit/test_supersession.py::test_declaring_count_predecessors_retires_exactly_count[0] PASSED [ 87%]
+tests/unit/test_supersession.py::test_declaring_count_predecessors_retires_exactly_count[1] PASSED [ 87%]
+tests/unit/test_supersession.py::test_declaring_count_predecessors_retires_exactly_count[5] PASSED [ 88%]
+tests/unit/test_supersession.py::test_forward_supersession_succeeds PASSED [ 88%]
+tests/unit/test_supersession.py::test_cross_project_supersession PASSED  [ 88%]
+tests/unit/test_supersession.py::test_idempotent_redeclaration PASSED    [ 88%]
+tests/unit/test_supersession.py::test_chain_collapse_traceable PASSED    [ 88%]
+tests/unit/test_supersession.py::test_racing_successors_resolve_to_one PASSED [ 88%]
+tests/unit/test_supersession.py::test_apply_supersessions_helper_marks_multiple_predecessors PASSED [ 89%]
+tests/unit/test_writer_core.py::test_write_payload_stores_record_in_correct_namespace PASSED [ 89%]
+tests/unit/test_writer_core.py::test_write_same_payload_twice_produces_same_identity PASSED [ 89%]
+tests/unit/test_writer_core.py::test_write_identical_content_is_noop PASSED [ 89%]
+tests/unit/test_writer_core.py::test_write_changed_content_advances_version PASSED [ 89%]
+tests/unit/test_writer_core.py::test_byte_identical_content_no_new_version PASSED [ 89%]
+tests/unit/test_writer_core.py::test_single_character_difference_creates_new_version PASSED [ 90%]
+tests/unit/test_writer_core.py::test_written_payload_has_content_field PASSED [ 90%]
+tests/unit/test_writer_core.py::test_batch_write_distinct_keys_produces_n_records PASSED [ 90%]
+tests/unit/test_writer_core.py::test_batch_write_empty_produces_zero_records PASSED [ 90%]
+tests/unit/test_writer_core.py::test_batch_write_duplicate_keys_collapses PASSED [ 90%]
+tests/unit/test_writer_core.py::test_hyphenated_project_namespace_rejected PASSED [ 91%]
+tests/unit/test_writer_core.py::test_non_registered_payload_rejected PASSED [ 91%]
+tests/unit/test_writer_core.py::test_embedding_unavailable_fails_write PASSED [ 91%]
+tests/unit/test_writer_core.py::test_no_llm_client_constructed PASSED    [ 91%]
+tests/unit/test_writer_core.py::test_writer_record_carries_content_and_namespace PASSED [ 91%]
+tests/unit/test_writer_core.py::test_stored_value_includes_metadata PASSED [ 91%]
+tests/unit/test_writer_core.py::test_natural_key_used_as_store_key PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_identical_content_twice_is_noop_no_reembed PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_byte_identical_content_no_new_version PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_single_character_change_advances_version PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_batch_zero_items_produces_no_records PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_batch_one_item_produces_one_record PASSED [ 92%]
+tests/unit/test_writer_idempotency.py::test_batch_fifty_distinct_keys_produces_fifty_records PASSED [ 93%]
+tests/unit/test_writer_idempotency.py::test_batch_duplicate_keys_collapse_to_one_per_key PASSED [ 93%]
+tests/unit/test_writer_idempotency.py::test_full_corpus_rerun_creates_no_new_records PASSED [ 93%]
+tests/unit/test_writer_idempotency.py::test_embedding_unavailable_fails_write_no_partial_record PASSED [ 93%]
+tests/unit/test_writer_idempotency.py::test_embedding_dimension_mismatch_fails_write PASSED [ 93%]
+tests/unit/test_writer_idempotency.py::test_database_unreachable_fails_write_no_partial_record PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_hyphen_namespace_rejected_before_write PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_non_registered_payload_rejected PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_hostile_content_written_byte_identical_inert PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_delimiter_in_identifier_rejected PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_zero_llm_no_anthropic_import_in_writer PASSED [ 94%]
+tests/unit/test_writer_idempotency.py::test_zero_llm_no_llm_modules_imported_during_writer_construction PASSED [ 95%]
+tests/unit/test_writer_idempotency.py::test_zero_llm_write_operation_touches_no_llm_modules PASSED [ 95%]
+tests/unit/test_writer_idempotency.py::test_zero_llm_negative_fails_if_anthropic_added PASSED [ 95%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_returns_uuid5 PASSED [ 95%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_same_key_yields_identical_uuid PASSED [ 95%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_uses_single_namespace_constant PASSED [ 95%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_same_segments_yield_same_identity PASSED [ 96%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_different_project_yields_different_identity PASSED [ 96%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_different_identifier_yields_different_identity PASSED [ 96%]
+tests/unit/test_writer_identity.py::TestRecordIdentity::test_different_payload_type_yields_different_identity PASSED [ 96%]
+tests/unit/test_writer_identity.py::TestContentHash::test_version_change_does_not_affect_hash PASSED [ 96%]
+tests/unit/test_writer_identity.py::TestContentHash::test_semantic_content_change_affects_hash PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestContentHash::test_single_character_change_affects_hash PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestContentHash::test_domain_tags_affect_hash PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestContentHash::test_supersedes_affect_hash PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestContentHash::test_hash_stability_across_calls PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestPurityConstraints::test_no_io_imports PASSED [ 97%]
+tests/unit/test_writer_identity.py::TestPurityConstraints::test_record_identity_is_pure PASSED [ 98%]
+tests/unit/test_writer_identity.py::TestPurityConstraints::test_content_hash_is_pure PASSED [ 98%]
+tests/unit/test_writer_supersession.py::test_supersede_and_link_marks_predecessor PASSED [ 98%]
+tests/unit/test_writer_supersession.py::test_superseded_record_excluded_but_addressable PASSED [ 98%]
+tests/unit/test_writer_supersession.py::test_supersession_count_outline[0] PASSED [ 98%]
+tests/unit/test_writer_supersession.py::test_supersession_count_outline[1] PASSED [ 98%]
+tests/unit/test_writer_supersession.py::test_supersession_count_outline[5] PASSED [ 99%]
+tests/unit/test_writer_supersession.py::test_forward_supersession_applied_when_key_appears PASSED [ 99%]
+tests/unit/test_writer_supersession.py::test_cross_project_supersession PASSED [ 99%]
+tests/unit/test_writer_supersession.py::test_idempotent_redeclaration PASSED [ 99%]
+tests/unit/test_writer_supersession.py::test_chain_collapse_traceable PASSED [ 99%]
+tests/unit/test_writer_supersession.py::test_racing_successors_resolve_to_one PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.14/site-packages/gherkin/gherkin_line.py:79: 298 warnings
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/gherkin/gherkin_line.py:79: DeprecationWarning: 'maxsplit' is passed as positional argument
+    uncommented_line = re.split(r"\s#", self._trimmed_line_text.strip(), 2)[0]
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.memory-mcp-server - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.key-example - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.smoke - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-007 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-004 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-005 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-006 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.boundary - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.negative - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.edge-case - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.typed-payload-registry - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-002 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+tests/unit/relay/test_chunk_writer.py:232
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/relay/test_chunk_writer.py:232: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.regression
+
+tests/bdd/test_memory_mcp_server.py::test_writing_the_same_payload_twice_produces_a_single_memory_record
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1162: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    self.cached_result = None
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/bdd/test_typed_payload_registry.py: 39 warnings
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/pytest_bdd/compat.py:28: PytestRemovedIn10Warning: Passing nodeid to _register_fixture is deprecated. Pass node instead for fixture scoping.
+    request._fixturemanager._register_fixture(
+
+tests/bdd/test_typed_payload_registry.py: 39 warnings
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1972: PytestRemovedIn10Warning: Passing baseid to FixtureDef is deprecated. Pass node instead for fixture scoping.
+    fixture_def = FixtureDef(
+
+tests/unit/test_app_lifespan.py::test_startup_failure_with_unreachable_database
+  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.venv/lib/python3.14/site-packages/langgraph/store/base/embed.py:413: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    asyncio.iscoroutinefunction(func)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.2-final-0 _______________
+
+Name                                           Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------------
+src/fleet_memory/__init__.py                       1      0   100%
+src/fleet_memory/app.py                           37      2    95%   69-70
+src/fleet_memory/embed.py                         61      5    92%   35, 37, 124, 180, 189
+src/fleet_memory/errors.py                        41      0   100%
+src/fleet_memory/mcp/__init__.py                   3      0   100%
+src/fleet_memory/mcp/__main__.py                  22     13    41%   38-61, 65
+src/fleet_memory/mcp/degradation.py               50      2    96%   130-131
+src/fleet_memory/mcp/resources.py                 19      6    68%   89-107
+src/fleet_memory/mcp/server.py                    30      8    73%   77-97
+src/fleet_memory/mcp/tools/__init__.py             0      0   100%
+src/fleet_memory/mcp/tools/search.py              32      8    75%   107, 109, 165-190
+src/fleet_memory/mcp/tools/supersede.py           30      5    83%   124-135
+src/fleet_memory/mcp/tools/write.py               32      7    78%   79, 115-129
+src/fleet_memory/payloads/__init__.py              3      0   100%
+src/fleet_memory/payloads/base.py                 55      0   100%
+src/fleet_memory/payloads/models.py               27      0   100%
+src/fleet_memory/payloads/registry.py             14      1    93%   71
+src/fleet_memory/reindex/__init__.py               4      0   100%
+src/fleet_memory/reindex/audit.py                 42      0   100%
+src/fleet_memory/reindex/backfill.py              27      1    96%   93
+src/fleet_memory/reindex/classify.py              53      4    92%   164, 169, 174, 179
+src/fleet_memory/reindex/parity.py                15      1    93%   71
+src/fleet_memory/reindex/parsers.py              127     28    78%   89, 111-112, 118, 129, 158-159, 187-188, 194, 206, 212, 242-243, 270-271, 277, 288, 294, 317-318, 346-347, 353, 365, 371, 408-409
+src/fleet_memory/reindex/pipeline.py              46      6    87%   75, 126-134, 143, 161
+src/fleet_memory/reindex/publisher.py             13      0   100%
+src/fleet_memory/reindex/walker.py                33      8    76%   51, 53, 68-70, 78-80, 85-87
+src/fleet_memory/relay/__init__.py                 0      0   100%
+src/fleet_memory/relay/chunk_writer.py            18      0   100%
+src/fleet_memory/relay/chunker.py                 67     12    82%   90-104, 158, 176, 205-210
+src/fleet_memory/relay/handler.py                 24      0   100%
+src/fleet_memory/relay/schema.py                  21      0   100%
+src/fleet_memory/relay/service.py                 51      1    98%   149
+src/fleet_memory/retrieval/__init__.py             5      0   100%
+src/fleet_memory/retrieval/assembly.py            49      3    94%   51, 123, 153
+src/fleet_memory/retrieval/composition.py         74      3    96%   64, 131-132
+src/fleet_memory/retrieval/core.py                42      1    98%   42
+src/fleet_memory/retrieval/probe_harness.py       38      0   100%
+src/fleet_memory/retrieval/search_request.py      48      0   100%
+src/fleet_memory/settings.py                      25      0   100%
+src/fleet_memory/store.py                         47      4    91%   43, 111, 115, 167
+src/fleet_memory/writer/__init__.py                3      0   100%
+src/fleet_memory/writer/core.py                   54      0   100%
+src/fleet_memory/writer/identity.py               14      0   100%
+src/fleet_memory/writer/supersession.py           37      4    89%   49, 57, 121-124
+----------------------------------------------------------------------------
+TOTAL                                           1434    133    91%
+Coverage JSON written to file coverage_full_task_rip_007.json
+========= 567 passed, 2 skipped, 65 deselected, 396 warnings in 9.13s ==========

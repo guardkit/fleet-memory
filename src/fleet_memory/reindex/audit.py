@@ -124,7 +124,9 @@ async def audit_published_episodes(
     """
     # Extract published natural keys from RunReport
     # RunReport is expected to have published_natural_keys from TASK-RIP-005
-    published_natural_keys: list[str] = getattr(run_report, "published_natural_keys", [])
+    published_natural_keys: list[str] = getattr(
+        run_report, "published_natural_keys", []
+    )
 
     total_published = len(published_natural_keys)
     stored_count = 0
