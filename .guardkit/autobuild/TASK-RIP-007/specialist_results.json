@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 110.32360233319923,
+    "duration_seconds": 93.50149375014007,
     "error": null,
     "tests_run": 569,
     "tests_failed": 0,
     "coverage_pct": 91.0,
-    "output_summary": "567 passed, 2 skipped, 91% coverage - audit.py 100%, backfill.py 96%, parity.py 93%",
+    "output_summary": "567 passed, 2 skipped, 91% coverage - audit.py 100%, all quality gates passed",
     "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 247.7267881659791,
+    "duration_seconds": 246.25406487472355,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
