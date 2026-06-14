@@ -80,7 +80,7 @@ This task is the **producer** of the §4 Integration Contract `typed_payload`.
 ## Implementation Notes
 
 - Construct the concrete payload models from
-  [payloads/models.py](src/fleet_memory/payloads/models.py); let `BasePayload`'s
+  [src/fleet_memory/payloads/models.py](src/fleet_memory/payloads/models.py); let `BasePayload`'s
   `__init__` validation raise `IdentifierValidationError` on a bad identifier and
   convert that into an unparseable result rather than letting it escape.
 - Treat content strictly as data — never `eval`/`exec`/template-render the body.

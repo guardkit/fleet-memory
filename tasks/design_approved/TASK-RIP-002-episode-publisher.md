@@ -42,7 +42,7 @@ This task is the **producer** of the §4 Integration Contract `memory_episode_ro
 ## Acceptance Criteria
 
 - [ ] `src/fleet_memory/reindex/publisher.py` exposes a publisher that accepts a `BasePayload` and publishes a `MemoryEpisodeV1` onto the MEMORY stream
-- [ ] The published episode has `content_format == "json"` and `payload_type == payload.payload_type`, so `RelayService._ingest_json` routes it to the `DeterministicWriter` rather than the prose chunker ([relay/service.py](src/fleet_memory/relay/service.py))
+- [ ] The published episode has `content_format == "json"` and `payload_type == payload.payload_type`, so `RelayService._ingest_json` routes it to the `DeterministicWriter` rather than the prose chunker ([src/fleet_memory/relay/service.py](src/fleet_memory/relay/service.py))
 - [ ] `body` is the payload's canonical JSON serialization and round-trips: `get_model_for_type(episode.payload_type)(**json.loads(episode.body))` reconstructs an equal payload
 - [ ] `source_ref` carries the source document reference; `episode_id` is derived deterministically from the payload `natural_key` (so a re-publish of the same parsed document is idempotent at the JetStream Msg-Id layer as well as downstream)
 - [ ] No language-model, cloud, or frontier-model request is made by the publisher (asserted by test — e.g. no network egress / no LLM client constructed)
@@ -66,7 +66,7 @@ This task is the **producer** of the §4 Integration Contract `memory_episode_ro
 
 - The routing contract is the whole point: `content_format` must be the literal
   string `"json"` and `payload_type` must be a key in
-  [payloads/registry.py](src/fleet_memory/payloads/registry.py). Any other
+  [src/fleet_memory/payloads/registry.py](src/fleet_memory/payloads/registry.py). Any other
   content_format sends the episode down the prose chunker — a silent wrong-path bug.
 - Reuse the existing broker/publisher wiring from [app.py](src/fleet_memory/app.py);
   do not create a second broker.

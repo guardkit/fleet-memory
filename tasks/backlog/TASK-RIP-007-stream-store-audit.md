@@ -58,7 +58,7 @@ DLQ records.
 
 - Source the "published" set from the `RunReport` natural keys (TASK-RIP-005);
   resolve store presence via `record_identity(natural_key)`
-  ([writer/identity.py](src/fleet_memory/writer/identity.py)) against the store.
+  ([src/fleet_memory/writer/identity.py](src/fleet_memory/writer/identity.py)) against the store.
 - DLQ membership comes from the relay's dead-letter subject (see
-  [relay/handler.py](src/fleet_memory/relay/handler.py) `dlq_subject`).
+  [src/fleet_memory/relay/handler.py](src/fleet_memory/relay/handler.py) `dlq_subject`).
 - Keep the audit read-only — it observes, it never writes or republishes.

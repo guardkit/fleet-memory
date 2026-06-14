@@ -31,16 +31,16 @@ test_results:
 
 Generate a probe-set parity report against the re-indexed corpus (FEAT-MEM-07
 AC-4, which feeds AC-1's retrieval-quality criterion). Reuse the **existing**
-`retrieval/probe_harness.py` from FEAT-MEM-05 to run the frozen probe set against
+`src/fleet_memory/retrieval/probe_harness.py` from FEAT-MEM-05 to run the frozen probe set against
 the re-indexed store and report per-probe hit/miss plus an aggregate parity
 figure. This task builds the report generator; running it against the live
 re-indexed corpus is part of the operator verification (TASK-RIP-011).
 
 ## Acceptance Criteria
 
-- [ ] `src/fleet_memory/reindex/parity.py` runs the frozen probe set via the existing `retrieval/probe_harness.py` against the re-indexed store and emits a parity report
+- [ ] `src/fleet_memory/reindex/parity.py` runs the frozen probe set via the existing `src/fleet_memory/retrieval/probe_harness.py` against the re-indexed store and emits a parity report
 - [ ] The report records per-probe hit/miss and an aggregate parity figure
-- [ ] Retrieval logic is **reused** from [retrieval/probe_harness.py](src/fleet_memory/retrieval/probe_harness.py) — no duplicate retrieval implementation
+- [ ] Retrieval logic is **reused** from [src/fleet_memory/retrieval/probe_harness.py](src/fleet_memory/retrieval/probe_harness.py) — no duplicate retrieval implementation
 - [ ] `tests/unit/reindex/test_parity.py` runs against an ephemeral/fake store seeded with known records and known probes and asserts the report shape and parity calculation
 - [ ] All modified files pass project-configured lint/format checks with zero errors
 
