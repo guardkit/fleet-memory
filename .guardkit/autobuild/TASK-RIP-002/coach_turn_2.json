@@ -6,11 +6,11 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-RIP-001-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_task_rip_001.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
         "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file .claude/task-plans/TASK-RIP-001-implementation-plan.md",
+        "player_claim": "Player claimed file coverage_task_rip_001.json",
         "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
         "severity": "should_fix"
       }
@@ -18,47 +18,11 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-RIP-002-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_task_rip_001_full.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
         "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file .claude/task-plans/TASK-RIP-002-implementation-plan.md",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .guardkit/bdd/TASK-RIP-002_junit.xml. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file .guardkit/bdd/TASK-RIP-002_junit.xml",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_reindex.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file coverage_reindex.json",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/reindex/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file src/fleet_memory/reindex/__init__.py",
+        "player_claim": "Player claimed file coverage_task_rip_001_full.json",
         "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
         "severity": "should_fix"
       }
@@ -90,30 +54,6 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/settings.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file src/fleet_memory/settings.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/reindex/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
       "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/test_publisher.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
@@ -124,75 +64,56 @@
       }
     },
     {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/test_walker.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/reindex/test_walker.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
       "type": "test_failure",
       "severity": "critical",
-      "description": "Evidence gathering aborted with status 'partial_gate_abort'. BDD oracle failed with pytest exit code 4 (test discovery error) - zero scenarios successfully executed. Independent test verification (independent_tests) is null - cannot independently confirm Player-reported test results.",
-      "requirement": "All ACs require test verification",
-      "suggestion": "Investigate why evidence gathering aborted. Verify BDD feature file exists at features/re-index-pipeline/re-index-pipeline.feature. Ensure independent test runner can complete successfully."
+      "description": "BDD scenario 'test_published_episodes_are_structured_so_the_relay_routes_them_to_the_deterministic_writer' is PENDING (not passing). The scenario shows: 'All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames.' This represents absent evidence for end-to-end validation of the routing contract (AC-002). The unit tests pass in isolation but the BDD oracle that confirms integration with RelayService routing has not successfully completed.",
+      "requirement": "AC-002: The published episode routes to DeterministicWriter via RelayService._ingest_json",
+      "suggestion": "Investigate why the BDD scenario is pending. Run: pytest features/re-index-pipeline/ -k test_published_episodes_are_structured --full-trace -v to see the full traceback. Ensure the scenario can execute and passes, confirming end-to-end routing behavior."
     },
     {
       "type": "code_quality",
       "severity": "major",
-      "description": "All 11 Player-claimed files (including core deliverables src/fleet_memory/reindex/publisher.py and tests/unit/reindex/test_publisher.py) show as tracked but unchanged in 'git status --porcelain'. Player is re-reporting work from a previous turn with zero Turn 2 modifications.",
-      "requirement": "AC-001 through AC-007",
-      "suggestion": "Verify whether Turn 2 made any actual changes, or if this is stale reporting. Check git log to confirm when files were last modified."
-    },
-    {
-      "type": "missing_requirement",
-      "severity": "major",
-      "description": "Plan audit gate failed: 'no plan on disk; AC names file path(s) that could not be independently verified (no file_existence discrepancy was recorded for the referenced path): relay/service.py'. While this appears to be a false positive (AC-002 cites relay/service.py for routing contract context, not as a modification target), all_gates_passed=false blocks approval.",
-      "requirement": "AC-002",
-      "suggestion": "Clarify plan_audit expectation. If relay/service.py reference is purely documentary, update AC-002 wording to avoid triggering plan_audit file-existence checks."
+      "description": "Turn 2 report lists files_modified including src/fleet_memory/reindex/publisher.py, tests/unit/reindex/test_publisher.py, and src/fleet_memory/reindex/walker.py, but honesty verification shows 'git status --porcelain' reports no changes to these files in Turn 2. The report also states 'Files planned: 0, Files actual: 0' which contradicts the files_modified list. This suggests Turn 2 may not have performed actual work, or is incorrectly reporting prior turn's files.",
+      "requirement": "All acceptance criteria",
+      "suggestion": "Clarify what work was performed in Turn 2. If files were created in Turn 1 and are correct, the Turn 2 report should reflect files_modified: [] or only list orchestrator files (.guardkit/bdd/*.xml, coverage*.json). Do not list implementation files that weren't touched this turn."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', independent_tests=null, BDD oracle failed (zero scenarios run). File shows as unchanged in Turn 2 per honesty check. Absent evidence, not positive confirmation."
+      "result": "verified",
+      "notes": "Independent test verification confirms publish_episode() function exists and accepts BasePayload. Test test_episode_is_json_with_payload_type and others passed."
     },
     {
       "criterion_id": "AC-002",
       "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', plan_audit flagged relay/service.py violation (likely false positive but gate still failed). No independent test verification. Absent evidence."
+      "notes": "Unit tests verify content_format='json' and payload_type are set correctly. However, the BDD scenario that validates end-to-end routing through RelayService._ingest_json to DeterministicWriter is PENDING (not passing). Without BDD confirmation, we lack evidence the routing contract works in integration. This is a blocking absence of evidence per absence-of-failure-is-not-success.md."
     },
     {
       "criterion_id": "AC-003",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', independent_tests=null, BDD failed. Player claims round-trip test exists but cannot independently confirm. Absent evidence."
+      "result": "verified",
+      "notes": "Independent test test_body_round_trips_through_registry passed, confirming canonical JSON serialization with sort_keys=True and successful round-trip through get_model_for_type()."
     },
     {
       "criterion_id": "AC-004",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', independent_tests=null, BDD failed. Player claims deterministic episode_id implementation but cannot independently confirm. Absent evidence."
+      "result": "verified",
+      "notes": "Independent tests test_episode_id_deterministic_for_natural_key and test_source_ref_preserved passed, confirming SHA-256 deterministic episode_id and source_ref provenance tracking."
     },
     {
       "criterion_id": "AC-005",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', independent_tests=null. Player claims no LLM calls but cannot independently confirm via test execution. Absent evidence."
+      "result": "verified",
+      "notes": "Independent test test_no_network_calls_during_publish passed. Publisher uses only stdlib (hashlib, json) and broker.publish with no LLM client imports."
     },
     {
       "criterion_id": "AC-006",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', independent_tests=null, BDD oracle failed (pytest exit 4, zero scenarios run). Test file shows as unchanged in Turn 2. Absent evidence."
+      "result": "verified",
+      "notes": "Independent test run confirms tests/unit/reindex/test_publisher.py contains 5 tests covering all required assertions: content_format, payload_type, body round-trip, deterministic episode_id, and no network calls. All 5/5 tests passed."
     },
     {
       "criterion_id": "AC-007",
-      "result": "rejected",
-      "notes": "Cannot verify - gathering_status='partial_gate_abort', no lint output in evidence bundle. Player self-reports ruff check passed but cannot independently confirm. Absent evidence."
+      "result": "verified",
+      "notes": "Evidence bundle confirms files pass Black and Ruff checks per project code-style.md standards."
     }
   ],
-  "rationale": "Rejecting per absence-of-failure guards #1, #5, and #6. Evidence gathering aborted (partial_gate_abort) before completion - cannot approve on incomplete evidence. BDD oracle failed with zero scenarios executed (ABSENT SIGNAL). Independent test verification is null - cannot independently confirm Player's self-reported tests. Additionally, all 11 claimed files show as tracked-but-unchanged in Turn 2, suggesting Player is re-reporting previous work. Quality gate all_gates_passed=false due to plan_audit violation. Per guard rules: treat absent/null evidence as blocking, not as absence-of-failure approval."
+  "rationale": "Cannot approve due to BDD scenario pending status. While unit tests (5/5) pass independently and demonstrate the publisher contract works in isolation, the BDD oracle that validates end-to-end routing behavior (AC-002) is pending, not passing. This represents absent evidence for the critical integration requirement. Per absence-of-failure-is-not-success.md, a pending scenario is not evidence of passing behavior. Additionally, honesty verification shows Turn 2 made no git-detectable changes to implementation files, yet claims them as modified, suggesting either no work was done or incorrect reporting. Require BDD scenario resolution before approval."
 }

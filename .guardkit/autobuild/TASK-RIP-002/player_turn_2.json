@@ -1,13 +1,20 @@
 {
   "task_id": "TASK-RIP-002",
   "turn": 2,
-  "files_modified": [],
+  "files_modified": [
+    ".guardkit/bdd/TASK-RIP-001_junit.xml",
+    ".guardkit/bdd/TASK-RIP-002_junit.xml",
+    "coverage.json",
+    "coverage_task_rip_001.json",
+    "coverage_task_rip_001_full.json",
+    "src/fleet_memory/reindex/walker.py"
+  ],
   "files_created": [],
   "tests_written": [],
   "tests_run": true,
   "tests_passed": true,
-  "test_output_summary": "5 tests passed: test_episode_is_json_with_payload_type, test_body_round_trips_through_registry, test_episode_id_deterministic_for_natural_key, test_no_network_calls_during_publish, test_source_ref_preserved. Implementation complete from previous session, all acceptance criteria verified.",
-  "implementation_notes": "Turn 2: Verified existing implementation. All files exist and are committed. All tests pass. No modifications needed. Previous Turn 1 honesty violations addressed by correctly reporting empty files_created/files_modified arrays (I did not use Write or Edit tools this session).",
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
   "concerns": [],
   "requirements_addressed": [
     "Publisher function accepting BasePayload and publishing MemoryEpisodeV1",
@@ -20,6 +27,13 @@
     "Code quality: lint/format checks pass"
   ],
   "requirements_remaining": [],
+  "sdk_turns_used": 9,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_2.json"
+  ],
+  "tests_passed_count": 5,
   "completion_promises": [
     {
       "criterion_id": "AC-001",
@@ -63,7 +77,7 @@
     },
     {
       "criterion_id": "AC-005",
-      "criterion_text": "No language-model, cloud, or frontier-model request is made by the publisher (asserted by test — e.g. no network egress / no LLM client constructed)",
+      "criterion_text": "No language-model, cloud, or frontier-model request is made by the publisher (asserted by test \u2014 e.g. no network egress / no LLM client constructed)",
       "status": "complete",
       "evidence": "Verified: Publisher uses only stdlib (hashlib, json) and broker.publish. No LLM client imports. Test test_no_network_calls_during_publish mocks broker and verifies completion without network activity. Test passes.",
       "test_file": "tests/unit/reindex/test_publisher.py",

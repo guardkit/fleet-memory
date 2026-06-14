@@ -1,12 +1,12 @@
 {
   "task_id": "TASK-RIP-002",
-  "timestamp": "2026-06-14T07:28:23.825872",
+  "timestamp": "2026-06-14T07:36:10.517195",
   "completed": true,
   "phases": {
     "phase_3": {
       "detected": true,
-      "text": "Implementation** - Already complete (from previous session)",
-      "completed": true
+      "text": "Implementation** \u2713 Already complete  ",
+      "completed": false
     }
   },
   "quality_gates": {
@@ -20,18 +20,21 @@
   "files_modified": [
     ".guardkit/bdd/TASK-RIP-001_junit.xml",
     ".guardkit/bdd/TASK-RIP-002_junit.xml",
+    "coverage.json",
+    "coverage_task_rip_001.json",
+    "coverage_task_rip_001_full.json",
     "src/fleet_memory/reindex/walker.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_1.json"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_2.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_1.json"
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_2.json"
   ],
   "tests_written": [],
   "summary": "5 tests passed, all quality gates passed",
   "sdk_turns": {
-    "turns_used": 26,
+    "turns_used": 9,
     "max_turns": 150,
     "ceiling_hit": false
   },
@@ -88,7 +91,7 @@
       "criterion_id": "AC-001",
       "criterion_text": "src/fleet_memory/reindex/publisher.py exposes a publisher that accepts a BasePayload and publishes a MemoryEpisodeV1 onto the MEMORY stream",
       "status": "complete",
-      "evidence": "publish_episode() function exists in publisher.py (lines 39-79) that accepts BasePayload parameter and publishes to MEMORY stream via broker.publish(episode_data, subject='MEMORY'). Function signature matches contract and implementation uses module-level broker singleton from app.py.",
+      "evidence": "Verified: publish_episode() function exists in publisher.py (lines 39-79), accepts BasePayload parameter, publishes to MEMORY stream via broker.publish(episode_data, subject='MEMORY'). Implementation uses module-level broker singleton from app.py per nats-asyncio-service pattern.",
       "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py"
@@ -98,8 +101,8 @@
       "criterion_id": "AC-002",
       "criterion_text": "The published episode has content_format == 'json' and payload_type == payload.payload_type, so RelayService._ingest_json routes it to the DeterministicWriter rather than the prose chunker",
       "status": "complete",
-      "evidence": "Episode construction (lines 69-76) sets content_format='json' (line 72) and payload_type=payload.payload_type (line 74). Test test_episode_is_json_with_payload_type verifies episode.content_format == 'json' and episode.payload_type == 'adr' for the test payload, ensuring correct relay routing.",
-      "test_file": "tests/unit/reindex/test_publisher.py::test_episode_is_json_with_payload_type",
+      "evidence": "Verified: Episode construction sets content_format='json' (line 72) and payload_type=payload.payload_type (line 74). Test test_episode_is_json_with_payload_type confirms episode.content_format == 'json' and payload_type routing. Test passes.",
+      "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py"
       ]
@@ -108,8 +111,8 @@
       "criterion_id": "AC-003",
       "criterion_text": "body is the payload's canonical JSON serialization and round-trips: get_model_for_type(episode.payload_type)(**json.loads(episode.body)) reconstructs an equal payload",
       "status": "complete",
-      "evidence": "Body is serialized with json.dumps(payload.model_dump(mode='json'), sort_keys=True, separators=(',', ':')) (lines 62-66) for canonical representation with stable key ordering and minimal whitespace. Test test_body_round_trips_through_registry (lines 86-111) verifies full round-trip equality: reconstructed = get_model_for_type(episode.payload_type)(**json.loads(episode.body)) equals original_payload.",
-      "test_file": "tests/unit/reindex/test_publisher.py::test_body_round_trips_through_registry",
+      "evidence": "Verified: Body serialization uses json.dumps(payload.model_dump(mode='json'), sort_keys=True, separators=(',', ':')) for canonical JSON with stable ordering. Test test_body_round_trips_through_registry verifies get_model_for_type(episode.payload_type)(**json.loads(episode.body)) == original_payload. Test passes.",
+      "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py"
       ]
@@ -118,8 +121,8 @@
       "criterion_id": "AC-004",
       "criterion_text": "source_ref carries the source document reference; episode_id is derived deterministically from the payload natural_key (so a re-publish of the same parsed document is idempotent at the JetStream Msg-Id layer as well as downstream)",
       "status": "complete",
-      "evidence": "episode_id derived via _derive_episode_id(payload.natural_key) (line 59) using SHA-256 hash truncated to 16 hex chars with 'ep-' prefix (lines 23-36). source_ref copied from payload.source_ref (line 75). Test test_episode_id_deterministic_for_natural_key (lines 114-142) verifies same natural_key yields identical episode_id across multiple publishes. Test test_source_ref_preserved (lines 168-182) verifies source_ref passes through correctly.",
-      "test_file": "tests/unit/reindex/test_publisher.py::test_episode_id_deterministic_for_natural_key",
+      "evidence": "Verified: episode_id = _derive_episode_id(payload.natural_key) uses SHA-256 hash (lines 23-36). source_ref = payload.source_ref (line 75). Test test_episode_id_deterministic_for_natural_key verifies same natural_key yields same episode_id. Test test_source_ref_preserved verifies source_ref passes through. Tests pass.",
+      "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py"
       ]
@@ -128,8 +131,8 @@
       "criterion_id": "AC-005",
       "criterion_text": "No language-model, cloud, or frontier-model request is made by the publisher (asserted by test \u2014 e.g. no network egress / no LLM client constructed)",
       "status": "complete",
-      "evidence": "Publisher is pure transformation using only hashlib, json stdlib modules and broker.publish. No LLM client imports (no openai, anthropic, langchain, etc.). No HTTP client construction. Test test_no_network_calls_during_publish (lines 145-165) mocks broker to prevent NATS connection and verifies function completes without network activity.",
-      "test_file": "tests/unit/reindex/test_publisher.py::test_no_network_calls_during_publish",
+      "evidence": "Verified: Publisher uses only stdlib (hashlib, json) and broker.publish. No LLM client imports. Test test_no_network_calls_during_publish mocks broker and verifies completion without network activity. Test passes.",
+      "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py"
       ]
@@ -138,7 +141,7 @@
       "criterion_id": "AC-006",
       "criterion_text": "tests/unit/reindex/test_publisher.py asserts content_format, payload_type, body round-trip, and deterministic episode_id",
       "status": "complete",
-      "evidence": "Comprehensive test suite with 5 test functions: test_episode_is_json_with_payload_type (content_format and payload_type assertions), test_body_round_trips_through_registry (full round-trip equality via registry), test_episode_id_deterministic_for_natural_key (deterministic episode_id verification), test_no_network_calls_during_publish (no LLM/cloud calls), test_source_ref_preserved (provenance tracking). All tests pass (5/5). Uses mock_broker fixture for isolated testing without live NATS.",
+      "evidence": "Verified: Test suite contains 5 tests covering all requirements: test_episode_is_json_with_payload_type (routing contract), test_body_round_trips_through_registry (serialization round-trip), test_episode_id_deterministic_for_natural_key (idempotent publish), test_no_network_calls_during_publish (no LLM calls), test_source_ref_preserved (provenance). All 5/5 tests pass.",
       "test_file": "tests/unit/reindex/test_publisher.py",
       "implementation_files": [
         "tests/unit/reindex/test_publisher.py"
@@ -148,7 +151,7 @@
       "criterion_id": "AC-007",
       "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
       "status": "complete",
-      "evidence": "Black formatting check passed: 'All done! \u2728 \ud83c\udf70 \u2728 2 files would be left unchanged.' Ruff linting check passed: 'All checks passed!' Both publisher.py and test_publisher.py conform to project code style (PEP 8, type hints, docstrings, 88 char line limit).",
+      "evidence": "Verified: Files pass Black and Ruff checks (confirmed in Turn 1 verification). Code follows PEP 8, uses type hints, docstrings, and 88-char line limit per project code-style.md.",
       "test_file": null,
       "implementation_files": [
         "src/fleet_memory/reindex/publisher.py",
@@ -162,14 +165,14 @@
       "agent": "test-orchestrator",
       "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 56.287032708059996
+      "duration_seconds": 101.626579917036
     },
     {
       "phase": "5",
       "agent": "code-reviewer",
       "status": "completed",
       "source": "orchestrator",
-      "duration_seconds": 185.56967724999413
+      "duration_seconds": 245.7523830831051
     }
   ]
 }
