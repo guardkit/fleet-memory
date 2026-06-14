@@ -1,36 +1,37 @@
 ---
-id: TASK-RIP-006
-title: Backfill staging + sidecar operator review-gate
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 5
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 75
+consumer_context:
+- consumes: memory_episode_routing
+  driver: nats-core MemoryEpisodeV1 publisher
+  format_note: content_format must be 'json' and payload_type a registered type; reviewed
+    backfill publishes through the SAME publisher — no second write path
+  framework: FastStream NatsBroker / RelayService.ingest content_format routing
+  task: TASK-RIP-002
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-002
 - TASK-RIP-005
+estimated_minutes: 75
+feature_id: FEAT-MEM-07
+id: TASK-RIP-006
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - backfill
 - review-gate
 - security
 - integration-contract
-consumer_context:
-- task: TASK-RIP-002
-  consumes: memory_episode_routing
-  framework: "FastStream NatsBroker / RelayService.ingest content_format routing"
-  driver: "nats-core MemoryEpisodeV1 publisher"
-  format_note: "content_format must be 'json' and payload_type a registered type; reviewed backfill publishes through the SAME publisher — no second write path"
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Backfill staging + sidecar operator review-gate
+updated: 2026-06-13 20:30:00+00:00
+wave: 5
 ---
 
 # Task: Backfill staging + sidecar operator review-gate

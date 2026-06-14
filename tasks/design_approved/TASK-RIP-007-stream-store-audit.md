@@ -1,27 +1,27 @@
 ---
-id: TASK-RIP-007
-title: Stream-vs-store audit script (100% accounted)
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 5
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 75
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-005
+estimated_minutes: 75
+feature_id: FEAT-MEM-07
+id: TASK-RIP-007
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - audit
 - accounting
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Stream-vs-store audit script (100% accounted)
+updated: 2026-06-13 20:30:00+00:00
+wave: 5
 ---
 
 # Task: Stream-vs-store audit script (100% accounted)

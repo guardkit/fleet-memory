@@ -1,0 +1,7 @@
+{
+  "tests_run": 3,
+  "tests_failed": 0,
+  "coverage_pct": 100.0,
+  "output_summary": "All 3 unit tests passed with 100% coverage on audit module; BDD step definitions pending",
+  "quality_gates_passed": true
+}

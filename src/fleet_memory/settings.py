@@ -28,6 +28,12 @@ class Settings(BaseSettings):
         description="Root directory for corpus documents (FLEET_MEMORY_CORPUS_ROOT)",
     )
 
+    # Backfill configuration
+    backfill_dir: str = Field(
+        default="backfill/staging/",
+        description="Directory for backfill staging payloads (FLEET_MEMORY_BACKFILL_DIR)",
+    )
+
     # Embedding configuration
     embed_model: str = Field(
         default="nomic-embed-text-v1.5",

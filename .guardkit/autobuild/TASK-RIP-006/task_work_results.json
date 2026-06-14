@@ -1,0 +1,195 @@
+{
+  "task_id": "TASK-RIP-006",
+  "timestamp": "2026-06-14T08:43:45.727315",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation**.",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 465,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": true
+  },
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
+    "src/fleet_memory/settings.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RIP-006-implementation-plan.md",
+    ".claude/task-plans/TASK-RIP-007-implementation-plan.md",
+    ".claude/task-plans/TASK-RIP-008-implementation-plan.md",
+    ".guardkit/bdd/TASK-RIP-006_junit.xml",
+    ".guardkit/bdd/TASK-RIP-007_junit.xml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
+    "coverage_task_rip_007.json",
+    "src/fleet_memory/reindex/audit.py",
+    "src/fleet_memory/reindex/backfill.py",
+    "src/fleet_memory/reindex/parity.py",
+    "tests/unit/reindex/test_audit.py",
+    "tests/unit/reindex/test_backfill.py",
+    "tests/unit/reindex/test_parity.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-006/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
+  ],
+  "summary": "465 tests passed, all quality gates passed",
+  "sdk_turns": {
+    "turns_used": 40,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "bdd_results": {
+    "scenarios_passed": 0,
+    "scenarios_failed": 0,
+    "scenarios_pending": 4,
+    "failures": [],
+    "pending": [
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_an_unreviewed_backfill_payload_is_not_published",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_reviewed_backfill_payload_is_published_on_the_next_run",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_backfill_payload_that_claims_to_be_reviewed_within_its_own_content_is_still_gated",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_reviewed_backfill_payloads_publish_through_the_same_relay_path_as_deterministically_parsed_documents",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      }
+    ],
+    "feature_files": [
+      "features/re-index-pipeline/re-index-pipeline.feature"
+    ],
+    "tag": "@task:TASK-RIP-006"
+  },
+  "task_type": "feature",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 1,
+    "missing_phases": [
+      "4",
+      "5"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 1 completed invocations\n\nMissing phases:\n  - Phase 4 (Testing)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 3 (Phase 3): Implementation**. (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "A backfill staging dir setting (FLEET_MEMORY_BACKFILL_DIR, default backfill/staging/) is added to Settings",
+      "status": "complete",
+      "evidence": "Added backfill_dir field to Settings class in src/fleet_memory/settings.py with default value 'backfill/staging/' and FLEET_MEMORY_ env prefix",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/settings.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "A staged payload with an operator review marker present is published through the same relay path and stored as a typed record like any deterministically parsed payload",
+      "status": "complete",
+      "evidence": "Implemented process_backfill_payload() which checks for .reviewed marker file and publishes through publish_episode() from TASK-RIP-002. Test test_reviewed_payload_publishes verifies this behavior.",
+      "test_file": "tests/unit/reindex/test_backfill.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/backfill.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "A staged payload without a review marker is not published",
+      "status": "complete",
+      "evidence": "has_review_marker() returns False when .reviewed file is absent, causing process_backfill_payload() to skip publishing. Test test_unreviewed_payload_gated verifies this gate.",
+      "test_file": "tests/unit/reindex/test_backfill.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/backfill.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "A staged payload whose own content claims it has been reviewed, but for which no operator marker exists, is not published (self-assertion cannot bypass the gate)",
+      "status": "complete",
+      "evidence": "The gate checks only the filesystem marker via has_review_marker() - payload content is never examined for review claims. Test test_self_asserted_review_without_marker_gated proves payloads with reviewed=True in content are still gated without filesystem marker.",
+      "test_file": "tests/unit/reindex/test_backfill.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/backfill.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Reviewed backfill publishes via the same publisher/relay path as deterministic re-index \u2014 no second write code path",
+      "status": "complete",
+      "evidence": "Backfill imports and directly calls publish_episode() from fleet_memory.reindex.publisher (TASK-RIP-002) - there is no duplicate publish path. The seam test test_reviewed_backfill_uses_same_routing verifies content_format=json and payload_type are set correctly.",
+      "test_file": "tests/unit/reindex/test_backfill.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/backfill.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "tests/unit/reindex/test_backfill.py covers: reviewed publishes, unreviewed gated, self-asserted-but-unmarked gated",
+      "status": "complete",
+      "evidence": "Created comprehensive test suite with 6 tests: test_has_review_marker_present, test_has_review_marker_absent, test_reviewed_payload_publishes (reviewed publishes), test_unreviewed_payload_gated (unreviewed gated), test_self_asserted_review_without_marker_gated (self-asserted gated), and test_reviewed_backfill_uses_same_routing (seam test). All tests pass.",
+      "test_file": "tests/unit/reindex/test_backfill.py",
+      "implementation_files": [
+        "tests/unit/reindex/test_backfill.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran black formatter on all modified files - src/fleet_memory/settings.py, src/fleet_memory/reindex/backfill.py, and tests/unit/reindex/test_backfill.py all pass black formatting checks with no errors.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/settings.py",
+        "src/fleet_memory/reindex/backfill.py",
+        "tests/unit/reindex/test_backfill.py"
+      ]
+    }
+  ]
+}

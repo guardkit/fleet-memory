@@ -1,0 +1,7 @@
+{
+  "tests_run": 52,
+  "tests_failed": 0,
+  "coverage_pct": 87.0,
+  "output_summary": "52 tests passed, 0 failed; reindex module 87% coverage, backfill.py 96% coverage",
+  "quality_gates_passed": true
+}

@@ -1,0 +1,98 @@
+{
+  "task_id": "TASK-RIP-008",
+  "turn": 1,
+  "files_modified": [
+    "src/fleet_memory/settings.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RIP-006-implementation-plan.md",
+    ".claude/task-plans/TASK-RIP-007-implementation-plan.md",
+    ".claude/task-plans/TASK-RIP-008-implementation-plan.md",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py",
+    "src/fleet_memory/reindex/audit.py",
+    "src/fleet_memory/reindex/backfill.py",
+    "src/fleet_memory/reindex/parity.py",
+    "tests/unit/reindex/test_audit.py",
+    "tests/unit/reindex/test_backfill.py",
+    "tests/unit/reindex/test_parity.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "AC-001: Created parity.py that runs probe set via existing probe_harness.py",
+    "AC-002: Report includes per-probe hit/miss and aggregate parity figure",
+    "AC-003: Reuses retrieval logic from probe_harness.py without duplication",
+    "AC-004: Unit tests validate report shape and parity calculation with mock data",
+    "AC-005: All files pass lint/format checks"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 22,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-008/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
+  ],
+  "tests_passed_count": 5,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`src/fleet_memory/reindex/parity.py` runs the frozen probe set via the existing `src/fleet_memory/retrieval/probe_harness.py` against the re-indexed store and emits a parity report",
+      "status": "complete",
+      "evidence": "Created `src/fleet_memory/reindex/parity.py` with `generate_parity_report()` function that calls `run_probe_harness()` from the existing probe_harness.py module. The function accepts probe_set, search_fn, and assemble_fn parameters and returns a JSON-serializable parity report.",
+      "test_file": "tests/unit/reindex/test_parity.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parity.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "The report records per-probe hit/miss and an aggregate parity figure",
+      "status": "complete",
+      "evidence": "The report includes a 'per_probe_results' list with per-probe hit/miss status and an 'aggregate_parity' field (float 0.0-1.0) calculated as hits/total. Verified by test_parity_report_shape and test_aggregate_parity_calculation.",
+      "test_file": "tests/unit/reindex/test_parity.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parity.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Retrieval logic is **reused** from [src/fleet_memory/retrieval/probe_harness.py](src/fleet_memory/retrieval/probe_harness.py) \u2014 no duplicate retrieval implementation",
+      "status": "complete",
+      "evidence": "The implementation imports and calls `run_probe_harness()` from the existing probe_harness.py module (line 16 and 63). No retrieval logic is reimplemented - all probe execution is delegated to the existing harness. Verified by test_parity_reuses_probe_harness.",
+      "test_file": "tests/unit/reindex/test_parity.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parity.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "`tests/unit/reindex/test_parity.py` runs against an ephemeral/fake store seeded with known records and known probes and asserts the report shape and parity calculation",
+      "status": "complete",
+      "evidence": "Created comprehensive unit tests using mock search and assemble functions with known probe sets. Tests verify report structure (test_parity_report_shape), parity calculation with 100% matches (test_aggregate_parity_calculation), 0% matches (test_aggregate_parity_with_divergences), and partial matches (test_partial_parity). All 5 tests pass.",
+      "test_file": "tests/unit/reindex/test_parity.py",
+      "implementation_files": [
+        "tests/unit/reindex/test_parity.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Both files pass ruff lint checks and formatting checks. Ran 'python -m ruff check' (all checks passed) and 'python -m ruff format --check' (both files formatted correctly).",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/reindex/parity.py",
+        "tests/unit/reindex/test_parity.py"
+      ]
+    }
+  ]
+}

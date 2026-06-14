@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RIP-008",
+    "pre_path": "tasks/backlog/TASK-RIP-008-probe-parity-report.md",
+    "post_path": "tasks/design_approved/TASK-RIP-008-probe-parity-report.md",
+    "timestamp": "2026-06-14T07:38:08.453621+00:00",
+    "kind": "design_approved_transition"
+  }
+]
