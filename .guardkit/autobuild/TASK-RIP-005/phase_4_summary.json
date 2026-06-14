@@ -1,7 +1,7 @@
 {
-  "tests_run": 38,
-  "tests_failed": 0,
-  "coverage_pct": 83.33,
-  "output_summary": "38 tests passed, 83% coverage on reindex module",
-  "quality_gates_passed": true
+  "tests_run": 33,
+  "tests_failed": 28,
+  "coverage_pct": 73.91,
+  "output_summary": "33 tests run, 28 failed, 5 passed; 73.91% coverage on src/fleet_memory/reindex",
+  "quality_gates_passed": false
 }

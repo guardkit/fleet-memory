@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-RIP-005",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "94bf647eabd21bda769a6de5e0c679dd417ecf60",
+      "timestamp": "2026-06-14T08:26:30.727403",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-06-14T08:26:30.727697"
+}

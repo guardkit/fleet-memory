@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 41.29140858259052,
+    "duration_seconds": 48.63021924998611,
     "error": null,
-    "tests_run": 38,
-    "tests_failed": 0,
-    "coverage_pct": 83.33,
-    "output_summary": "38 tests passed, 83% coverage on reindex module",
-    "quality_gates_passed": true
+    "tests_run": 33,
+    "tests_failed": 28,
+    "coverage_pct": 73.91,
+    "output_summary": "33 tests run, 28 failed, 5 passed; 73.91% coverage on src/fleet_memory/reindex",
+    "quality_gates_passed": false
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 180.70694308308885,
+    "duration_seconds": 222.31658024992794,
     "error": null,
     "issues": [],
     "quality_score": 0.0,
