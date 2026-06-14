@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RIP-004",
+    "pre_path": "tasks/backlog/TASK-RIP-004-typed-parsers.md",
+    "post_path": "tasks/design_approved/TASK-RIP-004-typed-parsers.md",
+    "timestamp": "2026-06-14T07:05:51.726682+00:00",
+    "kind": "design_approved_transition"
+  }
+]

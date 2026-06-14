@@ -1,0 +1,135 @@
+{
+  "task_id": "TASK-RIP-004",
+  "turn": 1,
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parsers.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RIP-004-implementation-plan.md",
+    ".guardkit/bdd/TASK-RIP-004_junit.xml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parsers.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parsers.py",
+    "src/fleet_memory/reindex/parsers.py",
+    "tests/unit/reindex/test_parsers.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parsers.py"
+  ],
+  "tests_run": true,
+  "tests_passed": true,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "Implemented all four canonical payload parsers",
+    "Identifier normalization (hyphens/colons to underscores)",
+    "Required field validation with unparseable results",
+    "Injection-safe content handling (no execution)",
+    "No LLM calls in parsing",
+    "Comprehensive test coverage (16 tests)",
+    "Clean linting and formatting"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": 25,
+  "sdk_max_turns": 160,
+  "sdk_ceiling_hit": false,
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-004/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parsers.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parsers.py"
+  ],
+  "tests_passed_count": 16,
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "seed module \u2192 `seed_module` payload (`module_path`); ADR \u2192 `adr` payload carrying `decision` + `status`; review report \u2192 `review_report` payload carrying `verdict`; completed-task outcome \u2192 `build_outcome` payload (`status`, `duration_seconds`)",
+      "status": "complete",
+      "evidence": "Implemented all four parsers: parse_seed_module extracts module_path into SeedModulePayload; parse_adr extracts decision+status into ADRPayload; parse_review_report extracts verdict into ReviewReportPayload; parse_build_outcome extracts status+duration_seconds into BuildOutcomePayload. All tested and verified in test_parsers.py",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Each parser sets `project` and `identifier` matching `^[a-zA-Z0-9_]+$` (hyphens/colons in guardkit IDs normalized to underscores) and a required `source_ref` equal to the source path",
+      "status": "complete",
+      "evidence": "All parsers extract project and identifier from front-matter, normalize them using _normalize_identifier (replaces hyphens and colons with underscores), validate against IDENTIFIER_PATTERN via BasePayload.__init__, and set source_ref to str(doc.path). Tests verify normalization of ADR-SP-007 \u2192 ADR_SP_007 and FEAT:MEM:07 \u2192 FEAT_MEM_07",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Each document kind maps to exactly one canonical `payload_type` (the Scenario Outline mapping)",
+      "status": "complete",
+      "evidence": "Each parser constructs exactly one payload type: parse_seed_module \u2192 SeedModulePayload (payload_type='seed_module'), parse_adr \u2192 ADRPayload (payload_type='adr'), parse_review_report \u2192 ReviewReportPayload (payload_type='review_report'), parse_build_outcome \u2192 BuildOutcomePayload (payload_type='build_outcome'). Payload types are ClassVar constants in payload models.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "A document carrying exactly the required fields for its type parses into a payload (just-inside boundary)",
+      "status": "complete",
+      "evidence": "Test test_document_with_exact_required_fields_parses verifies a seed_module document with only project, identifier, module_path, and type fields successfully parses into a SeedModulePayload. Pydantic extra='ignore' config allows additional fields to be present without error.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "A document missing a required field (e.g. an ADR with no `status`) produces an unparseable result with a reason and **no** payload",
+      "status": "complete",
+      "evidence": "All parsers check for missing required fields and return UnparseableDocument with descriptive reason when any required field is absent. Tests verify missing module_path, decision, status, verdict, and duration_seconds all produce unparseable results. No payload is constructed in these cases.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "A document body containing database commands / prompt-injection text is carried **byte-for-byte** into the payload content, and no command in the content is executed during parsing",
+      "status": "complete",
+      "evidence": "Test test_injection_body_carried_verbatim creates a document with SQL injection, shell injection, and template injection patterns in the body. Parser successfully creates payload without executing any content. Content is treated strictly as data - no eval, exec, or template rendering occurs.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "Parsing performs no language-model call",
+      "status": "complete",
+      "evidence": "Implementation uses only deterministic operations: YAML front-matter extraction with regex, dict.get() for field access, string normalization with replace(), and Pydantic model construction. No LLM imports, no API calls, no ML inference - purely deterministic parsing.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "`tests/unit/reindex/test_parsers.py` covers each kind, the missing-required-field case, identifier normalization, and the injection round-trip",
+      "status": "complete",
+      "evidence": "Created comprehensive test suite with 16 tests: each kind has success+failure tests (TestSeedModuleParser, TestADRParser, TestReviewReportParser, TestBuildOutcomeParser), TestIdentifierNormalization verifies hyphen and colon conversion, TestInjectionSafety verifies byte-for-byte content preservation, TestMissingRequiredFieldBoundaries covers all missing-field cases.",
+      "test_file": "tests/unit/reindex/test_parsers.py",
+      "implementation_files": [
+        "tests/unit/reindex/test_parsers.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran ruff check and black --check on both src/fleet_memory/reindex/parsers.py and tests/unit/reindex/test_parsers.py. All checks passed with zero errors. Fixed unused imports flagged by ruff during development.",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/reindex/parsers.py",
+        "tests/unit/reindex/test_parsers.py"
+      ]
+    }
+  ]
+}
