@@ -1,7 +1,7 @@
 {
-  "tests_run": 3,
+  "tests_run": 569,
   "tests_failed": 0,
-  "coverage_pct": 100.0,
-  "output_summary": "All 3 unit tests passed with 100% coverage on audit module; BDD step definitions pending",
+  "coverage_pct": 91.0,
+  "output_summary": "567 passed, 2 skipped, 91% coverage - all quality gates passed",
   "quality_gates_passed": true
 }
