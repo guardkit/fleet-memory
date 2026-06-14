@@ -1,0 +1,226 @@
+{
+  "task_id": "TASK-RIP-005",
+  "timestamp": "2026-06-14T08:21:14.471758",
+  "completed": false,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation (TDD Mode)",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_pipeline.py",
+    "src/fleet_memory/reindex/__init__.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RIP-005-implementation-plan.md",
+    ".guardkit/bdd/TASK-RIP-005_junit.xml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/pipeline.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_pipeline.py",
+    "src/fleet_memory/reindex/pipeline.py",
+    "tests/unit/reindex/test_pipeline.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-005/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/__init__.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/pipeline.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_pipeline.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_pipeline.py"
+  ],
+  "summary": "Implementation completed",
+  "sdk_turns": {
+    "turns_used": 32,
+    "max_turns": 160,
+    "ceiling_hit": false
+  },
+  "bdd_results": {
+    "scenarios_passed": 0,
+    "scenarios_failed": 0,
+    "scenarios_pending": 5,
+    "failures": [],
+    "pending": [
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_fullcorpus_run_publishes_a_typed_episode_for_every_recognized_document",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_full_reindex_run_makes_no_languagemodel_call",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_run_over_a_corpus_of_one_document_publishes_exactly_one_episode",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_the_reindex_pipeline_invokes_no_cloud_or_frontier_model",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_single_unparseable_document_does_not_abort_the_corpus_run",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      }
+    ],
+    "feature_files": [
+      "features/re-index-pipeline/re-index-pipeline.feature"
+    ],
+    "tag": "@task:TASK-RIP-005"
+  },
+  "task_type": "feature",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 2,
+    "missing_phases": [
+      "3"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`src/fleet_memory/reindex/pipeline.py` exposes `reindex_corpus(...)` that walks, classifies, parses, and publishes, returning a `RunReport`",
+      "status": "complete",
+      "evidence": "Created pipeline.py with reindex_corpus() async function that orchestrates walker \u2192 classifier \u2192 parser \u2192 publisher flow, returning RunReport with full accounting",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Every recognized document is published as a typed episode declaring the `payload_type` matching its document kind",
+      "status": "complete",
+      "evidence": "Implemented parser dispatch table mapping DocumentKind to parsers (seed_module, adr, review_report, completed_task), each producing typed BasePayload instances with correct payload_type",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "The `RunReport` accounts for every walked document: a published count plus the unparseable list and the unrecognized list \u2014 no document is silently dropped",
+      "status": "complete",
+      "evidence": "RunReport dataclass tracks published_count, unparseable_count, unrecognized_count plus detailed lists with reasons; test_report_accounts_for_every_walked_document verifies sum equals total walked",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "A single unparseable document does not abort the run: every valid document is still published and the bad one is reported",
+      "status": "complete",
+      "evidence": "Pipeline wraps parser calls in try-except, appending failures to unparseable_list and continuing; test_single_unparseable_doc_does_not_abort_run verifies 2 good docs published despite 1 bad doc",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "A run over an empty corpus publishes nothing and completes successfully",
+      "status": "complete",
+      "evidence": "walk_corpus() yields nothing for empty directory, reindex_corpus returns RunReport(published_count=0); test_empty_corpus_publishes_nothing verifies clean completion",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "A full-corpus run publishes a typed episode for every recognized document",
+      "status": "complete",
+      "evidence": "test_full_corpus_publishes_one_episode_per_recognized_doc creates 3-document corpus (seed_module, adr, review_report) and verifies exactly 3 episodes published",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "No language-model / cloud call occurs during the whole run",
+      "status": "complete",
+      "evidence": "Pipeline uses only deterministic parsers (YAML frontmatter extraction, regex, field validation) with zero LLM/cloud dependencies",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "`tests/unit/reindex/test_pipeline.py` (with a fake publisher) covers: full corpus, one-bad-doc-does-not-abort, empty corpus, accounting totals sum to documents walked",
+      "status": "complete",
+      "evidence": "Created test_pipeline.py with FakePublisher test double and 4 tests covering all required scenarios; all tests pass",
+      "test_file": "tests/unit/reindex/test_pipeline.py",
+      "implementation_files": [
+        "tests/unit/reindex/test_pipeline.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "complete",
+      "evidence": "Ran ruff check (0 errors) and black --check (0 reformats needed) on pipeline.py, test_pipeline.py, and __init__.py",
+      "test_file": null,
+      "implementation_files": [
+        "src/fleet_memory/reindex/pipeline.py",
+        "tests/unit/reindex/test_pipeline.py",
+        "src/fleet_memory/reindex/__init__.py"
+      ]
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 41.29140858259052
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 180.70694308308885
+    }
+  ]
+}

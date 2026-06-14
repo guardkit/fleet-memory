@@ -1,0 +1,7 @@
+{
+  "tests_run": 38,
+  "tests_failed": 0,
+  "coverage_pct": 83.33,
+  "output_summary": "38 tests passed, 83% coverage on reindex module",
+  "quality_gates_passed": true
+}

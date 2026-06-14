@@ -1,0 +1,69 @@
+{
+  "task_id": "TASK-RIP-005",
+  "turn": 1,
+  "decision": "feedback",
+  "issues": [
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "BDD oracle executed zero scenarios (0 passed + 0 failed = 0 attempted). All 5 scenarios in features/re-index-pipeline/ are in 'pending' state with error: 'All traceback entries are hidden. Pass --full-trace to see hidden and internal frames.' This is ABSENT SIGNAL per GUARD 1 \u2014 cannot verify behavioral acceptance without BDD execution.",
+      "requirement": "AC-001 through AC-007 require behavioral verification",
+      "suggestion": "Investigate BDD framework configuration. Run: pytest features/re-index-pipeline/ --full-trace to see the hidden error. Likely causes: missing conftest.py bridge in features/, import errors, or pytest-bdd plugin misconfiguration. The unit tests pass, suggesting the implementation is sound but BDD harness needs fixing."
+    },
+    {
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "Wiring analysis degraded (status: 'parse_degraded') with zero findings. Cannot independently verify AC-007 (no LLM calls) through static analysis.",
+      "requirement": "AC-007",
+      "suggestion": "While unit tests show no LLM imports, consider adding explicit assertion in test_full_corpus that no network calls occur (e.g., using pytest-socket to block network)."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Unit tests provide indirect evidence that reindex_corpus() exists and returns RunReport, but BDD scenarios (which would provide behavioral acceptance) did not execute. Zero-cardinality BDD signal per GUARD 1."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Unit test test_full_corpus_publishes_one_episode_per_recognized_doc passed, but BDD behavioral verification absent."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Unit test test_report_accounts_for_every_walked_document passed, but BDD behavioral verification absent."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Unit test test_single_unparseable_doc_does_not_abort_run passed, but BDD behavioral verification absent."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Unit test test_empty_corpus_publishes_nothing passed, but BDD behavioral verification absent."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Unit test coverage exists, but BDD behavioral verification absent."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "rejected",
+      "notes": "No direct evidence in bundle. Wiring analysis degraded (parse_degraded status, empty findings) = ABSENT evidence per GUARD 7. Unit tests show no LLM imports but cannot independently verify runtime behavior."
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "verified",
+      "notes": "Independent test verification confirms 4/4 unit tests passed in tests/unit/reindex/test_pipeline.py covering: full corpus, unparseable doc, empty corpus, accounting totals. FakePublisher test double confirmed by test pass."
+    },
+    {
+      "criterion_id": "AC-009",
+      "result": "rejected",
+      "notes": "No explicit lint gate in quality_gates. Player claims 'ruff check (0 errors) and black --check (0 reformats)' but cannot independently verify from evidence bundle."
+    }
+  ],
+  "rationale": "GUARD 1 violation: BDD oracle executed 0 scenarios (5 pending with framework errors). This is ABSENT SIGNAL \u2014 cannot approve based on absence of failure. While independent unit tests (4/4 passed) provide strong implementation evidence, the zero-cardinality BDD result means behavioral acceptance verification is missing. The BDD error ('All traceback entries are hidden') suggests test harness configuration issue rather than implementation defect. Fix the BDD framework issue and re-run to obtain complete evidence."
+}

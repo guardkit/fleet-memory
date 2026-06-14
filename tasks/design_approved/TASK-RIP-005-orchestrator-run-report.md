@@ -1,40 +1,42 @@
 ---
-id: TASK-RIP-005
-title: Re-index orchestrator + run-report accounting
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 4
-implementation_mode: task-work
 complexity: 6
-estimated_minutes: 90
+consumer_context:
+- consumes: typed_payload
+  driver: pydantic v2
+  format_note: project/identifier must match ^[a-zA-Z0-9_]+$ — guardkit hyphenated
+    IDs normalized to underscores; source_ref required
+  framework: fleet_memory typed payload registry (BasePayload subclasses)
+  task: TASK-RIP-004
+- consumes: memory_episode_routing
+  driver: nats-core MemoryEpisodeV1 publisher
+  format_note: content_format must be 'json' and payload_type a registered type so
+    the relay routes to the DeterministicWriter, not the prose chunker
+  framework: FastStream NatsBroker / RelayService.ingest content_format routing
+  task: TASK-RIP-002
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-002
 - TASK-RIP-004
+estimated_minutes: 90
+feature_id: FEAT-MEM-07
+id: TASK-RIP-005
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - orchestrator
 - accounting
 - integration-contract
-consumer_context:
-- task: TASK-RIP-004
-  consumes: typed_payload
-  framework: "fleet_memory typed payload registry (BasePayload subclasses)"
-  driver: "pydantic v2"
-  format_note: "project/identifier must match ^[a-zA-Z0-9_]+$ — guardkit hyphenated IDs normalized to underscores; source_ref required"
-- task: TASK-RIP-002
-  consumes: memory_episode_routing
-  framework: "FastStream NatsBroker / RelayService.ingest content_format routing"
-  driver: "nats-core MemoryEpisodeV1 publisher"
-  format_note: "content_format must be 'json' and payload_type a registered type so the relay routes to the DeterministicWriter, not the prose chunker"
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Re-index orchestrator + run-report accounting
+updated: 2026-06-13 20:30:00+00:00
+wave: 4
 ---
 
 # Task: Re-index orchestrator + run-report accounting
