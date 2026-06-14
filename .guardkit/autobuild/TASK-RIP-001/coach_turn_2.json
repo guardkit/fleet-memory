@@ -6,11 +6,11 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-RIP-001-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_task_rip_001.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
         "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file .claude/task-plans/TASK-RIP-001-implementation-plan.md",
+        "player_claim": "Player claimed file coverage_task_rip_001.json",
         "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
         "severity": "should_fix"
       }
@@ -18,47 +18,11 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file .claude/task-plans/TASK-RIP-002-implementation-plan.md. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_task_rip_001_full.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
         "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file .claude/task-plans/TASK-RIP-002-implementation-plan.md",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "must_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file `src/fleet_memory/reindex/__init__.py. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit",
-        "player_claim": "Player claimed file `src/fleet_memory/reindex/__init__.py",
-        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
-        "severity": "critical"
-      }
-    },
-    {
-      "severity": "must_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file `src/fleet_memory/settings.py. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit",
-        "player_claim": "Player claimed file `src/fleet_memory/settings.py",
-        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
-        "severity": "critical"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file coverage_reindex.json. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file coverage_reindex.json",
+        "player_claim": "Player claimed file coverage_task_rip_001_full.json",
         "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
         "severity": "should_fix"
       }
@@ -71,18 +35,6 @@
         "source": "deterministic_honesty_gate",
         "claim_type": "claim_audit_unmodified",
         "player_claim": "Player claimed file src/fleet_memory/reindex/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/reindex/publisher.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file src/fleet_memory/reindex/publisher.py",
         "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
         "severity": "should_fix"
       }
@@ -114,30 +66,6 @@
     {
       "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/reindex/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/test_publisher.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
-      "details": {
-        "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/reindex/test_publisher.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "honesty",
       "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/test_walker.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
@@ -148,63 +76,56 @@
       }
     },
     {
-      "type": "code_quality",
-      "severity": "critical",
-      "description": "Evidence gathering aborted with status 'partial_honesty_abort' - the report contains malformed path strings (backtick-prefixed entries: `src/fleet_memory/reindex/__init__.py and `src/fleet_memory/settings.py) that prevented independent verification. The orchestrator could not complete test execution, BDD verification, coverage analysis, or quality gates.",
-      "requirement": "All acceptance criteria",
-      "suggestion": "Fix the report's files_modified array: (1) Remove the two backtick-prefixed entries (`src/fleet_memory/reindex/__init__.py and `src/fleet_memory/settings.py); (2) Remove the 10 unmodified files that 'git status' shows no changes for (.claude/task-plans/*, coverage_reindex.json, and the actual implementation files if they weren't modified this turn); (3) Resubmit to allow full evidence gathering with independent test execution"
-    },
-    {
       "type": "test_failure",
       "severity": "critical",
-      "description": "No independent test verification was performed - evidence_bundle.independent_tests is null due to partial_honesty_abort. Cannot verify that tests were run or passed.",
-      "requirement": "AC-006, AC-007",
-      "suggestion": "After fixing the report formatting errors, the orchestrator will run independent test verification in the next turn"
+      "description": "BDD oracle shows 0 scenarios passed, 0 failed, 2 pending. Both scenarios tagged @task:TASK-RIP-001 are in PENDING state with traceback errors, not passing. Scenarios: (1) test_a_run_over_an_empty_corpus_publishes_nothing_and_completes_cleanly, (2) test_a_pathtraversal_filename_in_the_corpus_cannot_make_the_pipeline_read_outside_the_corpus_root. Pending step: 'All traceback entries are hidden. Pass --full-trace to see hidden and internal frames.'",
+      "requirement": "BDD verification for TASK-RIP-001",
+      "suggestion": "Investigate why the BDD scenarios are pending/erroring. Run with --full-trace to see the actual error. These are pipeline integration tests - ensure all required components (walker, publisher, pipeline orchestration) are wired together correctly."
     },
     {
-      "type": "missing_requirement",
-      "severity": "critical",
-      "description": "Turn 1 feedback requested removal of backtick-prefixed path entries, but Turn 2 report contains the same formatting errors. This is the second consecutive turn with the same path string issue.",
-      "requirement": "Report integrity",
-      "suggestion": "Carefully review the files_modified array before submission. Ensure no backtick prefixes, no orchestrator-managed paths (.guardkit/, .claude/task-plans/), and only files actually modified in the current turn"
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "Player's turn 2 report lists 6 files as modified that show no changes per git status. Files: coverage_task_rip_001.json, coverage_task_rip_001_full.json, src/fleet_memory/reindex/__init__.py, src/fleet_memory/reindex/walker.py, src/fleet_memory/settings.py, tests/unit/reindex/test_walker.py. These were modified in turn 1, not turn 2.",
+      "requirement": "Accurate reporting",
+      "suggestion": "Fix the report writer to only include files actually modified in the current turn, not cumulative changes. Exclude orchestrator-managed paths under .guardkit/autobuild/ and tasks/."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
-      "result": "rejected",
-      "notes": "Cannot verify - evidence gathering aborted (partial_honesty_abort). No independent verification of file existence was performed. Player self-reported as complete, but orchestrator did not confirm."
+      "result": "verified",
+      "notes": "Both src/fleet_memory/reindex/__init__.py and src/fleet_memory/reindex/walker.py exist and are committed per evidence bundle."
     },
     {
       "criterion_id": "AC-002",
-      "result": "rejected",
-      "notes": "Cannot verify - no independent test evidence due to partial_honesty_abort. The walk_corpus function signature and behavior cannot be confirmed without test execution results."
+      "result": "verified",
+      "notes": "walk_corpus function has correct signature and behavior. Unit test test_walk_corpus_yields_markdown_documents passes in independent verification."
     },
     {
       "criterion_id": "AC-003",
-      "result": "rejected",
-      "notes": "Cannot verify - no independent test evidence for path-traversal security. Player claims tests were written, but orchestrator's independent_tests field is null (ABSENT SIGNAL per Guard #5)."
+      "result": "verified",
+      "notes": "Security invariant verified by passing unit tests: test_path_traversal_entry_not_read and test_symlink_escape_not_read both pass. However, BDD scenario for pipeline-level path-traversal protection is PENDING."
     },
     {
       "criterion_id": "AC-004",
-      "result": "rejected",
-      "notes": "Cannot verify - no independent test evidence for empty corpus behavior. Player claims test_empty_corpus_yields_nothing exists and passes, but no independent verification was performed."
+      "result": "verified",
+      "notes": "Empty corpus handling verified by passing unit test test_empty_corpus_yields_nothing. BDD scenario for pipeline-level empty corpus handling is PENDING."
     },
     {
       "criterion_id": "AC-005",
-      "result": "rejected",
-      "notes": "Cannot verify - evidence_bundle.quality_gates is null due to partial_honesty_abort. Cannot confirm corpus_root was added to Settings with correct env prefix convention."
+      "result": "verified",
+      "notes": "corpus_root field confirmed in Settings with FLEET_MEMORY_ prefix per evidence bundle."
     },
     {
       "criterion_id": "AC-006",
-      "result": "rejected",
-      "notes": "Cannot verify - evidence_bundle.tests is null (ABSENT SIGNAL per Guard #5). Player claims tests/unit/reindex/test_walker.py covers path-traversal and empty directory cases, but orchestrator did not independently execute or verify these tests."
+      "result": "verified",
+      "notes": "tests/unit/reindex/test_walker.py contains and passes both required tests: test_path_traversal_entry_not_read and test_empty_corpus_yields_nothing, plus additional coverage."
     },
     {
       "criterion_id": "AC-007",
-      "result": "rejected",
-      "notes": "Cannot verify - evidence_bundle.quality_gates is null due to partial_honesty_abort. No independent lint/format verification was performed."
+      "result": "verified",
+      "notes": "All quality gates passed per evidence bundle. Ruff lint checks pass with Python 3.14 compatibility."
     }
   ],
-  "rationale": "Evidence gathering aborted with status 'partial_honesty_abort' before any independent verification could be performed. All verification fields (tests, bdd, coverage_details, quality_gates, independent_tests, arch_review) are null, which constitutes ABSENT SIGNAL per Absence-of-Failure Guard #5. The Player's report contains the same path formatting errors flagged in Turn 1 feedback (backtick-prefixed file paths), preventing the orchestrator from completing evidence collection. Without independent test execution, BDD verification, or quality gates, I cannot verify any acceptance criteria. The Player must fix the report's files_modified array (remove backtick-prefixed and unmodified entries) to allow a complete evidence-gathering cycle in the next turn."
+  "rationale": "Unit tests for the walker component all pass (5/5) and verify all acceptance criteria. However, the BDD oracle shows 0 scenarios completed (0 passed, 0 failed, 2 pending). Per ZERO-CARDINALITY BDD GUARD: when scenarios_attempted = 0, this is ABSENT SIGNAL and approval cannot be based on absence of failure. The pending BDD scenarios suggest pipeline integration issues that must be resolved before the task is complete. The walker component itself appears correct, but the pipeline integration verification has not succeeded."
 }
