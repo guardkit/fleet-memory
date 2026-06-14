@@ -1,17 +1,17 @@
 {
   "phase_4": {
     "status": "passed",
-    "duration_seconds": 83.67471799999475,
+    "duration_seconds": 56.00179004110396,
     "error": null,
-    "tests_run": 10,
+    "tests_run": 5,
     "tests_failed": 0,
-    "coverage_pct": 83.67,
-    "output_summary": "10 unit tests passed, 84% coverage on reindex module (walker.py 76%, publisher.py 100%)",
+    "coverage_pct": 71.43,
+    "output_summary": "5 tests passed in test_walker.py; walker.py 76% coverage, __init__.py 100%, publisher.py 54%",
     "quality_gates_passed": true
   },
   "phase_5": {
     "status": "passed",
-    "duration_seconds": 127.87101766699925,
+    "duration_seconds": 223.47771924966946,
     "error": null,
     "issues": [],
     "quality_score": 0.0,

@@ -2,21 +2,14 @@
   "task_id": "TASK-RIP-001",
   "turn": 3,
   "files_modified": [
-    ".claude/task-plans/TASK-RIP-001-implementation-plan.md",
-    ".claude/task-plans/TASK-RIP-002-implementation-plan.md",
     ".guardkit/bdd/TASK-RIP-001_junit.xml",
     ".guardkit/bdd/TASK-RIP-002_junit.xml",
-    ".guardkit/test_results.xml",
     "coverage.json",
-    "coverage_reindex.json",
     "coverage_task_rip_001.json",
-    "src/fleet_memory/reindex/__init__.py",
-    "src/fleet_memory/reindex/publisher.py",
-    "src/fleet_memory/reindex/walker.py",
-    "src/fleet_memory/settings.py",
-    "tests/unit/reindex/__init__.py",
-    "tests/unit/reindex/test_publisher.py",
-    "tests/unit/reindex/test_walker.py"
+    "coverage_task_rip_001_full.json",
+    "coverage_task_rip_001_phase4.json",
+    "coverage_task_rip_002.json",
+    "src/fleet_memory/reindex/walker.py"
   ],
   "files_created": [],
   "tests_written": [],
@@ -26,28 +19,28 @@
   "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
   "concerns": [],
   "requirements_addressed": [
-    "Reindex package structure created with __init__.py and walker.py",
-    "Path-traversal-safe corpus walker implemented using resolve() + is_relative_to()",
-    "CorpusDocument dataclass for yielding (path, text) tuples",
-    "Empty corpus handling without raising exceptions",
-    "Settings.corpus_root with FLEET_MEMORY_CORPUS_ROOT env var",
-    "Comprehensive test coverage for security properties and normal operation",
-    "All code passes Black formatting checks"
+    "AC-001: Required files exist",
+    "AC-002: walk_corpus function signature and behavior correct",
+    "AC-003: Path-traversal safety enforced",
+    "AC-004: Empty corpus handling correct",
+    "AC-005: corpus_root in Settings with FLEET_MEMORY_ prefix",
+    "AC-006: Required unit tests exist and pass",
+    "AC-007: All lint checks pass"
   ],
   "requirements_remaining": [],
-  "sdk_turns_used": 20,
+  "sdk_turns_used": 31,
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
     "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-001/player_turn_3.json"
   ],
-  "tests_passed_count": 525,
+  "tests_passed_count": 5,
   "completion_promises": [
     {
       "criterion_id": "AC-001",
       "criterion_text": "src/fleet_memory/reindex/__init__.py and src/fleet_memory/reindex/walker.py exist",
       "status": "complete",
-      "evidence": "Both files exist and are properly structured. __init__.py exports CorpusDocument, walk_corpus, and publish_episode. walker.py contains the CorpusDocument dataclass and walk_corpus function implementation.",
+      "evidence": "Both files exist and contain the required implementation. walker.py contains CorpusDocument dataclass and walk_corpus function. __init__.py exports the public API. Files were created in previous turns.",
       "test_file": "tests/unit/reindex/test_walker.py",
       "implementation_files": [
         "src/fleet_memory/reindex/__init__.py",
@@ -58,7 +51,7 @@
       "criterion_id": "AC-002",
       "criterion_text": "walk_corpus(root: Path) -> Iterator[CorpusDocument] yields each markdown document under root with its resolved path and raw text",
       "status": "complete",
-      "evidence": "walk_corpus function implemented in walker.py (lines 28-90). It iterates through all .md files using rglob, resolves paths, and yields CorpusDocument instances containing the resolved path and text content. Verified by test_walk_corpus_yields_markdown_documents.",
+      "evidence": "walk_corpus function implemented with correct signature (line 28-90 of walker.py). Uses rglob to find .md files, resolves paths, reads content. Verified by test_walk_corpus_yields_markdown_documents which confirms the function yields CorpusDocument instances with path and text.",
       "test_file": "tests/unit/reindex/test_walker.py",
       "implementation_files": [
         "src/fleet_memory/reindex/walker.py"
@@ -68,7 +61,7 @@
       "criterion_id": "AC-003",
       "criterion_text": "Every yielded path, after Path.resolve(), is contained within the resolved corpus root; entries containing path-traversal segments or symlink escapes are skipped and never read",
       "status": "complete",
-      "evidence": "Path containment enforced at lines 75-80 of walker.py using is_relative_to() check. The security invariant is: resolved_entry.is_relative_to(resolved_root). Entries that escape are skipped. Verified by test_path_traversal_entry_not_read and test_symlink_escape_not_read - both confirm that malicious paths and symlinks pointing outside the root are never read.",
+      "evidence": "Security invariant enforced at line 74-80 of walker.py via is_relative_to() check after Path.resolve(). Entries escaping the root are skipped. Verified by test_path_traversal_entry_not_read (malicious filenames) and test_symlink_escape_not_read (symlink attacks). Both tests confirm the security boundary is enforced.",
       "test_file": "tests/unit/reindex/test_walker.py",
       "implementation_files": [
         "src/fleet_memory/reindex/walker.py"
@@ -78,7 +71,7 @@
       "criterion_id": "AC-004",
       "criterion_text": "A run over an empty corpus root yields zero documents and does not raise",
       "status": "complete",
-      "evidence": "Empty directory handling implemented in walker.py lines 49-53. If root doesn't exist or is not a directory, the function returns early with no yields. Verified by test_empty_corpus_yields_nothing which confirms empty corpus yields [] without raising exceptions.",
+      "evidence": "Empty directory handling implemented at lines 50-53 of walker.py. Non-existent or non-directory roots return early without exceptions. Verified by test_empty_corpus_yields_nothing which confirms no documents are yielded and no exception is raised.",
       "test_file": "tests/unit/reindex/test_walker.py",
       "implementation_files": [
         "src/fleet_memory/reindex/walker.py"
@@ -86,9 +79,9 @@
     },
     {
       "criterion_id": "AC-005",
-      "criterion_text": "corpus_root (FLEET_MEMORY_CORPUS_ROOT) is added to Settings with the FLEET_MEMORY_ prefix convention",
+      "criterion_text": "corpus_root (FLEET_MEMORY_CORPUS_ROOT) is added to Settings (settings.py) with the FLEET_MEMORY_ prefix convention",
       "status": "complete",
-      "evidence": "corpus_root field added to Settings class in settings.py (lines 26-29). Field uses FLEET_MEMORY_ prefix via model_config env_prefix. Default value is './corpus'. Field description explicitly mentions FLEET_MEMORY_CORPUS_ROOT environment variable.",
+      "evidence": "corpus_root field exists in Settings class at line 26-29 of settings.py with default './corpus'. FLEET_MEMORY_ prefix convention is enforced by model_config env_prefix at line 15. Field description documents the FLEET_MEMORY_CORPUS_ROOT environment variable name.",
       "test_file": null,
       "implementation_files": [
         "src/fleet_memory/settings.py"
@@ -98,21 +91,21 @@
       "criterion_id": "AC-006",
       "criterion_text": "tests/unit/reindex/test_walker.py covers: a path-traversal entry is not read; an empty directory yields nothing",
       "status": "complete",
-      "evidence": "Comprehensive test coverage in test_walker.py: test_path_traversal_entry_not_read (lines 29-68) verifies malicious ../ entries are skipped, test_empty_corpus_yields_nothing (lines 16-26) verifies empty directory handling. Additional tests: test_symlink_escape_not_read for symlink safety, test_walk_corpus_yields_markdown_documents for normal operation, test_resolved_path_returned for path resolution. All 5 tests pass.",
+      "evidence": "test_walker.py contains both required tests: test_path_traversal_entry_not_read (lines 29-68) verifies path-traversal protection by creating a malicious entry and confirming it's not yielded. test_empty_corpus_yields_nothing (lines 16-26) verifies empty directory handling. Both tests pass. Additional coverage includes symlink escapes, markdown filtering, and path resolution (5 tests total).",
       "test_file": "tests/unit/reindex/test_walker.py",
       "implementation_files": [
-        "src/fleet_memory/reindex/walker.py"
+        "tests/unit/reindex/test_walker.py"
       ]
     },
     {
       "criterion_id": "AC-007",
       "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
       "status": "complete",
-      "evidence": "Black formatter check passed with 'All done! 6 files would be left unchanged.' No formatting issues detected in reindex package or tests. Full test suite passes: 525 passed, 2 skipped.",
-      "test_file": "tests/unit/reindex/test_walker.py",
+      "evidence": "All ruff lint checks pass with zero errors for walker.py and test_walker.py. Code uses Python 3.14-compatible imports (collections.abc.Iterator instead of typing.Iterator). All style checks pass.",
+      "test_file": null,
       "implementation_files": [
-        "src/fleet_memory/reindex/__init__.py",
-        "src/fleet_memory/reindex/walker.py"
+        "src/fleet_memory/reindex/walker.py",
+        "tests/unit/reindex/test_walker.py"
       ]
     }
   ]
