@@ -4,87 +4,99 @@
   "decision": "feedback",
   "issues": [
     {
-      "severity": "must_fix",
+      "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file `src/fleet_memory/reindex/__init__.py. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/reindex/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit",
-        "player_claim": "Player claimed file `src/fleet_memory/reindex/__init__.py",
-        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
-        "severity": "critical"
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/reindex/__init__.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
       }
     },
     {
-      "severity": "must_fix",
+      "severity": "should_fix",
       "category": "honesty",
-      "description": "Deterministic honesty record (claim_audit, severity=critical): Player claim: Player claimed file `src/fleet_memory/settings.py. Actual: Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk..",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/settings.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
       "details": {
         "source": "deterministic_honesty_gate",
-        "claim_type": "claim_audit",
-        "player_claim": "Player claimed file `src/fleet_memory/settings.py",
-        "actual_value": "Path absent from 'git status --porcelain' so 'git add -A' would not stage it. Probes: path_exists=False; gitignore_match=no rule matched; tracked=no. Most likely cause: the Player claimed work on a file that does not exist on disk.",
-        "severity": "critical"
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/settings.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file tests/unit/reindex/test_walker.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file tests/unit/reindex/test_walker.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
       }
     },
     {
       "type": "test_failure",
       "severity": "critical",
-      "description": "Evidence gathering aborted with status 'partial_honesty_abort' - no independent verification was performed. All verification fields (tests, bdd, coverage_details, quality_gates, independent_tests, arch_review) are null, which constitutes ABSENT SIGNAL per absence-of-failure guard #5.",
-      "requirement": "All acceptance criteria",
-      "suggestion": "Fix the path string formatting errors in the report (remove backtick-prefixed duplicate file entries from files_modified and files_created arrays). Resubmit to allow the orchestrator to complete a full evidence gathering cycle with independent test execution, BDD verification, and quality gates."
+      "description": "BDD acceptance scenarios are pending/not executed. Both scenarios show traceback errors:\n  - test_a_run_over_an_empty_corpus_publishes_nothing_and_completes_cleanly\n  - test_a_pathtraversal_filename_in_the_corpus_cannot_make_the_pipeline_read_outside_the_corpus_root\n\nPending status with 'All traceback entries are hidden' suggests exceptions during setup or execution. The spec_gap shows executed_count: 0 out of 2 ground truth scenarios.",
+      "requirement": "AC-003, AC-004 - End-to-end behavioral verification",
+      "suggestion": "Run BDD scenarios with --full-trace to diagnose the setup/execution errors. Ensure the scenarios can execute and verify the path-traversal safety and empty-corpus handling in an integrated context. Unit tests pass but lack end-to-end acceptance evidence."
     },
     {
       "type": "code_quality",
       "severity": "major",
-      "description": "Player report contains malformed file paths with backtick prefixes: '`src/fleet_memory/reindex/__init__.py' and '`src/fleet_memory/settings.py'. These paths do not exist on disk (path_exists=False per honesty audit). The correct absolute paths appear in files_authored, indicating this is a report formatting issue that triggered the honesty audit abort.",
-      "requirement": "AC-001, AC-005",
-      "suggestion": "Remove the backtick-prefixed entries from files_modified and files_created arrays. Each file should appear once with its correct path (either absolute or properly-formatted relative path without markdown formatting characters)."
+      "description": "Honesty verification flagged three files claimed in completion_promises that were NOT modified this turn per git status:\n  - src/fleet_memory/reindex/__init__.py\n  - src/fleet_memory/settings.py\n  - tests/unit/reindex/test_walker.py\n\nThese files may satisfy requirements (the automated checker verified them), but claiming them as implementation_files when they weren't modified this turn creates reporting confusion.",
+      "requirement": "Accurate reporting",
+      "suggestion": "Clarify which files were created/modified this turn versus which existed from baseline. Update the report to accurately reflect only the work done in this turn (appears to be only walker.py modifications)."
     },
     {
-      "type": "missing_requirement",
+      "type": "edge_case",
       "severity": "minor",
-      "description": "Advisory (non-blocking): task-work produced a report with 2 of 3 expected agent invocations. Missing Phase 3 (Implementation) specialist agent.",
-      "requirement": "Code quality best practices",
-      "suggestion": "Consider invoking the stack-specific Phase-3 implementation specialist agent to strengthen quality validation."
+      "description": "Wiring evidence is absent: status='parse_degraded' with findings=[] and walker.py in degraded_files. Cannot independently verify the walker module's integration points.",
+      "requirement": "Architectural wiring verification",
+      "suggestion": "Advisory only - the parse degradation may resolve when dependencies are complete. Monitor in subsequent turns."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
-      "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify file existence. Evidence gathering aborted at partial_honesty_abort before independent verification. Player self-reports creation but no independent confirmation available."
+      "result": "verified",
+      "notes": "Both files exist per automated requirements checker. walker.py was modified this turn; __init__.py exists but wasn't modified (may be from baseline)."
     },
     {
       "criterion_id": "AC-002",
-      "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify walk_corpus implementation or behavior. No independent test results due to gathering abort. Player claims implementation complete but evidence_bundle.tests is null."
+      "result": "verified",
+      "notes": "Independent tests confirm: test_walk_corpus_yields_markdown_documents PASSED. Function signature and behavior verified by unit tests."
     },
     {
       "criterion_id": "AC-003",
       "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify path traversal safety. No independent test execution to confirm security tests passed. This is a critical security requirement that requires independent verification, not self-reporting."
+      "notes": "Unit tests pass (test_path_traversal_entry_not_read, test_symlink_escape_not_read) but BDD scenario 'test_a_pathtraversal_filename_in_the_corpus_cannot_make_the_pipeline_read_outside_the_corpus_root' is pending. ABSENT end-to-end acceptance signal per guard #1."
     },
     {
       "criterion_id": "AC-004",
       "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify empty corpus handling. No independent test results. evidence_bundle.tests is null due to gathering abort."
+      "notes": "Unit test passes (test_empty_corpus_yields_nothing) but BDD scenario 'test_a_run_over_an_empty_corpus_publishes_nothing_and_completes_cleanly' is pending. ABSENT end-to-end acceptance signal per guard #1."
     },
     {
       "criterion_id": "AC-005",
-      "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify Settings modification. Player reports modification but the backtick-prefixed path in files_modified triggered honesty concerns. No independent verification of the actual file content or that it follows FLEET_MEMORY_ prefix convention."
+      "result": "verified",
+      "notes": "Automated requirements checker verified corpus_root exists in Settings at line 26 with FLEET_MEMORY_ prefix. settings.py wasn't modified this turn (honesty flag) but the field exists."
     },
     {
       "criterion_id": "AC-006",
-      "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify test coverage. evidence_bundle.tests, evidence_bundle.independent_tests, and evidence_bundle.coverage_details are all null due to gathering abort. Player self-reports 5 tests but no independent confirmation."
+      "result": "verified",
+      "notes": "Required tests exist and pass: test_path_traversal_entry_not_read PASSED, test_empty_corpus_yields_nothing PASSED. test_walker.py wasn't modified this turn but tests are present and passing."
     },
     {
       "criterion_id": "AC-007",
-      "result": "rejected",
-      "notes": "ABSENT SIGNAL: Cannot verify lint/format compliance. evidence_bundle.quality_gates is null due to gathering abort. No independent verification of Black/linting execution."
+      "result": "verified",
+      "notes": "All quality gates passed. No lint errors reported. Player notes ruff compatibility fix for Python 3.14 (collections.abc.Iterator)."
     }
   ],
-  "rationale": "Evidence gathering aborted with status 'partial_honesty_abort' before independent verification could be performed. Per absence-of-failure guard #5, when gathering_status != 'complete', all null verification fields constitute ABSENT SIGNAL and cannot be treated as passing. All major verification fields (tests, bdd, independent_tests, quality_gates, coverage_details) are null. The abort was triggered by path string formatting errors in the Player's report (backtick-prefixed file paths that don't exist on disk). While the Player's files_authored array shows correct absolute paths suggesting the work may have been done, I cannot approve without independent verification of implementation correctness, test passage, and security requirements (especially AC-003 path traversal safety). The Player must fix the report formatting and resubmit to enable complete evidence gathering."
+  "rationale": "Cannot approve due to ABSENT BDD signal. Per absence-of-failure guard #1: 0 scenarios passed, 0 failed, 2 pending = no attempted/completed scenarios. The pending status with traceback messages indicates execution failures, not passing behavior. Unit tests provide good coverage and all pass (10/10), but the end-to-end BDD acceptance tests that verify critical safety requirements (path-traversal protection, empty-corpus handling) did not execute successfully. Additionally, honesty discrepancies suggest reporting inaccuracy about which files were modified this turn. Fix the BDD scenario execution issues and clarify the reporting before resubmission."
 }
