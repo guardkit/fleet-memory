@@ -1,0 +1,7 @@
+{
+  "tests_run": 6,
+  "tests_failed": 0,
+  "coverage_pct": 45.83,
+  "output_summary": "6 integration tests passed (idempotency, concurrency, security, backfill). Coverage: 46% (reindex, writer, store).",
+  "quality_gates_passed": true
+}

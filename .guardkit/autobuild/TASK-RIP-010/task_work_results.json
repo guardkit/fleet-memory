@@ -1,0 +1,185 @@
+{
+  "task_id": "TASK-RIP-010",
+  "timestamp": "2026-06-14T09:51:17.748777",
+  "completed": true,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation** following TDD mode.",
+      "completed": true
+    }
+  },
+  "quality_gates": {
+    "tests_passing": true,
+    "tests_passed": 6,
+    "tests_failed": 0,
+    "coverage": null,
+    "coverage_met": null,
+    "all_passed": null
+  },
+  "files_modified": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_security.py"
+  ],
+  "files_created": [
+    ".claude/task-plans/TASK-RIP-010-implementation-plan.md",
+    ".guardkit/bdd/TASK-RIP-010_junit.xml",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_security.py",
+    "tests/integration/reindex/__init__.py",
+    "tests/integration/reindex/test_idempotency.py",
+    "tests/integration/reindex/test_security.py"
+  ],
+  "files_authored": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-010/player_turn_1.json",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_security.py"
+  ],
+  "tests_written": [
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_idempotency.py",
+    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/integration/reindex/test_security.py"
+  ],
+  "summary": "6 tests passed",
+  "sdk_turns": {
+    "turns_used": 57,
+    "max_turns": 160,
+    "ceiling_hit": false
+  },
+  "bdd_results": {
+    "scenarios_passed": 0,
+    "scenarios_failed": 0,
+    "scenarios_pending": 4,
+    "failures": [],
+    "pending": [
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_a_second_run_over_an_unchanged_corpus_leaves_the_store_unchanged",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_reindexing_after_editing_a_source_document_updates_its_record_rather_than_duplicating_it",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_publishing_the_same_parsed_document_twice_yields_a_single_stored_record",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      },
+      {
+        "feature_file": "features.re-index-pipeline.test_re_index_pipeline",
+        "scenario_name": "test_two_reindex_runs_started_at_the_same_time_converge_to_a_single_stored_outcome",
+        "pending_step": "All traceback entries are hidden. Pass `--full-trace` to see hidden and internal frames."
+      }
+    ],
+    "feature_files": [
+      "features/re-index-pipeline/re-index-pipeline.feature"
+    ],
+    "tag": "@task:TASK-RIP-010"
+  },
+  "task_type": "testing",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 2,
+    "missing_phases": [
+      "3"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 2 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2705 Phase 4 (Phase 4): test-orchestrator (completed in ?s)\n\u2705 Phase 5 (Phase 5): code-reviewer (completed in ?s)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "A second run over an unchanged corpus creates or modifies no stored record",
+      "status": "complete",
+      "evidence": "Implemented test_second_run_is_noop that runs reindex_corpus twice on the same corpus and verifies that the version number does not increment, proving the second run is a no-op at the database level",
+      "test_file": "tests/integration/reindex/test_idempotency.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "Re-indexing after editing a source document updates its record to the new content with no duplicate record",
+      "status": "complete",
+      "evidence": "Implemented test_edit_updates_not_duplicates that modifies a document (changing module_path field), re-runs reindex_corpus, and verifies the version increments while only one record exists (no duplicate)",
+      "test_file": "tests/integration/reindex/test_idempotency.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "Two re-index runs started at the same time converge to exactly one record per natural key (no duplicate from the overlapping runs)",
+      "status": "complete",
+      "evidence": "Implemented test_concurrent_runs_converge that runs two reindex_corpus calls concurrently using asyncio.gather and verifies exactly one record exists for the natural key after both complete",
+      "test_file": "tests/integration/reindex/test_idempotency.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "Publishing the same parsed document twice yields exactly one record for its natural key",
+      "status": "complete",
+      "evidence": "Implemented test_double_publish_single_record that calls DeterministicWriter.write twice with the same ADRPayload and verifies only one record exists with version=1 (no version increment from duplicate write)",
+      "test_file": "tests/integration/reindex/test_idempotency.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "A document whose body contains injection-shaped text is stored byte-for-byte and no command executes during ingest",
+      "status": "complete",
+      "evidence": "Implemented test_injection_body_stored_verbatim that creates a document with SQL injection, XSS, shell commands, template injection, and Java injection patterns, publishes it through reindex_corpus, and verifies the injection text is stored verbatim in the content field with no execution",
+      "test_file": "tests/integration/reindex/test_security.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "A reviewed backfill payload is stored as a typed record like a deterministically parsed payload",
+      "status": "complete",
+      "evidence": "Implemented test_reviewed_backfill_stored_as_typed_record that creates a manually-crafted ADRPayload (simulating backfill), writes it via DeterministicWriter, and compares its stored structure to a parsed ADRPayload to verify both have identical metadata field sets",
+      "test_file": "tests/integration/reindex/test_security.py",
+      "implementation_files": []
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "All tests are @pytest.mark.integration gated and run against an ephemeral pgvector instance (excluded from the default hermetic unit run)",
+      "status": "complete",
+      "evidence": "All 6 tests are marked with @pytest.mark.integration and use the ephemeral_pg and test_settings fixtures. Tests are excluded from default pytest run via pyproject.toml addopts and must be run with pytest -m integration",
+      "test_file": "tests/integration/reindex/test_idempotency.py, tests/integration/reindex/test_security.py",
+      "implementation_files": []
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 67.64171070791781
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "completed",
+      "source": "orchestrator",
+      "duration_seconds": 212.53084674989805
+    }
+  ]
+}

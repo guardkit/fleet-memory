@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RIP-010",
+    "pre_path": "tasks/backlog/TASK-RIP-010-integration-tests.md",
+    "post_path": "tasks/design_approved/TASK-RIP-010-integration-tests.md",
+    "timestamp": "2026-06-14T08:34:27.898545+00:00",
+    "kind": "design_approved_transition"
+  }
+]

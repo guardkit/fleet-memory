@@ -1,31 +1,31 @@
 ---
-id: TASK-RIP-010
-title: Integration tests — idempotency, concurrency, resilience, injection
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: testing
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 7
-implementation_mode: task-work
 complexity: 6
-estimated_minutes: 90
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-006
 - TASK-RIP-007
 - TASK-RIP-008
 - TASK-RIP-009
+estimated_minutes: 90
+feature_id: FEAT-MEM-07
+id: TASK-RIP-010
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - integration
 - idempotency
 - concurrency
+task_type: testing
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Integration tests — idempotency, concurrency, resilience, injection
+updated: 2026-06-13 20:30:00+00:00
+wave: 7
 ---
 
 # Task: Integration tests — idempotency, concurrency, resilience, injection
