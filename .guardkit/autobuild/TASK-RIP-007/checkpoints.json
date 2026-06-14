@@ -8,7 +8,7 @@
       "tests_passed": false,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -18,7 +18,7 @@
       "tests_passed": false,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 2 complete (tests: fail)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -28,9 +28,19 @@
       "tests_passed": false,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 3 complete (tests: fail)",
+      "from_prior_run": true,
+      "evidence_commits": {}
+    },
+    {
+      "turn": 1,
+      "commit_hash": "69b64125691d03dffddb30b9a0cdc231b1e93794",
+      "timestamp": "2026-06-14T09:21:15.713900",
+      "tests_passed": true,
+      "test_count": 3,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: pass)",
       "from_prior_run": false,
       "evidence_commits": {}
     }
   ],
-  "last_updated": "2026-06-14T09:06:22.250767"
+  "last_updated": "2026-06-14T09:21:15.714175"
 }

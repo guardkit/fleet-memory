@@ -1,0 +1,9 @@
+[
+  {
+    "task_id": "TASK-RIP-009",
+    "pre_path": "tasks/backlog/TASK-RIP-009-cli-entrypoint.md",
+    "post_path": "tasks/design_approved/TASK-RIP-009-cli-entrypoint.md",
+    "timestamp": "2026-06-14T08:21:16.617312+00:00",
+    "kind": "design_approved_transition"
+  }
+]

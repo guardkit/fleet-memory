@@ -1,28 +1,28 @@
 ---
-id: TASK-RIP-009
-title: Re-index CLI entrypoint (fail-loud, resumable)
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 6
-implementation_mode: task-work
 complexity: 4
-estimated_minutes: 60
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-005
 - TASK-RIP-006
+estimated_minutes: 60
+feature_id: FEAT-MEM-07
+id: TASK-RIP-009
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - cli
 - resilience
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Re-index CLI entrypoint (fail-loud, resumable)
+updated: 2026-06-13 20:30:00+00:00
+wave: 6
 ---
 
 # Task: Re-index CLI entrypoint (fail-loud, resumable)

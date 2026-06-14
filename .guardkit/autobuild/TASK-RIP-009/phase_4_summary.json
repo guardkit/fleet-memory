@@ -1,0 +1,7 @@
+{
+  "tests_run": 55,
+  "tests_failed": 0,
+  "coverage_pct": 83.37,
+  "output_summary": "55 tests passed, 83.37% coverage on fleet_memory.reindex module (exceeds 80% requirement)",
+  "quality_gates_passed": true
+}
