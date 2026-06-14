@@ -1,28 +1,28 @@
 ---
-id: TASK-RIP-003
-title: Front-matter reader + document-kind classifier + parser dispatch
-status: backlog
-created: 2026-06-13 20:30:00+00:00
-updated: 2026-06-13 20:30:00+00:00
-priority: high
-task_type: feature
-parent_review: TASK-REV-RIP7
-feature_id: FEAT-MEM-07
-wave: 2
-implementation_mode: task-work
 complexity: 5
-estimated_minutes: 60
+created: 2026-06-13 20:30:00+00:00
 dependencies:
 - TASK-RIP-001
+estimated_minutes: 60
+feature_id: FEAT-MEM-07
+id: TASK-RIP-003
+implementation_mode: task-work
+parent_review: TASK-REV-RIP7
+priority: high
+status: design_approved
 tags:
 - reindex
 - parsing
 - classification
 - accounting
+task_type: feature
 test_results:
-  status: pending
   coverage: null
   last_run: null
+  status: pending
+title: Front-matter reader + document-kind classifier + parser dispatch
+updated: 2026-06-13 20:30:00+00:00
+wave: 2
 ---
 
 # Task: Front-matter reader + document-kind classifier + parser dispatch
