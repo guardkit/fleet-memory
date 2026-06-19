@@ -1,0 +1,11 @@
+[2026-06-13T12:41:00] START TASK-DW-001: task-work implementation
+[2026-06-13T12:42:00] SNAPSHOT TASK-DW-001: elapsed=60s, phase=task-work implementation, files_changed=0, last_tool=Bash
+[2026-06-13T12:43:00] SNAPSHOT TASK-DW-001: elapsed=120s, phase=task-work implementation, files_changed=1, last_tool=Bash
+[2026-06-13T12:44:00] SNAPSHOT TASK-DW-001: elapsed=180s, phase=task-work implementation, files_changed=2, last_tool=Bash
+[2026-06-13T12:44:53] START TASK-DW-001: specialist:test-orchestrator invocation
+[2026-06-13T12:45:49] START TASK-DW-001: specialist:code-reviewer invocation
+[2026-06-13T12:46:49] SNAPSHOT TASK-DW-001: elapsed=60s, phase=specialist:code-reviewer invocation, files_changed=0, last_tool=Grep
+[2026-06-13T12:47:49] SNAPSHOT TASK-DW-001: elapsed=120s, phase=specialist:code-reviewer invocation, files_changed=0, last_tool=Bash
+[2026-06-13T12:48:51] START TASK-DW-001: Coach invocation
+[2026-06-13T12:49:51] SNAPSHOT TASK-DW-001: elapsed=60s, phase=Coach invocation, files_changed=0
+[2026-06-13T12:50:01] COMPLETE TASK-DW-001: elapsed=543s, decision=approved, snapshots=1

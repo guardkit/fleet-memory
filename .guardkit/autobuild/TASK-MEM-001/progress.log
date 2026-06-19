@@ -1,0 +1,6 @@
+[2026-06-12T18:11:22] START TASK-MEM-001: Player invocation
+[2026-06-12T18:12:22] SNAPSHOT TASK-MEM-001: elapsed=60s, phase=Player invocation, files_changed=5, last_tool=Bash
+[2026-06-12T18:13:22] SNAPSHOT TASK-MEM-001: elapsed=120s, phase=Player invocation, files_changed=6, last_tool=Bash
+[2026-06-12T18:13:57] START TASK-MEM-001: Coach invocation
+[2026-06-12T18:14:57] SNAPSHOT TASK-MEM-001: elapsed=60s, phase=Coach invocation, files_changed=0
+[2026-06-12T18:15:19] COMPLETE TASK-MEM-001: elapsed=239s, decision=approved, snapshots=1
