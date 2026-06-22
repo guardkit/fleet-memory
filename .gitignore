@@ -219,3 +219,6 @@ __marimo__/
 
 # Claude Code hook state (capture_slash_command.py session stash + log)
 .claude/hooks/.state/
+
+# Deploy env files (hold NAS_USER + DB password for the nas target)
+deploy/**/.env.deploy
