@@ -28,14 +28,25 @@ echo "=== Phase 2: Deploy fleet_memory Postgres to NAS ==="
 
 # 2a. Sync compose folder (repo is canonical; NAS copy is an artifact)
 echo "Syncing docker-compose.yml to NAS..."
+# NB: "initdb" has NO trailing slash on purpose — rsync must copy the directory
+# itself (-> ${NAS_DOCKER_ROOT}/initdb/) so the compose "./initdb" bind mount
+# resolves. A trailing slash ("initdb/") copies only the *contents* into the
+# docker root, leaving no initdb dir and failing the mount on Synology.
 rsync -avz -e "ssh -i $HOME/.ssh/fleet_memory_nas_ed25519 -p ${NAS_SSH_PORT}" \
     --exclude '.env.deploy*' \
-    docker-compose.yml initdb/ \
+    docker-compose.yml initdb \
     ${NAS_USER}@${NAS_HOST}:${NAS_DOCKER_ROOT}/
 
 # 2b. Render runtime .env on the NAS (DB password only), lock it down
 echo "Rendering .env on NAS..."
 $SSH "printf 'POSTGRES_PASSWORD=%s\n' '${FLEET_MEMORY_PG_PASSWORD}' > ${NAS_DOCKER_ROOT}/.env && chmod 600 ${NAS_DOCKER_ROOT}/.env"
+
+# 2b-bis. Create the pgdata bind-mount target. Synology's docker does NOT
+# auto-create bind-mount source directories (unlike upstream docker), so the
+# compose volume mount fails with "Bind mount failed: ... does not exists"
+# unless the directory already exists.
+echo "Ensuring pgdata directory exists on NAS..."
+$SSH "mkdir -p ${NAS_DOCKER_ROOT}/pgdata"
 
 # 2c. Start container
 echo "Starting container..."
