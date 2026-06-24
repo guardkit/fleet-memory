@@ -144,4 +144,94 @@ $SSH "ls ${NAS_DOCKER_ROOT}/pgdata/PG_VERSION && cat ${NAS_DOCKER_ROOT}/pgdata/P
 
 ---
 
+## Provisioning record & corrections — 2026-06-21 (executed on the GB10, target `whitestocks`)
+
+As-built record of the first real provisioning, kept for rebuilds. It **diverges from Phase 0 above**, and Phase 0 was **missing two DSM prerequisites** that blocked the run — both captured below. On a rebuild, follow *this* checklist; Phase 0's snippets are the template it corrects.
+
+**Divergences from the 2026-06-12 plan**
+
+- **Host = the GB10 (`promaxgb10-41b1`), not the Mac.** The output-side loop runs Forge on the GB10, so the key + `.env.deploy` are provisioned on that box (the one that runs the deploy). Everything below was run on the GB10 unless it says *interactive NAS session*.
+- **The key did not pre-exist** anywhere; it was generated fresh on the GB10 (the Mac had no `fleet_memory_nas_ed25519`).
+
+**Worked values (non-secret)**
+
+```bash
+NAS_HOST=whitestocks.tailebf801.ts.net     # Tailscale MagicDNS name (IPv4 100.92.74.2)
+NAS_USER=RichardWoollcott                  # DSM account NAME (not the email); must be in administrators
+NAS_SSH_PORT=22
+NAS_DOCKER_ROOT=/volume1/docker/fleet_memory
+# FLEET_MEMORY_PG_PASSWORD: openssl rand -base64 24, lives ONLY in deploy/nas/.env.deploy (gitignored) — never committed
+```
+
+DSM had several near-identical accounts (`RichardWoollcott`, `richardwoollcotthotmail.com`, a deactivated `admin`). `RichardWoollcott` is the chosen deploy identity — use it consistently as `NAS_USER` so the account owning the container files is the one Forge connects as.
+
+**Step 1 — generate the key (GB10)**
+
+```bash
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+ssh-keygen -t ed25519 -f ~/.ssh/fleet_memory_nas_ed25519 -C fleet-memory-deploy@gb10 -N ''
+ls -la ~/.ssh/fleet_memory_nas_ed25519*    # confirm BOTH the private key and .pub exist before continuing
+```
+
+`-N ''` = no passphrase (required for the scripts' unattended `BatchMode=yes`).
+
+**Step 2 — DSM prerequisite #1: enable User Home  [GAP in Phase 0 — this blocked the run]**
+
+DSM → Control Panel → User & Group → Advanced → tick *Enable user home service* → Apply. Without it the user has no `/var/services/homes/<user>`, so there is nowhere to write `~/.ssh/authorized_keys`. Symptom seen this run: `ssh-copy-id` authenticated, then failed with `Could not chdir to home directory ... No such file or directory` and `mkdir: cannot create directory '.ssh': Permission denied`.
+
+**Step 3 — DSM prerequisite #2: user in administrators  [Phase 0 assumed it — verify explicitly]**
+
+DSM → User & Group → User → click `RichardWoollcott` → ensure **administrators** is ticked. Synology SSH only accepts administrators-group accounts, and the deploy needs sudo.
+
+**Step 4 — install the key on the NAS (run on the GB10; lands on whitestocks)**
+
+```bash
+ssh-copy-id -i ~/.ssh/fleet_memory_nas_ed25519.pub -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST"
+# prompts for RichardWoollcott's DSM password ONCE (bootstrap); expect: Number of key(s) added: 1
+```
+
+**Step 5 — passwordless docker-sudo (interactive NAS session)**
+
+Phase 0 names this drop-in `fleet_memory_deploy`; this run created `fleet_memory_docker` (functionally identical — note the filename so a rebuild does not make a duplicate).
+
+```bash
+ssh -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST"          # interactive; DSM password OK here
+which docker                                          # CONFIRM the path — was /usr/local/bin/docker
+echo 'RichardWoollcott ALL=(ALL) NOPASSWD: /usr/local/bin/docker' | sudo tee /etc/sudoers.d/fleet_memory_docker
+sudo chmod 440 /etc/sudoers.d/fleet_memory_docker
+sudo visudo -c -f /etc/sudoers.d/fleet_memory_docker  # must report: parsed OK
+exit
+```
+
+The sudoers path must match `which docker` exactly; `deploy.sh`/`smoke.sh` hardcode `/usr/local/bin/docker`.
+
+**Step 6 — .env.deploy (GB10)**
+
+```bash
+cd ~/Projects/appmilla_github/fleet-memory/deploy/nas
+cp .env.deploy.example .env.deploy && chmod 600 .env.deploy
+openssl rand -base64 24             # paste into FLEET_MEMORY_PG_PASSWORD
+nano .env.deploy                    # fill the five values above
+git check-ignore deploy/nas/.env.deploy            # PASS: echoes the path
+grep -c '^FLEET_MEMORY_PG_PASSWORD=.\+' .env.deploy # PASS: prints 1 (populated) without revealing it
+```
+
+**Gate — verify before any deploy (GB10)**
+
+```bash
+ssh -i ~/.ssh/fleet_memory_nas_ed25519 -o BatchMode=yes -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST" 'echo OK'
+# PASS: prints OK, no password prompt → key + reach good
+ssh -i ~/.ssh/fleet_memory_nas_ed25519 -o BatchMode=yes -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST" 'sudo -n /usr/local/bin/docker ps'
+# PASS: prints the container table (FalkorDB was already running) → key + admin group + passwordless docker-sudo all proven
+# FAIL (sudo: a password is required) → Step 5 did not take, or DSM wiped it (see caveats)
+```
+
+Both gates green on this run. Provisioning complete — the actual stand-up is deliberately left to the output-loop executor running `deploy.sh`/`smoke.sh` as typed steps (NOT a manual `./deploy.sh`), so the executor itself is proven; see [output-loop-exemplar-build-plan.md §FORGE-OL-04](../research/ideas/output-loop-exemplar-build-plan.md).
+
+**Forward caveats (most likely rebuild-breakers)**
+
+- **DSM major upgrades can wipe `/etc/sudoers.d/`.** If a working deploy suddenly demands a sudo password, re-do Step 5 first.
+- **Tailscale node-key expiry.** On 2026-06-21 `whitestocks` showed *Key expiry: in 1 month*; when it lapses the NAS drops off the tailnet and the deploy loses its route. Disable key expiry for the NAS in the Tailscale admin console (Machines → whitestocks → Disable key expiry) — it is fixed infrastructure.
+- **Re-provisioning a different host** (e.g. the second Spark): repeat Steps 1, 4, 6 on that host; Steps 2/3/5 are NAS-side and already done. One key per host beats copying the private key.
+
 *FEAT-MEM-01 productizes Phases 2–3 as `deploy/nas/deploy.sh` + `deploy/nas/smoke.sh` with these gates inline; this runbook remains the operator reference and the Phase 0 record.*
