@@ -20,6 +20,8 @@ import logging
 from typing import TYPE_CHECKING
 
 from faststream.exceptions import NackMessage, RejectMessage
+from faststream.nats import JStream, PullSub
+from nats.js.api import AckPolicy, ConsumerConfig
 
 from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
 from fleet_memory.relay.schema import MemoryEpisodeV1
@@ -27,8 +29,9 @@ from fleet_memory.relay.schema import MemoryEpisodeV1
 if TYPE_CHECKING:
     from fleet_memory.relay.service import RelayService
 
-# Import broker singleton from app (handler never creates broker)
-from fleet_memory.app import broker
+# Import broker + settings singletons from app (handler never creates either).
+# `settings` is None in test environments; fall back to the Settings default.
+from fleet_memory.app import broker, settings
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +39,36 @@ logger = logging.getLogger(__name__)
 # Initialized as None for type checking; set to real instance in lifespan
 service: RelayService | None = None
 
+# --- Durable JetStream consumer wiring (post-Graphiti write-path v2) -----------
+# The MEMORY stream (subjects memory.episode.> + memory.dlq.>) is provisioned by
+# nats-infrastructure (streams/stream-definitions.json); the relay BINDS to it
+# (declare=False) rather than creating it, so stream ownership stays with the infra
+# repo and the relay needs no stream-admin permissions. The consumer filters
+# memory.episode.> (ingest only — nats-core publishes to
+# memory.episode.{project_id}.{episode_type}); poison is published per-project to
+# memory.dlq.{project_id}, captured by the same stream and retained for inspection
+# but never re-consumed here. A DURABLE PULL consumer makes ack/nak/RejectMessage
+# semantics real: clean return -> ack; NackMessage -> nak (redeliver up to
+# max_deliver); RejectMessage -> term (no redelivery) + explicit DLQ publish. See
+# nats-infrastructure/docs/design/specs/memory-relay/memory-write-path-v2-post-graphiti.md.
+MEMORY_SUBJECT = "memory.episode.>"  # consumer filter (matches the publisher's partitioned subjects)
+_MAX_DELIVER = settings.max_deliver if settings is not None else 5
+MEMORY_STREAM = JStream(name="MEMORY", declare=False)
+MEMORY_DURABLE = "fleet-memory-relay"
+MEMORY_CONSUMER_CONFIG = ConsumerConfig(
+    ack_policy=AckPolicy.EXPLICIT,
+    max_deliver=_MAX_DELIVER,
+    ack_wait=60,  # seconds; deterministic embed + Postgres commit (v2: not the 900s Graphiti window)
+)
 
-@broker.subscriber("MEMORY")
+
+@broker.subscriber(
+    MEMORY_SUBJECT,
+    stream=MEMORY_STREAM,
+    durable=MEMORY_DURABLE,
+    pull_sub=PullSub(batch_size=1),
+    config=MEMORY_CONSUMER_CONFIG,
+)
 async def handle_memory_episode(episode: MemoryEpisodeV1) -> None:
     """Handle memory episode from MEMORY stream with ack/nak/DLQ dispatch.
 
@@ -74,17 +105,18 @@ async def handle_memory_episode(episode: MemoryEpisodeV1) -> None:
             extra={"episode_id": episode.episode_id},
         )
 
-        # Publish to DLQ subject with reason
+        # Publish to the per-project DLQ subject (memory.dlq.{project_id}) with reason
+        dlq_base = broker.context.get_global("settings").dlq_subject
         await broker.publish(
             {
                 "episode_id": episode.episode_id,
-                "project": episode.project,
+                "project_id": episode.project_id,
                 "reason": e.reason,
                 "detail": e.detail,
                 "content_format": episode.content_format,
                 "payload_type": episode.payload_type,
             },
-            subject=broker.context.get_global("settings").dlq_subject,
+            subject=f"{dlq_base}.{episode.project_id}",
         )
 
         # Reject/terminate the message (consumer continues)

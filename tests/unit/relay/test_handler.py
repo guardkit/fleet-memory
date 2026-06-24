@@ -23,7 +23,7 @@ def _make_episode(**overrides) -> MemoryEpisodeV1:
     """Factory for MemoryEpisodeV1 test instances."""
     defaults = {
         "episode_id": "ep-test-001",
-        "project": "test_proj",
+        "project_id": "test_proj",
         "content_format": "text",
         "body": "Test content for handler",
         "payload_type": None,
@@ -51,7 +51,7 @@ def mock_broker():
 def mock_settings():
     """Mock Settings instance for broker context."""
     settings = Mock(spec=Settings)
-    settings.dlq_subject = "MEMORY.DLQ"
+    settings.dlq_subject = "memory.dlq"
     settings.max_deliver = 5
     return settings
 
@@ -119,8 +119,10 @@ async def test_poison_error_routes_to_dlq(make_episode, mock_broker, mock_settin
             call_args = mock_broker.publish.call_args
             dlq_payload = call_args[0][0]
             assert dlq_payload["episode_id"] == episode.episode_id
+            assert dlq_payload["project_id"] == episode.project_id
             assert dlq_payload["reason"] == poison_reason
-            assert call_args[1]["subject"] == "MEMORY.DLQ"
+            # per-project DLQ subject: memory.dlq.{project_id}
+            assert call_args[1]["subject"] == "memory.dlq.test_proj"
 
 
 # AC-004: `TransientIngestError` negatively-acknowledges for redelivery
@@ -181,6 +183,42 @@ async def test_unenumerated_exception_treated_as_transient(make_episode, mock_br
 
             # Verify NO DLQ publish occurred (treated as transient)
             mock_broker.publish.assert_not_awaited()
+
+
+# D5/D9: the MEMORY subscriber is a DURABLE PULL JetStream consumer, not core NATS.
+# These guard the durability contract (see docs/decisions/MEM-04-relay-jetstream-contract.md)
+# so a future edit cannot silently drop back to a non-durable subscription where
+# nak/RejectMessage/max_deliver are no-ops.
+class TestDurableConsumerWiring:
+    """Lock in the JetStream durable-consumer contract (TASK-RLY-007 D5/D9)."""
+
+    def test_binds_to_externally_provisioned_memory_stream(self):
+        """Relay binds to the MEMORY stream with declare=False (nats-infrastructure owns it)."""
+        from fleet_memory.relay import handler
+
+        assert handler.MEMORY_STREAM.name == "MEMORY"
+        assert handler.MEMORY_STREAM.declare is False  # never create the stream from the relay
+
+    def test_ingest_subject_matches_convention(self):
+        """Consumer filter is the partitioned memory.episode.> (matches the publisher's subjects)."""
+        from fleet_memory.relay import handler
+
+        assert handler.MEMORY_SUBJECT == "memory.episode.>"
+
+    def test_durable_consumer_uses_explicit_ack_and_settings_max_deliver(self):
+        """Durable name + explicit ack + max_deliver wired from Settings (default 5, ASSUM-005)."""
+        from fleet_memory.relay import handler
+        from nats.js.api import AckPolicy
+
+        assert handler.MEMORY_DURABLE == "fleet-memory-relay"
+        assert handler.MEMORY_CONSUMER_CONFIG.ack_policy == AckPolicy.EXPLICIT
+        assert handler.MEMORY_CONSUMER_CONFIG.max_deliver == 5  # explicit ack makes nak/term real
+
+    def test_subscriber_registered_on_broker(self):
+        """The MEMORY handler is registered as a subscriber (import side-effect)."""
+        from fleet_memory.relay import handler
+
+        assert callable(handler.handle_memory_episode)
 
 
 # AC-007: Settings exposes DLQ configuration

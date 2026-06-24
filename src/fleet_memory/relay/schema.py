@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class ContentFormat(str, Enum):
@@ -31,10 +31,14 @@ class MemoryEpisodeV1(BaseModel):
     unrecognized values to survive parse and be routed/parked downstream.
     """
 
-    model_config = ConfigDict(extra="ignore")  # Forward compatibility
+    model_config = ConfigDict(extra="ignore", populate_by_name=True)  # Forward compatibility
 
     episode_id: str
-    project: str
+    # Canonical contract field is project_id (nats-core MemoryEpisodeV1, published on
+    # the subject partition). "project" is accepted as a transitional alias so legacy
+    # producers/tests keep working; it maps to the storage namespace's project segment
+    # at the relay boundary (service/chunk_writer keep the internal name `project`).
+    project_id: str = Field(validation_alias=AliasChoices("project_id", "project"))
     content_format: str  # Raw string, NOT validated against ContentFormat enum
     body: str
     payload_type: str | None = None

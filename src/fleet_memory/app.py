@@ -1,9 +1,11 @@
 """FastStream app shell with lifespan-managed AsyncPostgresStore.
 
 Minimal app per nats-asyncio-service template: module-level broker,
-FastStream app with lifespan that enters async_store_context and exposes
-the store for future handlers. No subscribers yet - FEAT-MEM-04 adds the
-MEMORY-stream consumer.
+FastStream app with lifespan that enters async_store_context and constructs
+the RelayService. The MEMORY-stream durable consumer is registered by
+fleet_memory.relay.handler (imported for side effects at the bottom of this
+module); see docs/decisions/MEM-04-relay-jetstream-contract.md for the D5/D9
+durability contract.
 """
 
 from __future__ import annotations
@@ -21,7 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import AsyncIterator
 
 
-def _create_app() -> tuple[NatsBroker, FastStream]:
+def _create_app() -> tuple[NatsBroker, FastStream, Settings | None]:
     """Factory function to create broker and app with safe settings construction.
 
     Attempts to construct Settings() from environment variables. If this fails
@@ -30,7 +32,10 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
     without triggering Settings validation errors.
 
     Returns:
-        Tuple of (broker, app) with configured lifespan
+        Tuple of (broker, app, settings) with configured lifespan. ``settings``
+        is None in test environments (missing env vars); the relay handler reads
+        it at import time to size the durable consumer's max_deliver, falling
+        back to the Settings default when None.
     """
     # Try to construct Settings from environment
     # In test environments this may fail - create minimal broker instead
@@ -108,12 +113,14 @@ def _create_app() -> tuple[NatsBroker, FastStream]:
     # FastStream app with lifespan
     app_instance = FastStream(broker_instance, lifespan=lifespan)
 
-    return broker_instance, app_instance
+    return broker_instance, app_instance, settings
 
 
 # Module-level exports - lazy construction via factory
-# Import-time side effects minimal: Settings() only happens when factory is called
-broker, app = _create_app()
+# Import-time side effects minimal: Settings() only happens when factory is called.
+# `settings` is exported so the relay handler can size the durable consumer at
+# import time (None in test envs -> handler falls back to the Settings default).
+broker, app, settings = _create_app()
 
 # Import handlers to register subscribers on the broker via import side-effects
 # Must occur after broker is created (import-time registration)

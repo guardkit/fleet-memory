@@ -79,7 +79,7 @@ async def test_episode_is_json_with_payload_type(make_adr_payload, mock_broker):
         episode.content_format == "json"
     ), "content_format must be 'json' for relay routing"
     assert episode.payload_type == "adr", "payload_type must match payload type"
-    assert episode.project == payload.project
+    assert episode.project_id == payload.project
 
 
 # AC-003: Body round-trips through registry

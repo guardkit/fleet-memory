@@ -43,7 +43,8 @@ class TestMemoryEpisodeV1:
             source_ref="test_source",
         )
         assert envelope.episode_id == "ep_001"
-        assert envelope.project == "test_project"
+        # constructed with the legacy `project` alias above; canonical attr is project_id
+        assert envelope.project_id == "test_project"
         assert envelope.content_format == "json"
         assert envelope.body == '{"key": "value"}'
         assert envelope.payload_type == "test_payload"
@@ -182,11 +183,11 @@ class TestMemoryEpisodeV1:
         with pytest.raises(ValidationError) as exc_info:
             MemoryEpisodeV1(
                 episode_id="ep_010",
-                # Missing project, content_format, body
+                # Missing project_id, content_format, body
             )
         errors = exc_info.value.errors()
         missing_fields = {err["loc"][0] for err in errors if err["type"] == "missing"}
-        assert "project" in missing_fields
+        assert "project_id" in missing_fields
         assert "content_format" in missing_fields
         assert "body" in missing_fields
 

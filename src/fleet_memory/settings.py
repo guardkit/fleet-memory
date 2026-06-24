@@ -70,8 +70,10 @@ class Settings(BaseSettings):
 
     # DLQ configuration
     dlq_subject: str = Field(
-        default="MEMORY.DLQ",
-        description="Dead-letter queue subject for poison episodes (ASSUM-006)",
+        default="memory.dlq",
+        description="Dead-letter subject PREFIX (ASSUM-006); the handler publishes poison "
+        "per-project to {dlq_subject}.{project_id} (e.g. memory.dlq.guardkit), captured by "
+        "the MEMORY stream's memory.dlq.> subjects",
     )
     max_deliver: int = Field(
         default=5,

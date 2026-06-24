@@ -221,7 +221,7 @@ class RelayService:
             target_tokens=self.settings.chunk_target_tokens,
             overlap_ratio=self.settings.chunk_overlap_ratio,
             source_ref=episode.source_ref,
-            project=episode.project,
+            project=episode.project_id,
         )
 
         # Step 2: Write chunks (idempotent via uuid5(episode_id, index))
