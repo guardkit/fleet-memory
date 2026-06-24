@@ -222,3 +222,13 @@ __marimo__/
 
 # Deploy env files (hold NAS_USER + DB password for the nas target)
 deploy/**/.env.deploy
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+Icon?
