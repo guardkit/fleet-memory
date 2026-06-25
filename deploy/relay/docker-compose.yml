@@ -1,0 +1,28 @@
+# fleet-memory relay — durable MEMORY-stream consumer -> Postgres+pgvector (FEAT-MEM-04).
+#
+# Runs on the GB10 host alongside the ships-computer-nats broker. Uses HOST networking
+# so the relay reaches everything the host can with no extra wiring:
+#   - the NATS broker on 127.0.0.1:4222 (published by nats-infrastructure)
+#   - the NAS Postgres over Tailscale (whitestocks.tailebf801.ts.net:5433)
+#   - the embed service by hostname (promaxgb10-41b1:9000)
+#
+# Secrets (FLEET_MEMORY_PG_DSN / FLEET_MEMORY_NATS_URL carry passwords) live in
+# .env.deploy (gitignored via deploy/**/.env.deploy). Copy .env.deploy.example ->
+# .env.deploy, fill in real values, chmod 600.
+#
+# Usage:
+#   cp .env.deploy.example .env.deploy && $EDITOR .env.deploy && chmod 600 .env.deploy
+#   docker compose up -d --build
+#   docker compose logs -f          # expect "FastStream app started successfully!"
+services:
+  fleet_memory_relay:
+    build:
+      context: ../..
+      dockerfile: deploy/relay/Dockerfile
+    image: fleet-memory-relay
+    container_name: fleet-memory-relay
+    restart: unless-stopped
+    # Host networking: reach the broker on localhost + Tailscale/host-resolved
+    # services (Postgres, embed) without bridging Tailscale into the container.
+    network_mode: host
+    env_file: .env.deploy
