@@ -20,7 +20,7 @@ feature_id: FEAT-MEM-04
 id: TASK-RLY-004
 implementation_mode: task-work
 parent_review: TASK-REV-RLY04
-status: design_approved
+status: completed
 tags:
 - chunks
 - storage

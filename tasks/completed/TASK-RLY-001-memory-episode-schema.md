@@ -1,18 +1,19 @@
 ---
-id: TASK-RLY-001
-title: MemoryEpisodeV1 envelope schema, ContentFormat enum, and Chunk model
-task_type: declarative
-parent_review: TASK-REV-RLY04
-feature_id: FEAT-MEM-04
-wave: 1
-implementation_mode: task-work
 complexity: 3
 dependencies: []
+feature_id: FEAT-MEM-04
+id: TASK-RLY-001
+implementation_mode: task-work
+parent_review: TASK-REV-RLY04
+status: completed
 tags:
-  - schema
-  - pydantic
-  - relay
-  - fleet-memory
+- schema
+- pydantic
+- relay
+- fleet-memory
+task_type: declarative
+title: MemoryEpisodeV1 envelope schema, ContentFormat enum, and Chunk model
+wave: 1
 ---
 
 # Task: MemoryEpisodeV1 envelope schema, ContentFormat enum, and Chunk model

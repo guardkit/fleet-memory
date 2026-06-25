@@ -12,7 +12,7 @@ estimated_tasks: 7
 tasks:
 - id: TASK-RLY-001
   name: MemoryEpisodeV1 schema ContentFormat enum and Chunk model
-  file_path: tasks/backlog/relay-integration/TASK-RLY-001-memory-episode-schema.md
+  file_path: tasks/completed/TASK-RLY-001-memory-episode-schema.md
   complexity: 3
   dependencies: []
   status: completed
@@ -21,7 +21,7 @@ tasks:
   estimated_minutes: 33
 - id: TASK-RLY-002
   name: Relay exception taxonomy PoisonEpisodeError vs TransientIngestError
-  file_path: tasks/backlog/relay-integration/TASK-RLY-002-exception-taxonomy.md
+  file_path: tasks/completed/TASK-RLY-002-exception-taxonomy.md
   complexity: 3
   dependencies: []
   status: completed
@@ -30,7 +30,7 @@ tasks:
   estimated_minutes: 33
 - id: TASK-RLY-003
   name: Heading-aware prose chunker
-  file_path: tasks/backlog/relay-integration/TASK-RLY-003-heading-aware-chunker.md
+  file_path: tasks/completed/TASK-RLY-003-heading-aware-chunker.md
   complexity: 6
   dependencies:
   - TASK-RLY-001
@@ -40,7 +40,7 @@ tasks:
   estimated_minutes: 113
 - id: TASK-RLY-004
   name: Chunk writer episode_id-derived ids embed-on-write
-  file_path: tasks/backlog/relay-integration/TASK-RLY-004-chunk-writer.md
+  file_path: tasks/completed/TASK-RLY-004-chunk-writer.md
   complexity: 6
   dependencies:
   - TASK-RLY-001
@@ -50,7 +50,7 @@ tasks:
   estimated_minutes: 113
 - id: TASK-RLY-005
   name: RelayService.ingest routing and two-layer idempotency
-  file_path: tasks/backlog/relay-integration/TASK-RLY-005-relay-service-routing.md
+  file_path: tasks/completed/TASK-RLY-005-relay-service-routing.md
   complexity: 7
   dependencies:
   - TASK-RLY-001
@@ -63,7 +63,7 @@ tasks:
   estimated_minutes: 170
 - id: TASK-RLY-006
   name: Thin MEMORY-stream handler ack/nak/DLQ and settings
-  file_path: tasks/backlog/relay-integration/TASK-RLY-006-memory-stream-handler.md
+  file_path: tasks/completed/TASK-RLY-006-memory-stream-handler.md
   complexity: 6
   dependencies:
   - TASK-RLY-002
@@ -74,7 +74,7 @@ tasks:
   estimated_minutes: 113
 - id: TASK-RLY-007
   name: Verify relay ack/nak/DLQ contract D5/D9
-  file_path: tasks/backlog/relay-integration/TASK-RLY-007-verify-dlq-contract.md
+  file_path: tasks/completed/TASK-RLY-007-verify-dlq-contract.md
   complexity: 2
   dependencies: []
   status: completed

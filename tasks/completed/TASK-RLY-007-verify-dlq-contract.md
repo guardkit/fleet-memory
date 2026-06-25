@@ -1,5 +1,6 @@
 ---
 id: TASK-RLY-007
+status: completed
 title: Verify relay ack/nak/DLQ contract (D5/D9) against nats-infrastructure
 task_type: operator_handoff
 parent_review: TASK-REV-RLY04

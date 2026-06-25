@@ -3,7 +3,7 @@ id: TASK-REV-RLY04
 title: "Plan: Relay Integration"
 task_type: review
 priority: high
-status: review_complete
+status: completed
 feature_ref: FEAT-MEM-04
 context_sources:
   - features/relay-integration/relay-integration_summary.md
