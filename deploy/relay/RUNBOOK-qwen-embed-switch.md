@@ -6,6 +6,20 @@
 §2.1 — standardise on **Qwen3-Embedding-0.6B (1024-dim)**, superseding nomic/768. One dim pinned
 end-to-end. (Target dim is **1024** — Qwen3-Embedding-0.6B's native dim; not 1028.)
 
+> **⚠️ Verified corrections (adversarial review 2026-06-25) — read before executing on the live GB10:**
+> 1. **Go surgical; NEVER the full bring-up on this box.** `dgx-spark/RUNBOOK-single-spark-bring-up.md`
+>    Phase 3.2 overwrites the live llama-swap config and deletes ~38 resolvable model names → breaks
+>    `graphiti-mcp`, forge Graphiti, `specialist-agent-architect`, `study-tutor`, the granite vision stack,
+>    **and** the relay. Add ONLY the `embed` block (step 0, surgical).
+> 2. **Back up 4 surfaces, not just the config** — also `deploy/relay/.env.deploy` (gitignored; only copy)
+>    + a note of the original 768/768/`vector(768)` triplet. A config-only rollback re-creates the DLQ failure.
+> 3. **Stop the relay FIRST**, then serve/drop/recreate — collapses the DLQ danger window and avoids a
+>    `store.setup()` race that could rebuild the table at the stale 768.
+> 4. **Strip the `embeddings` alias** from the new `embed` block — live `nomic-embed` already owns it
+>    (duplicate-alias collision); the relay only ever calls the literal `embed`.
+>
+> Full corrected, ordered sequence: `docs/handoffs/HANDOFF-2026-06-25-qwen-embed-switch-and-harvest.md`.
+
 ## Why this is load-bearing
 
 The relay embeds on write and stores vectors in `store_vectors.embedding`, a pgvector column whose
