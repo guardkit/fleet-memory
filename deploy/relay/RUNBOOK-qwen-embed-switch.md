@@ -19,25 +19,38 @@ pgvector retrieval"). Get all three to **1024** together.
 
 | | current | target |
 |---|---|---|
-| model | `nomic-embed-text-v1.5` (`nomic-embed` on :9000) | **Qwen3-Embedding-0.6B** |
+| model | `nomic-embed-text-v1.5` (`nomic-embed` on :9000) | **Qwen3-Embedding-0.6B** (served as `embed`) |
 | dim | 768 | **1024** |
 | `FLEET_MEMORY_EMBED_DIMS` | 768 (default) | 1024 |
 | `store_vectors.embedding` | `vector(768)` | `vector(1024)` |
-| served at `:9000`? | yes (`nomic-embed`) | **NO — not served yet** |
+| served at `:9000`? | yes (`nomic-embed`) | **NO — not served yet** (see step 0) |
 
 > Set `export FLEET_MEMORY_PG_DSN=...` first (password in `deploy/nas/.env.deploy`).
 
 ## Steps
 
 ### 0. Serve Qwen3-Embedding-0.6B on the embed endpoint  ← currently missing
-`http://promaxgb10-41b1:9000` (llama-swap) serves `nomic-embed` + `qwen-graphiti` but NOT
-Qwen3-Embedding-0.6B. Add it to the llama-swap config (`guardkit/docs/research/dgx-spark/
-llama-swap-config.yaml` / the live config on Node A) and confirm:
+`http://promaxgb10-41b1:9000` (llama-swap) currently serves `nomic-embed` + `qwen-graphiti` but NOT
+Qwen3-Embedding-0.6B. The canonical serving spec is the `embed` model block in
+`dgx-spark/examples/llama-swap-config.public.yaml` — model name **`embed`** (aliases `qwen3-embedding`
+/ `embeddings`), `--embedding --pooling last` (last-token pooling is a Qwen3-Embedding requirement),
+1024-dim. Two ways to stand it up:
+
+- **Surgical (keeps the rest of the live fleet):** copy that `embed` block into the live
+  `/opt/llama-swap/config/config.yaml` (replace the `nomic-embed` block, or add it alongside), then
+  restart llama-swap. Least disruptive to the other models on this box.
+- **Full bring-up (clean-box / video path):** run `dgx-spark/RUNBOOK-single-spark-bring-up.md` — its
+  Phase 3.2 deploys the public config (which includes `embed`) wholesale. ⚠️ On THIS box
+  (`promaxgb10-41b1` is the live host) that **replaces the whole config and removes `nomic-embed`**,
+  so the running relay breaks until steps 1–3 below land — back up
+  `/opt/llama-swap/config/config.yaml` first and do the relay switch immediately after.
+
+Confirm it's serving at 1024:
 ```bash
 curl -s http://promaxgb10-41b1:9000/v1/models | python3 -c "import sys,json;print([m['id'] for m in json.load(sys.stdin)['data']])"
-# the qwen embed id should appear — note its EXACT id for FLEET_MEMORY_EMBED_MODEL
+# expect 'embed' (+ aliases qwen3-embedding / embeddings) to appear
 curl -s http://promaxgb10-41b1:9000/v1/embeddings -H 'content-type: application/json' \
-  -d '{"model":"<qwen-embed-id>","input":"dim check"}' \
+  -d '{"model":"embed","input":"dim check"}' \
   | python3 -c "import sys,json;print('dim=',len(json.load(sys.stdin)['data'][0]['embedding']))"
 # expect: dim= 1024
 ```
@@ -45,7 +58,7 @@ curl -s http://promaxgb10-41b1:9000/v1/embeddings -H 'content-type: application/
 ### 1. Point the relay at the new model
 Edit `deploy/relay/.env.deploy` (gitignored, chmod 600):
 ```
-FLEET_MEMORY_EMBED_MODEL=<qwen-embed-id>     # exact id from /v1/models
+FLEET_MEMORY_EMBED_MODEL=embed              # the served model name (alias: qwen3-embedding)
 FLEET_MEMORY_EMBED_DIMS=1024
 # FLEET_MEMORY_EMBED_URL stays http://promaxgb10-41b1:9000
 ```
