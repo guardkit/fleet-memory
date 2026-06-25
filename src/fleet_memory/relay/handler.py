@@ -53,6 +53,10 @@ service: RelayService | None = None
 # nats-infrastructure/docs/design/specs/memory-relay/memory-write-path-v2-post-graphiti.md.
 MEMORY_SUBJECT = "memory.episode.>"  # consumer filter (matches the publisher's partitioned subjects)
 _MAX_DELIVER = settings.max_deliver if settings is not None else 5
+# DLQ subject PREFIX (handler appends .{project_id}). Read from the same module-level
+# settings singleton as _MAX_DELIVER — that singleton is the single source of truth, so
+# the handler needs no broker-context lookup. None in test envs -> Settings default.
+_DLQ_SUBJECT = settings.dlq_subject if settings is not None else "memory.dlq"
 MEMORY_STREAM = JStream(name="MEMORY", declare=False)
 MEMORY_DURABLE = "fleet-memory-relay"
 MEMORY_CONSUMER_CONFIG = ConsumerConfig(
@@ -106,7 +110,7 @@ async def handle_memory_episode(episode: MemoryEpisodeV1) -> None:
         )
 
         # Publish to the per-project DLQ subject (memory.dlq.{project_id}) with reason
-        dlq_base = broker.context.get_global("settings").dlq_subject
+        dlq_base = _DLQ_SUBJECT
         await broker.publish(
             {
                 "episode_id": episode.episode_id,

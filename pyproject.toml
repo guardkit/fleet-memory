@@ -5,7 +5,9 @@ description = "LangGraph checkpoint and memory store for distributed agent coord
 requires-python = ">=3.12"
 dependencies = [
     "fastmcp>=0.1.0",
-    "faststream[nats]",
+    # [cli] is required to run the relay via `faststream run`; pinned to the 0.7 line
+    # the relay was validated against (0.7 changed the lifespan/Context APIs).
+    "faststream[nats,cli]>=0.7,<0.8",
     "pydantic>=2",
     "pydantic-settings>=2",
     "langgraph-checkpoint-postgres>=2.0",

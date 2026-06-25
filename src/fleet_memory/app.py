@@ -52,7 +52,7 @@ def _create_app() -> tuple[NatsBroker, FastStream, Settings | None]:
     broker_instance = NatsBroker(nats_url)
 
     @asynccontextmanager
-    async def lifespan(app: FastStream) -> AsyncIterator[None]:
+    async def lifespan() -> AsyncIterator[None]:
         """Lifespan context manager: enter store context and expose via broker state.
 
         Entry:

@@ -24,6 +24,7 @@ def _make_episode(**overrides) -> MemoryEpisodeV1:
     defaults = {
         "episode_id": "ep-test-001",
         "project_id": "test_proj",
+        "episode_type": "document",
         "content_format": "text",
         "body": "Test content for handler",
         "payload_type": None,
@@ -84,7 +85,7 @@ async def test_clean_ingest_return_acks_message(make_episode):
 
 # AC-003: `PoisonEpisodeError` routes to DLQ with reason recorded
 @pytest.mark.asyncio
-async def test_poison_error_routes_to_dlq(make_episode, mock_broker, mock_settings):
+async def test_poison_error_routes_to_dlq(make_episode, mock_broker):
     """Verify handler routes poison episode to DLQ subject with reason.
 
     Contract: PoisonEpisodeError → reject/terminate + publish to DLQ subject.
@@ -102,9 +103,9 @@ async def test_poison_error_routes_to_dlq(make_episode, mock_broker, mock_settin
         detail="Project name contains hyphens",
     )
 
-    # Configure mock broker context
-    mock_broker.context.get_global.return_value = mock_settings
-
+    # The handler reads the DLQ subject prefix from the module-level settings
+    # singleton (None in tests -> Settings default "memory.dlq"), not the broker
+    # context, so no context wiring is needed here.
     with patch.object(handler, "service", mock_service):
         with patch.object(handler, "broker", mock_broker):
             # Expect RejectMessage exception
