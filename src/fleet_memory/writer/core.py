@@ -12,7 +12,7 @@ Consumer: FEAT-MEM-03 (deterministic write API)
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from fleet_memory.payloads.base import BasePayload
 from fleet_memory.payloads.registry import PAYLOAD_REGISTRY
@@ -50,7 +50,9 @@ class DeterministicWriter:
         self.store = store
         self.settings = settings
 
-    async def write(self, payload: BasePayload) -> None:
+    async def write(
+        self, payload: BasePayload, episode_meta: dict[str, Any] | None = None
+    ) -> None:
         """Write a single typed payload with idempotent content-hash upsert.
 
         Algorithm:
@@ -63,6 +65,9 @@ class DeterministicWriter:
 
         Args:
             payload: A registered BasePayload subclass instance
+            episode_meta: Optional envelope metadata (episode_type + provenance) from the
+                relay. Persisted on the record so it is not lost; idempotency is unaffected
+                (the content hash is computed from the payload, not this metadata).
 
         Raises:
             ValueError: If payload type is not registered
@@ -94,7 +99,9 @@ class DeterministicWriter:
         if existing is None:
             # No existing record - write new at version 1
             version = 1
-            await self._write_record(namespace, store_key, payload, new_hash, version)
+            await self._write_record(
+                namespace, store_key, payload, new_hash, version, episode_meta
+            )
         else:
             # Existing record - check content hash
             existing_value = existing.value
@@ -113,7 +120,9 @@ class DeterministicWriter:
                 # Different content hash - versioned update (ASSUM-005)
                 existing_version = existing_value.get("version", 1)
                 new_version = existing_version + 1
-                await self._write_record(namespace, store_key, payload, new_hash, new_version)
+                await self._write_record(
+                    namespace, store_key, payload, new_hash, new_version, episode_meta
+                )
 
         # Step 6: Apply declared supersessions (if any)
         if payload.supersedes:
@@ -152,6 +161,7 @@ class DeterministicWriter:
         payload: BasePayload,
         content_hash_value: str,
         version: int,
+        episode_meta: dict[str, Any] | None = None,
     ) -> None:
         """Write a record to the store with content field for embedding.
 
@@ -161,6 +171,8 @@ class DeterministicWriter:
             payload: The payload to write
             content_hash_value: Pre-computed content hash
             version: The version number to store
+            episode_meta: Optional envelope metadata (episode_type + provenance) persisted
+                alongside the record; episode_type is also lifted to a top-level field.
         """
         # Serialize payload to create content string
         # The content field is what gets embedded by the store
@@ -185,6 +197,12 @@ class DeterministicWriter:
         # Include supersedes list if present (TASK-DW-003)
         if payload.supersedes:
             stored_value["supersedes"] = payload.supersedes
+
+        # Persist envelope metadata so episode_type + provenance survive ingestion.
+        # episode_type is lifted to a top-level field for queryability.
+        if episode_meta is not None:
+            stored_value["episode_type"] = episode_meta.get("episode_type")
+            stored_value["episode_meta"] = episode_meta
 
         # Check for forward supersession (if another record already declared it supersedes this one)
         stored_value = await check_and_apply_forward_supersession(

@@ -6,7 +6,9 @@ value object consumed by downstream relay tasks.
 
 from __future__ import annotations
 
+from datetime import datetime
 from enum import Enum
+from typing import Any
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
@@ -39,10 +41,23 @@ class MemoryEpisodeV1(BaseModel):
     # producers/tests keep working; it maps to the storage namespace's project segment
     # at the relay boundary (service/chunk_writer keep the internal name `project`).
     project_id: str = Field(validation_alias=AliasChoices("project_id", "project"))
+    # Coarse source category (adr/feature_outcome/review_report/document/...). REQUIRED:
+    # the publisher (nats-core MemoryEpisodeV1) always sends it and the relay must capture
+    # + persist it rather than silently dropping it via extra="ignore". Kept as a raw
+    # string (no pattern) — the publisher already enforces the NATS-safe identifier shape.
+    episode_type: str
     content_format: str  # Raw string, NOT validated against ContentFormat enum
     body: str
     payload_type: str | None = None
     source_ref: str | None = None
+    # Optional envelope metadata carried by the publisher. Captured here (instead of being
+    # dropped by extra="ignore") and persisted alongside content via the writers so it is
+    # not silently lost at ingestion.
+    name: str | None = None
+    source: str | None = None
+    occurred_at: datetime | None = None
+    published_at: datetime | None = None
+    ingest_hints: dict[str, Any] | None = None
 
 
 class Chunk(BaseModel):

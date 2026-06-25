@@ -32,6 +32,7 @@ def _make_episode(**overrides) -> MemoryEpisodeV1:
     defaults = {
         "episode_id": "ep-test-001",
         "project": "test_proj",
+        "episode_type": "document",
         "content_format": "text",
         "body": "Test content",
         "payload_type": None,
@@ -119,8 +120,13 @@ async def test_json_episode_writes_typed_payload(relay_service, make_episode, mo
         # Assert: payload was constructed from body
         mock_payload_class.assert_called_once()
 
-        # Assert: DeterministicWriter.write was called with payload
-        mock_writer.write.assert_called_once_with(mock_payload_instance)
+        # Assert: DeterministicWriter.write was called with payload + envelope metadata
+        mock_writer.write.assert_called_once()
+        assert mock_writer.write.call_args.args[0] is mock_payload_instance
+        assert (
+            mock_writer.write.call_args.kwargs["episode_meta"]["episode_type"]
+            == "document"
+        )
 
 
 # AC-002: markdown and text episodes are chunked and stored as chunks
@@ -156,8 +162,12 @@ async def test_markdown_episode_chunks_and_writes(
             project="test_proj",
         )
 
-        # Assert: ChunkWriter.write_chunks called
-        mock_chunk_writer.write_chunks.assert_called_once_with("ep-test-001", mock_chunks)
+        # Assert: ChunkWriter.write_chunks called with id, chunks, and envelope metadata
+        mock_chunk_writer.write_chunks.assert_called_once()
+        _call = mock_chunk_writer.write_chunks.call_args
+        assert _call.args[0] == "ep-test-001"
+        assert _call.args[1] == mock_chunks
+        assert _call.kwargs["episode_meta"]["episode_type"] == "document"
 
 
 @pytest.mark.asyncio
@@ -361,8 +371,12 @@ async def test_empty_markdown_returns_cleanly(relay_service, make_episode, mock_
         # Act (should not raise)
         await relay_service.ingest(episode)
 
-        # Assert: write_chunks was called with empty list
-        mock_chunk_writer.write_chunks.assert_called_once_with("ep-test-001", [])
+        # Assert: write_chunks was called with empty list (+ envelope metadata)
+        mock_chunk_writer.write_chunks.assert_called_once()
+        _call = mock_chunk_writer.write_chunks.call_args
+        assert _call.args[0] == "ep-test-001"
+        assert _call.args[1] == []
+        assert _call.kwargs["episode_meta"]["episode_type"] == "document"
 
 
 # AC-009: Redelivery of an already-stored episode produces no duplicates

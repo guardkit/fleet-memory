@@ -10,7 +10,7 @@ Consumer: FEAT-MEM-04 (relay chunk storage)
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from fleet_memory.store import validate_namespace
 from fleet_memory.writer.identity import FLEET_MEMORY_NAMESPACE
@@ -43,7 +43,12 @@ class ChunkWriter:
         """
         self.store = store
 
-    async def write_chunks(self, episode_id: str, chunks: list[Chunk]) -> None:
+    async def write_chunks(
+        self,
+        episode_id: str,
+        chunks: list[Chunk],
+        episode_meta: dict[str, Any] | None = None,
+    ) -> None:
         """Write chunks with deterministic uuid5 keys for idempotent storage.
 
         Algorithm:
@@ -59,6 +64,9 @@ class ChunkWriter:
         Args:
             episode_id: Unique episode identifier (used in key derivation)
             chunks: List of Chunk value objects to persist
+            episode_meta: Optional envelope metadata (episode_type + provenance) to
+                persist on each chunk record. When provided, episode_type is also
+                lifted to a top-level field for queryability.
 
         Raises:
             NamespaceValidationError: If any chunk's project contains hyphens
@@ -93,6 +101,12 @@ class ChunkWriter:
                 "source_ref": chunk.source_ref,
                 "project": chunk.project,
             }
+
+            # Persist envelope metadata so episode_type + provenance are not lost.
+            # episode_type is also lifted to a top-level field for queryability.
+            if episode_meta is not None:
+                stored_value["episode_type"] = episode_meta.get("episode_type")
+                stored_value["episode_meta"] = episode_meta
 
             # Step 5: Write to store (triggers embedding)
             await self.store.aput(namespace, store_key, stored_value)

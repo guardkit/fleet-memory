@@ -44,6 +44,8 @@ async def publish_episode(payload: BasePayload) -> None:
 
     The episode has:
     - content_format="json" (routes to DeterministicWriter, not prose chunker)
+    - episode_type=payload.payload_type (required coarse source category; for the
+      re-index path the typed-payload key doubles as the episode category)
     - payload_type=payload.payload_type (for registry dispatch)
     - body=canonical JSON serialization (round-trips through registry)
     - episode_id=deterministic hash of natural_key (idempotent publish)
@@ -69,6 +71,9 @@ async def publish_episode(payload: BasePayload) -> None:
     episode_data = {
         "episode_id": episode_id,
         "project": payload.project,
+        # episode_type is required on the envelope; the re-index path uses the typed
+        # payload key as the coarse source category (adr/feature_outcome/...).
+        "episode_type": payload.payload_type,
         "content_format": "json",  # Routes to DeterministicWriter
         "body": body,
         "payload_type": payload.payload_type,

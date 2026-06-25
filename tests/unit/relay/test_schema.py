@@ -37,6 +37,7 @@ class TestMemoryEpisodeV1:
         envelope = MemoryEpisodeV1(
             episode_id="ep_001",
             project="test_project",
+            episode_type="document",
             content_format="json",
             body='{"key": "value"}',
             payload_type="test_payload",
@@ -55,6 +56,7 @@ class TestMemoryEpisodeV1:
         envelope = MemoryEpisodeV1(
             episode_id="ep_002",
             project="test_project",
+            episode_type="document",
             content_format="markdown",
             body="# Heading\n\nContent here",
             payload_type=None,
@@ -71,6 +73,7 @@ class TestMemoryEpisodeV1:
         envelope = MemoryEpisodeV1(
             episode_id="ep_003",
             project="test_project",
+            episode_type="document",
             content_format="text",
             body="Plain text content",
         )
@@ -87,6 +90,7 @@ class TestMemoryEpisodeV1:
         envelope = MemoryEpisodeV1(
             episode_id="ep_004",
             project="test_project",
+            episode_type="document",
             content_format="yaml",  # Unrecognized format
             body="key: value",
         )
@@ -98,6 +102,7 @@ class TestMemoryEpisodeV1:
         envelope = MemoryEpisodeV1(
             episode_id="ep_005",
             project="test_project",
+            episode_type="document",
             content_format="json",
             body="{}",
             unknown_field="should_be_ignored",
@@ -113,6 +118,7 @@ class TestMemoryEpisodeV1:
         data = {
             "episode_id": "ep_006",
             "project": "test_project",
+            "episode_type": "document",
             "content_format": "json",
             "body": '{"test": true}',
             "payload_type": "test",
@@ -131,6 +137,7 @@ class TestMemoryEpisodeV1:
         data = {
             "episode_id": "ep_007",
             "project": "test_project",
+            "episode_type": "document",
             "content_format": "markdown",
             "body": "# Title\n\nParagraph",
         }
@@ -147,6 +154,7 @@ class TestMemoryEpisodeV1:
         data = {
             "episode_id": "ep_008",
             "project": "test_project",
+            "episode_type": "document",
             "content_format": "text",
             "body": "Simple text",
         }
@@ -163,6 +171,7 @@ class TestMemoryEpisodeV1:
         data = {
             "episode_id": "ep_009",
             "project": "test_project",
+            "episode_type": "document",
             "content_format": "json",
             "body": "{}",
             "future_field": "value",  # Extra field
@@ -183,13 +192,47 @@ class TestMemoryEpisodeV1:
         with pytest.raises(ValidationError) as exc_info:
             MemoryEpisodeV1(
                 episode_id="ep_010",
-                # Missing project_id, content_format, body
+                # Missing project_id, episode_type, content_format, body
             )
         errors = exc_info.value.errors()
         missing_fields = {err["loc"][0] for err in errors if err["type"] == "missing"}
         assert "project_id" in missing_fields
+        assert "episode_type" in missing_fields
         assert "content_format" in missing_fields
         assert "body" in missing_fields
+
+    def test_episode_type_required_and_captured(self) -> None:
+        """episode_type is required and captured (not dropped by extra='ignore')."""
+        envelope = MemoryEpisodeV1(
+            episode_id="ep_011",
+            project="test_project",
+            episode_type="adr",
+            content_format="text",
+            body="content",
+        )
+        assert envelope.episode_type == "adr"
+
+    def test_optional_metadata_fields_captured(self) -> None:
+        """Optional envelope metadata is captured rather than silently dropped."""
+        from datetime import UTC, datetime
+
+        envelope = MemoryEpisodeV1(
+            episode_id="ep_012",
+            project="test_project",
+            episode_type="document",
+            content_format="text",
+            body="content",
+            name="My Episode",
+            source="agent-x",
+            occurred_at=datetime(2026, 6, 25, tzinfo=UTC),
+            published_at=datetime(2026, 6, 25, tzinfo=UTC),
+            ingest_hints={"k": "v"},
+        )
+        assert envelope.name == "My Episode"
+        assert envelope.source == "agent-x"
+        assert envelope.occurred_at is not None
+        assert envelope.published_at is not None
+        assert envelope.ingest_hints == {"k": "v"}
 
 
 class TestChunk:

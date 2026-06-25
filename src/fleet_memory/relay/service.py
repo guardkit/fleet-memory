@@ -11,7 +11,7 @@ Consumer: FEAT-MEM-04 (relay ingestion)
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
 
@@ -33,6 +33,27 @@ if TYPE_CHECKING:
     from fleet_memory.relay.schema import MemoryEpisodeV1
     from fleet_memory.settings import Settings
     from fleet_memory.writer.core import DeterministicWriter
+
+
+def _episode_meta(episode: MemoryEpisodeV1) -> dict[str, Any]:
+    """Build the JSON-serializable envelope metadata persisted alongside content.
+
+    Carries the fields the relay must NOT silently drop (episode_type plus optional
+    provenance/timestamp metadata). Datetimes are serialized to ISO-8601 strings so the
+    dict can be stored directly in the store's JSON value column.
+    """
+    return {
+        "episode_type": episode.episode_type,
+        "name": episode.name,
+        "source": episode.source,
+        "occurred_at": episode.occurred_at.isoformat() if episode.occurred_at else None,
+        "published_at": (
+            episode.published_at.isoformat() if episode.published_at else None
+        ),
+        "ingest_hints": episode.ingest_hints,
+        "payload_type": episode.payload_type,
+        "source_ref": episode.source_ref,
+    }
 
 
 class RelayService:
@@ -200,8 +221,9 @@ class RelayService:
         payload = payload_model(**payload_dict)
 
         # Step 5: Write via DeterministicWriter
-        # DeterministicWriter.write() implements idempotency via content-hash upsert
-        await self.writer.write(payload)
+        # DeterministicWriter.write() implements idempotency via content-hash upsert.
+        # Pass envelope metadata so episode_type + provenance are persisted, not dropped.
+        await self.writer.write(payload, episode_meta=_episode_meta(episode))
 
     async def _ingest_prose(self, episode: MemoryEpisodeV1) -> None:
         """Ingest markdown/text episode via chunking pipeline.
@@ -225,5 +247,8 @@ class RelayService:
         )
 
         # Step 2: Write chunks (idempotent via uuid5(episode_id, index))
-        # Empty chunks list is allowed and results in no writes
-        await self.chunk_writer.write_chunks(episode.episode_id, chunks)
+        # Empty chunks list is allowed and results in no writes. Envelope metadata
+        # (episode_type + provenance) is persisted on each chunk record.
+        await self.chunk_writer.write_chunks(
+            episode.episode_id, chunks, episode_meta=_episode_meta(episode)
+        )
