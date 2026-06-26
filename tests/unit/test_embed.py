@@ -185,6 +185,131 @@ async def test_http_500_raises_embed_service_error():
     assert "500" in str(error)
 
 
+# ---------------------------------------------------------------------------
+# Deterministic 4xx classification (TASK-FIX-RELAYDROP01)
+#
+# A deterministic embed rejection (e.g. exceed_context_size_error) must raise the
+# poison-mappable EmbedRequestError, NOT the transient EmbedServiceError — otherwise
+# the relay nak-retries it until max_deliver silently drops the episode. 408/429 and
+# 5xx stay transient (a retry may succeed).
+# ---------------------------------------------------------------------------
+
+
+def make_error_response(
+    status_code: int,
+    error_type: str | None = None,
+    message: str = "request rejected",
+) -> httpx.Response:
+    """Build an OpenAI/llama.cpp-style error response: {"error": {type, message}}."""
+    error_obj: dict = {"message": message, "code": status_code}
+    if error_type is not None:
+        error_obj["type"] = error_type
+    return httpx.Response(
+        status_code=status_code,
+        json={"error": error_obj},
+        request=httpx.Request("POST", "http://localhost:9000/v1/embeddings"),
+    )
+
+
+@pytest.mark.asyncio
+async def test_exceed_context_400_raises_embed_request_error():
+    """Reproducer: HTTP 400 exceed_context_size_error → EmbedRequestError (poison-mappable).
+
+    This is the exact failure from the 2026-06-26 harvest: the embed server returns a
+    deterministic 400 with n_ctx exceeded. It must classify as EmbedRequestError so the
+    relay routes it to the DLQ instead of nak-retrying into a silent drop.
+    """
+    from fleet_memory.errors import EmbedRequestError
+
+    settings = make_settings()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return make_error_response(
+            400,
+            error_type="exceed_context_size_error",
+            message="the request exceeds the available context size (n_ctx=2048)",
+        )
+
+    transport = httpx.MockTransport(handler)
+
+    with pytest.raises(EmbedRequestError) as exc_info:
+        await embed(["a very long input"], settings, transport=transport)
+
+    error = exc_info.value
+    assert error.status_code == 400
+    assert error.error_type == "exceed_context_size_error"
+    assert "exceed_context_size_error" in str(error)
+    assert "n_ctx" in str(error)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("status_code", [400, 413, 422], ids=["400", "413", "422"])
+async def test_deterministic_4xx_raises_embed_request_error(status_code: int):
+    """Deterministic 4xx (400/413/422) → EmbedRequestError (won't change on retry)."""
+    from fleet_memory.errors import EmbedRequestError
+
+    settings = make_settings()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return make_error_response(status_code, message="client error")
+
+    transport = httpx.MockTransport(handler)
+
+    with pytest.raises(EmbedRequestError) as exc_info:
+        await embed(["test"], settings, transport=transport)
+
+    assert exc_info.value.status_code == status_code
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "status_code",
+    [408, 429, 500, 502, 503],
+    ids=["408", "429", "500", "502", "503"],
+)
+async def test_transient_status_codes_stay_embed_service_error(status_code: int):
+    """408/429 and 5xx stay transient EmbedServiceError — NOT the deterministic subclass.
+
+    A retry may yet succeed (timeout, rate limit, transient server error), so these must
+    keep nak-retry semantics rather than being dead-lettered.
+    """
+    from fleet_memory.errors import EmbedRequestError, EmbedServiceError
+
+    settings = make_settings()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return make_error_response(status_code, message="transient")
+
+    transport = httpx.MockTransport(handler)
+
+    with pytest.raises(EmbedServiceError) as exc_info:
+        await embed(["test"], settings, transport=transport)
+
+    error = exc_info.value
+    assert error.status_code == status_code
+    # The boundary that matters: transient failures must NOT be the poison subclass.
+    assert not isinstance(error, EmbedRequestError)
+
+
+@pytest.mark.asyncio
+async def test_deterministic_4xx_without_error_body_still_classified():
+    """A 4xx with no parseable error envelope still raises EmbedRequestError on status alone."""
+    from fleet_memory.errors import EmbedRequestError
+
+    settings = make_settings()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(status_code=400, content=b"not json", request=request)
+
+    transport = httpx.MockTransport(handler)
+
+    with pytest.raises(EmbedRequestError) as exc_info:
+        await embed(["test"], settings, transport=transport)
+
+    assert exc_info.value.status_code == 400
+    assert exc_info.value.error_type is None
+
+
 @pytest.mark.asyncio
 async def test_malformed_json_raises_embed_service_error():
     """Test that malformed JSON raises EmbedServiceError."""

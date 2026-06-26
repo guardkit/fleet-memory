@@ -14,7 +14,11 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from faststream.exceptions import NackMessage, RejectMessage
 
-from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
+from fleet_memory.errors import (
+    EmbedRequestError,
+    PoisonEpisodeError,
+    TransientIngestError,
+)
 from fleet_memory.relay.schema import MemoryEpisodeV1
 from fleet_memory.settings import Settings
 
@@ -38,6 +42,24 @@ def _make_episode(**overrides) -> MemoryEpisodeV1:
 def make_episode():
     """Fixture providing MemoryEpisodeV1 factory."""
     return _make_episode
+
+
+def _make_msg(num_delivered: int = 1) -> Mock:
+    """Build a stand-in for the injected NatsMessage exposing num_delivered.
+
+    The handler reads ``msg.raw_message.metadata.num_delivered`` to drive the
+    max-deliver exhaustion safety net (TASK-FIX-RELAYDROP01). Default 1 = first
+    delivery (not exhausted), so the standard nak/ack/poison paths are unaffected.
+    """
+    msg = Mock()
+    msg.raw_message.metadata.num_delivered = num_delivered
+    return msg
+
+
+@pytest.fixture
+def make_msg():
+    """Fixture providing the NatsMessage stand-in factory."""
+    return _make_msg
 
 
 @pytest.fixture
@@ -77,7 +99,7 @@ async def test_clean_ingest_return_acks_message(make_episode):
     # Patch module-level service
     with patch.object(handler, "service", mock_service):
         # Call handler directly - no exception means ACK
-        await handler.handle_memory_episode(episode)
+        await handler.handle_memory_episode(episode, _make_msg())
 
         # Verify service.ingest was called
         mock_service.ingest.assert_awaited_once_with(episode)
@@ -110,7 +132,7 @@ async def test_poison_error_routes_to_dlq(make_episode, mock_broker):
         with patch.object(handler, "broker", mock_broker):
             # Expect RejectMessage exception
             with pytest.raises(RejectMessage):
-                await handler.handle_memory_episode(episode)
+                await handler.handle_memory_episode(episode, _make_msg())
 
             # Verify service.ingest was called
             mock_service.ingest.assert_awaited_once_with(episode)
@@ -146,9 +168,9 @@ async def test_transient_error_naks_for_redelivery(make_episode, mock_broker):
 
     with patch.object(handler, "service", mock_service):
         with patch.object(handler, "broker", mock_broker):
-            # Expect NackMessage exception
+            # Expect NackMessage exception (first delivery, not exhausted)
             with pytest.raises(NackMessage):
-                await handler.handle_memory_episode(episode)
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=1))
 
             # Verify service.ingest was called
             mock_service.ingest.assert_awaited_once_with(episode)
@@ -175,15 +197,169 @@ async def test_unenumerated_exception_treated_as_transient(make_episode, mock_br
 
     with patch.object(handler, "service", mock_service):
         with patch.object(handler, "broker", mock_broker):
-            # Expect NackMessage exception (default-to-transient)
+            # Expect NackMessage exception (default-to-transient, not exhausted)
             with pytest.raises(NackMessage):
-                await handler.handle_memory_episode(episode)
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=1))
 
             # Verify service.ingest was called
             mock_service.ingest.assert_awaited_once_with(episode)
 
             # Verify NO DLQ publish occurred (treated as transient)
             mock_broker.publish.assert_not_awaited()
+
+
+# RELAYDROP01: max-deliver exhaustion must be LOUD (DLQ + term), never a silent drop.
+# A message nak'd on its max_deliver-th delivery stops being redelivered and vanishes;
+# the handler must instead publish it to the DLQ and term on the final delivery.
+@pytest.mark.asyncio
+async def test_transient_on_final_delivery_routes_to_dlq(make_episode, mock_broker):
+    """Transient failure on the max_deliver-th delivery → DLQ + RejectMessage (not silent nak).
+
+    Reproducer for the silent-drop half of the 2026-06-26 incident: without this guard a
+    deterministic-but-misclassified failure nak's 5× then JetStream stops redelivering and
+    the episode is gone. The safety net makes it visible in memory.dlq.> instead.
+    """
+    from fleet_memory.relay import handler
+
+    episode = make_episode()
+
+    mock_service = AsyncMock()
+    mock_service.ingest.side_effect = TransientIngestError(
+        message="Embedding service still unavailable"
+    )
+
+    with patch.object(handler, "service", mock_service):
+        with patch.object(handler, "broker", mock_broker):
+            # num_delivered == _MAX_DELIVER (5) → final delivery
+            with pytest.raises(RejectMessage):
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=5))
+
+            # Verify it was DLQ'd rather than silently dropped
+            mock_broker.publish.assert_awaited_once()
+            call_args = mock_broker.publish.call_args
+            dlq_payload = call_args[0][0]
+            assert dlq_payload["episode_id"] == episode.episode_id
+            assert dlq_payload["reason"] == "max_deliver_exhausted"
+            assert dlq_payload["failure_mode"] == "transient_ingest_error"
+            assert dlq_payload["delivery_count"] == 5
+            assert dlq_payload["max_deliver"] == 5
+            # Last error preserved for diagnosis
+            assert "unavailable" in dlq_payload["detail"]
+            assert call_args[1]["subject"] == "memory.dlq.test_proj"
+
+
+@pytest.mark.asyncio
+async def test_unenumerated_on_final_delivery_routes_to_dlq(make_episode, mock_broker):
+    """Unenumerated exception on the final delivery → DLQ + RejectMessage (no silent drop).
+
+    The default-to-transient policy must still be loud at exhaustion: a persistent
+    unenumerated failure surfaces in the DLQ rather than vanishing.
+    """
+    from fleet_memory.relay import handler
+
+    episode = make_episode()
+
+    mock_service = AsyncMock()
+    mock_service.ingest.side_effect = RuntimeError("persistent database connection drop")
+
+    with patch.object(handler, "service", mock_service):
+        with patch.object(handler, "broker", mock_broker):
+            with pytest.raises(RejectMessage):
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=5))
+
+            mock_broker.publish.assert_awaited_once()
+            dlq_payload = mock_broker.publish.call_args[0][0]
+            assert dlq_payload["reason"] == "max_deliver_exhausted"
+            assert dlq_payload["failure_mode"] == "unenumerated_exception"
+
+
+@pytest.mark.asyncio
+async def test_transient_before_final_delivery_still_naks(make_episode, mock_broker):
+    """A transient failure below max_deliver still naks (no premature DLQ)."""
+    from fleet_memory.relay import handler
+
+    episode = make_episode()
+
+    mock_service = AsyncMock()
+    mock_service.ingest.side_effect = TransientIngestError(message="temporary blip")
+
+    with patch.object(handler, "service", mock_service):
+        with patch.object(handler, "broker", mock_broker):
+            # 4th of 5 deliveries → still retrying
+            with pytest.raises(NackMessage):
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=4))
+
+            mock_broker.publish.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_missing_delivery_metadata_defaults_to_nak(make_episode, mock_broker):
+    """If delivery metadata is unreachable, fall back to nak (never a spurious DLQ/term).
+
+    The exhaustion guard is a safety net; it must never fire on a missing/zero count.
+    """
+    from fleet_memory.relay import handler
+
+    episode = make_episode()
+
+    mock_service = AsyncMock()
+    mock_service.ingest.side_effect = TransientIngestError(message="blip")
+
+    # A bare Mock has no real num_delivered: int(Mock()) raises → _delivery_count
+    # returns its defensive 0 → nak (the guard must never fire on an unknown count).
+    broken_msg = Mock()
+
+    with patch.object(handler, "service", mock_service):
+        with patch.object(handler, "broker", mock_broker):
+            with pytest.raises(NackMessage):
+                await handler.handle_memory_episode(episode, broken_msg)
+
+            mock_broker.publish.assert_not_awaited()
+
+
+# RELAYDROP01: end-to-end reproducer — a deterministic embed 400 must land in the DLQ,
+# exercising the real RelayService exception mapping (embed → poison) at the handler edge.
+@pytest.mark.asyncio
+async def test_deterministic_embed_400_lands_in_dlq(make_episode, mock_broker):
+    """Over-n_ctx embed (HTTP 400 exceed_context_size_error) → memory.dlq.>, not a silent drop.
+
+    Wires a real RelayService whose chunk writer raises the deterministic EmbedRequestError
+    the embed server returns for over-budget input, then asserts the handler publishes a
+    self-describing DLQ record and terms the message (RejectMessage). This is the positive
+    proof of the incident's fix: the failure is visible, not vanished.
+    """
+    from fleet_memory.relay import handler
+    from fleet_memory.relay.service import RelayService
+
+    episode = make_episode(content_format="text", body="A prose episode that is too large.")
+
+    chunk_writer = AsyncMock()
+    chunk_writer.write_chunks.side_effect = EmbedRequestError(
+        "the request exceeds the available context size (n_ctx=2048)",
+        url="http://embed:9000",
+        status_code=400,
+        error_type="exceed_context_size_error",
+    )
+    real_service = RelayService(
+        writer=AsyncMock(),
+        chunk_writer=chunk_writer,
+        settings=Settings(
+            pg_dsn="postgresql://test:test@localhost:5432/test",
+            embed_url="http://localhost:9000",
+        ),
+    )
+
+    with patch.object(handler, "service", real_service):
+        with patch.object(handler, "broker", mock_broker):
+            with pytest.raises(RejectMessage):
+                await handler.handle_memory_episode(episode, _make_msg(num_delivered=1))
+
+            mock_broker.publish.assert_awaited_once()
+            dlq_payload = mock_broker.publish.call_args[0][0]
+            assert dlq_payload["episode_id"] == episode.episode_id
+            # Reason names the deterministic embed cause (poison path, first delivery)
+            assert "exceed_context_size_error" in dlq_payload["reason"]
+            assert mock_broker.publish.call_args[1]["subject"] == "memory.dlq.test_proj"
 
 
 # D5/D9: the MEMORY subscriber is a DURABLE PULL JetStream consumer, not core NATS.

@@ -14,6 +14,7 @@ import httpx
 
 from fleet_memory.errors import (
     EmbedDimensionError,
+    EmbedRequestError,
     EmbedServiceError,
     EmbedTimeoutError,
 )
@@ -101,6 +102,51 @@ def _pack_batches(texts: list[str], max_batch_tokens: int) -> list[list[str]]:
     return batches
 
 
+# HTTP 4xx codes that are NOT deterministic — a retry may yet succeed, so these
+# stay transient (EmbedServiceError → nak) rather than poison (EmbedRequestError → DLQ).
+# 408 = Request Timeout, 429 = Too Many Requests (rate limit / backpressure).
+_TRANSIENT_4XX = frozenset({408, 429})
+
+
+def _is_deterministic_client_error(status_code: int) -> bool:
+    """True if a 4xx will fail identically on retry (→ poison, not nak-retry).
+
+    A deterministic client error (e.g. 400 exceed_context_size_error, 413, 422)
+    must be surfaced to the DLQ rather than nak-retried until max_deliver silently
+    drops it (TASK-FIX-RELAYDROP01). 408/429 are excluded — they are transient.
+    """
+    return 400 <= status_code < 500 and status_code not in _TRANSIENT_4XX
+
+
+def _parse_embed_error(response: httpx.Response) -> tuple[str | None, str | None]:
+    """Best-effort extract ``(error_type, error_message)`` from an error response.
+
+    Handles the OpenAI / llama.cpp error envelope
+    ``{"error": {"type": ..., "message": ...}}`` (llama.cpp uses ``type`` =
+    ``exceed_context_size_error`` for over-n_ctx requests), and the degenerate
+    ``{"error": "<string>"}`` shape. Returns ``(None, None)`` when the body is not
+    parseable JSON or carries no recognizable error — the caller still has the
+    status code to classify on.
+    """
+    try:
+        body = response.json()
+    except Exception:
+        return None, None
+    if not isinstance(body, dict):
+        return None, None
+    err = body.get("error")
+    if isinstance(err, dict):
+        error_type = err.get("type")
+        message = err.get("message") or err.get("code")
+        return (
+            str(error_type) if error_type is not None else None,
+            str(message) if message is not None else None,
+        )
+    if isinstance(err, str):
+        return None, err
+    return None, None
+
+
 def _normalize_embed_url(base_url: str) -> str:
     """Normalize base URL to .../v1/embeddings endpoint.
 
@@ -132,7 +178,10 @@ async def _embed_request(
 
     Raises:
         EmbedDimensionError: If any embedding dimension doesn't match settings.embed_dims
-        EmbedServiceError: If the service returns a non-200 or a malformed response
+        EmbedRequestError: If the service deterministically rejects the request
+            (a 4xx that won't change on retry, e.g. exceed_context_size_error)
+        EmbedServiceError: If the service returns a transient error (5xx, 408, 429)
+            or a malformed response
     """
     request_body = {
         "model": settings.embed_model,
@@ -141,10 +190,20 @@ async def _embed_request(
 
     response = await client.post(url, json=request_body)
 
-    # Check HTTP status
+    # Check HTTP status. Split deterministic 4xx (poison → DLQ) from transient
+    # failures (5xx/408/429 → nak-retry): a deterministic rejection nak-retried
+    # would re-fail identically until max_deliver silently drops it (RELAYDROP01).
     if response.status_code != 200:
+        error_type, error_message = _parse_embed_error(response)
+        if _is_deterministic_client_error(response.status_code):
+            raise EmbedRequestError(
+                error_message or "embedding service rejected the request",
+                url=url,
+                status_code=response.status_code,
+                error_type=error_type,
+            )
         raise EmbedServiceError(
-            "HTTP error from embedding service",
+            error_message or "HTTP error from embedding service",
             url=url,
             status_code=response.status_code,
         )
@@ -205,7 +264,9 @@ async def embed(
     Raises:
         EmbedDimensionError: If any embedding dimension doesn't match settings.embed_dims
         EmbedTimeoutError: If a request times out
-        EmbedServiceError: If the service returns an error or malformed response
+        EmbedRequestError: If the service deterministically rejects a request
+            (4xx that won't change on retry, e.g. exceed_context_size_error)
+        EmbedServiceError: If the service returns a transient error or malformed response
     """
     if not texts:
         return []

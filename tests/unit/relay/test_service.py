@@ -14,6 +14,7 @@ from pydantic import ValidationError
 
 from fleet_memory.errors import (
     EmbedDimensionError,
+    EmbedRequestError,
     EmbedServiceError,
     EmbedTimeoutError,
     NamespaceValidationError,
@@ -352,6 +353,59 @@ async def test_embed_timeout_raises_transient(relay_service, make_episode, mock_
         # Act & Assert
         with pytest.raises(TransientIngestError):
             await relay_service.ingest(episode)
+
+
+# RELAYDROP01: deterministic embed rejection (4xx) → poison, NOT transient
+@pytest.mark.asyncio
+async def test_embed_request_error_raises_poison(relay_service, make_episode, mock_writer):
+    """Verify deterministic embed 4xx (EmbedRequestError) → PoisonEpisodeError (DLQ).
+
+    The 2026-06-26 harvest dropped 109 episodes because a deterministic 400
+    (exceed_context_size_error) was classified transient and nak-retried into a silent
+    drop. The fix: EmbedRequestError must map to poison so it lands in the DLQ, and the
+    reason must carry the server's error type for diagnosis.
+    """
+    episode = make_episode(
+        content_format="json",
+        payload_type="document",
+        body='{"project": "test_proj", "identifier": "doc-001", "content": "test"}',
+    )
+
+    with patch("fleet_memory.relay.service.get_model_for_type"):
+        mock_writer.write.side_effect = EmbedRequestError(
+            "the request exceeds the available context size (n_ctx=2048)",
+            url="http://embed:9000",
+            status_code=400,
+            error_type="exceed_context_size_error",
+        )
+
+        with pytest.raises(PoisonEpisodeError) as exc_info:
+            await relay_service.ingest(episode)
+
+    poison = exc_info.value
+    # Reason names the deterministic cause so the DLQ record is self-explanatory
+    assert "exceed_context_size_error" in poison.reason
+    assert "400" in poison.reason
+
+
+# RELAYDROP01: EmbedRequestError is a subclass of EmbedServiceError — verify the
+# service catches the deterministic one FIRST (poison), not the transient clause.
+@pytest.mark.asyncio
+async def test_embed_request_error_not_swallowed_by_transient_clause(
+    relay_service, make_episode, mock_chunk_writer
+):
+    """EmbedRequestError on the prose path → poison, despite subclassing EmbedServiceError."""
+    episode = make_episode(content_format="text", body="Some prose body to chunk.")
+
+    mock_chunk_writer.write_chunks.side_effect = EmbedRequestError(
+        "input too large",
+        url="http://embed:9000",
+        status_code=413,
+        error_type="exceed_context_size_error",
+    )
+
+    with pytest.raises(PoisonEpisodeError):
+        await relay_service.ingest(episode)
 
 
 # AC-008: Empty markdown body produces zero chunks and returns cleanly

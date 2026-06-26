@@ -17,6 +17,7 @@ from pydantic import ValidationError
 
 from fleet_memory.errors import (
     EmbedDimensionError,
+    EmbedRequestError,
     EmbedServiceError,
     EmbedTimeoutError,
     NamespaceValidationError,
@@ -157,6 +158,19 @@ class RelayService:
             raise PoisonEpisodeError(
                 reason=f"embedding dimension mismatch: {e.actual} != {e.expected}",
                 detail="Check embed_dims configuration",
+            ) from e
+        except EmbedRequestError as e:
+            # Deterministic embed rejection (4xx, e.g. exceed_context_size_error) →
+            # poison. MUST precede the EmbedServiceError clause below (EmbedRequestError
+            # subclasses it): it will 400 identically on every redelivery, so route it
+            # to the DLQ instead of nak-retrying until max_deliver silently drops the
+            # episode (TASK-FIX-RELAYDROP01).
+            reason = f"embed request rejected (HTTP {e.status_code})"
+            if e.error_type:
+                reason = f"{reason}: {e.error_type}"
+            raise PoisonEpisodeError(
+                reason=reason,
+                detail=str(e),
             ) from e
 
         # Exception mapping: recoverable failures → TransientIngestError

@@ -105,6 +105,46 @@ def test_exceptions_are_not_in_same_subtree() -> None:
             pytest.fail("TransientIngestError should not be catchable as PoisonEpisodeError")
 
 
+def test_embed_request_error_subclasses_embed_service_error() -> None:
+    """EmbedRequestError is a deterministic *subclass* of EmbedServiceError.
+
+    Subclassing keeps read-path callers that catch EmbedServiceError working, while
+    letting the relay catch EmbedRequestError FIRST to classify it as poison
+    (TASK-FIX-RELAYDROP01).
+    """
+    from fleet_memory.errors import EmbedRequestError, EmbedServiceError
+
+    assert issubclass(EmbedRequestError, EmbedServiceError)
+
+
+def test_embed_request_error_carries_status_and_error_type() -> None:
+    """EmbedRequestError records status_code and the server's error type for the DLQ."""
+    from fleet_memory.errors import EmbedRequestError
+
+    error = EmbedRequestError(
+        "input exceeds context size",
+        url="http://embed:9000/v1/embeddings",
+        status_code=400,
+        error_type="exceed_context_size_error",
+    )
+    assert error.status_code == 400
+    assert error.error_type == "exceed_context_size_error"
+    # The error type is surfaced in the string form (recorded as DLQ detail)
+    assert "exceed_context_size_error" in str(error)
+    assert "400" in str(error)
+    # Credential hygiene: never leak a Postgres DSN
+    assert "postgresql://" not in str(error)
+
+
+def test_embed_request_error_error_type_is_optional() -> None:
+    """EmbedRequestError works without a server-supplied error type."""
+    from fleet_memory.errors import EmbedRequestError
+
+    error = EmbedRequestError("bad request", status_code=422)
+    assert error.status_code == 422
+    assert error.error_type is None
+
+
 def test_module_docstring_states_default_to_transient_policy() -> None:
     """Module docstring documents the default-to-transient policy for unenumerated exceptions."""
     import fleet_memory.errors

@@ -9,12 +9,14 @@ mutually exclusive categories that determine retry vs dead-letter behavior:
    will never succeed on redelivery and must be parked on the DLQ. Examples:
    unparseable body, unknown payload_type, payload validation failure,
    unrecognized content_format, hyphenated/invalid project, wrong-dimension
-   embedding (EmbedDimensionError).
+   embedding (EmbedDimensionError), deterministic embed rejection
+   (EmbedRequestError — a 4xx such as exceed_context_size_error that will
+   fail identically on every retry).
 
 2. **TransientIngestError**: Recoverable downstream failures. Must be
    negatively-acknowledged for redelivery, never dead-lettered. Examples:
-   embedding service unavailable (EmbedServiceError), store unreachable,
-   connection drop, timeout (EmbedTimeoutError).
+   embedding service unavailable (EmbedServiceError: 5xx, malformed response,
+   408/429), store unreachable, connection drop, timeout (EmbedTimeoutError).
 
 **Default-to-transient policy**: Any *unenumerated* exception escaping the
 service layer is treated as transient (nak + redeliver), never as poison.
@@ -86,6 +88,49 @@ class EmbedServiceError(RuntimeError):
         super().__init__(msg)
         self.url = url
         self.status_code = status_code
+
+
+class EmbedRequestError(EmbedServiceError):
+    """Raised when the embedding service rejects a request *deterministically*.
+
+    A client-side (HTTP 4xx) rejection that will fail identically on every
+    redelivery — e.g. ``exceed_context_size_error`` when an input exceeds the
+    server's per-slot n_ctx. Distinguished from its parent ``EmbedServiceError``
+    (transient: 5xx, malformed response, network) so the relay can route it to the
+    DLQ as a *poison* failure rather than nak-retrying it until max_deliver
+    silently drops it (TASK-FIX-RELAYDROP01).
+
+    NOT every 4xx is deterministic: 408 (Request Timeout) and 429 (Too Many
+    Requests) are transient and stay ``EmbedServiceError``.
+
+    Subclasses ``EmbedServiceError`` so read-path callers that catch the parent
+    (search/retrieval degradation) keep working; the relay catches this *first*,
+    before the transient clause, to classify it as poison.
+
+    May include the embedding service URL and the server's error ``type`` but
+    never database credentials.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        url: str | None = None,
+        status_code: int | None = None,
+        error_type: str | None = None,
+    ) -> None:
+        """Initialize with error details.
+
+        Args:
+            message: Human-readable error description (e.g. the server's message)
+            url: Optional embedding service URL (safe to log)
+            status_code: HTTP status code of the rejected request (a 4xx)
+            error_type: Optional server-supplied error type (e.g.
+                ``exceed_context_size_error``), recorded on the DLQ for diagnosis
+        """
+        if error_type:
+            message = f"{message} [{error_type}]"
+        super().__init__(message, url=url, status_code=status_code)
+        self.error_type = error_type
 
 
 class NamespaceValidationError(ValueError):
