@@ -80,8 +80,11 @@ the durable consumer over the still-intact MEMORY stream (447 msgs, seq 19–465
 
 ## Implementation (2026-06-26)
 
-Two independent guards, both verified by the test suite (607 passed, 0 failed;
-73 integration tests deselected — no live NATS/PG in this env):
+Two independent guards, verified by the unit suite (607 passed, 0 failed) AND by
+the new marker-gated integration tests run against a real ephemeral pgvector store
+(`pytest -m integration` → 2 passed). The integration suite is *deselected by
+default*, not unavailable: Docker is present on the GB10 host and the `ephemeral_pg`
+fixture provisions its own throwaway pgvector container.
 
 **1. Classify deterministic embed 4xx as poison → DLQ.**
 - `errors.py`: new `EmbedRequestError(EmbedServiceError)` — a deterministic 4xx
@@ -127,8 +130,16 @@ stored XOR dead-lettered, never silently gone:
   The NATS transport is mocked (the integration harness provisions Postgres, not a
   JetStream broker); per-test UUID project namespaces isolate the row count.
 
-The integration file cannot run in this env (no Docker); its correctness was
-checked by a 3-lens adversarial review (API fidelity, chunk/embed behavior,
-invariant/false-green) — all three concluded it would pass on a real run, and their
-robustness nits (per-test namespace, raw row-count assert, explicit no-nak assert,
-sequential-ingest comment) were applied.
+The integration file was both adversarially reviewed (a 3-lens pass — API fidelity,
+chunk/embed behavior, invariant/false-green — all three concluding it would pass,
+with their robustness nits applied: per-test namespace, raw row-count assert,
+explicit no-nak assert, sequential-ingest comment) **and then actually run against a
+real ephemeral pgvector container — both tests pass**.
+
+**Residual limitation (accurate scope):** what the pytest harness does *not* cover
+is guard #2's max-deliver exhaustion over **live JetStream redelivery** —
+`tests/integration/conftest.py` provisions only ephemeral Postgres, no NATS broker
+(the live `ships-computer-nats` broker exists on the GB10 but is not wired into the
+fixtures). That path is covered by the handler unit tests (delivery-count → DLQ+term)
+and would need a persistent-transient failure staged against a live consumer to
+exercise end-to-end. See memory `relay-deploy-and-test-reality`.
