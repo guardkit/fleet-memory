@@ -6,11 +6,18 @@ All tests use httpx.MockTransport - no network calls are made.
 from __future__ import annotations
 
 import json
+import logging
 
 import httpx
 import pytest
 
-from fleet_memory.embed import embed, make_fake_embed
+from fleet_memory.embed import (
+    _CHARS_PER_TOKEN,
+    _estimate_tokens,
+    _pack_batches,
+    embed,
+    make_fake_embed,
+)
 from fleet_memory.errors import (
     EmbedDimensionError,
     EmbedServiceError,
@@ -24,6 +31,7 @@ def make_settings(
     embed_model: str = "nomic-embed-text-v1.5",
     embed_dims: int = 768,
     embed_timeout_s: float = 10.0,
+    embed_max_batch_tokens: int = 2048,
 ) -> Settings:
     """Create Settings instance for testing."""
     return Settings(
@@ -32,6 +40,7 @@ def make_settings(
         embed_model=embed_model,
         embed_dims=embed_dims,
         embed_timeout_s=embed_timeout_s,
+        embed_max_batch_tokens=embed_max_batch_tokens,
     )
 
 
@@ -316,3 +325,156 @@ async def test_make_fake_embed_unit_norm():
     vector = result[0]
     magnitude = sum(x * x for x in vector) ** 0.5
     assert abs(magnitude - 1.0) < 1e-6  # Should be unit norm
+
+
+# ---------------------------------------------------------------------------
+# Sub-batching token math (TASK-FIX-RELAYBATCH01)
+#
+# The relay embeds a whole episode's chunks via one embed() call; embed() must
+# spread them across multiple requests so no request exceeds the embed server's
+# per-slot n_ctx. These tests pin the packing math and the 1-input -> 1-embedding
+# contract that prevents multi-chunk episodes from being silently dropped.
+# ---------------------------------------------------------------------------
+
+
+def make_length_encoding_handler(
+    dims: int = 768,
+    request_log: list[list[str]] | None = None,
+):
+    """Build a handler that echoes one embedding per input, encoding input length.
+
+    Each input text maps to a vector filled with float(len(text)), so distinct-length
+    inputs yield distinguishable vectors — the test can assert output order matches
+    input order across batch boundaries. When provided, request_log records the
+    ``input`` list of every request, exposing how many sub-batches were sent.
+    """
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        inputs = body["input"]
+        if request_log is not None:
+            request_log.append(list(inputs))
+        embeddings = [[float(len(text))] * dims for text in inputs]
+        return mock_embed_response(embeddings)
+
+    return handler
+
+
+def test_estimate_tokens_uses_chars_per_token_heuristic():
+    """_estimate_tokens approximates tokens as ceil(chars / _CHARS_PER_TOKEN), min 1."""
+    assert _estimate_tokens("") == 1  # never zero — empty input still occupies a slot
+    assert _estimate_tokens("a") == 1
+    assert _estimate_tokens("a" * _CHARS_PER_TOKEN) == 1
+    assert _estimate_tokens("a" * (_CHARS_PER_TOKEN * 5)) == 5
+    assert _estimate_tokens("a" * (_CHARS_PER_TOKEN * 5 + 1)) == 6  # ceil rounds up
+
+
+def test_pack_batches_single_batch_when_under_budget():
+    """Inputs summing within the budget stay in one batch (one request)."""
+    texts = ["a" * 20, "b" * 20]  # 5 + 5 = 10 tokens
+    batches = _pack_batches(texts, max_batch_tokens=10)
+
+    assert batches == [["a" * 20, "b" * 20]]
+
+
+def test_pack_batches_splits_over_budget_each_within_budget():
+    """Inputs summing past the budget split into ordered batches, each <= budget."""
+    texts = ["a" * 20, "b" * 20, "c" * 20]  # 5 tokens each, budget 10
+    batches = _pack_batches(texts, max_batch_tokens=10)
+
+    assert batches == [["a" * 20, "b" * 20], ["c" * 20]]
+    for batch in batches:
+        assert sum(_estimate_tokens(t) for t in batch) <= 10
+
+
+def test_pack_batches_empty_input():
+    """Empty input yields no batches (and embed() makes no request)."""
+    assert _pack_batches([], max_batch_tokens=10) == []
+
+
+def test_pack_batches_truncates_oversized_single_input(caplog):
+    """A single input larger than the whole budget is truncated to fit, with a warning.
+
+    The 1-input -> 1-embedding contract forbids splitting one text into several
+    vectors, so the over-budget chunk is truncated (degraded but stored) rather than
+    failing the request. DLQ visibility for truly unembeddable inputs is RELAYDROP01.
+    """
+    budget = 10
+    oversized = "z" * (budget * _CHARS_PER_TOKEN * 2)  # ~20 tokens, double the budget
+
+    with caplog.at_level(logging.WARNING, logger="fleet_memory.embed"):
+        batches = _pack_batches([oversized], max_batch_tokens=budget)
+
+    assert len(batches) == 1
+    assert len(batches[0]) == 1
+    # Truncated to the budget's worth of characters → estimate now fits.
+    assert len(batches[0][0]) == budget * _CHARS_PER_TOKEN
+    assert _estimate_tokens(batches[0][0]) <= budget
+    assert "truncat" in caplog.text.lower()
+
+
+@pytest.mark.asyncio
+async def test_embed_single_request_when_under_budget():
+    """Small inputs go out as exactly one request (preserves pre-fix behavior)."""
+    settings = make_settings(embed_max_batch_tokens=2048)
+    request_log: list[list[str]] = []
+    transport = httpx.MockTransport(make_length_encoding_handler(request_log=request_log))
+
+    result = await embed(["text one", "text two", "text three"], settings, transport=transport)
+
+    assert len(request_log) == 1  # single batch
+    assert len(result) == 3
+
+
+@pytest.mark.asyncio
+async def test_embed_sub_batches_episode_exceeding_n_ctx():
+    """Reproducer: an episode whose chunks exceed the budget embeds ALL chunks.
+
+    Pre-fix this was one request that 400s past n_ctx, dropping the whole episode.
+    Post-fix the inputs span multiple requests and every chunk gets an embedding,
+    returned in input order (len(result) == len(texts)).
+    """
+    settings = make_settings(embed_max_batch_tokens=10)
+    # Distinct lengths so output order is verifiable: 1, 4, 5, 9 tokens.
+    texts = ["x" * 4, "y" * 16, "z" * 20, "w" * 36]
+    request_log: list[list[str]] = []
+    transport = httpx.MockTransport(make_length_encoding_handler(request_log=request_log))
+
+    result = await embed(texts, settings, transport=transport)
+
+    # Greedy packing: [t1,t2,t3] (1+4+5=10) then [t4] (9) → two requests.
+    assert request_log == [["x" * 4, "y" * 16, "z" * 20], ["w" * 36]]
+    # Every chunk embedded, in input order (first component encodes input length).
+    assert len(result) == len(texts)
+    assert [vec[0] for vec in result] == [4.0, 16.0, 20.0, 36.0]
+
+
+@pytest.mark.asyncio
+async def test_embed_oversized_chunk_is_truncated_then_embedded(caplog):
+    """A lone chunk bigger than n_ctx is truncated and still embedded (not dropped)."""
+    settings = make_settings(embed_max_batch_tokens=10)
+    oversized = "q" * (10 * _CHARS_PER_TOKEN * 3)  # ~30 tokens, triple the budget
+    request_log: list[list[str]] = []
+    transport = httpx.MockTransport(make_length_encoding_handler(request_log=request_log))
+
+    with caplog.at_level(logging.WARNING, logger="fleet_memory.embed"):
+        result = await embed([oversized], settings, transport=transport)
+
+    assert len(result) == 1  # the chunk still produced an embedding
+    assert len(request_log) == 1
+    # The request carried the truncated text, not the original oversized one.
+    assert len(request_log[0][0]) == 10 * _CHARS_PER_TOKEN
+    assert "truncat" in caplog.text.lower()
+
+
+@pytest.mark.asyncio
+async def test_embed_empty_input_makes_no_request():
+    """Embedding an empty list returns [] without issuing any request."""
+    settings = make_settings()
+    request_log: list[list[str]] = []
+    transport = httpx.MockTransport(make_length_encoding_handler(request_log=request_log))
+
+    result = await embed([], settings, transport=transport)
+
+    assert result == []
+    assert request_log == []

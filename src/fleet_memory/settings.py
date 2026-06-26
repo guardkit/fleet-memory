@@ -47,6 +47,16 @@ class Settings(BaseSettings):
         default=10.0,
         description="Embedding service timeout in seconds (ASSUM-008 placeholder)",
     )
+    embed_max_batch_tokens: int = Field(
+        default=2048,
+        gt=0,
+        description="Max estimated tokens packed into a single /v1/embeddings request "
+        "(TASK-FIX-RELAYBATCH01). The embed client greedily sub-batches inputs so no "
+        "request exceeds this budget; an episode's chunks are spread across as many "
+        "requests as needed instead of one unbounded batch. MUST stay <= the embed "
+        "server's effective per-slot n_ctx (Qwen3-Embedding deploy: 8192/slot; nomic: "
+        "2048 hard), ideally with headroom to absorb token-estimation error.",
+    )
 
     # PostgreSQL pool configuration
     pg_pool_min: int = Field(

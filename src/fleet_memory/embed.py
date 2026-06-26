@@ -6,6 +6,7 @@ Provides async httpx-based embedding against OpenAI-compatible /v1/embeddings en
 from __future__ import annotations
 
 import hashlib
+import logging
 import math
 from typing import TYPE_CHECKING
 
@@ -19,6 +20,85 @@ from fleet_memory.errors import (
 
 if TYPE_CHECKING:
     from fleet_memory.settings import Settings
+
+logger = logging.getLogger(__name__)
+
+# Approximate characters per BPE token for English prose. Used only to bound an
+# embed request's size against the server's per-slot n_ctx (TASK-FIX-RELAYBATCH01);
+# the real token count is the server's concern, so the configured batch budget keeps
+# headroom below n_ctx to absorb the error in this heuristic.
+_CHARS_PER_TOKEN = 4
+
+
+def _estimate_tokens(text: str) -> int:
+    """Estimate the token cost of a text for batch-budget packing.
+
+    Uses a conservative chars/token heuristic (not an exact tokenizer): the value
+    only needs to be good enough to keep a batch under the server's n_ctx, and the
+    configured budget leaves headroom. A non-empty text always costs >= 1 token so
+    that empty/whitespace inputs still occupy a slot.
+    """
+    return max(1, math.ceil(len(text) / _CHARS_PER_TOKEN))
+
+
+def _pack_batches(texts: list[str], max_batch_tokens: int) -> list[list[str]]:
+    """Greedily pack texts into sub-batches each within max_batch_tokens.
+
+    Makes embed request size independent of episode size: instead of one unbounded
+    batch (which 400s once an episode's chunks sum past the embed server's per-slot
+    n_ctx, silently dropping the whole episode — TASK-FIX-RELAYBATCH01), inputs are
+    spread across as many requests as needed, each <= the token budget.
+
+    A single text whose own estimate exceeds the budget cannot be split here without
+    breaking the 1-input -> 1-embedding contract, so it is truncated to fit and a
+    WARNING is logged (degraded embedding, but the chunk still stores rather than
+    failing the request). The heading-aware chunker can emit such an over-target
+    section; surfacing genuinely unembeddable inputs via the DLQ is the sibling
+    task's job (TASK-FIX-RELAYDROP01).
+
+    Args:
+        texts: Inputs to embed, in order.
+        max_batch_tokens: Per-request token budget (must be > 0).
+
+    Returns:
+        List of batches (each a list of texts), preserving input order. Each batch's
+        summed estimate is <= max_batch_tokens. Empty input yields an empty list.
+    """
+    batches: list[list[str]] = []
+    current: list[str] = []
+    current_tokens = 0
+
+    for text in texts:
+        estimate = _estimate_tokens(text)
+
+        # Oversized single input: truncate-with-warning so the request still succeeds.
+        if estimate > max_batch_tokens:
+            max_chars = max_batch_tokens * _CHARS_PER_TOKEN
+            logger.warning(
+                "Embed input exceeds per-request token budget; truncating "
+                "(~%d tokens > budget %d; %d -> %d chars). Embedding quality "
+                "degraded for this chunk.",
+                estimate,
+                max_batch_tokens,
+                len(text),
+                max_chars,
+            )
+            text = text[:max_chars]
+            estimate = _estimate_tokens(text)
+
+        # Flush the current batch before it would overflow the budget.
+        if current and current_tokens + estimate > max_batch_tokens:
+            batches.append(current)
+            current = []
+            current_tokens = 0
+
+        current.append(text)
+        current_tokens += estimate
+
+    if current:
+        batches.append(current)
+
+    return batches
 
 
 def _normalize_embed_url(base_url: str) -> str:
@@ -38,6 +118,67 @@ def _normalize_embed_url(base_url: str) -> str:
     return f"{base_url}/v1/embeddings"
 
 
+async def _embed_request(
+    client: httpx.AsyncClient,
+    url: str,
+    texts: list[str],
+    settings: Settings,
+) -> list[list[float]]:
+    """Issue one /v1/embeddings request for a single (budget-bounded) sub-batch.
+
+    Sends exactly the given texts, validates the response shape and per-vector
+    dimensions, and returns embeddings in response order. Callers are responsible
+    for keeping ``texts`` within the server's per-slot n_ctx (see _pack_batches).
+
+    Raises:
+        EmbedDimensionError: If any embedding dimension doesn't match settings.embed_dims
+        EmbedServiceError: If the service returns a non-200 or a malformed response
+    """
+    request_body = {
+        "model": settings.embed_model,
+        "input": texts,
+    }
+
+    response = await client.post(url, json=request_body)
+
+    # Check HTTP status
+    if response.status_code != 200:
+        raise EmbedServiceError(
+            "HTTP error from embedding service",
+            url=url,
+            status_code=response.status_code,
+        )
+
+    # Parse JSON response
+    try:
+        data = response.json()
+    except Exception as e:
+        raise EmbedServiceError(
+            f"Malformed JSON response: {e}",
+            url=url,
+        ) from e
+
+    # Extract embeddings
+    if "data" not in data:
+        raise EmbedServiceError(
+            "Response missing 'data' field",
+            url=url,
+        )
+
+    embeddings = [item["embedding"] for item in data["data"]]
+
+    # Validate dimensions
+    for embedding in embeddings:
+        actual_dims = len(embedding)
+        if actual_dims != settings.embed_dims:
+            raise EmbedDimensionError(
+                actual=actual_dims,
+                expected=settings.embed_dims,
+            )
+
+    return embeddings
+
+
 async def embed(
     texts: list[str],
     settings: Settings,
@@ -45,19 +186,30 @@ async def embed(
 ) -> list[list[float]]:
     """Embed texts using OpenAI-compatible API with dimension validation.
 
+    Inputs are greedily sub-batched so no single request exceeds
+    ``settings.embed_max_batch_tokens`` (TASK-FIX-RELAYBATCH01). An episode whose
+    chunks sum past the embed server's per-slot n_ctx is therefore spread across
+    several requests instead of one batch that 400s and drops the whole episode.
+    The 1-input -> 1-embedding contract holds: embeddings are concatenated in
+    input order and ``len(result) == len(texts)``.
+
     Args:
         texts: List of texts to embed
-        settings: Configuration including embed_url, embed_model, embed_dims, embed_timeout_s
+        settings: Configuration including embed_url, embed_model, embed_dims,
+            embed_timeout_s, embed_max_batch_tokens
         transport: Optional httpx transport (for testing with MockTransport)
 
     Returns:
-        List of embedding vectors (one per input text)
+        List of embedding vectors (one per input text, in input order)
 
     Raises:
         EmbedDimensionError: If any embedding dimension doesn't match settings.embed_dims
-        EmbedTimeoutError: If request times out
-        EmbedServiceError: If service returns error or malformed response
+        EmbedTimeoutError: If a request times out
+        EmbedServiceError: If the service returns an error or malformed response
     """
+    if not texts:
+        return []
+
     url = _normalize_embed_url(settings.embed_url)
 
     # Configure timeout: read timeout controls model inference time (ASSUM-008)
@@ -68,50 +220,15 @@ async def embed(
         pool=5.0,
     )
 
-    # Build OpenAI-compatible request
-    request_body = {
-        "model": settings.embed_model,
-        "input": texts,
-    }
+    # Partition inputs so each request stays within the per-slot n_ctx budget.
+    batches = _pack_batches(texts, settings.embed_max_batch_tokens)
 
+    embeddings: list[list[float]] = []
     try:
+        # One client across all sub-batches so connections are reused.
         async with httpx.AsyncClient(timeout=timeout, transport=transport) as client:
-            response = await client.post(url, json=request_body)
-
-        # Check HTTP status
-        if response.status_code != 200:
-            raise EmbedServiceError(
-                "HTTP error from embedding service",
-                url=url,
-                status_code=response.status_code,
-            )
-
-        # Parse JSON response
-        try:
-            data = response.json()
-        except Exception as e:
-            raise EmbedServiceError(
-                f"Malformed JSON response: {e}",
-                url=url,
-            ) from e
-
-        # Extract embeddings
-        if "data" not in data:
-            raise EmbedServiceError(
-                "Response missing 'data' field",
-                url=url,
-            )
-
-        embeddings = [item["embedding"] for item in data["data"]]
-
-        # Validate dimensions
-        for i, embedding in enumerate(embeddings):
-            actual_dims = len(embedding)
-            if actual_dims != settings.embed_dims:
-                raise EmbedDimensionError(
-                    actual=actual_dims,
-                    expected=settings.embed_dims,
-                )
+            for batch in batches:
+                embeddings.extend(await _embed_request(client, url, batch, settings))
 
         return embeddings
 
