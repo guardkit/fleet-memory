@@ -59,10 +59,16 @@ _MAX_DELIVER = settings.max_deliver if settings is not None else 5
 _DLQ_SUBJECT = settings.dlq_subject if settings is not None else "memory.dlq"
 MEMORY_STREAM = JStream(name="MEMORY", declare=False)
 MEMORY_DURABLE = "fleet-memory-relay"
+# ack_wait MUST exceed the worst-case single-episode embed+Postgres-commit time. A large
+# multi-chunk episode embeds AND writes every chunk before the ack; a 70+-chunk episode
+# against the NAS Postgres can take minutes, so a short window expires mid-processing and
+# JetStream redelivers it -> the relay reprocesses from scratch forever (FEAT-HARV recovery,
+# 2026-06-27). Settings-driven (FLEET_MEMORY_ACK_WAIT_S) so it is tunable per deployment.
+_ACK_WAIT_S = settings.ack_wait_s if settings is not None else 1200
 MEMORY_CONSUMER_CONFIG = ConsumerConfig(
     ack_policy=AckPolicy.EXPLICIT,
     max_deliver=_MAX_DELIVER,
-    ack_wait=60,  # seconds; deterministic embed + Postgres commit (v2: not the 900s Graphiti window)
+    ack_wait=_ACK_WAIT_S,  # seconds (FLEET_MEMORY_ACK_WAIT_S); must stay > embed_timeout_s
 )
 
 

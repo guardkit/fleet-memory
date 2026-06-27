@@ -44,8 +44,11 @@ class Settings(BaseSettings):
         description="Embedding vector dimensions",
     )
     embed_timeout_s: float = Field(
-        default=10.0,
-        description="Embedding service timeout in seconds (ASSUM-008 placeholder)",
+        default=180.0,
+        description="Embedding service timeout in seconds. Sized to absorb a cold-start of "
+        "the embed model on a shared/evicting llama-swap server (FEAT-HARV observed "
+        "85-181s cold-starts) so a single request completes without a spurious timeout "
+        "that would nak/DLQ a recoverable failure. MUST stay < ack_wait_s.",
     )
     embed_max_batch_tokens: int = Field(
         default=2048,
@@ -88,6 +91,15 @@ class Settings(BaseSettings):
     max_deliver: int = Field(
         default=5,
         description="Maximum delivery attempts before parking (ASSUM-005)",
+    )
+    ack_wait_s: int = Field(
+        default=1200,
+        description="JetStream ack_wait for the durable consumer, in seconds. MUST exceed "
+        "the worst-case single-episode embed+commit time: a large multi-chunk episode "
+        "embeds AND writes every chunk to Postgres before the ack, so a 70+-chunk episode "
+        "against the NAS Postgres can take many minutes. If ack_wait expires mid-processing "
+        "the episode is redelivered and reprocessed from scratch forever (FEAT-HARV "
+        "recovery, 2026-06-27). Raised from the v2 default of 60. MUST stay > embed_timeout_s.",
     )
 
     # Chunking configuration

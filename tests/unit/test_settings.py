@@ -136,7 +136,9 @@ class TestSettingsDefaults:
         # Verify defaults match .env.example documented placeholders
         assert settings.embed_model == "nomic-embed-text-v1.5"
         assert settings.embed_dims == 768
-        assert settings.embed_timeout_s == 10.0  # ASSUM-008
+        assert settings.embed_timeout_s == 180.0  # raised from 10.0 (FEAT-HARV cold-start)
+        assert settings.ack_wait_s == 1200  # raised from 60 (FEAT-HARV large-episode commit)
+        assert settings.ack_wait_s > settings.embed_timeout_s  # ack window must outlast a request
         assert settings.pg_pool_min == 2
         assert settings.pg_pool_max == 10  # ASSUM-004
         assert settings.pg_connect_timeout_s == 10.0  # ASSUM-006
@@ -157,7 +159,8 @@ class TestSettingsDefaults:
         assert settings.embed_url == "http://embed.example.com"
         assert settings.embed_model == "nomic-embed-text-v1.5"
         assert settings.embed_dims == 768
-        assert settings.embed_timeout_s == 10.0
+        assert settings.embed_timeout_s == 180.0
+        assert settings.ack_wait_s == 1200
         assert settings.pg_pool_min == 2
         assert settings.pg_pool_max == 10
         assert settings.pg_connect_timeout_s == 10.0
@@ -346,7 +349,8 @@ class TestSettingsIntegration:
 
         # Verify the assertions from AC-001
         assert s.pg_pool_max == 10
-        assert s.embed_timeout_s == 10.0
+        assert s.embed_timeout_s == 180.0
+        assert s.ack_wait_s == 1200
         assert s.pg_connect_timeout_s == 10.0
 
     def test_realistic_mac_dev_config(self, monkeypatch) -> None:
