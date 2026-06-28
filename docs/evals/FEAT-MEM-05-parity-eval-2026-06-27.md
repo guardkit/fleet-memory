@@ -4,6 +4,33 @@
 The cause is a **fixable retrieval-pipeline defect**, not a fundamental "vector search can't
 match Graphiti" — but it must be fixed and the eval re-run before cutover.
 
+> ## UPDATE 2026-06-28 — after the chunker + assembly fix: pipeline FIXED, corpus NOISE is the new blocker
+>
+> The chunker + assembly defects below were **fixed and committed** (`08d2215`): the chunker now
+> measures + splits by tiktoken tokens (not whitespace words), and `assemble_context` skips over-budget
+> items instead of `break`ing. The corpus was **re-harvested** (447 episodes replayed through the fixed
+> relay → 11,615 chunks, **max 1145 tokens** vs the old **max ~85,000 chars**). Re-running the probe set:
+>
+> - ✅ **Empty contexts: 10/16 → 0/16.** The pipeline defect is resolved; every query now returns a
+>   token-budgeted block, and no chunk exceeds the budget.
+> - ❌ **Still not at parity — the new blocker is corpus NOISE.** **11 of 16** contexts now *lead with
+>   operational junk*: `INFO:guardkit.orchestrator…` log lines, `Turn 25/25 ⠋ Player Implementation`
+>   progress bars, terminal transcripts, `INFO:httpx:HTTP Request…`, and even **raw embedding-vector
+>   floats** (the "walking skeleton" result). Only ~3–4 queries return clean conceptual content (the
+>   `/task-work` complexity table; the BDD feature-spec; the false-green handoff).
+>
+> **Root cause:** the harvest ingested guardkit docs that are full of captured logs / progress dumps /
+> session transcripts (retros, handoffs, debugging notes, autobuild run captures). These lexically match
+> the queries and out-rank the conceptual docs. **This is the LLM-free tradeoff laid bare:** Graphiti's
+> edge is that its **LLM extraction implicitly filtered noise and distilled concepts**; fleet-memory,
+> being LLM-free, faithfully ingests everything — so it needs **clean source curation** to compensate.
+> Good chunking (done) is necessary but not sufficient; garbage-in = garbage-retrieved.
+>
+> **Next fix (bigger scope — guardkit FEAT-HARV, not fleet-memory):** tighten the harvest source
+> allow-list to exclude noisy doc classes (retros/handoffs/debugging/session-captures) and/or strip
+> fenced log/transcript blocks during harvest. Then re-harvest and re-run this eval. The LLM-judge
+> scoring is deferred until the corpus is clean (judging noisy retrieval would only confirm the obvious).
+
 ## Method
 
 - **Probe set:** 16 queries grounded in guardkit's real read domains (architecture, decisions,
