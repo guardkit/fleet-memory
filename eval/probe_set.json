@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "purpose": "FEAT-MEM-05 parity eval — fleet-memory (vector) vs Graphiti (FalkorDB graph) on guardkit's real read domains",
+    "created": "2026-06-27",
+    "project": "guardkit",
+    "token_budget": 2000,
+    "scope_note": "Queries target the HARVESTED-knowledge domain (architecture/decisions/patterns/process) — the coach-context + feature-plan reads FEAT-MEM-08 cutover must preserve. Runtime-captured knowledge (task_outcomes, failure_patterns) is intentionally OUT of scope: fleet-memory acquires it post-cutover via /task-complete writes, so it would be an expected (not a parity) gap.",
+    "graphiti_search": "guardkit graphiti search \"<query>\" -n 5  (broad, all categories — matches fleet-memory searching its whole guardkit corpus)"
+  },
+  "probes": [
+    { "query": "What are the quality gate phases?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the Player-Coach pattern in autobuild?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "When should I use the SDK versus a subprocess?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the walking skeleton approach?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How does adversarial cooperation work between the player and coach?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How is implementation complexity evaluated and routed to a review mode?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the BDD Gherkin scenario approach for feature specs?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How are typed payloads and deterministic content-hash upsert designed?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How does the NATS relay handle poison episodes and the dead letter queue?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the retrieval API and token-budgeted context assembly design?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How does the Graphiti to fleet-memory migration and cutover work?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the local-first inference decision for the dark factory?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What are the conventions for task files, feature planning and waves?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How does the coach validate player output against quality gates?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "What is the false-green problem in autobuild and how is it prevented?", "project": "guardkit", "token_budget": 2000 },
+    { "query": "How is per-task verification enforced before a task is marked complete?", "project": "guardkit", "token_budget": 2000 }
+  ]
+}
