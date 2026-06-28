@@ -138,10 +138,11 @@ def assemble_context(
             current_block = candidate_block
             included_items.append(item)
         else:
-            # Would exceed budget - stop here
-            # This implements "drop lowest-ranked" by not adding this or any
-            # subsequent items
-            break
+            # Over budget — SKIP this item and keep trying lower-ranked ones that
+            # may still fit (greedy packing). Previously this was `break`, which
+            # let a single oversized top-ranked chunk zero the entire context
+            # block (see docs/evals/FEAT-MEM-05-parity-eval-2026-06-27.md).
+            continue
 
     # Calculate final metrics
     tokens_used = _measure_tokens(current_block, encoding) if current_block else 0

@@ -2,13 +2,29 @@
 
 Pure function that splits markdown/text into overlapping chunks for downstream
 processing. No I/O, no embedding, no storage — just text transformation.
+
+Sizing is token-accurate (tiktoken cl100k_base, matching retrieval/assembly.py).
+An earlier whitespace-word-count estimate grossly under-counted code/JSON/tables
+(few spaces, many tokens), so structured sections escaped splitting and became
+oversized chunks — the cause of the empty/blob retrieval documented in
+docs/evals/FEAT-MEM-05-parity-eval-2026-06-27.md.
 """
 
 from __future__ import annotations
 
 import re
 
+import tiktoken
+
 from fleet_memory.relay.schema import Chunk
+
+# Shared encoding so a chunk's measured size matches what assembly will measure.
+_ENCODING = tiktoken.get_encoding("cl100k_base")
+
+
+def _token_count(text: str) -> int:
+    """Actual token count via tiktoken (not whitespace words)."""
+    return len(_ENCODING.encode(text))
 
 
 def chunk_prose(
@@ -23,7 +39,7 @@ def chunk_prose(
 
     Args:
         body: Text to chunk (markdown or plain text)
-        target_tokens: Target size per chunk in tokens (approximate)
+        target_tokens: Target size per chunk in tokens (tiktoken-measured)
         overlap_ratio: Fraction of chunk to overlap with next (0.0-1.0)
         source_ref: Source reference to propagate to all chunks
         project: Project identifier to propagate to all chunks
@@ -33,7 +49,7 @@ def chunk_prose(
         Empty list if body is empty or whitespace-only.
 
     Behavior:
-        - Chunks aim for ~target_tokens using whitespace-based token estimation
+        - Chunks are bounded by ~target_tokens using tiktoken token counts
         - Adjacent chunks overlap by ~overlap_ratio to preserve context
         - Prefers splitting at markdown heading boundaries (# lines)
         - Never separates a heading from its section content
@@ -42,10 +58,6 @@ def chunk_prose(
     # Handle empty or whitespace-only input
     if not body or not body.strip():
         return []
-
-    # Approximate token count using whitespace splitting
-    def token_count(text: str) -> int:
-        return len(text.split())
 
     # Calculate overlap size in tokens
     overlap_tokens = int(target_tokens * overlap_ratio)
@@ -57,7 +69,7 @@ def chunk_prose(
     current_chunk_text = ""
 
     for section in sections:
-        section_tokens = token_count(section)
+        section_tokens = _token_count(section)
 
         # If section itself exceeds target, split it into sub-chunks
         if section_tokens > target_tokens:
@@ -85,7 +97,7 @@ def chunk_prose(
                     )
                 )
         # If current chunk + section would exceed target, finalize current chunk
-        elif current_chunk_text and token_count(current_chunk_text + section) > target_tokens:
+        elif current_chunk_text and _token_count(current_chunk_text + section) > target_tokens:
             # Finalize current chunk
             chunks.append(
                 Chunk(
@@ -161,7 +173,11 @@ def _split_into_sections(text: str) -> list[str]:
 
 
 def _split_large_section(section: str, target_tokens: int, overlap_tokens: int) -> list[str]:
-    """Split a large section into multiple chunks with overlap.
+    """Split a large section into multiple chunks with overlap, on token boundaries.
+
+    Operates on the actual tiktoken token stream so code/JSON/tables (which have
+    few whitespace words but many tokens) are split correctly rather than left as
+    a single oversized chunk.
 
     Args:
         section: Text section to split
@@ -169,23 +185,22 @@ def _split_large_section(section: str, target_tokens: int, overlap_tokens: int) 
         overlap_tokens: Number of tokens to overlap between chunks
 
     Returns:
-        List of text chunks with overlap
+        List of text chunks (each ~target_tokens) with overlap
     """
-    words = section.split()
-    if len(words) <= target_tokens:
+    tokens = _ENCODING.encode(section)
+    if len(tokens) <= target_tokens:
         return [section]
 
     chunks: list[str] = []
     start = 0
 
-    while start < len(words):
-        # Take target_tokens words from current position
-        end = min(start + target_tokens, len(words))
-        chunk_words = words[start:end]
-        chunks.append(" ".join(chunk_words))
+    while start < len(tokens):
+        # Take target_tokens tokens from current position
+        end = min(start + target_tokens, len(tokens))
+        chunks.append(_ENCODING.decode(tokens[start:end]))
 
         # Move forward by (target - overlap) to create overlap
-        if end >= len(words):
+        if end >= len(tokens):
             break
         start = end - overlap_tokens if overlap_tokens > 0 else end
 
@@ -193,7 +208,7 @@ def _split_large_section(section: str, target_tokens: int, overlap_tokens: int) 
 
 
 def _extract_tail_tokens(text: str, num_tokens: int) -> str:
-    """Extract approximately num_tokens from the end of text.
+    """Extract approximately num_tokens from the end of text (token-accurate).
 
     Args:
         text: Source text
@@ -202,9 +217,8 @@ def _extract_tail_tokens(text: str, num_tokens: int) -> str:
     Returns:
         Text containing approximately num_tokens from the end
     """
-    words = text.split()
-    if len(words) <= num_tokens:
+    tokens = _ENCODING.encode(text)
+    if len(tokens) <= num_tokens:
         return text
 
-    tail_words = words[-num_tokens:]
-    return " ".join(tail_words) + " "
+    return _ENCODING.decode(tokens[-num_tokens:]) + " "

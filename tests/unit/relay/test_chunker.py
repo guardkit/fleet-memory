@@ -54,7 +54,10 @@ class TestChunkProseOverTargetSize:
         chunks = chunk_prose(
             body, target_tokens=200, overlap_ratio=0.15, source_ref="ref", project="proj"
         )
-        assert len(chunks) == 2
+        # Distinct multi-token words ("word123" ~= 2 tokens) → token-accurate
+        # sizing yields >=2 chunks; the exact-count AC is covered by
+        # test_body_just_over_target_returns_two_chunks (single-token "word").
+        assert len(chunks) >= 2
         # Second chunk should start with content from end of first chunk
         # Extract some words from end of first chunk
         first_chunk_words = chunks[0].text.split()
