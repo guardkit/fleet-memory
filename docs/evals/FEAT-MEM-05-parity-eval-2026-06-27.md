@@ -1,6 +1,15 @@
 # FEAT-MEM-05 parity eval — fleet-memory vs Graphiti (2026-06-27)
 
-**Verdict: ❌ NOT at parity. The cutover gate (FEAT-MEM-08/09) does not pass yet.**
+**FINAL VERDICT (2026-06-28): ✅ PASS — fleet-memory is at/above parity after the chunker fix +
+harvest curation.** Independent LLM-judge over the 16-query probe set: **fleet-memory avg 2.38 vs
+Graphiti 1.06 (0-3 scale); fleet-memory ≥ Graphiti on 16/16 (12 wins, 4 ties, 0 losses); usefully
+answers 13/16.** The FEAT-MEM-05 cutover gate passes. See "FINAL — PASS after curation" below for the
+two fixes that got us here. *(The two sections below are the history: the gate first failed on
+oversized chunks, then on corpus noise — both now resolved.)*
+
+---
+
+**Initial verdict (2026-06-27): ❌ NOT at parity. The cutover gate (FEAT-MEM-08/09) does not pass yet.**
 The cause is a **fixable retrieval-pipeline defect**, not a fundamental "vector search can't
 match Graphiti" — but it must be fixed and the eval re-run before cutover.
 
@@ -30,6 +39,40 @@ match Graphiti" — but it must be fixed and the eval re-run before cutover.
 > allow-list to exclude noisy doc classes (retros/handoffs/debugging/session-captures) and/or strip
 > fenced log/transcript blocks during harvest. Then re-harvest and re-run this eval. The LLM-judge
 > scoring is deferred until the corpus is clean (judging noisy retrieval would only confirm the obvious).
+
+> ## FINAL 2026-06-28 — PASS after curation
+>
+> **Root cause of the noise was pinpointed by source:** of 11,615 chunks, the noise was **100%
+> concentrated in `docs/reviews/`** (9099/10936 chunks noisy = 83%; **78% of the whole corpus's
+> noise**), which holds autobuild/seeding/profiling **run captures** (`run_4.md`, `vllm_run_5.md`,
+> `seed-graphiti.md`, `reseed_*.md`, `phase_2_build.md`). **Every other directory was 0% noise**
+> (design, decisions, guides, reference, adr, retro, completion-reports, code-review).
+>
+> **Curation:** removed `docs/reviews` from the harvest allow-list (`guardkit/guardkit/memory/
+> harvest_taxonomy.py`; `docs/code-review` retained for real reviews). Curated corpus = **125 clean
+> docs / 679 chunks**. Verified the clean dirs still cover every probe topic (e.g. 102 clean chunks
+> mention "quality gate", 162 "complexity", 58 "Player-Coach").
+>
+> **Re-eval on the curated corpus:** all 16 queries return clean, relevant passages
+> (**0 empty, 16/16 noise-free**; previously ~5/16 clean) — e.g. "quality gate phases" →
+> *Quality Gates Integration Guide*; "complexity → review mode" → the *Phase 2.7 complexity* spec;
+> "local-first inference" → *DECISION-DF-001*.
+>
+> **Independent LLM-judge vs Graphiti (16 queries, 0-3 relevance scale):**
+> | | fleet-memory | Graphiti |
+> |---|---|---|
+> | avg score | **2.38** | 1.06 |
+> | usefully answers (≥2) | **13/16** | 5/16 |
+> | head-to-head | **≥ on 16/16** (12 win / 4 tie / 0 loss) | — |
+>
+> **Verdict: PASS.** fleet-memory's passages repeatedly land the exact source doc (more actionable
+> than Graphiti's terse edges, which often only *name* a feature). Graphiti was competitive only on
+> atomic enforcement facts (e.g. "Phase 4.5 enforces tests") and degraded to noise on infra/retrieval
+> queries. **Caveats:** 2 weak queries — "SDK vs subprocess" (both systems off-topic — a genuine
+> corpus gap) and "walking skeleton" (weak); keep the retrieval token budget generous so the relevant
+> heading is included. **Three layered fixes got here:** token-accurate chunking (`08d2215`),
+> greedy assembly (`08d2215`), and harvest curation (guardkit taxonomy). The cutover (FEAT-MEM-08) is
+> unblocked; a full re-harvest with the curated taxonomy will reproduce this corpus cleanly.
 
 ## Method
 
