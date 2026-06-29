@@ -345,6 +345,93 @@ class TestConcretePayloadTypes:
         assert payload.natural_key == "build_outcome:my_project:build_123"
         assert payload.payload_type == "build_outcome"
 
+    def test_build_outcome_with_extended_fields(self) -> None:
+        """BuildOutcome accepts task_id, lessons, approach fields (AC-001)."""
+        from fleet_memory.payloads.models import BuildOutcomePayload
+
+        payload = BuildOutcomePayload(
+            project="guardkit",
+            identifier="TASK_X_001",
+            source_ref="test",
+            status="success",
+            duration_seconds=120,
+            task_id="TASK-MEM08-003",
+            lessons="Learned to validate extended fields in payload tests",
+            approach="TDD with comprehensive test coverage",
+        )
+        assert payload.task_id == "TASK-MEM08-003"
+        assert payload.lessons == "Learned to validate extended fields in payload tests"
+        assert payload.approach == "TDD with comprehensive test coverage"
+        assert payload.natural_key == "build_outcome:guardkit:TASK_X_001"
+
+    def test_build_outcome_extended_fields_optional(self) -> None:
+        """BuildOutcome extended fields are optional (AC-001 back-compat)."""
+        from fleet_memory.payloads.models import BuildOutcomePayload
+
+        # Legacy payload without extended fields should still work
+        payload = BuildOutcomePayload(
+            project="guardkit",
+            identifier="build_456",
+            source_ref="test",
+            status="failure",
+            duration_seconds=30,
+        )
+        assert payload.task_id is None
+        assert payload.lessons is None
+        assert payload.approach is None
+
+    def test_build_outcome_extended_fields_in_model_dump(self) -> None:
+        """Extended fields appear in model_dump for embedding (AC-002)."""
+        from fleet_memory.payloads.models import BuildOutcomePayload
+
+        payload = BuildOutcomePayload(
+            project="guardkit",
+            identifier="build_789",
+            source_ref="test",
+            status="success",
+            duration_seconds=90,
+            task_id="TASK-ABC-123",
+            lessons="Key insight about implementation",
+            approach="Iterative design approach",
+        )
+
+        dumped = payload.model_dump()
+        assert dumped["task_id"] == "TASK-ABC-123"
+        assert dumped["lessons"] == "Key insight about implementation"
+        assert dumped["approach"] == "Iterative design approach"
+        # Verify searchable content is included
+        assert "Key insight" in dumped["lessons"]
+        assert "Iterative design" in dumped["approach"]
+
+    def test_build_outcome_natural_key_unchanged(self) -> None:
+        """Natural key behavior unchanged with extended fields (AC-004)."""
+        from fleet_memory.payloads.models import BuildOutcomePayload
+
+        # Natural key should be build_outcome:{project}:{identifier}
+        # regardless of whether extended fields are present
+        payload1 = BuildOutcomePayload(
+            project="guardkit",
+            identifier="build_001",
+            source_ref="test",
+            status="success",
+            duration_seconds=60,
+        )
+
+        payload2 = BuildOutcomePayload(
+            project="guardkit",
+            identifier="build_001",
+            source_ref="test",
+            status="success",
+            duration_seconds=60,
+            task_id="TASK-X",
+            lessons="Some lessons",
+            approach="Some approach",
+        )
+
+        # Same natural key despite different extended fields
+        assert payload1.natural_key == payload2.natural_key
+        assert payload1.natural_key == "build_outcome:guardkit:build_001"
+
     def test_pattern_payload(self) -> None:
         """Pattern payload works correctly."""
         from fleet_memory.payloads.models import PatternPayload

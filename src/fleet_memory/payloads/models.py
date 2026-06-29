@@ -40,13 +40,17 @@ class ReviewReportPayload(BasePayload):
 class BuildOutcomePayload(BasePayload):
     """Build or CI pipeline outcome payload.
 
-    Tracks build status and duration.
+    Tracks build status, duration, and optional task context (task_id, lessons, approach).
+    Extended fields (task_id, lessons, approach) are embedded for retrieval when provided.
     """
 
     payload_type: ClassVar[str] = "build_outcome"
 
     status: str  # e.g., "success", "failure", "timeout"
     duration_seconds: int  # Build execution time
+    task_id: str | None = None  # Optional: links outcome to its task/feature
+    lessons: str | None = None  # Optional: lessons-learned prose (embedded for retrieval)
+    approach: str | None = None  # Optional: approach/methodology prose (embedded for retrieval)
 
 
 class PatternPayload(BasePayload):
