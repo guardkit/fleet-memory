@@ -17,12 +17,18 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock
 
+import json
+
 import pytest
 from langgraph.store.base import SearchItem
 
 from fleet_memory.errors import EmbedServiceError
 from fleet_memory.retrieval import SearchRequest
-from fleet_memory.retrieval.core import search
+from fleet_memory.retrieval.core import (
+    _item_domain_tags,
+    _matches_domain_tags,
+    search,
+)
 
 
 def _make_search_item(
@@ -43,6 +49,40 @@ def _make_search_item(
         created_at=created_at or now,
         updated_at=updated_at or now,
     )
+
+
+# --- TASK-MEM08-012: domain_tags filter must read tags nested in the embedded
+#     `content` JSON (the deterministic writer does not lift domain_tags to a
+#     top-level stored field), else every typed payload is deselected by a tag filter.
+def _ns():
+    return ("fleet_memory", "guardkit", "build_outcome")
+
+
+def test_item_domain_tags_prefers_top_level():
+    item = _make_search_item(_ns(), "k", {"domain_tags": ["task"], "content": "{}"}, 0.9)
+    assert _item_domain_tags(item) == ["task"]
+
+
+def test_item_domain_tags_falls_back_to_content_json():
+    # Typed-payload shape: tags live ONLY inside the embedded content JSON.
+    content = json.dumps({"natural_key": "build_outcome:guardkit:T1", "domain_tags": ["task"]})
+    item = _make_search_item(_ns(), "k", {"content": content}, 0.9)
+    assert _item_domain_tags(item) == ["task"]
+
+
+def test_item_domain_tags_chunk_prose_is_empty():
+    # Chunk records carry prose (not JSON) in content and have no tags.
+    item = _make_search_item(("fleet_memory", "guardkit", "chunk"), "k", {"content": "# A doc"}, 0.9)
+    assert _item_domain_tags(item) == []
+
+
+def test_matches_domain_tags_via_content_fallback():
+    content = json.dumps({"domain_tags": ["task"]})
+    item = _make_search_item(_ns(), "k", {"content": content}, 0.9)
+    assert _matches_domain_tags(item, ["task"]) is True
+    assert _matches_domain_tags(item, ["other"]) is False
+    # No filter still matches everything.
+    assert _matches_domain_tags(item, []) is True
 
 
 @pytest.fixture

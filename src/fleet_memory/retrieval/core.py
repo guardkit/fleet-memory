@@ -14,6 +14,7 @@ Consumer: FEAT-MEM-05 (assembly, harness)
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
 from langgraph.store.base import SearchItem
@@ -62,6 +63,33 @@ def _matches_payload_types(item: SearchItem, payload_types: list[str]) -> bool:
     return item_type in payload_types
 
 
+def _item_domain_tags(item: SearchItem) -> list[str]:
+    """Resolve an item's domain_tags, looking inside the embedded content if needed.
+
+    The deterministic writer (writer/core.py) persists a record's ``domain_tags`` only
+    INSIDE the embedded ``content`` JSON (``json.dumps(payload.model_dump())``), not as a
+    top-level stored field. A top-level-only read therefore saw ``[]`` for every typed
+    payload and any non-empty ``domain_tags`` filter deselected every such record
+    (TASK-MEM08-012). Resolve from the top level first (forward-compatible if the writer
+    later lifts it), then fall back to parsing ``content``. Chunk records carry prose (not
+    JSON) in ``content`` and legitimately have no tags → ``[]``.
+    """
+    tags = item.value.get("domain_tags")
+    if isinstance(tags, list):
+        return tags
+    content = item.value.get("content")
+    if isinstance(content, str):
+        try:
+            parsed = json.loads(content)
+        except (ValueError, TypeError):
+            return []
+        if isinstance(parsed, dict):
+            nested = parsed.get("domain_tags")
+            if isinstance(nested, list):
+                return nested
+    return []
+
+
 def _matches_domain_tags(item: SearchItem, domain_tags: list[str]) -> bool:
     """Check if search item matches requested domain tags.
 
@@ -76,7 +104,7 @@ def _matches_domain_tags(item: SearchItem, domain_tags: list[str]) -> bool:
         # Empty list means no tag filter
         return True
 
-    item_tags = item.value.get("domain_tags", [])
+    item_tags = _item_domain_tags(item)
     # Item must have at least one of the requested tags
     return any(tag in item_tags for tag in domain_tags)
 
