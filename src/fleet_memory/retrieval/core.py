@@ -43,6 +43,29 @@ def _extract_payload_type(natural_key: str) -> str | None:
     return None
 
 
+def _matches_project(item: SearchItem, project: str) -> bool:
+    """Guard against namespace-prefix bleed across sibling projects.
+
+    ``AsyncPostgresStore.asearch(("fleet_memory", project))`` scopes via a
+    ``store.prefix LIKE 'fleet_memory.{project}%'`` match. That prefix match also
+    selects a sibling project whose name shares the requested project as a prefix
+    (e.g. ``project="guardkit"`` bleeds ``fleet_memory.guardkit_factory.*``). Stored
+    items always carry a 3-tuple namespace ``("fleet_memory", project, payload_type)``,
+    so require the item's own project segment to equal the requested project exactly.
+
+    Args:
+        item: SearchItem to check
+        project: Requested project (exact match required)
+
+    Returns:
+        True if the item's namespace project segment equals ``project``.
+    """
+    namespace = getattr(item, "namespace", None)
+    if not namespace or len(namespace) < 2:
+        return False
+    return namespace[1] == project
+
+
 def _matches_payload_types(item: SearchItem, payload_types: list[str]) -> bool:
     """Check if search item matches requested payload types.
 
@@ -186,6 +209,14 @@ async def search(
 
     # Apply filters
     filtered_results = raw_results
+
+    # Exact project scope: the store's namespace prefix is a LIKE 'prefix%' match,
+    # which would bleed a sibling project sharing a name-prefix (e.g. "guardkit" vs
+    # "guardkit_factory"). Require each item's namespace project segment to match
+    # the requested project exactly. (FEAT-MEM-09 WS-0 multi-project hardening.)
+    filtered_results = [
+        item for item in filtered_results if _matches_project(item, request.project)
+    ]
 
     # Filter by payload types
     filtered_results = [

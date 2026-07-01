@@ -27,6 +27,7 @@ from fleet_memory.retrieval import SearchRequest
 from fleet_memory.retrieval.core import (
     _item_domain_tags,
     _matches_domain_tags,
+    _matches_project,
     search,
 )
 
@@ -543,3 +544,54 @@ def test_search_core_consumes_validated_request():
     assert req.include_superseded is False
     # Consumer side: search core must read fields, not re-run validation
     # (e.g. it must not raise on a request that already passed model validation)
+
+
+# ============================================================================
+# FEAT-MEM-09 WS-0 — exact-project scope (namespace-prefix bleed guard)
+# ============================================================================
+
+
+def test_matches_project_requires_exact_segment():
+    """_matches_project accepts only the exact project, not a name-prefix sibling."""
+    item = _make_search_item(("fleet_memory", "guardkit", "adr"), "k", {}, 0.5)
+    assert _matches_project(item, "guardkit") is True
+    assert _matches_project(item, "guardkit_factory") is False
+    sibling = _make_search_item(
+        ("fleet_memory", "guardkit_factory", "adr"), "k", {}, 0.5
+    )
+    assert _matches_project(sibling, "guardkit") is False
+
+
+def test_matches_project_rejects_missing_or_short_namespace():
+    item = _make_search_item(("fleet_memory",), "k", {}, 0.5)
+    assert _matches_project(item, "guardkit") is False
+
+
+@pytest.mark.asyncio
+async def test_search_excludes_sibling_prefix_project_bleed(make_search_request):
+    """The store's LIKE 'fleet_memory.{project}%' prefix match bleeds a sibling
+    project sharing the name-prefix; the exact-project guard must drop it so
+    project="guardkit" never returns "guardkit_factory" rows (FEAT-MEM-09 WS-0)."""
+    request = make_search_request(project="guardkit")
+
+    mock_store = AsyncMock()
+    mock_store.asearch.return_value = [
+        # Sibling bleed with a HIGHER score — must still be excluded.
+        _make_search_item(
+            namespace=("fleet_memory", "guardkit_factory", "document"),
+            key="bleed",
+            value={"content": "sibling", "natural_key": "document:guardkit_factory:1"},
+            score=0.99,
+        ),
+        _make_search_item(
+            namespace=("fleet_memory", "guardkit", "document"),
+            key="mine",
+            value={"content": "guardkit doc", "natural_key": "document:guardkit:1"},
+            score=0.80,
+        ),
+    ]
+
+    results = await search(request, mock_store)
+
+    assert [r.key for r in results] == ["mine"]
+    assert all(r.namespace[1] == "guardkit" for r in results)
