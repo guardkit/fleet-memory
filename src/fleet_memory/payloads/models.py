@@ -91,10 +91,19 @@ class SeedModulePayload(BasePayload):
 class DocumentPayload(BasePayload):
     """Generic document payload (catch-all type).
 
-    Accepts payloads with no type-specific fields beyond BasePayload requirements.
-    This is the fallback type for content that doesn't fit other categories.
+    Carries an optional prose ``content`` body. When provided, the text is embedded
+    for semantic retrieval AND the record still carries ``domain_tags`` for
+    group-scoped reads — this lets unstructured document/knowledge prose (e.g. the
+    Graphiti Episodic nodes migrated in FEAT-MEM-09) be both semantically searchable
+    and category-scoped, which a plain markdown chunk (no tags) cannot be. When
+    ``content`` is omitted the payload is metadata-only (back-compat). Mirrors
+    ``BuildOutcomePayload``'s optional ``lessons``/``approach`` prose fields.
+
+    Note (relay): ``BasePayload.model_config`` is ``extra="ignore"``, so a relay image
+    built BEFORE this field will SILENTLY DROP ``content`` (not DLQ it). The relay must
+    be rebuilt for ``content`` to be stored/embedded.
     """
 
     payload_type: ClassVar[str] = "document"
 
-    # No type-specific fields - inherits only BasePayload fields
+    content: str | None = None  # Optional prose body; embedded for retrieval when provided

@@ -305,6 +305,33 @@ class TestConcretePayloadTypes:
         assert payload.natural_key == "document:my_project:my_doc"
         assert payload.payload_type == "document"
 
+    def test_document_content_defaults_to_none(self) -> None:
+        """Back-compat: content is optional and defaults to None (metadata-only)."""
+        from fleet_memory.payloads.models import DocumentPayload
+
+        payload = DocumentPayload(
+            project="my_project", identifier="my_doc", source_ref="test"
+        )
+        assert payload.content is None
+        assert payload.model_dump()["content"] is None
+
+    def test_document_content_prose_is_carried_and_embedded(self) -> None:
+        """FEAT-MEM-09: prose content is a first-class field, present in model_dump
+        (which the deterministic writer embeds) alongside domain_tags for scoped reads."""
+        from fleet_memory.payloads.models import DocumentPayload
+
+        payload = DocumentPayload(
+            project="guardkit",
+            identifier="project_overview_doc",
+            source_ref="graphiti:project_overview:uuid",
+            domain_tags=["overview"],
+            content="GuardKit is an AI software factory with quality gates.",
+        )
+        dumped = payload.model_dump()
+        assert dumped["content"] == "GuardKit is an AI software factory with quality gates."
+        assert dumped["domain_tags"] == ["overview"]
+        assert payload.natural_key == "document:guardkit:project_overview_doc"
+
     def test_review_report_requires_verdict(self) -> None:
         """ReviewReport without verdict is rejected with clear error (AC-004)."""
         from fleet_memory.payloads.models import ReviewReportPayload
