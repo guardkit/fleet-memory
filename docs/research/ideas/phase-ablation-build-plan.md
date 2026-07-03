@@ -9,6 +9,14 @@
   not start before the review.
 - Session memory notes updated: the FEAT-MEM-04 "JetStream gap open" note was
   stale (closed 2026-06-24→27); the regression task pins the historical SHA.
+- **2026-07-03 (evening): FEAT-ABL-002 spike EXECUTED — Harbor ADOPTED.**
+  P1 gate met: oracle rollout on the FEAT-9DDE spike task scored reward 1.0
+  on the GB10 via Harbor 0.17.0 (`-e docker`, ARM64 image, llama-swap route
+  proven in-container). Fallback not triggered. Contract frozen with one
+  correction: Harbor's test dir is `tests/` (plural). Ran on Spark A, not
+  Spark B — no GB10→Spark B key auth exists (alias verified from another
+  host); scope §4 acceptance reads "on the GB10" and its GPU was idle.
+  Runbook: fleet-evals `docs/runbooks/FEAT-ABL-002-spike.md`.
 - **2026-07-03 (later, same day): `fleet-evals` now EXISTS** — created ahead of
   Step 3 to house the **PO held-out suite** (scope §6b's deadline clause):
   4 doc-shaped tasks on the task-folder contract, oracle-validated + red-teamed,
@@ -53,10 +61,14 @@ The scope's recommendation stands; verification strengthened it:
 - [ ] **P0 (GATE): Rich reviews this plan, then freezes §5** — run 1 is blocked
   until the verdict is frozen; features ABL-001..005 may proceed after plan
   review, ABL-006 may not start before the freeze.
-- [ ] **P1 (GATE): FEAT-ABL-002 spike exit** — one task, one rollout, one
-  reward score on Spark hardware (Harbor, or the declared fallback). Timebox
-  1 day. The task-folder contract (task.toml / instruction.md / environment/ /
-  test/ / solution/) freezes here; ABL-003/004 build against it.
+- [x] **P1 (GATE): FEAT-ABL-002 spike exit** — **met 2026-07-03**: one task
+  (`abl-spike-001-task-status-json`), one Harbor rollout, reward **1.0**, on
+  the GB10 (Spark A — no key auth from GB10 to Spark B existed; scope §4 says
+  "on the GB10" and the GPU was idle, so acceptance met verbatim; see runbook
+  §deviation). Harbor 0.17.0 adopted; fallback not triggered. The task-folder
+  contract (task.toml / instruction.md / environment/ / **tests/** /
+  solution/ — Harbor uses `tests/`, plural) is **frozen**; ABL-003/004 build
+  against it. Evidence: fleet-evals `docs/runbooks/FEAT-ABL-002-spike.md`.
 - [ ] **P2: Compute window** — Spark A is running the PO pilot (GPU 95%,
   since 08:00 2026-07-03) with the 82h run pending go/no-go behind it.
   Default rollout host: **Spark B** (idle, aarch64, Docker 29.2.1, proven
@@ -77,7 +89,7 @@ The scope's recommendation stands; verification strengthened it:
 
 | # | Feature | Repo | Depends on | Est. | Status (2026-07-03) |
 |---|---------|------|-----------|------|---------------------|
-| 1 | FEAT-ABL-002 — Harbor spike on Spark (direct session, **no pipeline**) | ops/fleet-evals | P0 review | **1 day timebox** | ⬜ **first** |
+| 1 | FEAT-ABL-002 — Harbor spike on Spark (direct session, **no pipeline**) | ops/fleet-evals | P0 review | **1 day timebox** | ✅ **done 2026-07-03 — Harbor 0.17.0 ADOPTED** (fallback not triggered). Oracle rollout on the FEAT-9DDE spike task: reward **1.0** on the GB10; RED 7/7 → GREEN 7/7 oracle gate; ARM64 image native; container→llama-swap 200. Contract frozen (note: `tests/` plural, not `test/`). Evidence: fleet-evals `docs/runbooks/FEAT-ABL-002-spike.md`, `tasks/abl-spike-001-task-status-json/`, `spike/rollouts/` |
 | 2 | FEAT-ABL-001 — retrieval arm switch + retrieval logging | guardkit | none (parallel to 3) | 0.5–1 day | ⬜ |
 | 3 | FEAT-ABL-005 — fixture tooling (snapshot/hash/temporal cut/scratch ns) | fleet-memory | none (parallel to 2) | 1 day | ⬜ |
 | 4 | FEAT-ABL-003 — AutoBuild agent adapter | fleet-evals | ABL-002 (contract), ABL-001 (arm env) | 0.5–1 day | ⬜ |
