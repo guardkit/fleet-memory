@@ -1,0 +1,9 @@
+{
+  "turn": 8,
+  "feedback_from_turn": 7,
+  "feedback_summary": "- The orchestrator reported a 'partial_gate_abort'. The test-orchestrator failed to collect tests (ERROR collecting tests/unit/fixture/test_manifest), resulting in an absent test signal.: Ensure that the test suite is runnable and that the test collection process does not encounter errors. The current error suggests a potential issue with the test discovery or the test file structure itself.",
+  "must_fix": [],
+  "should_fix": [],
+  "validation_results": {},
+  "raw_feedback": "- The orchestrator reported a 'partial_gate_abort'. The test-orchestrator failed to collect tests (ERROR collecting tests/unit/fixture/test_manifest), resulting in an absent test signal.: Ensure that the test suite is runnable and that the test collection process does not encounter errors. The current error suggests a potential issue with the test discovery or the test file structure itself."
+}
