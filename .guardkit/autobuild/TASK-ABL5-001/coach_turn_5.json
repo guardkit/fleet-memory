@@ -1,0 +1,81 @@
+{
+  "task_id": "TASK-ABL5-001",
+  "turn": 5,
+  "decision": "feedback",
+  "issues": [
+    {
+      "severity": "should_fix",
+      "category": "honesty",
+      "description": "Deterministic honesty record (claim_audit_unmodified, severity=should_fix): Player claim: Player claimed file src/fleet_memory/fixture/__init__.py. Actual: Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication..",
+      "details": {
+        "source": "deterministic_honesty_gate",
+        "claim_type": "claim_audit_unmodified",
+        "player_claim": "Player claimed file src/fleet_memory/fixture/__init__.py",
+        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
+        "severity": "should_fix"
+      }
+    },
+    {
+      "type": "test_failure",
+      "severity": "critical",
+      "description": "The orchestrator reported a 'partial_gate_abort'. The test collection phase failed with an error: 'ERROR collecting tests/unit/fixture/test_manifest'. No test results are available to verify the implementation.",
+      "requirement": "AC-009",
+      "suggestion": "Ensure that the test suite is runnable and that the test collection process can complete without errors. Verify that the file paths in the test suite are correct and accessible."
+    },
+    {
+      "type": "code_quality",
+      "severity": "minor",
+      "description": "The Player claimed to modify 'src/fleet_memory/fixture/__init__.py', but git status shows no changes to this file. This may be a reporting error.",
+      "requirement": "N/A",
+      "suggestion": "Ensure the implementation report accurately reflects only the files modified during the turn."
+    }
+  ],
+  "criteria_verification": [
+    {
+      "criterion_id": "AC-001",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-002",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-003",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-004",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-005",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-006",
+      "result": "rejected",
+      "notes": "Cannot verify; test collection failed."
+    },
+    {
+      "criterion_id": "AC-007",
+      "result": "rejected",
+      "notes": "Cannot verify; no file modification audit available due to abort."
+    },
+    {
+      "criterion_id": "AC-008",
+      "result": "rejected",
+      "notes": "Cannot verify; lint/format check results are missing."
+    },
+    {
+      "criterion_id": "AC-009",
+      "result": "rejected",
+      "notes": "Cannot verify; tests did not run (absent signal)."
+    }
+  ],
+  "rationale": "The gathering status is 'partial_gate_abort'. The test orchestrator failed to collect tests, meaning no authoritative evidence exists to confirm that the requirements were met. Per the Absence-of-Failure guards, an absent test signal is not a pass."
+}
