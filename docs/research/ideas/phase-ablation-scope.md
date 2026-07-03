@@ -1,6 +1,6 @@
 # Memory Value Ablation — Scope (Phase ABL) — v2
 
-**Status:** DRAFT v2 (Desktop-authored 2026-07-03). **v1 retracted same day** after review found three design holes (§1.1). §2 remains **⚠ UNVERIFIED** — Claude Code verifies from source and authors `phase-ablation-build-plan.md` before any build work.
+**Status:** DRAFT v2 (Desktop-authored 2026-07-03). **v1 retracted same day** after review found three design holes (§1.1). §2 **verified from source 2026-07-03** (Claude Code, per §2.1) — **neither stop condition fired**; `phase-ablation-build-plan.md` authored (same directory). Awaiting Rich: build-plan review, then §5 freeze. No build work (including FEAT-ABL-002) before review.
 **Date:** 2026-07-03
 **Repo focus:** fleet-memory (retrieval toggle) · guardkit (AutoBuild agent adapter) · **NEW: `fleet-evals`** (recommended home for the substrate + task corpus — cross-repo consumer count in §6 argues for its own repo; confirm in build plan)
 **Decision frame:** DF-001 (local loop; cloud tracking optional, never authoritative) · DF-008 (evidence-before-investment applied to our own infrastructure) · DF-006 (the Oracle/golden-set philosophy, made operational) · ADR-FLEET-002 (tests the prior question)
@@ -19,18 +19,23 @@ Answer, with numbers: **does fleet-memory retrieval measurably improve AutoBuild
 3. **No repetition policy.** Single rollouts per task per arm on nondeterministic local models measures noise, not effect.
 4. **(Found in v2 design) Answer-key leakage.** If the memory fixture contains entries written by or after the historical FEATs used as eval tasks, the on-arm retrieves its own solution summaries. Requires a per-task temporal cut (§3.3).
 
-## 2. Current state (⚠ UNVERIFIED — Desktop draft; verify from source before proceeding)
+## 2. Current state (verified from source 2026-07-03)
 
-| Component | Believed state (2026-07-03) | Verify |
+> **⚠️ 2026-07-03 corrections (verified from source; UBS-scope style).** Three believed-states were wrong or stale:
+> 1. **FEAT-MEM-04 "regression on disk" is stale.** The JetStream-durability gap was closed on main 2026-06-24→27 (`0951620` durable pull consumer, `abe48c3` DLQ on deterministic embed-400, `55a0cda` settings-driven ack_wait; `MEMORY` stream now in `nats-infrastructure/streams/stream-definitions.json:70-79`; TASK-RLY-007 moved to completed in `3ca17be`). The regression task must **pin the pre-`0951620` state** — it no longer exists at HEAD.
+> 2. **`phase-core-build-plan.md` — the row's named verification reference — is itself ~3 weeks stale** (banner still says 2026-06-13, MEM-04..09 "Not started"). Git reality: MEM-02..07 all merged (`3655188`, `c6c6983`, `c041059`, `bb92ed2`, `fc0ea94`, `373dc97`), MEM-08 landed guardkit-side (`764068de6`), MEM-09 in progress. The believed state "Built" was right; the reference doc was not.
+> 3. **GB10 "82h pending go/no-go" was overtaken same-day:** a PO pilot has been running since 08:00 (GPU 95%). Keepalive-paused belief confirmed.
+
+| Component | Believed state (2026-07-03) | Verified 2026-07-03 |
 |---|---|---|
-| fleet-memory core (Postgres/pgvector) | Built per phase-core | Confirm against `phase-core-build-plan.md` status |
-| AutoBuild → retrieval touchpoint | Exists at context-load | **Locate exact call site; confirm whether an on/off switch exists.** If none, FEAT-ABL-001 adds one |
-| Memory store contents | Unknown size/coverage | Dump stats: entry count, repos covered, timestamp range — determines fixture viability and task selection |
-| Historical FEATs usable as tasks | Unknown count | Need ≥10 with: clean pre-FEAT commit, recoverable spec text, observable landed behaviour. Candidate sweep across guardkit/forge/jarvis/fleet-memory |
-| Harbor on GB10 (ARM64) | Never installed | FEAT-ABL-002 spike. Harbor is a Python CLI (`pip install harbor`), likely fine; **task Docker images must be ARM64-buildable** — we author them, so controllable |
-| Container → host llama-swap networking | Unknown | Rollouts run AutoBuild *inside* Docker; must reach llama-swap `:9000` on the host. Build-plan item |
-| FEAT-MEM-04 / MEM-05 / fs-01 artefacts | Regression + broken harness on disk | Confirm state; these become regression tasks (§3.2) |
-| GB10 capacity | 82h dataset-factory run pending go/no-go; keepalive paused | Schedule per §3.6 |
+| fleet-memory core (Postgres/pgvector) | Built per phase-core | **✅ confirmed** (reality ahead of the stale plan doc — see banner #2). Unit suite at HEAD `2f372f4`: **620 passed, 2 skipped, 73 integration-deselected** (`.venv/bin/python -m pytest tests/ -m "not integration"`, 12s). Retrieval stack present: `src/fleet_memory/retrieval/{core,assembly,composition,search_request}.py`; MEM-05 parity eval PASS `be1f125` |
+| AutoBuild → retrieval touchpoint | Exists at context-load | **✏️ corrected — exists, and a toggle already exists, but with the wrong blast radius.** Call chain: `guardkit/orchestrator/autobuild.py:1351` (factory, gated by `enable_context`) → `:5478` player / `:5706` coach context load → `knowledge/autobuild_context_loader.py:333` → `knowledge/fleet_memory_client.py:302` (`fleet_memory.retrieval.search` + `assemble_context`). Two switches exist — `FLEET_MEMORY_ENABLED` env, default **false** (`fleet_memory_client.py:627`), and `--enable-context/--no-context` CLI (`cli/autobuild.py:300-303`, `750-753`) — but **both null the entire context loader** (turn-continuation state included), violating FEAT-ABL-001's "no other code-path divergence". Per-item retrieval logging is **absent on the AutoBuild path**: `query_logger.py` is only called from `/feature-plan`, and `fleet_memory_client.py:310-316` collapses results to one synthetic hit (fresh `uuid4()`, aggregate score) before any caller sees item ids. **FEAT-ABL-001 stands as spec'd** (in-client `FLEET_MEMORY_RETRIEVAL` gate + `items:[{id,score}]` logging). Operational note: guardkit's `.env` sets no `FLEET_MEMORY_*`, so today's default AutoBuild runs are effectively off-arm |
+| Memory store contents | Unknown size/coverage | **✏️ verified** (live NAS store `whitestocks.tailebf801.ts.net:5433`, DSN from `docker inspect fleet-memory-relay` on GB10). **1,356 entries, all `project=guardkit`**: chunk 679 (guardkit-harvest), document 499 (graphiti-migration), build_outcome 132, adr 46; `store_vectors` 1:1. Row `created_at` is all backfill-era (2026-06-28→07-02) — **useless as cut axis**; the temporal cut must run on `episode_meta.occurred_at`: chunks span **2025-10-28→2026-06-25**, documents **2026-03-05→2026-06-25**, zero nulls; **176 entries (distilled build_outcomes/ADRs + 4 auto_captured) have NULL `occurred_at`** and must be excluded or task_id→git backdated — several reference MEM08-era work (answer-key risk if naively included). Zero forge/jarvis/fleet-memory entries → memory-relevant tasks must be guardkit FEATs |
+| Historical FEATs usable as tasks | Unknown count | **✏️ verified — exceeds threshold.** Sweep found **49 candidates** (guardkit 12, forge 12, jarvis 13, fleet-memory 12), **~42 strong** (verified pre-FEAT SHA + recoverable spec + testable landed behaviour; every pre-FEAT SHA `rev-parse`-verified; three fleet-memory pins ground-truthed by `git archive` + green pytest). **11 guardkit candidates are memory-relevant with 306–1,180 predating timestamped fixture entries each** (per-candidate counts in build-plan Appendix A) |
+| Harbor on GB10 (ARM64) | Never installed | **⏭ deferred-to-spike** (FEAT-ABL-002 *is* the verification). Task images must be ARM64: both Sparks are `aarch64` (confirmed) |
+| Container → host llama-swap networking | Unknown | **✅ desk-check passed.** llama-swap runs `-listen :9000` — all interfaces (`ps` on GB10 2026-07-03: `/usr/local/bin/llama-swap -config /opt/llama-swap/config/config.yaml -listen :9000 -watch-config`); child llama-servers bind `0.0.0.0`. Cross-machine proven: Spark B → `http://promaxgb10-41b1:9000/health` = **200**. In-container proof lands in the spike |
+| FEAT-MEM-04 / MEM-05 / fs-01 artefacts | Regression + broken harness on disk | **✏️ corrected — one of three regressions still on disk.** **fs-01**: packaged as forge proposer-eval corpus item (`forge/docs/research/proposer-eval/corpus/fs-01-coach-false-approval-partial-run/`, commit `25a82ed`); raw traces at `fleet-memory/.guardkit/autobuild/{FEAT-MEM-04-build.log, TASK-RLY-006/*}`; symptom fixed on main (`app.py:86`) → task pins the pre-fix state. **MEM-04**: gap closed (banner #1) → task pins pre-`0951620`. **MEM-05 harness**: **confirmed still broken at HEAD `2f372f4`** — no runner script; `load_probe_set` referenced (`probe_harness.py:92`) but defined nowhere; `eval/probe_set.json`'s 16 probes lack the required `baseline_answer` field; `PARITY_TOLERANCE=0`. The parity *gate* later passed via a separate LLM-judge eval (`docs/evals/FEAT-MEM-05-parity-eval-2026-06-27.md`), never via this harness — the canonical unit-green/e2e-dead false-green, gradeable at HEAD |
+| GB10 capacity | 82h dataset-factory run pending go/no-go; keepalive paused | **✏️ corrected** (banner #3). 82h run not started; **PO pilot live since 08:00 2026-07-03** (`agentic-dataset-factory` `agent.py`, GPU 95%, `output/train.jsonl` growing at 11:46). `llama-swap-keepalive.timer` **inactive** (last fired 06:15 BST 2026-07-03). **Spark B** (`spark-fcf6`): idle (GPU 0%), `aarch64`, Docker 29.2.1, reaches Spark A `:9000`, **no local llama-swap** — candidate rollout host while Spark A is busy |
 
 ### 2.1 Verification protocol (executed by Claude Code before anything else)
 
@@ -52,6 +57,8 @@ For each §2 row, verify from source using the method below; annotate the row **
 2. Fewer than 10 viable candidate FEATs.
 
 Either finding re-scopes or kills the phase; per §5's philosophy, killing it cheaply is a successful outcome. Only if no stop condition fires does the session proceed to author `phase-ablation-build-plan.md`.
+
+**Outcome (executed 2026-07-03):** protocol run in full (7 parallel verification agents + live-store SQL + GB10/Spark-B SSH checks). **Stop condition 1 CLEAR** — 11 guardkit candidates have 306–1,180 related timestamped fixture entries predating them (rule needs ≥7). **Stop condition 2 CLEAR** — ~42 strong candidates across the four repos (rule needs ≥10). Build plan authored: `phase-ablation-build-plan.md` (same directory), candidate table in its Appendix A.
 
 ## 3. Design
 
@@ -135,7 +142,7 @@ Secondary metrics never rescue a failed primary. Either outcome is phase success
 Same task contract, four standing consumers:
 
 - **(a) QA Verifier calibration.** The agreement table + 60 outcome-labelled rollouts are the first golden-set entries — DF-006's "frontier as one-time yardstick" made operational with a deterministic yardstick instead.
-- **(b) Fine-tune gate evals.** Every fine-tune gets a pre-registered held-out suite on this contract *before deployment*: coach-ft-vN (code-shaped tasks), and the **incoming PO fine-tune** — doc-shaped tasks (schema validity, coverage-vs-reference build plans; PyTest handles both). **Deadline: the PO suite exists before the 82h run completes**, or its success is the next unmeasured belief.
+- **(b) Fine-tune gate evals.** Every fine-tune gets a pre-registered held-out suite on this contract *before deployment*: coach-ft-vN (code-shaped tasks), and the **incoming PO fine-tune** — doc-shaped tasks (schema validity, coverage-vs-reference build plans; PyTest handles both). **Deadline: the PO suite exists before the 82h run completes**, or its success is the next unmeasured belief. *Deadline met 2026-07-03:* suite built, oracle-validated and red-teamed in `fleet-evals` (4 tasks; 33/33 verifier-integrity + 22/22 oracle-gate green, independently re-verified); pending Rich's freeze of its own §5 (`fleet-evals/docs/research/ideas/po-heldout-suite-scope.md`).
 - **(c) Permanent false-green regression corpus.** fs-01, FEAT-MEM-04, MEM-05 as tasks that never leave the suite; every future wild catch joins them.
 - **(d) Backward-edge evaluation (future).** Fixture version becomes the variable: does *richer* memory improve reward — the compounding-asset claim, tested the same way.
 
@@ -164,4 +171,4 @@ Graphiti parity · retrieval-strategy tuning (eligible only after a positive §5
 
 ---
 
-**Next step:** Claude Code in `fleet-memory` (with read access to `../guardkit`, `../forge`, `../jarvis`) → execute §2.1 exactly → if no stop condition fires: confirm substrate home (`fleet-evals` recommended) and author `phase-ablation-build-plan.md` per the UBS exemplar, FEAT-ABL-002 spike sequenced first as a direct session step (no pipeline) → Rich reviews build plan and freezes §5 → run.
+**Next step:** ~~execute §2.1~~ **done 2026-07-03** (no stop condition fired; substrate home `fleet-evals` confirmed; build plan authored with FEAT-ABL-002 sequenced first as a direct session step) → **Rich reviews `phase-ablation-build-plan.md` and freezes §5 → run.** FEAT-ABL-002 does not start before that review.
