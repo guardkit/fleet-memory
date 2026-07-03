@@ -1,0 +1,100 @@
+id: FEAT-ABL-005
+name: Ablation Fixture Tooling
+description: 'FEAT-ABL-005: pg_dump-based snapshot of the live fleet-memory store
+  to a versioned fixture with content hash (same fixture id => byte-identical retrieval
+  corpus); restore into a per-run Postgres; per-task temporal-cut filter driven by
+  episode_meta.occurred_at (NOT backfill-era row created_at) excluding entries >=
+  the task''s FEAT start date and all NULL-occurred_at entries (answer-key risk);
+  scratch namespace for rollout-time writes, discarded per rollout. New code confined
+  to scripts/fixture_snapshot.py + src/fleet_memory/fixture/ (scope paragraph 7: store/retrieval
+  stack untouched).'
+created: '2026-07-03T17:30:02.654422'
+status: planned
+complexity: 6
+estimated_tasks: 6
+tasks:
+- id: TASK-ABL5-001
+  name: Fixture package scaffolding - manifest content hash error taxonomy
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-001-fixture-package-manifest-hash.md
+  complexity: 4
+  dependencies: []
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-ABL5-002
+  name: Deterministic pg_dump snapshot and hash-verified restore
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-002-deterministic-snapshot-restore.md
+  complexity: 6
+  dependencies:
+  - TASK-ABL5-001
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 113
+- id: TASK-ABL5-003
+  name: Per-task temporal-cut filter on episode_meta.occurred_at
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-003-temporal-cut-filter.md
+  complexity: 5
+  dependencies:
+  - TASK-ABL5-001
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+- id: TASK-ABL5-004
+  name: Scratch namespace lifecycle for rollout-time writes
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-004-scratch-namespace-lifecycle.md
+  complexity: 4
+  dependencies:
+  - TASK-ABL5-001
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-ABL5-005
+  name: Fixture CLI entrypoint scripts/fixture_snapshot.py
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-005-cli-entrypoint.md
+  complexity: 4
+  dependencies:
+  - TASK-ABL5-002
+  - TASK-ABL5-003
+  - TASK-ABL5-004
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 50
+- id: TASK-ABL5-006
+  name: Seeded-store acceptance tests - byte-identity FEAT-HARV cut scratch isolation
+  file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-006-seeded-store-acceptance-tests.md
+  complexity: 5
+  dependencies:
+  - TASK-ABL5-002
+  - TASK-ABL5-003
+  - TASK-ABL5-004
+  - TASK-ABL5-005
+  status: pending
+  description: ''
+  implementation_mode: task-work
+  estimated_minutes: 75
+orchestration:
+  parallel_groups:
+  - - TASK-ABL5-001
+  - - TASK-ABL5-002
+    - TASK-ABL5-003
+    - TASK-ABL5-004
+  - - TASK-ABL5-005
+  - - TASK-ABL5-006
+  estimated_duration_minutes: 413
+  recommended_parallel: 3
+smoke_gates:
+  after_wave:
+  - 2
+  - 3
+  command: 'set -e
+
+    pytest tests/unit -q
+
+    '
+  expected_exit: 0
+  timeout: 300
