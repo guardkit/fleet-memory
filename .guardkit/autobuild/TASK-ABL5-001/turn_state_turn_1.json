@@ -1,0 +1,27 @@
+{
+  "id": "TURN-FEAT-ABL-005-1",
+  "feature_id": "FEAT-ABL-005",
+  "task_id": "TASK-ABL5-001",
+  "turn_number": 1,
+  "player_summary": "Implementation attempt",
+  "player_decision": "feedback",
+  "coach_decision": "feedback",
+  "coach_feedback": "- The gathering_status is 'partial_gate_abort'. No test results or coverage data were collected to verify the implementation.: Ensure the implementation is fully executed and that the test orchestration completes successfully without substrate errors.\n- The test-orchestrator failed with a FileNotFoundError (substrate failure), preventing verification of the Player's code.: Investigate the environment/orchestrator issue preventing pytest from creating its temporary directory.",
+  "mode": "fresh_start",
+  "blockers_found": [],
+  "progress_summary": "Turn 1: feedback",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    "src/fleet_memory/fixture/__init__.py",
+    "tests/unit/test_fixture_manifest.py"
+  ],
+  "tests_passed": null,
+  "tests_failed": null,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-07-03T17:47:09.992335",
+  "completed_at": "2026-07-03T17:47:09.992335",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}
