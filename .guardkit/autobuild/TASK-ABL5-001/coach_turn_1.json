@@ -4,66 +4,66 @@
   "decision": "feedback",
   "issues": [
     {
-      "type": "missing_requirement",
+      "type": "test_failure",
       "severity": "critical",
-      "description": "The gathering_status is 'partial_gate_abort'. No test results or coverage data were collected to verify the implementation.",
-      "requirement": "All ACs",
-      "suggestion": "Ensure the implementation is fully executed and that the test orchestration completes successfully without substrate errors."
+      "description": "The orchestrator encountered an error collecting tests: 'ERROR collecting tests/unit/fixture/test_manifest'. No test results are available.",
+      "requirement": "AC-009",
+      "suggestion": "Ensure that the test suite is runnable and that the test-orchestrator can successfully collect and report results for the fixture package."
     },
     {
-      "type": "test_failure",
+      "type": "missing_requirement",
       "severity": "major",
-      "description": "The test-orchestrator failed with a FileNotFoundError (substrate failure), preventing verification of the Player's code.",
-      "requirement": "AC-009",
-      "suggestion": "Investigate the environment/orchestrator issue preventing pytest from creating its temporary directory."
+      "description": "Evidence collection aborted with status 'partial_gate_abort'.",
+      "requirement": "All ACs",
+      "suggestion": "Resolve the test collection error to allow the orchestrator to complete the gathering phase and provide a full evidence bundle."
     }
   ],
   "criteria_verification": [
     {
       "criterion_id": "AC-001",
       "result": "rejected",
-      "notes": "No evidence of functional implementation or error type correctness."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-002",
       "result": "rejected",
-      "notes": "No test evidence for hash determinism or sensitivity."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-003",
       "result": "rejected",
-      "notes": "No test evidence for manifest exclusion."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-004",
       "result": "rejected",
-      "notes": "No test evidence for UnknownFixtureError behavior."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-005",
       "result": "rejected",
-      "notes": "No test evidence for JSON round-tripping."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-006",
       "result": "rejected",
-      "notes": "No test evidence for fixture_id validation."
+      "notes": "No test evidence available due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-007",
       "result": "rejected",
-      "notes": "Files exist in correct locations, but functional verification is missing."
+      "notes": "Cannot verify file system side-effects without complete gathering."
     },
     {
       "criterion_id": "AC-008",
       "result": "rejected",
-      "notes": "No lint/format check results available."
+      "notes": "Lint/format check results are missing due to partial_gate_abort."
     },
     {
       "criterion_id": "AC-009",
       "result": "rejected",
-      "notes": "No evidence that the written tests actually cover the required scenarios."
+      "notes": "Test collection failed: 'ERROR collecting tests/unit/fixture/test_manifest'."
     }
   ],
-  "rationale": "The task cannot be verified because the evidence collection process aborted (partial_gate_abort). No test results or coverage metrics were produced, and the test orchestrator encountered a substrate error. Per the Absence of Failure guards, an absent signal is not a pass."
+  "rationale": "The implementation cannot be approved because the evidence collection process was aborted (partial_gate_abort). Specifically, the test-orchestrator failed to collect tests, resulting in an absent test signal. Per the Absence-of-Failure guards, an absent signal is not a pass."
 }
