@@ -1,9 +1,9 @@
 {
   "turn": 2,
   "feedback_from_turn": 1,
-  "feedback_summary": "- The gathering_status is 'partial_gate_abort'. No test results or coverage data were collected to verify the implementation.: Ensure the implementation is fully executed and that the test orchestration completes successfully without substrate errors.\n- The test-orchestrator failed with a FileNotFoundError (substrate failure), preventing verification of the Player's code.: Investigate the environment/orchestrator issue preventing pytest from creating its temporary directory.",
+  "feedback_summary": "- The orchestrator encountered an error collecting tests: 'ERROR collecting tests/unit/fixture/test_manifest'. No test results are available.: Ensure that the test suite is runnable and that the test-orchestrator can successfully collect and report results for the fixture package.\n- Evidence collection aborted with status 'partial_gate_abort'.: Resolve the test collection error to allow the orchestrator to complete the gathering phase and provide a full evidence bundle.",
   "must_fix": [],
   "should_fix": [],
   "validation_results": {},
-  "raw_feedback": "- The gathering_status is 'partial_gate_abort'. No test results or coverage data were collected to verify the implementation.: Ensure the implementation is fully executed and that the test orchestration completes successfully without substrate errors.\n- The test-orchestrator failed with a FileNotFoundError (substrate failure), preventing verification of the Player's code.: Investigate the environment/orchestrator issue preventing pytest from creating its temporary directory."
+  "raw_feedback": "- The orchestrator encountered an error collecting tests: 'ERROR collecting tests/unit/fixture/test_manifest'. No test results are available.: Ensure that the test suite is runnable and that the test-orchestrator can successfully collect and report results for the fixture package.\n- Evidence collection aborted with status 'partial_gate_abort'.: Resolve the test collection error to allow the orchestrator to complete the gathering phase and provide a full evidence bundle."
 }
