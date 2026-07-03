@@ -1,23 +1,12 @@
-"""Fixture package providing manifest handling and content hashing.
+"""Fixture package providing manifest handling, content hashing, and error taxonomy.
 
-This module defines:
-- ``FixtureError`` base exception and specific error subclasses.
-- ``FixtureManifest`` Pydantic model representing the manifest JSON.
-- Helper functions ``fixture_dir``, ``compute_content_hash``, ``write_manifest``
-  and ``read_manifest``.
-
-All public symbols are re‑exported via ``__all__`` for convenient import:
-
-    from fleet_memory.fixture import (
-        FixtureManifest,
-        compute_content_hash,
-        read_manifest,
-        write_manifest,
-        UnknownFixtureError,
-        FixtureHashMismatchError,
-        InvalidCutDateError,
-        ScratchNamespaceError,
-    )
+Public API re-exports:
+- FixtureManifest
+- compute_content_hash
+- write_manifest
+- read_manifest
+- fixture_dir
+- UnknownFixtureError, FixtureHashMismatchError, InvalidCutDateError, ScratchNamespaceError
 """
 
 from __future__ import annotations
@@ -26,9 +15,9 @@ import json
 import re
 import hashlib
 from pathlib import Path
-from typing import Dict, Mapping
+from typing import Any, Dict
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, ValidationError, validator
 
 __all__ = [
     "FixtureError",
@@ -43,36 +32,26 @@ __all__ = [
     "read_manifest",
 ]
 
-# ---------------------------------------------------------------------------
-# Error taxonomy
-# ---------------------------------------------------------------------------
-
+# ----- Error taxonomy -----
 
 class FixtureError(Exception):
-    """Base class for all fixture‑related errors."""
-
-    def __init__(self, message: str) -> None:
-        super().__init__(message)
-        self.message = message
-
-    def __str__(self) -> str:  # pragma: no cover – trivial
-        return self.message
+    """Base class for all fixture package errors."""
 
 
 class UnknownFixtureError(FixtureError):
     """Raised when a fixture directory or its manifest cannot be found."""
 
     def __init__(self, fixture_id: str) -> None:
-        super().__init__(f"Unknown fixture: {fixture_id}")
+        super().__init__(f"Unknown fixture '{fixture_id}'")
         self.fixture_id = fixture_id
 
 
 class FixtureHashMismatchError(FixtureError):
-    """Raised when the recomputed content hash does not match the stored hash."""
+    """Raised when a recomputed content hash differs from the manifest hash."""
 
     def __init__(self, fixture_id: str, expected: str, actual: str) -> None:
         super().__init__(
-            f"Hash mismatch for fixture '{fixture_id}': expected {expected}, got {actual}"
+            f"Fixture '{fixture_id}' hash mismatch: expected {expected}, got {actual}"
         )
         self.fixture_id = fixture_id
         self.expected = expected
@@ -82,151 +61,118 @@ class FixtureHashMismatchError(FixtureError):
 class InvalidCutDateError(FixtureError):
     """Raised when a temporal‑cut date is missing or unparsable."""
 
-    def __init__(self, fixture_id: str, detail: str) -> None:
-        super().__init__(f"Invalid cut date for fixture '{fixture_id}': {detail}")
-        self.fixture_id = fixture_id
+    def __init__(self, detail: str | None = None) -> None:
+        msg = "Invalid cut date"
+        if detail:
+            msg += f": {detail}"
+        super().__init__(msg)
         self.detail = detail
 
 
 class ScratchNamespaceError(FixtureError):
-    """Raised for invalid rollout‑id / scratch‑namespace specifications."""
+    """Raised for invalid rollout‑id / scratch namespace values."""
 
-    def __init__(self, fixture_id: str, detail: str) -> None:
-        super().__init__(f"Scratch namespace error for fixture '{fixture_id}': {detail}")
-        self.fixture_id = fixture_id
+    def __init__(self, detail: str) -> None:
+        super().__init__(f"Invalid scratch namespace: {detail}")
         self.detail = detail
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+# ----- Manifest model -----
 
-_FIXTURE_ID_PATTERN = re.compile(r"^[a-z0-9_.-]+$")
-_DEFAULT_ROOT = Path("eval/fixtures")
-
-
-def fixture_dir(fixtures_root: Path | str = _DEFAULT_ROOT, fixture_id: str = "") -> Path:
-    """Return the absolute path for a fixture.
-
-    Args:
-        fixtures_root: Base directory containing all fixtures. Defaults to
-            ``eval/fixtures`` relative to the current working directory.
-        fixture_id: Identifier of the fixture. Must match ``^[a-z0-9_.-]+$`` and be
-            non‑empty.
-
-    Raises:
-        ValueError: If ``fixture_id`` does not satisfy the required pattern.
-    """
-    if not fixture_id:
-        raise ValueError("fixture_id must be non‑empty")
-    if not _FIXTURE_ID_PATTERN.fullmatch(fixture_id):
-        raise ValueError(
-            f"fixture_id '{fixture_id}' does not match required pattern ^[a-z0-9_.-]+$"
-        )
-    root = Path(fixtures_root)
-    return (root / fixture_id).resolve()
-
-
-def _payload_files(fixture_path: Path) -> Mapping[Path, bytes]:
-    """Return a mapping of relative payload paths to their byte contents.
-
-    ``manifest.json`` is deliberately excluded.
-    """
-    files: dict[Path, bytes] = {}
-    for file_path in sorted(fixture_path.rglob("*")):
-        if file_path.is_file():
-            rel = file_path.relative_to(fixture_path)
-            if rel.name == "manifest.json":
-                continue
-            files[rel] = file_path.read_bytes()
-    return files
-
-
-def compute_content_hash(fixture_dir: Path | str) -> str:
-    """Compute deterministic SHA‑256 hash of all payload files.
-
-    The hash is calculated over the concatenation of each payload file's relative
-    path (UTF‑8), a NUL byte, then the file's raw bytes. Files are processed in
-    sorted lexical order of their relative paths, guaranteeing determinism across
-    runs and independent of filesystem timestamps.
-    """
-    base = Path(fixture_dir)
-    if not base.is_dir():
-        raise UnknownFixtureError(str(base))
-    hasher = hashlib.sha256()
-    payloads = _payload_files(base)
-    for rel_path in sorted(payloads):
-        hasher.update(rel_path.as_posix().encode())
-        hasher.update(b"\x00")
-        hasher.update(payloads[rel_path])
-    return hasher.hexdigest()
-
-# ---------------------------------------------------------------------------
-# Manifest model
-# ---------------------------------------------------------------------------
+_fixture_id_regex = re.compile(r"^[a-z0-9_.-]+$")
 
 
 class FixtureManifest(BaseModel):
-    """Pydantic model for a fixture manifest.
+    """Pydantic model representing a fixture manifest.
 
-    Mirrors the JSON schema described in the task specification.
+    Fields correspond to the specification in TASK‑ABL5‑001.
     """
 
-    fixture_id: str = Field(..., pattern=r"^[a-z0-9_.-]+$")
-    created_at: str  # ISO‑8601 UTC timestamp (informational only)
-    source_target: str  # credential‑free ``host:port/db`` label
-    content_hash: str  # SHA‑256 hex digest of payload files
-    table_row_counts: Dict[str, int]
-    null_occurred_at_count: int
-    pg_dump_version: str
+    fixture_id: str = Field(..., description="Identifier matching ^[a-z0-9_.-]+$")
+    created_at: str = Field(..., description="ISO‑8601 UTC timestamp (informational)")
+    source_target: str = Field(..., description="Credential‑free host:port/db label")
+    content_hash: str = Field(..., description="SHA‑256 hex digest of payload files")
+    table_row_counts: Dict[str, int] = Field(default_factory=dict)
+    null_occurred_at_count: int = 0
+    pg_dump_version: str = ""
 
-    @validator("created_at")
-    def _validate_iso8601(cls, v: str) -> str:
-        if not re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*Z$", v):
-            raise ValueError("created_at must be ISO‑8601 UTC ending with 'Z'")
+    @validator("fixture_id")
+    def validate_fixture_id(cls, v: str) -> str:
+        if not _fixture_id_regex.fullmatch(v):
+            raise ValueError(
+                f"fixture_id '{v}' does not match required pattern ^[a-z0-9_.-]+$"
+            )
         return v
 
-    @validator("source_target")
-    def _validate_source_target(cls, v: str) -> str:
-        if "@" in v:
-            raise ValueError("source_target must not contain credentials")
-        return v
+    class Config:
+        frozen = True
+        arbitrary_types_allowed = True
 
-    @validator("content_hash")
-    def _validate_hash(cls, v: str) -> str:
-        if not re.fullmatch(r"^[a-f0-9]{64}$", v):
-            raise ValueError("content_hash must be a SHA‑256 hex digest")
-        return v
+# ----- Helper functions -----
 
-# ---------------------------------------------------------------------------
-# Manifest persistence helpers
-# ---------------------------------------------------------------------------
+def fixture_dir(fixtures_root: Path, fixture_id: str) -> Path:
+    """Return the absolute path for a fixture.
 
-_MANIFEST_NAME = "manifest.json"
-
-
-def write_manifest(manifest: FixtureManifest, fixture_dir: Path | str) -> None:
-    """Write ``manifest`` as JSON with sorted keys and UTF‑8 encoding.
-
-    The file is overwritten if it already exists.
+    Raises ``ValueError`` if ``fixture_id`` fails the required pattern or attempts
+    path traversal.
     """
-    path = Path(fixture_dir) / _MANIFEST_NAME
-    data = manifest.model_dump(mode="json")
-    json_str = json.dumps(data, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
-    path.write_text(json_str, encoding="utf-8")
+
+    if not _fixture_id_regex.fullmatch(fixture_id):
+        raise ValueError(f"Invalid fixture_id '{fixture_id}'")
+    # Resolve to ensure no ``..`` components affect the path
+    candidate = (fixtures_root / fixture_id).resolve()
+    if not str(candidate).startswith(str(fixtures_root.resolve())):
+        raise ValueError("fixture_id results in path traversal")
+    return candidate
 
 
-def read_manifest(fixture_dir: Path | str) -> FixtureManifest:
-    """Read and parse the manifest for ``fixture_dir``.
+def compute_content_hash(fixture_dir: Path) -> str:
+    """Compute a deterministic SHA‑256 hash of all payload files.
 
-    Raises:
-        UnknownFixtureError: If the directory or ``manifest.json`` is missing.
+    The hash is calculated over the concatenation of each file's relative path
+    (UTF‑8) followed by a NUL byte and the file's raw bytes. Files are processed
+    in sorted relative‑path order. ``manifest.json`` is excluded.
     """
-    base = Path(fixture_dir)
-    if not base.is_dir():
-        raise UnknownFixtureError(base.name)
-    manifest_path = base / _MANIFEST_NAME
+
+    if not fixture_dir.is_dir():
+        raise FileNotFoundError(f"Fixture directory not found: {fixture_dir}")
+
+    hash_obj = hashlib.sha256()
+    for file_path in sorted(
+        p for p in fixture_dir.rglob("*") if p.is_file() and p.name != "manifest.json"
+    ):
+        rel_path = file_path.relative_to(fixture_dir).as_posix()
+        hash_obj.update(rel_path.encode("utf-8"))
+        hash_obj.update(b"\x00")
+        hash_obj.update(file_path.read_bytes())
+    return hash_obj.hexdigest()
+
+
+def write_manifest(manifest: FixtureManifest, fixture_dir: Path) -> None:
+    """Write ``manifest`` as ``manifest.json`` inside ``fixture_dir``.
+
+    The JSON is written with UTF‑8 encoding, sorted keys and no extra whitespace.
+    """
+
+    fixture_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = fixture_dir / "manifest.json"
+    with manifest_path.open("w", encoding="utf-8") as f:
+        json.dump(
+            manifest.model_dump(), f, ensure_ascii=False, sort_keys=True, indent=2
+        )
+
+
+def read_manifest(fixture_dir: Path) -> FixtureManifest:
+    """Read and parse ``manifest.json`` from ``fixture_dir``.
+
+    Raises ``UnknownFixtureError`` if the directory or manifest file is missing.
+    """
+
+    manifest_path = fixture_dir / "manifest.json"
     if not manifest_path.is_file():
-        raise UnknownFixtureError(base.name)
-    content = manifest_path.read_text(encoding="utf-8")
-    data = json.loads(content)
-    return FixtureManifest(**data)
+        raise UnknownFixtureError(fixture_dir.name)
+    with manifest_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    try:
+        return FixtureManifest(**data)
+    except ValidationError as exc:
+        raise FixtureError(str(exc)) from exc
