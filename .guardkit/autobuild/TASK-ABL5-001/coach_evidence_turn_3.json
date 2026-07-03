@@ -1,45 +1,16 @@
 {
   "honesty": {
-    "verified": false,
-    "discrepancies": [
-      {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file src/fleet_memory/fixture/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix",
-        "ignore_rule": null
-      },
-      {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/fixture/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix",
-        "ignore_rule": null
-      },
-      {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/fixture/test_manifest.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix",
-        "ignore_rule": null
-      },
-      {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/test_fixture_manifest.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-        "severity": "should_fix",
-        "ignore_rule": null
-      }
-    ],
+    "verified": true,
+    "discrepancies": [],
     "honesty_score": 1.0,
     "resolved_paths": [],
-    "should_fix_count": 4
+    "should_fix_count": 0
   },
   "gathering_status": "partial_gate_abort",
   "gathering_error": null,
   "quality_gates": {
-    "tests_passed": false,
-    "coverage_met": false,
+    "tests_passed": null,
+    "coverage_met": true,
     "arch_review_passed": true,
     "plan_audit_passed": true,
     "tests_required": true,
@@ -49,7 +20,7 @@
     "all_gates_passed": false
   },
   "coverage_details": {
-    "coverage_met": false,
+    "coverage_met": null,
     "line_coverage": null,
     "branch_coverage": null,
     "line_threshold": null,
@@ -73,11 +44,11 @@
   "bdd": null,
   "arch_review": null,
   "tests": {
-    "tests_passed": false,
+    "tests_passed": null,
     "tests_required": true,
     "tests_run": null,
-    "tests_failed": 1,
-    "all_passed": false,
+    "tests_failed": 0,
+    "all_passed": null,
     "requires_infrastructure": []
   },
   "wiring": null,
@@ -107,52 +78,12 @@
     {
       "severity": "should_fix",
       "category": "specialist_substrate",
-      "description": "Orchestrator-invoked specialist 'test-orchestrator' (Phase 4) did not produce evidence: tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-r. This is a substrate failure attributed to the orchestrator, not a Player honesty issue \u2014 the phase's evidence is ABSENT, not failed.",
+      "description": "Orchestrator-invoked specialist 'test-orchestrator' (Phase 4) did not produce evidence: absent test signal (deterministic Phase 4): Error detail:\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/unit/fixture/test_manifest.. This is a substrate failure attributed to the orchestrator, not a Player honesty issue \u2014 the phase's evidence is ABSENT, not failed.",
       "details": {
         "phase": "4",
         "agent": "test-orchestrator",
         "status": "failed",
-        "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-r"
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "claim_audit",
-      "description": "Player-claimed file is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player likely swept an orchestrator-managed path into files_modified. Player claimed file src/fleet_memory/fixture/__init__.py. Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-      "details": {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file src/fleet_memory/fixture/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication."
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "claim_audit",
-      "description": "Player-claimed file is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player likely swept an orchestrator-managed path into files_modified. Player claimed file tests/unit/fixture/__init__.py. Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-      "details": {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/fixture/__init__.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication."
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "claim_audit",
-      "description": "Player-claimed file is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player likely swept an orchestrator-managed path into files_modified. Player claimed file tests/unit/fixture/test_manifest.py. Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-      "details": {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/fixture/test_manifest.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication."
-      }
-    },
-    {
-      "severity": "should_fix",
-      "category": "claim_audit",
-      "description": "Player-claimed file is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player likely swept an orchestrator-managed path into files_modified. Player claimed file tests/unit/test_fixture_manifest.py. Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication.",
-      "details": {
-        "claim_type": "claim_audit_unmodified",
-        "player_claim": "Player claimed file tests/unit/test_fixture_manifest.py",
-        "actual_value": "Path is tracked in git but 'git status --porcelain' shows no change for it \u2014 the Player claimed work on a file it did not actually modify this turn. Most likely cause: the report writer swept an orchestrator-managed path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified. Defence-in-depth for the agent_invoker-side filter; this is a warning, not a turn-rejecting fabrication."
+        "error": "absent test signal (deterministic Phase 4): Error detail:\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/unit/fixture/test_manifest."
       }
     }
   ],
