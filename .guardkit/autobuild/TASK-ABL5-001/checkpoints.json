@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK-ABL5-001",
+  "checkpoints": [
+    {
+      "turn": 1,
+      "commit_hash": "46fb1c9018a0cd4c3441d9d8bd2e1955805d2c0f",
+      "timestamp": "2026-07-03T17:47:10.016881",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
+      "from_prior_run": false,
+      "evidence_commits": {}
+    }
+  ],
+  "last_updated": "2026-07-03T17:47:10.016958"
+}
