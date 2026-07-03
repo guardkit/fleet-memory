@@ -1,7 +1,7 @@
 {
   "phase_4": {
     "status": "failed",
-    "duration_seconds": 0.4144140899879858,
+    "duration_seconds": 0.3993353469995782,
     "error": "absent test signal (deterministic Phase 4): Error detail:\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/unit/fixture/test_manifest.",
     "signal_absent": true,
     "tests_run": 0,
