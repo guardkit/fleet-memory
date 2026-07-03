@@ -92,8 +92,8 @@ The scope's recommendation stands; verification strengthened it:
 | 1 | FEAT-ABL-002 — Harbor spike on Spark (direct session, **no pipeline**) | ops/fleet-evals | P0 review | **1 day timebox** | ✅ **done 2026-07-03 — Harbor 0.17.0 ADOPTED** (fallback not triggered). Oracle rollout on the FEAT-9DDE spike task: reward **1.0** on the GB10; RED 7/7 → GREEN 7/7 oracle gate; ARM64 image native; container→llama-swap 200. Contract frozen (note: `tests/` plural, not `test/`). Evidence: fleet-evals `docs/runbooks/FEAT-ABL-002-spike.md`, `tasks/abl-spike-001-task-status-json/`, `spike/rollouts/` |
 | 2 | FEAT-ABL-001 — retrieval arm switch + retrieval logging | guardkit | none (parallel to 3) | 0.5–1 day | ⬜ |
 | 3 | FEAT-ABL-005 — fixture tooling (snapshot/hash/temporal cut/scratch ns) | fleet-memory | none (parallel to 2) | 1 day | ⬜ |
-| 4 | FEAT-ABL-003 — AutoBuild agent adapter | fleet-evals | ABL-002 (contract), ABL-001 (arm env) | 0.5–1 day | ⬜ |
-| 5 | FEAT-ABL-004 — task corpus ×10, Oracle-validated | fleet-evals | ABL-002 contract; **go/no-go after task 3** | 3–7 days (dominant cost) | ⬜ |
+| 4 | FEAT-ABL-003 — AutoBuild agent adapter | fleet-evals | ABL-002 (contract), ABL-001 (arm env) | 0.5–1 day | 🟨 **skeleton merged 2026-07-03** (fleet-evals `fc574eb`): Harbor custom agent + per-rollout JSON emitter, smoke-proven reward 1.0 with P4 env injection; ABL-001-dependent seams marked `SEAM(ABL-001)` in `adapter/` |
+| 5 | FEAT-ABL-004 — task corpus ×10, Oracle-validated | fleet-evals | ABL-002 contract; **go/no-go after task 3** | 3–7 days (dominant cost) | 🟨 **3/10 done, go/no-go = GO 2026-07-03** (FEAT-9DDE `26722cb`, fs-01 `418b3bd`, FEAT-FAUD `a0c85a0`; all oracle reward 1.0) |
 | 6 | FEAT-ABL-006 — 60 rollouts + RESULTS doc | ops/fleet-evals | ABL-001..005, **§5 frozen**, P2 window | 20–40 GPU-h + 0.5 day | ⬜ |
 
 Ordering note: the spike goes first because it is the only cheap kill left —
@@ -210,6 +210,15 @@ FEATs to calibrate packaging cost before the go/no-go:
 **Go/no-go after task 3** (scope §3.2): >~1 day/task with no downward trend →
 stop, re-scope corpus size. Then the remaining seven per Appendix A. Every task
 passes its Oracle (landed diff applied → tests green) before it may grade.
+
+> **Go/no-go outcome (2026-07-03): GO.** Packaging costs: FEAT-9DDE ~1.5 h
+> (inside the spike; promoted to corpus row 1, fleet-evals `26722cb`), fs-01
+> ~40 min (`418b3bd`), FEAT-FAUD ~25 min (`a0c85a0`) — far under the
+> ~1 day/task threshold with a clear downward trend. All three RED/GREEN
+> oracle-validated with Harbor oracle-rollout reward 1.0 each; evidence in
+> each task's `oracle-validation.md` + `validation/`. Pattern per task:
+> `prepare_context.sh` + sha256-pinned gitignored tarball + independent
+> black-box verifier. Remaining seven proceed per Appendix A.
 
 ### Step 5 — FEAT-ABL-006: run + RESULTS (ops; needs §5 frozen)
 - Fixture v1 snapshot + hash recorded; llama-swap warm-model note in runbook
