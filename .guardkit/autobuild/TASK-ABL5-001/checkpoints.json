@@ -38,7 +38,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 1 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -48,7 +48,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 2 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -58,7 +58,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 3 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -68,7 +68,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 4 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -78,7 +78,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 5 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -88,7 +88,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 6 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -98,7 +98,7 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 7 complete (tests: unknown)",
-      "from_prior_run": false,
+      "from_prior_run": true,
       "evidence_commits": {}
     },
     {
@@ -108,9 +108,19 @@
       "tests_passed": null,
       "test_count": 0,
       "message": "[guardkit-checkpoint] Turn 8 complete (tests: unknown)",
+      "from_prior_run": true,
+      "evidence_commits": {}
+    },
+    {
+      "turn": 1,
+      "commit_hash": "e3f793ebb84ade0d231210086afc9697ba63cb3f",
+      "timestamp": "2026-07-04T07:44:56.930845",
+      "tests_passed": false,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 1 complete (tests: fail)",
       "from_prior_run": false,
       "evidence_commits": {}
     }
   ],
-  "last_updated": "2026-07-03T21:04:15.859291"
+  "last_updated": "2026-07-04T07:44:56.930915"
 }

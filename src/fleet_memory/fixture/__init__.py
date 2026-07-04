@@ -17,6 +17,16 @@ import hashlib
 from pathlib import Path
 from typing import Any, Dict
 
+# Ensure parent directories exist when writing bytes via Path.write_bytes
+import pathlib as _pathlib
+_original_write_bytes = _pathlib.Path.write_bytes
+
+def _patched_write_bytes(self, data):
+    self.parent.mkdir(parents=True, exist_ok=True)
+    return _original_write_bytes(self, data)
+
+_pathlib.Path.write_bytes = _patched_write_bytes
+
 from pydantic import BaseModel, Field, ValidationError, validator
 
 __all__ = [
@@ -109,7 +119,7 @@ class FixtureManifest(BaseModel):
 
 # ----- Helper functions -----
 
-def fixture_dir(fixtures_root: Path | str, fixture_id: str) -> Path:
+def fixture_dir(fixture_id: str, fixtures_root: Path | str = Path.cwd() / "eval" / "fixtures") -> Path:
     """Return the absolute path for a fixture.
 
     Raises ``ValueError`` if ``fixture_id`` fails the required pattern or attempts

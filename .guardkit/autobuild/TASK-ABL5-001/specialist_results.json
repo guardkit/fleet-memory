@@ -1,12 +1,12 @@
 {
   "phase_4": {
     "status": "failed",
-    "duration_seconds": 0.45375201397109777,
-    "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-r",
+    "duration_seconds": 0.4369015940465033,
+    "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n==========================",
     "tests_run": 10,
-    "tests_failed": 2,
+    "tests_failed": 1,
     "coverage_pct": 0.0,
-    "output_summary": "Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-richardwoollcott/pytest-210/test_compute_",
+    "output_summary": "Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n=============================== warnings summary =================",
     "quality_gates_passed": false
   },
   "phase_5": {
