@@ -9,7 +9,7 @@ description: 'FEAT-ABL-005: pg_dump-based snapshot of the live fleet-memory stor
   to scripts/fixture_snapshot.py + src/fleet_memory/fixture/ (scope paragraph 7: store/retrieval
   stack untouched).'
 created: '2026-07-03T17:30:02.654422'
-status: planned
+status: failed
 complexity: 6
 estimated_tasks: 6
 tasks:
@@ -18,10 +18,20 @@ tasks:
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-001-fixture-package-manifest-hash.md
   complexity: 4
   dependencies: []
-  status: pending
-  description: ''
+  status: failed
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result:
+    total_turns: 3
+    final_decision: unrecoverable_stall
+    error: Unrecoverable stall detected after 3 turn(s). AutoBuild cannot make forward
+      progress.
+    deferred_reason: null
+  turns_completed: 3
+  current_turn: 0
+  started_at: '2026-07-04T07:39:06.852069'
+  completed_at: '2026-07-04T07:55:30.204730'
 - id: TASK-ABL5-002
   name: Deterministic pg_dump snapshot and hash-verified restore
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-002-deterministic-snapshot-restore.md
@@ -29,9 +39,14 @@ tasks:
   dependencies:
   - TASK-ABL5-001
   status: pending
-  description: ''
   implementation_mode: task-work
   estimated_minutes: 113
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: null
 - id: TASK-ABL5-003
   name: Per-task temporal-cut filter on episode_meta.occurred_at
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-003-temporal-cut-filter.md
@@ -39,9 +54,14 @@ tasks:
   dependencies:
   - TASK-ABL5-001
   status: pending
-  description: ''
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: null
 - id: TASK-ABL5-004
   name: Scratch namespace lifecycle for rollout-time writes
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-004-scratch-namespace-lifecycle.md
@@ -49,9 +69,14 @@ tasks:
   dependencies:
   - TASK-ABL5-001
   status: pending
-  description: ''
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: null
 - id: TASK-ABL5-005
   name: Fixture CLI entrypoint scripts/fixture_snapshot.py
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-005-cli-entrypoint.md
@@ -61,9 +86,14 @@ tasks:
   - TASK-ABL5-003
   - TASK-ABL5-004
   status: pending
-  description: ''
   implementation_mode: task-work
   estimated_minutes: 50
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: null
 - id: TASK-ABL5-006
   name: Seeded-store acceptance tests - byte-identity FEAT-HARV cut scratch isolation
   file_path: tasks/backlog/ablation-fixture-tooling/TASK-ABL5-006-seeded-store-acceptance-tests.md
@@ -74,9 +104,14 @@ tasks:
   - TASK-ABL5-004
   - TASK-ABL5-005
   status: pending
-  description: ''
   implementation_mode: task-work
   estimated_minutes: 75
+  requires_infrastructure: []
+  result: null
+  turns_completed: 0
+  current_turn: 0
+  started_at: null
+  completed_at: null
 orchestration:
   parallel_groups:
   - - TASK-ABL5-001
@@ -98,3 +133,18 @@ smoke_gates:
     '
   expected_exit: 0
   timeout: 300
+  exit5_is_hard_fail: false
+preflight_strict: false
+evidence_repos: []
+execution:
+  started_at: '2026-07-03T17:42:27.492561'
+  completed_at: '2026-07-04T07:55:30.207847'
+  worktree_path: /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005
+  total_turns: 3
+  tasks_completed: 0
+  tasks_failed: 1
+  current_wave: 1
+  completed_waves: []
+  last_updated: '2026-07-04T07:55:30.204744'
+  archived_at: null
+  archived_to: null
