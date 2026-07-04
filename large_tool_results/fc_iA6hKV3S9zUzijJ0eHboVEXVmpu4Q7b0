@@ -1,0 +1,3170 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF......................................... [ 11%]
+....................................F................................... [ 22%]
+........................................................................ [ 34%]
+........................................................................ [ 45%]
+........................................................................ [ 56%]
+....FFF.........F.F..................................................... [ 68%]
+...........................................F............................ [ 79%]
+........................................................................ [ 91%]
+........................................................                 [100%]
+=================================== FAILURES ===================================
+______ test_an_mcp_client_writes_a_typed_adr_and_then_finds_it_by_search _______
+
+self = <FixtureRequest for <Function test_an_mcp_client_writes_a_typed_adr_and_then_finds_it_by_search>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731947968416'>, writer=<Mock id='265731940774256'>, settings=<Mock id='265731940880736'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+______ test_the_search_tool_returns_project_memories_ranked_by_relevance _______
+
+self = <FixtureRequest for <Function test_the_search_tool_returns_project_memories_ranked_by_relevance>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927416448'>, writer=<Mock id='265731927424944'>, settings=<Mock id='265731927646016'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_the_write_tool_persists_a_typed_payload_through_the_deterministic_writer _
+
+self = <FixtureRequest for <Function test_the_write_tool_persists_a_typed_payload_through_the_deterministic_writer>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927652784'>, writer=<Mock id='265731927455744'>, settings=<Mock id='265731927660384'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_______ test_the_supersede_tool_marks_a_predecessor_memory_as_superseded _______
+
+self = <FixtureRequest for <Function test_the_supersede_tool_marks_a_predecessor_memory_as_superseded>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731940768640'>, writer=<Mock id='265731947671488'>, settings=<Mock id='265731927421248'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_______ test_the_project_resource_lists_the_projects_that_have_memories ________
+
+self = <FixtureRequest for <Function test_the_project_resource_lists_the_projects_that_have_memories>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927410544'>, writer=<Mock id='265731940877472'>, settings=<Mock id='265731927663840'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_a_payload_written_through_the_tool_is_byteidentical_in_store_form_to_a_relay_write _
+
+self = <FixtureRequest for <Function test_a_payload_written_through_the_tool_is_byteidentical_in_store_form_to_a_relay_write>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927244000'>, writer=<Mock id='265731927724912'>, settings=<Mock id='265731940773872'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____________ test_search_excludes_superseded_memories_by_default ______________
+
+self = <FixtureRequest for <Function test_search_excludes_superseded_memories_by_default>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927648416'>, writer=<Mock id='265731927419424'>, settings=<Mock id='265731927731584'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_the_search_tool_assembles_a_context_block_within_an_explicit_token_budget _
+
+self = <FixtureRequest for <Function test_the_search_tool_assembles_a_context_block_within_an_explicit_token_budget>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927640640'>, writer=<Mock id='265731927210704'>, settings=<Mock id='265731927464544'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+________ test_a_search_with_no_token_budget_applies_the_default_budget _________
+
+self = <FixtureRequest for <Function test_a_search_with_no_token_budget_applies_the_default_budget>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927471888'>, writer=<Mock id='265731927438688'>, settings=<Mock id='265731927184576'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____________ test_the_supersede_tool_accepts_a_single_predecessor _____________
+
+self = <FixtureRequest for <Function test_the_supersede_tool_accepts_a_single_predecessor>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927191824'>, writer=<Mock id='265731927600272'>, settings=<Mock id='265731927639968'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+__________ test_the_supersede_tool_rejects_an_empty_predecessor_list ___________
+
+self = <FixtureRequest for <Function test_the_supersede_tool_rejects_an_empty_predecessor_list>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927433840'>, writer=<Mock id='265731927180400'>, settings=<Mock id='265731927677008'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+________ test_a_search_that_matches_no_memories_returns_an_empty_result ________
+
+self = <FixtureRequest for <Function test_a_search_that_matches_no_memories_returns_an_empty_result>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927435664'>, writer=<Mock id='265731927123696'>, settings=<Mock id='265731927541328'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____________ test_the_write_tool_rejects_an_unknown_payload_type ______________
+
+self = <FixtureRequest for <Function test_the_write_tool_rejects_an_unknown_payload_type>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927545840'>, writer=<Mock id='265731927761280'>, settings=<Mock id='265731927572704'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_the_write_tool_rejects_a_payload_whose_identifier_contains_invalid_characters _
+
+self = <FixtureRequest for <Function test_the_write_tool_rejects_a_payload_whose_identifier_contains_invalid_characters>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927576544'>, writer=<Mock id='265731927399488'>, settings=<Mock id='265731927576400'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+________ test_the_write_tool_rejects_a_payload_missing_a_required_field ________
+
+self = <FixtureRequest for <Function test_the_write_tool_rejects_a_payload_missing_a_required_field>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927764592'>, writer=<Mock id='265731927552512'>, settings=<Mock id='265731925903792'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+______ test_the_supersede_tool_rejects_a_malformed_predecessor_reference _______
+
+self = <FixtureRequest for <Function test_the_supersede_tool_rejects_a_malformed_predecessor_reference>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927758112'>, writer=<Mock id='265731926283168'>, settings=<Mock id='265731926291088'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_________ test_the_supersede_tool_rejects_a_memory_superseding_itself __________
+
+self = <FixtureRequest for <Function test_the_supersede_tool_rejects_a_memory_superseding_itself>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731925929392'>, writer=<Mock id='265731925888416'>, settings=<Mock id='265731925896384'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+________________ test_an_untyped_freeform_write_is_not_accepted ________________
+
+self = <FixtureRequest for <Function test_an_untyped_freeform_write_is_not_accepted>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731925815232'>, writer=<Mock id='265731926575104'>, settings=<Mock id='265731927574672'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+____ test_the_search_tool_degrades_gracefully_when_the_store_is_unreachable ____
+
+self = <FixtureRequest for <Function test_the_search_tool_degrades_gracefully_when_the_store_is_unreachable>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731926288448'>, writer=<Mock id='265731925913824'>, settings=<Mock id='265731925903888'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+____ test_the_write_tool_degrades_gracefully_when_the_store_is_unreachable _____
+
+self = <FixtureRequest for <Function test_the_write_tool_degrades_gracefully_when_the_store_is_unreachable>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927767856'>, writer=<Mock id='265731927581920'>, settings=<Mock id='265731927550448'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_the_search_tool_degrades_gracefully_when_the_embedding_service_is_unavailable _
+
+self = <FixtureRequest for <Function test_the_search_tool_degrades_gracefully_when_the_embedding_service_is_unavailable>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927439792'>, writer=<Mock id='265731927182128'>, settings=<Mock id='265731927673648'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____ test_writing_the_same_payload_twice_produces_a_single_memory_record ______
+
+self = <FixtureRequest for <Function test_writing_the_same_payload_twice_produces_a_single_memory_record>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927683968'>, writer=<Mock id='265731927461184'>, settings=<Mock id='265731927196640'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+______ test_superseding_a_predecessor_that_does_not_yet_exist_is_accepted ______
+
+self = <FixtureRequest for <Function test_superseding_a_predecessor_that_does_not_yet_exist_is_accepted>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927431344'>, writer=<Mock id='265731927181984'>, settings=<Mock id='265731927198128'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____ test_the_server_communicates_over_stdio_for_a_claude_desktop_client ______
+
+self = <FixtureRequest for <Function test_the_server_communicates_over_stdio_for_a_claude_desktop_client>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927196160'>, writer=<Mock id='265731927229840'>, settings=<Mock id='265731927725776'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+____ test_the_server_exposes_the_memory_tools_that_replace_the_graphiti_mcp ____
+
+self = <FixtureRequest for <Function test_the_server_exposes_the_memory_tools_that_replace_the_graphiti_mcp>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927723328'>, writer=<Mock id='265731940768064'>, settings=<Mock id='265731927424224'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_a_clientsupplied_stored_identity_is_ignored_in_favour_of_the_derived_key _
+
+self = <FixtureRequest for <Function test_a_clientsupplied_stored_identity_is_ignored_in_favour_of_the_derived_key>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927410736'>, writer=<Mock id='265731927656016'>, settings=<Mock id='265731927662496'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_a_search_query_containing_instructionlike_text_is_treated_as_an_opaque_query _
+
+self = <FixtureRequest for <Function test_a_search_query_containing_instructionlike_text_is_treated_as_an_opaque_query>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731948419776'>, writer=<Mock id='265731940767728'>, settings=<Mock id='265731927644432'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_two_clients_writing_the_same_memory_at_the_same_time_produce_a_single_record _
+
+self = <FixtureRequest for <Function test_two_clients_writing_the_same_memory_at_the_same_time_produce_a_single_record>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927447296'>, writer=<Mock id='265731925895088'>, settings=<Mock id='265731925891536'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_ test_an_mcp_write_racing_a_relay_write_of_the_same_payload_yields_one_record _
+
+self = <FixtureRequest for <Function test_an_mcp_write_racing_a_relay_write_of_the_same_payload_yields_one_record>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731925930544'>, writer=<Mock id='265731927129216'>, settings=<Mock id='265731927113856'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+__ test_a_write_is_handled_cleanly_when_the_embedding_service_is_unavailable ___
+
+self = <FixtureRequest for <Function test_a_write_is_handled_cleanly_when_the_embedding_service_is_unavailable>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731926393488'>, writer=<Mock id='265731925819616'>, settings=<Mock id='265731925827584'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____ test_the_server_starts_even_when_the_store_is_unreachable_at_launch ______
+
+self = <FixtureRequest for <Function test_the_server_starts_even_when_the_store_is_unreachable_at_launch>>
+argname = 'mcp_server'
+
+    def getfixturevalue(self, argname: str) -> Any:
+        """Dynamically run a named fixture function.
+    
+        Declaring fixtures via function argument is recommended where possible.
+        But if you can only decide whether to use another fixture at test
+        setup time, you may use this function to retrieve it inside a fixture
+        or test function body.
+    
+        This method can be used during the test setup phase or the test run
+        phase. Avoid using it during the teardown phase.
+    
+        .. versionchanged:: 9.1
+            Calling ``request.getfixturevalue()`` during teardown to request a
+            fixture that was not already requested
+            :ref:`is deprecated <dynamic-fixture-request-during-teardown>`.
+    
+        :param argname:
+            The fixture name.
+        :raises pytest.FixtureLookupError:
+            If the given fixture could not be found.
+        """
+        # Note that in addition to the use case described in the docstring,
+        # getfixturevalue() is also called by pytest itself during item and fixture
+        # setup to evaluate the fixtures that are requested statically
+        # (using function parameters, autouse, etc).
+    
+>       fixturedef = self._get_active_fixturedef(argname)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:630: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+.venv/lib/python3.12/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1005: in call_fixture_func
+    fixture_result = fixturefunc(**kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^
+tests/bdd/test_memory_mcp_server.py:78: in mcp_server
+    register_all(mcp, context)
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<Mock id='265731927127968'>, writer=<Mock id='265731925920800'>, settings=<Mock id='265731925833872'>)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+___________________________ test_invalid_fixture_id ____________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-richardwoollcott/pytest-215/test_invalid_fixture_id0')
+
+    def test_invalid_fixture_id(tmp_path: Path):
+        from fleet_memory.fixture import fixture_dir
+        with pytest.raises(ValueError):
+>           fixture_dir(tmp_path, "Invalid/ID")
+
+tests/unit/fixture/test_manifest.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+fixture_id = PosixPath('/tmp/pytest-of-richardwoollcott/pytest-215/test_invalid_fixture_id0')
+fixtures_root = 'Invalid/ID'
+
+    def fixture_dir(fixture_id: str, fixtures_root: Path | str = Path.cwd() / "eval" / "fixtures") -> Path:
+        """Return the absolute path for a fixture.
+    
+        Raises ``ValueError`` if ``fixture_id`` fails the required pattern or attempts
+        path traversal.
+        """
+    
+>       if not _fixture_id_regex.fullmatch(fixture_id):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: expected string or bytes-like object, got 'PosixPath'
+
+src/fleet_memory/fixture/__init__.py:129: TypeError
+__________________________ test_resource_registration __________________________
+
+    @pytest.mark.asyncio
+    async def test_resource_registration() -> None:
+        """Verify that register_projects_resource adds the resource to MCP.
+    
+        This tests that the registration function properly wires up the
+        resource with the FastMCP server instance.
+        """
+        from fleet_memory.mcp.resources import register_projects_resource
+        from fleet_memory.mcp.server import ServerContext, create_mcp_server
+    
+        # Create a test server
+        context = ServerContext(store=None, writer=None, settings=None)
+        mcp = create_mcp_server(context)
+    
+        # Register the resource
+>       register_projects_resource(mcp, context)
+
+tests/unit/test_mcp_projects_resource.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=None, writer=None, settings=None)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____________________ test_projects_resource_returns_json ______________________
+
+    @pytest.mark.asyncio
+    async def test_projects_resource_returns_json() -> None:
+        """The resource handler returns JSON-formatted response.
+    
+        FastMCP resources should return strings. Our resource returns
+        JSON for structured data.
+        """
+        from fleet_memory.mcp.resources import register_projects_resource
+        from fleet_memory.mcp.server import ServerContext, create_mcp_server
+    
+        # Create a mock store with test data
+        mock_store = MagicMock()
+        mock_store.list_namespaces = AsyncMock(
+            return_value=[
+                ("fleet_memory", "proj_a", "Document"),
+                ("fleet_memory", "proj_b", "Document"),
+            ]
+        )
+    
+        context = ServerContext(store=mock_store, writer=None, settings=None)
+        mcp = create_mcp_server(context)
+>       register_projects_resource(mcp, context)
+
+tests/unit/test_mcp_projects_resource.py:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=<MagicMock id='265731940764896'>, writer=None, settings=None)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+__________________________ test_projects_resource_uri __________________________
+
+    @pytest.mark.seam
+    @pytest.mark.integration_contract("ServerContext")
+    def test_projects_resource_uri() -> None:
+        """Verify the project-listing resource is exposed at memory://projects.
+    
+        Contract: resource URI is memory://projects (ASSUM-004).
+        Producer: TASK-MCP-001 (ServerContext + registration extension point)
+        Consumer: TASK-MCP-006 (projects resource)
+        """
+        from fleet_memory.mcp.resources import register_projects_resource
+        from fleet_memory.mcp.server import ServerContext, create_mcp_server
+    
+        context = ServerContext(store=None, writer=None, settings=None)
+        mcp = create_mcp_server(context)
+>       register_projects_resource(mcp, context)
+
+tests/unit/test_mcp_projects_resource.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=None, writer=None, settings=None)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_______________________ test_server_builds_without_store _______________________
+
+    def test_server_builds_without_store() -> None:
+        """Build the server with a fake/None store; assert it constructs.
+    
+        The server must start even when Postgres is unreachable at launch.
+        This test verifies that create_mcp_server can be called with a
+        ServerContext that has None/fake dependencies.
+        """
+        from fleet_memory.mcp.server import ServerContext, create_mcp_server
+    
+        # Create a fake context with None store (degraded mode)
+        context = ServerContext(store=None, writer=None, settings=None)
+    
+        # Should construct without errors
+        mcp = create_mcp_server(context)
+    
+        # Verify it's a FastMCP instance
+        # We check for the run method as a signature of FastMCP
+>       assert hasattr(mcp, "run"), "Expected FastMCP instance with run() method"
+E       AssertionError: Expected FastMCP instance with run() method
+E       assert False
+E        +  where False = hasattr(FastMCP(name=fleet-memory), 'run')
+
+tests/unit/test_mcp_server.py:29: AssertionError
+___________________ test_register_all_is_no_op_without_tools ___________________
+
+    @pytest.mark.asyncio
+    async def test_register_all_is_no_op_without_tools() -> None:
+        """Verify that register_all is a no-op when no tool modules are present.
+    
+        Wave-3 tasks will add tool registrations, but for now register_all
+        should be callable and do nothing.
+        """
+        from fleet_memory.mcp.server import ServerContext, create_mcp_server, register_all
+    
+        context = ServerContext(store=None, writer=None, settings=None)
+        mcp = create_mcp_server(context)
+    
+        # Should not raise errors
+>       register_all(mcp, context)
+
+tests/unit/test_mcp_server.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/fleet_memory/mcp/server.py:139: in register_all
+    register_projects_resource(mcp, context)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mcp = FastMCP(name=fleet-memory)
+context = ServerContext(store=None, writer=None, settings=None)
+
+    def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+        """Register the memory://projects resource with the MCP server.
+    
+        Registers a resource at URI memory://projects that lists projects
+        with memories. The resource read is wrapped with tool_safe for
+        graceful degradation when the store is unreachable.
+    
+        Args:
+            mcp: FastMCP server instance
+            context: ServerContext with store dependency
+        """
+    
+>       @mcp.resource("memory://projects")
+         ^^^^^^^^^^^^
+E       AttributeError: 'FastMCP' object has no attribute 'resource'
+
+src/fleet_memory/mcp/resources.py:72: AttributeError
+_____________________________ test_package_imports _____________________________
+
+    def test_package_imports():
+        """Test that the fleet_memory package can be imported."""
+        import fleet_memory
+    
+>       assert hasattr(fleet_memory, "__version__")
+E       AssertionError: assert False
+E        +  where False = hasattr(<module 'fleet_memory' from '/home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/fleet_memory/__init__.py'>, '__version__')
+
+tests/unit/test_scaffold.py:8: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.key-example - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.memory-mcp-server - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-007 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.smoke - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-004 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-005 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-006 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.boundary - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.negative - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.edge-case - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.typed-payload-registry - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-002 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    mark = getattr(pytest.mark, tag)
+
+src/fleet_memory/fixture/__init__.py:108
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:108: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    @validator("fixture_id")
+
+src/fleet_memory/fixture/__init__.py:94
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:94: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class FixtureManifest(BaseModel):
+
+tests/unit/relay/test_chunk_writer.py:232
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/tests/unit/relay/test_chunk_writer.py:232: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.regression
+
+tests/bdd/test_typed_payload_registry.py: 39 warnings
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/compat.py:28: PytestRemovedIn10Warning: Passing nodeid to _register_fixture is deprecated. Pass node instead for fixture scoping.
+    request._fixturemanager._register_fixture(
+
+tests/bdd/test_typed_payload_registry.py: 39 warnings
+  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1986: PytestRemovedIn10Warning: Passing baseid to FixtureDef is deprecated. Pass node instead for fixture scoping.
+    fixture_def = FixtureDef(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/bdd/test_memory_mcp_server.py::test_an_mcp_client_writes_a_typed_adr_and_then_finds_it_by_search
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_search_tool_returns_project_memories_ranked_by_relevance
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_write_tool_persists_a_typed_payload_through_the_deterministic_writer
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_marks_a_predecessor_memory_as_superseded
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_project_resource_lists_the_projects_that_have_memories
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_payload_written_through_the_tool_is_byteidentical_in_store_form_to_a_relay_write
+FAILED tests/bdd/test_memory_mcp_server.py::test_search_excludes_superseded_memories_by_default
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_search_tool_assembles_a_context_block_within_an_explicit_token_budget
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_search_with_no_token_budget_applies_the_default_budget
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_accepts_a_single_predecessor
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_an_empty_predecessor_list
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_search_that_matches_no_memories_returns_an_empty_result
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_an_unknown_payload_type
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_a_payload_whose_identifier_contains_invalid_characters
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_write_tool_rejects_a_payload_missing_a_required_field
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_a_malformed_predecessor_reference
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_supersede_tool_rejects_a_memory_superseding_itself
+FAILED tests/bdd/test_memory_mcp_server.py::test_an_untyped_freeform_write_is_not_accepted
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_search_tool_degrades_gracefully_when_the_store_is_unreachable
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_write_tool_degrades_gracefully_when_the_store_is_unreachable
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_search_tool_degrades_gracefully_when_the_embedding_service_is_unavailable
+FAILED tests/bdd/test_memory_mcp_server.py::test_writing_the_same_payload_twice_produces_a_single_memory_record
+FAILED tests/bdd/test_memory_mcp_server.py::test_superseding_a_predecessor_that_does_not_yet_exist_is_accepted
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_server_communicates_over_stdio_for_a_claude_desktop_client
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_server_exposes_the_memory_tools_that_replace_the_graphiti_mcp
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_clientsupplied_stored_identity_is_ignored_in_favour_of_the_derived_key
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_search_query_containing_instructionlike_text_is_treated_as_an_opaque_query
+FAILED tests/bdd/test_memory_mcp_server.py::test_two_clients_writing_the_same_memory_at_the_same_time_produce_a_single_record
+FAILED tests/bdd/test_memory_mcp_server.py::test_an_mcp_write_racing_a_relay_write_of_the_same_payload_yields_one_record
+FAILED tests/bdd/test_memory_mcp_server.py::test_a_write_is_handled_cleanly_when_the_embedding_service_is_unavailable
+FAILED tests/bdd/test_memory_mcp_server.py::test_the_server_starts_even_when_the_store_is_unreachable_at_launch
+FAILED tests/unit/fixture/test_manifest.py::test_invalid_fixture_id - TypeErr...
+FAILED tests/unit/test_mcp_projects_resource.py::test_resource_registration
+FAILED tests/unit/test_mcp_projects_resource.py::test_projects_resource_returns_json
+FAILED tests/unit/test_mcp_projects_resource.py::test_projects_resource_uri
+FAILED tests/unit/test_mcp_server.py::test_server_builds_without_store - Asse...
+FAILED tests/unit/test_mcp_server.py::test_register_all_is_no_op_without_tools
+FAILED tests/unit/test_scaffold.py::test_package_imports - AssertionError: as...
+38 failed, 594 passed, 73 deselected, 98 warnings in 9.82s
+
+Exit code: 1
+[Command failed with exit code 1]

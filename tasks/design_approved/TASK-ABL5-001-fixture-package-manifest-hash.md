@@ -1,87 +1,18 @@
 ---
-id: TASK-ABL5-001
-title: Fixture package scaffolding - manifest, content hash, error taxonomy
-task_type: feature
-parent_review: TASK-REV-ABL5
-feature_id: FEAT-ABL-005
-wave: 1
-implementation_mode: task-work
 complexity: 4
 dependencies: []
-status: blocked
+feature_id: FEAT-ABL-005
+id: TASK-ABL5-001
+implementation_mode: task-work
+parent_review: TASK-REV-ABL5
+status: design_approved
 tags:
 - ablation
 - fixture
 - fleet-memory
-autobuild_state:
-  current_turn: 3
-  max_turns: 8
-  worktree_path: /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005
-  base_branch: main
-  started_at: '2026-07-04T07:39:06.868745'
-  last_updated: '2026-07-04T07:55:30.202248'
-  turns:
-  - turn: 1
-    decision: feedback
-    feedback: '- The implementation of the fixture package (manifest, hashing, error
-      taxonomy) is missing. The player only modified an __init__.py file and created
-      no new files or tests.: Implement the required logic in src/fleet_memory/fixture/
-      and provide corresponding unit tests.
-
-      - Evidence collection aborted with status ''partial_gate_abort''. Tests failed
-      or could not be run due to a substrate error (FileNotFoundError in pytest temp
-      directory).: Ensure the environment is stable and that all required files are
-      present so that the test-orchestrator can complete its run.'
-    timestamp: '2026-07-04T07:39:06.868745'
-    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
-      actual: 0'
-    player_success: true
-    coach_success: true
-  - turn: 2
-    decision: feedback
-    feedback: '- The test execution failed with a TypeError: ''expected string or
-      bytes-like object, got PosixPath''. This prevented the orchestrator from completing
-      the verification cycle.: Ensure that any path-related logic in the implementation
-      or tests handles both strings and Path objects, or explicitly casts Path objects
-      to strings before passing them to functions expecting bytes/strings.
-
-      - Gathering status is ''partial_gate_abort''. Coverage and BDD evidence are
-      missing.: Resolve the test execution error to allow the orchestrator to complete
-      the gathering phase and provide coverage metrics.'
-    timestamp: '2026-07-04T07:44:56.931172'
-    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
-      actual: 0'
-    player_success: true
-    coach_success: true
-  - turn: 3
-    decision: feedback
-    feedback: "- Deterministic honesty record (claim_audit_unmodified, severity=should_fix):\
-      \ Player claim: Player claimed file src/fleet_memory/fixture/__init__.py. Actual:\
-      \ Path is tracked in git but 'git status --porcelain' shows no change for it\
-      \ \u2014 the Player claimed work on a file it did not actually modify this turn.\
-      \ Most likely cause: the report writer swept an orchestrator-managed path (e.g.\
-      \ a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified.\
-      \ Defence-in-depth for the agent_invoker-side filter; this is a warning, not\
-      \ a turn-rejecting fabrication..\n- Deterministic honesty record (claim_audit_unmodified,\
-      \ severity=should_fix): Player claim: Player claimed file src/fleet_memory/mcp/server.py.\
-      \ Actual: Path is tracked in git but 'git status --porcelain' shows no change\
-      \ for it \u2014 the Player claimed work on a file it did not actually modify\
-      \ this turn. Most likely cause: the report writer swept an orchestrator-managed\
-      \ path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified.\
-      \ Defence-in-depth for the agent_invoker-side filter; this is a warning, not\
-      \ a turn-rejecting fabrication..\n- Deterministic honesty record (claim_audit_unmodified,\
-      \ severity=should_fix): Player claim: Player claimed file tests/conftest.py.\
-      \ Actual: Path is tracked in git but 'git status --porcelain' shows no change\
-      \ for it \u2014 the Player claimed work on a file it did not actually modify\
-      \ this turn. Most likely cause: the report writer swept an orchestrator-managed\
-      \ path (e.g. a file under .guardkit/autobuild/ or tasks/<state>/) into files_modified.\
-      \ Defence-in-depth for the agent_invoker-side filter; this is a warning, not\
-      \ a turn-rejecting fabrication..\n... and 3 more issues"
-    timestamp: '2026-07-04T07:52:12.373161'
-    player_summary: 'Implementation via task-work delegation. Files planned: 0, Files
-      actual: 0'
-    player_success: true
-    coach_success: true
+task_type: feature
+title: Fixture package scaffolding - manifest, content hash, error taxonomy
+wave: 1
 ---
 
 # Task: Fixture package scaffolding - manifest, content hash, error taxonomy

@@ -1,0 +1,9 @@
+{
+  "turn": 2,
+  "feedback_from_turn": 1,
+  "feedback_summary": "- The implementation of the fixture package (manifest, hashing, error taxonomy) is missing. The player only modified an __init__.py file and created no new files or tests.: Implement the required logic in src/fleet_memory/fixture/ and provide corresponding unit tests.\n- Evidence collection aborted with status 'partial_gate_abort'. Tests failed or could not be run due to a substrate error (FileNotFoundError in pytest temp directory).: Ensure the environment is stable and that all required files are present so that the test-orchestrator can complete its run.",
+  "must_fix": [],
+  "should_fix": [],
+  "validation_results": {},
+  "raw_feedback": "- The implementation of the fixture package (manifest, hashing, error taxonomy) is missing. The player only modified an __init__.py file and created no new files or tests.: Implement the required logic in src/fleet_memory/fixture/ and provide corresponding unit tests.\n- Evidence collection aborted with status 'partial_gate_abort'. Tests failed or could not be run due to a substrate error (FileNotFoundError in pytest temp directory).: Ensure the environment is stable and that all required files are present so that the test-orchestrator can complete its run."
+}

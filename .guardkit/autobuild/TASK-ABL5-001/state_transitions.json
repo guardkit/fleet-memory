@@ -1,0 +1,16 @@
+[
+  {
+    "task_id": "TASK-ABL5-001",
+    "pre_path": "tasks/backlog/TASK-ABL5-001-fixture-package-manifest-hash.md",
+    "post_path": "tasks/design_approved/TASK-ABL5-001-fixture-package-manifest-hash.md",
+    "timestamp": "2026-07-03T16:42:27.744815+00:00",
+    "kind": "design_approved_transition"
+  },
+  {
+    "task_id": "TASK-ABL5-001",
+    "pre_path": "tasks/backlog/ablation-fixture-tooling/TASK-ABL5-001-fixture-package-manifest-hash.md",
+    "post_path": "tasks/design_approved/TASK-ABL5-001-fixture-package-manifest-hash.md",
+    "timestamp": "2026-07-03T16:47:10.019108+00:00",
+    "kind": "design_approved_transition"
+  }
+]

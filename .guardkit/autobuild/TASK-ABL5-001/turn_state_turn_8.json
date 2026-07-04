@@ -1,0 +1,26 @@
+{
+  "id": "TURN-FEAT-ABL-005-8",
+  "feature_id": "FEAT-ABL-005",
+  "task_id": "TASK-ABL5-001",
+  "turn_number": 8,
+  "player_summary": "Implementation attempt",
+  "player_decision": "feedback",
+  "coach_decision": "feedback",
+  "coach_feedback": "- The orchestrator encountered a 'partial_gate_abort' during evidence gathering. The test-orchestrator failed to collect tests (ERROR collecting tests/unit/fixture/test_manifest), resulting in an absent test signal.: Resolve the test collection error in the environment to allow the test-orchestrator to run and provide a valid test signal.",
+  "mode": "continuing_work",
+  "blockers_found": [],
+  "progress_summary": "Turn 8: feedback",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    "src/fleet_memory/fixture/__init__.py"
+  ],
+  "tests_passed": null,
+  "tests_failed": null,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-07-03T21:04:15.837454",
+  "completed_at": "2026-07-03T21:04:15.837454",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}

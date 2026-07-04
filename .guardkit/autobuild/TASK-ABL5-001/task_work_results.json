@@ -1,0 +1,161 @@
+{
+  "task_id": "TASK-ABL5-001",
+  "timestamp": "2026-07-04T07:55:00.155693",
+  "completed": false,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation complete \u2013 fixture package with manifest handling, content hashing, and error taxonom",
+      "completed": false
+    }
+  },
+  "quality_gates": {
+    "tests_passing": false,
+    "tests_passed": 10,
+    "tests_failed": 1,
+    "coverage": 0.0,
+    "coverage_met": false,
+    "all_passed": false,
+    "reconciled_from_specialist": true
+  },
+  "files_modified": [
+    "fleet_memory/__init__.py",
+    "src/fleet_memory/fixture/__init__.py",
+    "src/fleet_memory/mcp/server.py",
+    "tests/conftest.py"
+  ],
+  "files_created": [],
+  "files_authored": [],
+  "tests_written": [],
+  "summary": "Implementation completed",
+  "sdk_turns": {
+    "turns_used": null,
+    "max_turns": 150,
+    "ceiling_hit": false
+  },
+  "task_type": "feature",
+  "agent_invocations_validation": {
+    "status": "violation",
+    "expected_phases": 3,
+    "actual_invocations": 0,
+    "missing_phases": [
+      "3",
+      "4",
+      "5"
+    ],
+    "violation_message": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\u274c PROTOCOL VIOLATION: Agent invocation incomplete\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nExpected: 3 agent invocations\nActual: 0 completed invocations\n\nMissing phases:\n  - Phase 3 (Implementation)\n  - Phase 4 (Testing)\n  - Phase 5 (Code Review)\n\nCannot generate completion report until all agents are invoked.\nReview the AGENT INVOCATIONS LOG above to see which phases were skipped.\n\nAGENT INVOCATIONS LOG:\n\u2753 Phase 4 (Phase 4): test-orchestrator\n\u274c Phase 5 (Phase 5): SKIPPED (Not invoked)\n\nTASK WILL BE MOVED TO BLOCKED STATE\nReason: Protocol violation - required agents not invoked\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550"
+  },
+  "plan_audit": {
+    "status": "skipped",
+    "severity": null,
+    "violations": 0,
+    "extra_files": [],
+    "missing_files": [],
+    "extra_modifications": [],
+    "missing_modifications": [],
+    "extra_dependencies": [],
+    "missing_dependencies": [],
+    "loc_variance_pct": null,
+    "discrepancies_count": 0,
+    "message": "no implementation plan on disk"
+  },
+  "unconfirmed_low_confidence_assumptions": {
+    "status": "ok",
+    "unconfirmed": [],
+    "files_scanned": 0,
+    "files_skipped": 0,
+    "message": null
+  },
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "`from fleet_memory.fixture import FixtureManifest, compute_content_hash, read_manifest, write_manifest` works, plus the four error types",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "`compute_content_hash` returns the same digest for the same file bytes regardless of file mtimes and of creation order, and a different digest when any payload byte or filename changes",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "`manifest.json` is excluded from its own hash (writing the manifest does not invalidate the hash)",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "`read_manifest` on a missing fixture directory raises `UnknownFixtureError` naming the fixture id (not any path secrets)",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Manifest JSON round-trips: `write_manifest` then `read_manifest` yields an equal model",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Invalid `fixture_id` (empty, path separators, `..`) is rejected with a clear error",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "No file outside `src/fleet_memory/fixture/`, `tests/`, and `.gitignore` is created or modified",
+      "status": "partial",
+      "evidence": "File existence verified: src/fleet_memory/fixture/, tests/",
+      "evidence_type": "file_existence",
+      "confidence": 0.5
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "Unit tests cover: hash determinism, hash sensitivity (content + filename), manifest round-trip, missing-fixture error, fixture-id validation",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    }
+  ],
+  "agent_invocations": [
+    {
+      "phase": "4",
+      "agent": "test-orchestrator",
+      "status": "failed",
+      "source": "orchestrator",
+      "duration_seconds": 0.4644607329973951,
+      "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n=========================="
+    },
+    {
+      "phase": "5",
+      "agent": "code-reviewer",
+      "status": "skipped",
+      "source": "orchestrator",
+      "duration_seconds": 0.0,
+      "error": "phase_4 status=failed"
+    }
+  ]
+}

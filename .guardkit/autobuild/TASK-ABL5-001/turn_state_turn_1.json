@@ -1,0 +1,26 @@
+{
+  "id": "TURN-FEAT-ABL-005-1",
+  "feature_id": "FEAT-ABL-005",
+  "task_id": "TASK-ABL5-001",
+  "turn_number": 1,
+  "player_summary": "Implementation attempt",
+  "player_decision": "feedback",
+  "coach_decision": "feedback",
+  "coach_feedback": "- The implementation of the fixture package (manifest, hashing, error taxonomy) is missing. The player only modified an __init__.py file and created no new files or tests.: Implement the required logic in src/fleet_memory/fixture/ and provide corresponding unit tests.\n- Evidence collection aborted with status 'partial_gate_abort'. Tests failed or could not be run due to a substrate error (FileNotFoundError in pytest temp directory).: Ensure the environment is stable and that all required files are present so that the test-orchestrator can complete its run.",
+  "mode": "fresh_start",
+  "blockers_found": [],
+  "progress_summary": "Turn 1: feedback",
+  "acceptance_criteria_status": {},
+  "files_modified": [
+    "src/fleet_memory/fixture/__init__.py"
+  ],
+  "tests_passed": null,
+  "tests_failed": null,
+  "coverage": null,
+  "arch_score": null,
+  "started_at": "2026-07-04T07:44:56.915804",
+  "completed_at": "2026-07-04T07:44:56.915804",
+  "duration_seconds": null,
+  "lessons_from_turn": [],
+  "what_to_try_next": null
+}

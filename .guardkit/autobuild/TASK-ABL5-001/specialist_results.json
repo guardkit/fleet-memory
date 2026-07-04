@@ -1,0 +1,21 @@
+{
+  "phase_4": {
+    "status": "failed",
+    "duration_seconds": 0.4644607329973951,
+    "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n==========================",
+    "tests_run": 10,
+    "tests_failed": 1,
+    "coverage_pct": 0.0,
+    "output_summary": "Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n=============================== warnings summary =================",
+    "quality_gates_passed": false
+  },
+  "phase_5": {
+    "status": "skipped",
+    "duration_seconds": 0.0,
+    "error": "phase_4 status=failed",
+    "issues": [],
+    "quality_score": 0.0,
+    "recommendations": [],
+    "output_summary": "Review completed by orchestrator-invoked code-reviewer."
+  }
+}

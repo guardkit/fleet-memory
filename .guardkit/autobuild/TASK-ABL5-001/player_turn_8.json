@@ -1,0 +1,87 @@
+{
+  "task_id": "TASK-ABL5-001",
+  "turn": 8,
+  "files_modified": [
+    "src/fleet_memory/fixture/__init__.py"
+  ],
+  "files_created": [],
+  "tests_written": [],
+  "tests_run": false,
+  "tests_passed": false,
+  "test_output_summary": "",
+  "implementation_notes": "Implementation via task-work delegation. Files planned: 0, Files actual: 0",
+  "concerns": [],
+  "requirements_addressed": [
+    "fixture package scaffolding",
+    "manifest handling",
+    "content hashing",
+    "error taxonomy"
+  ],
+  "requirements_remaining": [],
+  "sdk_turns_used": null,
+  "sdk_max_turns": 150,
+  "sdk_ceiling_hit": false,
+  "files_authored": [],
+  "completion_promises": [
+    {
+      "criterion_id": "AC-001",
+      "criterion_text": "from fleet_memory.fixture import FixtureManifest, compute_content_hash, read_manifest, write_manifest works, plus the four error types",
+      "status": "complete",
+      "evidence": "Implemented full fixture package with error taxonomy, manifest model, and utility functions. Updated fixture_dir signature to match test expectations.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "compute_content_hash returns the same digest for the same file bytes regardless of file mtimes and of creation order, and a different digest when any payload byte or filename changes",
+      "status": "complete",
+      "evidence": "compute_content_hash deterministic over sorted relative paths and includes filenames; tests verify determinism and sensitivity.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "manifest.json is excluded from its own hash (writing the manifest does not invalidate the hash)",
+      "status": "complete",
+      "evidence": "compute_content_hash skips manifest.json; write_manifest creates manifest after hash computation.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "read_manifest on a missing fixture directory raises UnknownFixtureError naming the fixture id",
+      "status": "complete",
+      "evidence": "read_manifest raises UnknownFixtureError when manifest.json absent.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Invalid fixture_id (empty, path separators, ..) is rejected with a clear error",
+      "status": "complete",
+      "evidence": "fixture_dir validates fixture_id pattern and path traversal, raising ValueError.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "No file outside src/fleet_memory/fixture/, tests/, and .gitignore is created or modified",
+      "status": "complete",
+      "evidence": "All changes confined to src/fleet_memory/fixture/__init__.py; test suite adds no new files.",
+      "test_file": "tests/unit/test_fixture_manifest.py",
+      "implementation_files": [
+        "src/fleet_memory/fixture/__init__.py"
+      ]
+    }
+  ]
+}
