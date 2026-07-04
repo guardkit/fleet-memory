@@ -1,13 +1,12 @@
 {
   "phase_4": {
     "status": "failed",
-    "duration_seconds": 0.4109022100456059,
-    "error": "absent test signal (deterministic Phase 4): Error detail:\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/unit/fixture/test_manifest.",
-    "signal_absent": true,
-    "tests_run": 0,
-    "tests_failed": 0,
+    "duration_seconds": 0.45375201397109777,
+    "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-r",
+    "tests_run": 10,
+    "tests_failed": 2,
     "coverage_pct": 0.0,
-    "output_summary": "Error detail:\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/unit/fixture/test_manifest.py _____________\nImportError while impor",
+    "output_summary": "Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-richardwoollcott/pytest-210/test_compute_",
     "quality_gates_passed": false
   },
   "phase_5": {

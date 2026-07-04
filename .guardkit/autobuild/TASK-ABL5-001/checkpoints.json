@@ -100,7 +100,17 @@
       "message": "[guardkit-checkpoint] Turn 7 complete (tests: unknown)",
       "from_prior_run": false,
       "evidence_commits": {}
+    },
+    {
+      "turn": 8,
+      "commit_hash": "682ea61dd3fcad39b461650ad4909f774d85501d",
+      "timestamp": "2026-07-03T21:04:15.859230",
+      "tests_passed": null,
+      "test_count": 0,
+      "message": "[guardkit-checkpoint] Turn 8 complete (tests: unknown)",
+      "from_prior_run": false,
+      "evidence_commits": {}
     }
   ],
-  "last_updated": "2026-07-03T21:01:26.046969"
+  "last_updated": "2026-07-03T21:04:15.859291"
 }

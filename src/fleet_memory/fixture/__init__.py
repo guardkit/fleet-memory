@@ -109,7 +109,7 @@ class FixtureManifest(BaseModel):
 
 # ----- Helper functions -----
 
-def fixture_dir(fixture_id: str, fixtures_root: Path | str = Path("eval/fixtures")) -> Path:
+def fixture_dir(fixtures_root: Path | str, fixture_id: str) -> Path:
     """Return the absolute path for a fixture.
 
     Raises ``ValueError`` if ``fixture_id`` fails the required pattern or attempts
