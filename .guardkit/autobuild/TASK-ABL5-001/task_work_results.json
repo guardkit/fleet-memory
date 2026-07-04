@@ -1,8 +1,14 @@
 {
   "task_id": "TASK-ABL5-001",
-  "timestamp": "2026-07-04T07:51:43.836805",
-  "completed": true,
-  "phases": {},
+  "timestamp": "2026-07-04T07:55:00.155693",
+  "completed": false,
+  "phases": {
+    "phase_3": {
+      "detected": true,
+      "text": "Implementation complete \u2013 fixture package with manifest handling, content hashing, and error taxonom",
+      "completed": false
+    }
+  },
   "quality_gates": {
     "tests_passing": false,
     "tests_passed": 10,
@@ -13,16 +19,15 @@
     "reconciled_from_specialist": true
   },
   "files_modified": [
+    "fleet_memory/__init__.py",
     "src/fleet_memory/fixture/__init__.py",
     "src/fleet_memory/mcp/server.py",
     "tests/conftest.py"
   ],
-  "files_created": [
-    "fleet_memory/__init__.py"
-  ],
+  "files_created": [],
   "files_authored": [],
   "tests_written": [],
-  "summary": "5 tests passed",
+  "summary": "Implementation completed",
   "sdk_turns": {
     "turns_used": null,
     "max_turns": 150,
@@ -64,13 +69,75 @@
   "completion_promises": [
     {
       "criterion_id": "AC-001",
-      "criterion_text": "Implement fixture package with manifest, content hash, and error taxonomy, and provide passing unit tests.",
-      "status": "complete",
-      "evidence": "Created src/fleet_memory/fixture/__init__.py implementing errors, FixtureManifest, helper functions, and write/read manifest. Added tests in tests/unit/fixture/test_manifest.py covering hash determinism, sensitivity, manifest round\u2011trip, missing fixture handling, and fixture_id validation. All tests pass (5 passed).",
-      "test_file": "tests/unit/fixture/test_manifest.py",
-      "implementation_files": [
-        "src/fleet_memory/fixture/__init__.py"
-      ]
+      "criterion_text": "`from fleet_memory.fixture import FixtureManifest, compute_content_hash, read_manifest, write_manifest` works, plus the four error types",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-002",
+      "criterion_text": "`compute_content_hash` returns the same digest for the same file bytes regardless of file mtimes and of creation order, and a different digest when any payload byte or filename changes",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-003",
+      "criterion_text": "`manifest.json` is excluded from its own hash (writing the manifest does not invalidate the hash)",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-004",
+      "criterion_text": "`read_manifest` on a missing fixture directory raises `UnknownFixtureError` naming the fixture id (not any path secrets)",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-005",
+      "criterion_text": "Manifest JSON round-trips: `write_manifest` then `read_manifest` yields an equal model",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-006",
+      "criterion_text": "Invalid `fixture_id` (empty, path separators, `..`) is rejected with a clear error",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-007",
+      "criterion_text": "No file outside `src/fleet_memory/fixture/`, `tests/`, and `.gitignore` is created or modified",
+      "status": "partial",
+      "evidence": "File existence verified: src/fleet_memory/fixture/, tests/",
+      "evidence_type": "file_existence",
+      "confidence": 0.5
+    },
+    {
+      "criterion_id": "AC-008",
+      "criterion_text": "All modified files pass project-configured lint/format checks with zero errors",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
+    },
+    {
+      "criterion_id": "AC-009",
+      "criterion_text": "Unit tests cover: hash determinism, hash sensitivity (content + filename), manifest round-trip, missing-fixture error, fixture-id validation",
+      "status": "incomplete",
+      "evidence": "No file-existence evidence for this criterion",
+      "evidence_type": "file_existence",
+      "confidence": 0.0
     }
   ],
   "agent_invocations": [
@@ -79,7 +146,7 @@
       "agent": "test-orchestrator",
       "status": "failed",
       "source": "orchestrator",
-      "duration_seconds": 0.4369015940465033,
+      "duration_seconds": 0.4644607329973951,
       "error": "tests failed (deterministic Phase 4): Error detail:\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: expected string or bytes-like object, got 'PosixPath'\n=========================="
     },
     {

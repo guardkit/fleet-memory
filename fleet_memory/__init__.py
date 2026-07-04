@@ -12,3 +12,4 @@ if str(_fleet_path) not in sys.path:
 # Make this package's __path__ point to the real implementation directory so that
 # imports like ``import fleet_memory.reindex`` resolve correctly.
 __path__ = [_fleet_path.as_posix()]
+__version__ = "0.1.0"

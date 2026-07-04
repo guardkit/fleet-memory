@@ -1,7 +1,12 @@
 {
   "task_id": "TASK-ABL5-001",
   "turn": 3,
-  "files_modified": [],
+  "files_modified": [
+    "fleet_memory/__init__.py",
+    "src/fleet_memory/fixture/__init__.py",
+    "src/fleet_memory/mcp/server.py",
+    "tests/conftest.py"
+  ],
   "files_created": [],
   "tests_written": [],
   "tests_run": false,
