@@ -83,4 +83,4 @@ def test_missing_fixture_raises(tmp_path: Path):
 def test_invalid_fixture_id(tmp_path: Path):
     from fleet_memory.fixture import fixture_dir
     with pytest.raises(ValueError):
-        fixture_dir(tmp_path, "Invalid/ID")
+        fixture_dir("Invalid/ID", tmp_path)

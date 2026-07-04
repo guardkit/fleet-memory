@@ -126,8 +126,9 @@ def fixture_dir(fixture_id: str, fixtures_root: Path | str = Path.cwd() / "eval"
     path traversal.
     """
 
-    if not _fixture_id_regex.fullmatch(fixture_id):
+    if not isinstance(fixture_id, str) or not _fixture_id_regex.fullmatch(fixture_id):
         raise ValueError(f"Invalid fixture_id '{fixture_id}'")
+    fixtures_root = Path(fixtures_root)
     # Resolve to ensure no ``..`` components affect the path
     candidate = (fixtures_root / fixture_id).resolve()
     if not str(candidate).startswith(str(fixtures_root.resolve())):
