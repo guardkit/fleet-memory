@@ -84,11 +84,33 @@ printf "ALTER ROLE fleet_memory PASSWORD '%s';\n" "${NEW_PW}" | \
     $SSH "${DOCKER} exec -i fleet_memory_postgres psql -q -v ON_ERROR_STOP=1 -U fleet_memory -d fleet_memory -f -"
 echo "GATE R1 PASS: ALTER ROLE accepted"
 
-# R2. New password must authenticate over TCP (the real client path — socket
-# auth is 'trust', so only a TCP login proves the credential). The password is
-# read from stdin INSIDE the container; nothing secret in any argv.
+# Auth-checked TCP probe. MUST NOT use 127.0.0.1: the stock postgres image's
+# initdb-generated pg_hba.conf trusts loopback INSIDE the container
+# ("host all all 127.0.0.1/32 trust"), so a loopback psql accepts ANY password
+# and a gate built on it is vacuous (this bit the first rotation run,
+# 2026-07-05: R3 "old still authenticates" fired on genuinely-different
+# passwords). Connecting to the container's own non-loopback IP makes the
+# catch-all "host all all all scram-sha-256" rule govern — a real password
+# check. Password arrives on stdin; nothing secret in any argv.
+tcp_select1() {
+    $SSH "${DOCKER} exec -i fleet_memory_postgres bash -c 'IFS= read -r PGPASSWORD; export PGPASSWORD; H=\$(hostname -i); H=\${H%% *}; exec psql -h \"\$H\" -p 5432 -U fleet_memory -d fleet_memory -tAc \"SELECT 1\"'"
+}
+
+# R2a. Gate-of-the-gate: a deliberately wrong password must be REFUSED on this
+# path. If it authenticates, the auth path is trust and R2/R3 would be
+# meaningless — abort rather than emit vacuous verdicts.
+echo "Verifying the auth path actually checks passwords (wrong password must fail)..."
+if printf '%s\n' "definitely-wrong-password-probe" | tcp_select1 2>/dev/null | grep -q '^1$'; then
+    echo "GATE R2a FAIL: a wrong password authenticated — pg_hba trusts this path,"
+    echo "so password gates prove nothing here. Inspect pg_hba.conf inside the"
+    echo "container; the catch-all line must be scram-sha-256/md5, not trust."
+    exit 1
+fi
+echo "GATE R2a PASS: auth path enforces passwords"
+
+# R2. New password must authenticate on that same checked path.
 echo "Verifying NEW password authenticates over TCP..."
-if printf '%s\n' "${NEW_PW}" | $SSH "${DOCKER} exec -i fleet_memory_postgres bash -c 'IFS= read -r PGPASSWORD; export PGPASSWORD; psql -h 127.0.0.1 -p 5432 -U fleet_memory -d fleet_memory -tAc \"SELECT 1\"'" | grep -q '^1$'; then
+if printf '%s\n' "${NEW_PW}" | tcp_select1 | grep -q '^1$'; then
     echo "GATE R2 PASS: new password authenticates"
 else
     echo "GATE R2 FAIL: new password rejected over TCP — database and .env.deploy now DISAGREE."
@@ -99,7 +121,7 @@ fi
 # R3. Old password must be REFUSED (the property that makes this a rotation).
 if [ -n "${OLD_PW}" ]; then
     echo "Verifying OLD password is refused..."
-    if printf '%s\n' "${OLD_PW}" | $SSH "${DOCKER} exec -i fleet_memory_postgres bash -c 'IFS= read -r PGPASSWORD; export PGPASSWORD; psql -h 127.0.0.1 -p 5432 -U fleet_memory -d fleet_memory -tAc \"SELECT 1\"'" 2>/dev/null | grep -q '^1$'; then
+    if printf '%s\n' "${OLD_PW}" | tcp_select1 2>/dev/null | grep -q '^1$'; then
         echo "GATE R3 FAIL: the OLD password still authenticates — rotation did not take."
         exit 1
     fi
