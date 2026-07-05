@@ -232,3 +232,6 @@ deploy/**/.env.deploy
 .Trashes
 .fseventsd
 Icon?
+
+# GuardKit worktrees (never commit these)
+.guardkit/worktrees/
