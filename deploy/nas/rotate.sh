@@ -58,10 +58,8 @@ if [ -t 0 ]; then
     read -r -s -p "OLD password (empty to skip the old-credential-dead gate): " OLD_PW
     echo ""
 fi
-if [ -n "${OLD_PW}" ] && ! [[ "${OLD_PW}" =~ ^[A-Za-z0-9+/=]+$ ]]; then
-    echo "WARNING: old password has non-base64 characters; skipping GATE R3."
-    OLD_PW=""
-fi
+# No charset restriction on OLD_PW: unlike NEW_PW it is never embedded in SQL
+# — it only travels stdin into PGPASSWORD for the R3 refusal probe.
 
 SSH="ssh -i $HOME/.ssh/fleet_memory_nas_ed25519 -o BatchMode=yes -p ${NAS_SSH_PORT} ${NAS_USER}@${NAS_HOST}"
 DOCKER="sudo -n /usr/local/bin/docker"
