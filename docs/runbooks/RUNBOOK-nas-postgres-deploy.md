@@ -235,3 +235,33 @@ Both gates green on this run. Provisioning complete — the actual stand-up is d
 - **Re-provisioning a different host** (e.g. the second Spark): repeat Steps 1, 4, 6 on that host; Steps 2/3/5 are NAS-side and already done. One key per host beats copying the private key.
 
 *FEAT-MEM-01 productizes Phases 2–3 as `deploy/nas/deploy.sh` + `deploy/nas/smoke.sh` with these gates inline; this runbook remains the operator reference and the Phase 0 record.*
+
+---
+
+## Password rotation — `deploy/nas/rotate.sh` (added 2026-07-05)
+
+> Prompted by the ABL-001 run-3 credential leak (guardkit
+> `docs/retro/abl001-run3-honest-fail-and-credential-leak-2026-07-04.md`).
+
+**`deploy.sh` cannot rotate.** The postgres image consumes `POSTGRES_PASSWORD`
+only on first initdb of an empty `pgdata`; the bind mount persists, so re-running
+`deploy.sh` with a new password updates every file while the live role keeps the
+old password — and gate G2 ("container Up") passes anyway. Rotation must
+`ALTER ROLE` inside the live database, then sync the files, then prove the
+property itself.
+
+```bash
+cd deploy/nas
+$EDITOR .env.deploy      # FLEET_MEMORY_PG_PASSWORD = NEW value (openssl rand -base64 24)
+./rotate.sh              # prompts once for the OLD password (optional gate R3)
+```
+
+Gates: **R0** container up → **R1** `ALTER ROLE` via the trusted unix socket
+(SQL over stdin; secrets never in argv) → **R2** new password authenticates over
+TCP (the real client path) → **R3** old password is refused (the rotation
+property; skipped if not provided) → **R4** NAS `.env` re-rendered for future
+recreations. The script then prints the consumer checklist: relay
+`deploy/relay/.env.deploy` on the GB10 + compose restart, shell exports of
+`FLEET_MEMORY_PG_DSN` (agent loops get fixture DSNs only, per P4),
+`guardkit memory status`, and `./smoke.sh` (G3–G5) against the rotated
+credential.
