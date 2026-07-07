@@ -385,7 +385,20 @@ the new registry consuming that bus (§2.7 corollary).
 **nats-core is untouched by the six types themselves** — they are fleet-memory payloads riding
 the existing `MemoryEpisodeV1`. What the bus/envelope sessions owe is listed in §7.
 
-## 6. D-WS4-6 — role-memory dimension · **PROPOSED 2026-07-07, for Rich (do not enact)**
+## 6. D-WS4-6 — role-memory dimension · **DECIDED 2026-07-07 (Rich) — ACCEPTED, enact**
+
+> **DECISION (Rich, 2026-07-07 decision-queue curation session): ACCEPTED as
+> proposed.** Role as a `domain_tag` taxonomy (write-side required tag +
+> read-side scoped default + per-role budget mechanism; budget *values* stay
+> placeholder until ABL-006, WS4 §6.4). **Rationale (Rich):** "cheap, no real
+> downsides, simple — namespaces could get messy and confusing." The write-side
+> required tag is no-regret (reversible, captures role attribution that can't be
+> reconstructed later; tags compose where a namespace segment can't, and role is
+> sometimes plural); the read-side budgets are the only unproven part and are
+> fenced to ABL-006 (mechanism now, values later). Enacts the WS4-S7 role-tag
+> model validator (§7 item under WS4-S7). The §2.9 `_DOMAIN_TAG_PATTERN`
+> widening remains a separate unconditional prerequisite, not part of this
+> decision.
 
 **Decision:** role as a **`domain_tag` taxonomy**, not a namespace segment. No pgvector
 namespace migration; the 3-tuple `(fleet_memory, project, payload_type)` stays as-is.
