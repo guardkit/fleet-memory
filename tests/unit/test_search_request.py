@@ -180,6 +180,49 @@ class TestDomainTagValidation:
                     token_budget=1000,
                 )
 
+    def test_namespaced_colon_tags_accepted(self) -> None:
+        """Colon-namespaced facet tags are accepted (schema contract §2.9).
+
+        The backward-edge episode contract writes exactly-one-colon facets like
+        ``env:prod`` and ``role:product-owner``; the widened pattern must admit
+        them so those rows are reachable through SearchRequest.
+        """
+        namespaced = [
+            "env:prod",
+            "gate:build_approval",
+            "mode:mode_p",
+            "suite:po-heldout-idea",
+            "checkpoint:f36a866abc12",
+            "role:product-owner",
+            "role:qa-verifier",
+        ]
+        req = SearchRequest(
+            project="test_project",
+            domain_tags=namespaced,
+            token_budget=1000,
+        )
+        assert req.domain_tags == namespaced
+
+    def test_domain_tag_with_multiple_colons_rejected(self) -> None:
+        """A tag with more than one colon is rejected (exactly one namespace colon)."""
+        for invalid_tag in ["env:prod:extra", "a:b:c", ":leading", "trailing:"]:
+            with pytest.raises(ValidationError):
+                SearchRequest(
+                    project="test_project",
+                    domain_tags=[invalid_tag],
+                    token_budget=1000,
+                )
+
+    def test_namespaced_tag_with_injection_after_colon_rejected(self) -> None:
+        """Injection characters after the namespace colon are still rejected."""
+        for invalid_tag in ["env:prod' OR '1'='1", "role:a b", "gate:x=y"]:
+            with pytest.raises(ValidationError):
+                SearchRequest(
+                    project="test_project",
+                    domain_tags=[invalid_tag],
+                    token_budget=1000,
+                )
+
 
 class TestTokenBudgetValidation:
     """Test token_budget validation rules."""

@@ -37,6 +37,36 @@ _MODEL_TO_TYPE: dict[type[BasePayload], str] = {
     model: name for name, model in PAYLOAD_REGISTRY.items()
 }
 
+# ---------------------------------------------------------------------------
+# Backward-edge episode types — AUTHORED but NOT YET REGISTERED (contract §0/§5)
+# ---------------------------------------------------------------------------
+# The six backward-edge payload classes (payloads/backward_edge.py) are WS4-S7's
+# deliverable, but the landing discipline is binding: a type joins PAYLOAD_REGISTRY ONLY
+# in the window its producer is wired and emitting real episodes. Registering a type
+# without a live producer is the ReviewReportPayload mistake (defined 2026-07-03, zero
+# rows ever produced) — the relay would then accept a type nothing writes.
+#
+# As of authoring, none of the six producers are live:
+#   - planning_outcome  → forge Mode-P terminal path   (waits on WS1-E forge wiring)
+#   - approval_decision → forge gate path              (waits on WS1-E forge wiring)
+#   - spec_survival     → forge (sole writer, §4.6)    (waits on WS1-E forge wiring)
+#   - deploy_record     → forge DEPLOY stage (WS2 B8)  (INERT behind deploy.enabled=False)
+#   - live_verdict      → forge LIVE_GATE stage (B8)   (INERT behind deploy.enabled=False)
+#   - grading_outcome   → fleet-evals harness (WS4-S4) (producer unbuilt)
+#
+# To register a type when its producer lands: import its class into `models`-style scope
+# and add ONE entry to PAYLOAD_REGISTRY above, in the same window the producer merges.
+# tests/unit/test_backward_edge_payloads.py guards that this stays empty of unproduced
+# types. The mapping below is DOCUMENTARY provenance only — it is not a registry.
+_BACKWARD_EDGE_PRODUCER_GATES: dict[str, str] = {
+    "planning_outcome": "forge Mode-P terminal path (WS1-E forge wiring)",
+    "approval_decision": "forge gate path (WS1-E forge wiring)",
+    "spec_survival": "forge sole writer (WS1-E forge wiring)",
+    "deploy_record": "forge DEPLOY stage (WS2 B8; deploy.enabled=False → INERT)",
+    "live_verdict": "forge LIVE_GATE stage (WS2 B8; deploy.enabled=False → INERT)",
+    "grading_outcome": "fleet-evals harness (WS4-S4; producer unbuilt)",
+}
+
 
 def get_model_for_type(payload_type: str) -> type[BasePayload]:
     """Resolve payload_type name to model class.

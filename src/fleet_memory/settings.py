@@ -34,6 +34,44 @@ class Settings(BaseSettings):
         description="Directory for backfill staging payloads (FLEET_MEMORY_BACKFILL_DIR)",
     )
 
+    # Chronicler batch harvester (WS4-S7). The Chronicler is a BATCH JOB, not a resident
+    # consumer (the relay's operational record argues against another resident consumer,
+    # WS4 §4.2); it reads the durable store and emits two DF-008-split outputs.
+    chronicler_dataset_intake_dir: str = Field(
+        default="chronicler_out/dataset_intake",
+        description=(
+            "Directory the Chronicler writes flywheel-tagged dataset rows (JSONL) into — "
+            "point at the agentic-dataset-factory intake in deployment. Rows are PRIVATE "
+            "and Coach-validated before joining any training set "
+            "(FLEET_MEMORY_CHRONICLER_DATASET_INTAKE_DIR)"
+        ),
+    )
+    chronicler_story_card_queue_dir: str = Field(
+        default="chronicler_out/story_card_queue",
+        description=(
+            "Directory the Chronicler writes DRAFT story-card markdown into — the human "
+            "review queue. Cards are the ONLY output that may cross the publication "
+            "boundary, and only through the human gate (DF-008) "
+            "(FLEET_MEMORY_CHRONICLER_STORY_CARD_QUEUE_DIR)"
+        ),
+    )
+    chronicler_public_projects: str = Field(
+        default="",
+        description=(
+            "Comma-separated allowlist of projects whose story cards are non-confidential. "
+            "Any project NOT listed is marked confidential (DF-008: client-work events "
+            "must be structurally unable to leak) (FLEET_MEMORY_CHRONICLER_PUBLIC_PROJECTS)"
+        ),
+    )
+    chronicler_scan_limit: int = Field(
+        default=1000,
+        gt=0,
+        description=(
+            "Max records scanned per (project, payload_type) namespace in one harvest "
+            "run (FLEET_MEMORY_CHRONICLER_SCAN_LIMIT)"
+        ),
+    )
+
     # Embedding configuration
     embed_model: str = Field(
         default="nomic-embed-text-v1.5",

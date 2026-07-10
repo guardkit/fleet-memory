@@ -19,8 +19,14 @@ from fleet_memory.payloads.registry import PAYLOAD_REGISTRY
 # Project identifier pattern: lowercase alphanumeric + underscores only (no hyphens)
 _PROJECT_PATTERN = re.compile(r"^[a-z0-9_]+$")
 
-# Domain tag pattern: letters, digits, underscore, hyphen (exact-match facet)
-_DOMAIN_TAG_PATTERN = re.compile(r"^[a-zA-Z0-9_-]+$")
+# Domain tag pattern: letters, digits, underscore, hyphen, plus exactly ONE
+# optional namespace colon (exact-match facet). The optional `:segment` suffix
+# admits the colon-namespaced facets the backward-edge episode contract writes
+# (`env:prod`, `gate:build_approval`, `mode:mode_p`, `suite:po-heldout`,
+# `checkpoint:<hex>`, `role:product-owner`) — schema contract §2.9, an
+# unconditional prerequisite of that contract. Still exact-match: no quotes,
+# operators, or a second colon. (backward-edge-episode-schema-contract-2026-07-07)
+_DOMAIN_TAG_PATTERN = re.compile(r"^[a-zA-Z0-9_-]+(:[a-zA-Z0-9_-]+)?$")
 
 
 class SearchRequest(BaseModel):
@@ -92,7 +98,9 @@ class SearchRequest(BaseModel):
         """Validate domain tags with character-class allowlist.
 
         Tags are an exact-match facet. Allowed characters: letters, digits,
-        underscore, hyphen. No quotes, operators, or injection characters.
+        underscore, hyphen, plus exactly one optional namespace colon
+        (e.g. ``env:prod``, ``role:product-owner``). No quotes, operators,
+        injection characters, or a second colon.
 
         Args:
             v: List of domain tag strings
