@@ -9,7 +9,12 @@ description: 'FEAT-ABL-005: pg_dump-based snapshot of the live fleet-memory stor
   to scripts/fixture_snapshot.py + src/fleet_memory/fixture/ (scope paragraph 7: store/retrieval
   stack untouched).'
 created: '2026-07-03T17:30:02.654422'
-status: failed
+status: completed
+status_reconciled_by: WS3-S8-sweep-2026-07-11
+status_reconciled_note: 'flipped failed->completed on git evidence — hand-finished and
+  merged: caa670f "Merge FEAT-ABL-005: ablation fixture tooling (hand-finished)" +
+  fe319efa; all 6 tasks (TASK-ABL5-001..006) carry completing commits (6302e04, bd53a3c,
+  dabec76, e984228, 694487a, eb8763d). Pre-sweep status: failed (stale autobuild verdict).'
 complexity: 6
 estimated_tasks: 6
 tasks:
