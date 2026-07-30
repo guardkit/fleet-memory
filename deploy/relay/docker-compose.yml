@@ -7,12 +7,18 @@
 #   - the embed service by hostname (promaxgb10-41b1:9000)
 #
 # Secrets (FLEET_MEMORY_PG_DSN / FLEET_MEMORY_NATS_URL carry passwords) live in
-# .env.deploy (gitignored via deploy/**/.env.deploy). Copy .env.deploy.example ->
-# .env.deploy, fill in real values, chmod 600.
+# the sops-encrypted fleet secrets root (DF-022 sops cutover, Wave 2 2026-07-30):
+#   ~/.config/fleet-secrets/fleet-memory-pg/relay-env-deploy.enc.env
+# The `environment:` block below interpolates ${VAR} values that `sops exec-env`
+# injects at `up -d` time — no plaintext env file exists. `:?` on every var makes
+# a bare `docker compose up -d` (without the sops front) fail loudly instead of
+# starting the relay with silently-empty credentials.
 #
-# Usage:
-#   cp .env.deploy.example .env.deploy && $EDITOR .env.deploy && chmod 600 .env.deploy
-#   docker compose up -d --build
+# Usage (the ONLY supported start path — see the register page
+# PAGE-fleet-memory-pg.md §10.3):
+#   cd ~/.config/fleet-secrets && \
+#     ~/.local/bin/sops exec-env fleet-memory-pg/relay-env-deploy.enc.env \
+#     'docker compose -f <abs>/deploy/relay/docker-compose.yml up -d'
 #   docker compose logs -f          # expect "FastStream app started successfully!"
 services:
   fleet_memory_relay:
@@ -25,4 +31,12 @@ services:
     # Host networking: reach the broker on localhost + Tailscale/host-resolved
     # services (Postgres, embed) without bridging Tailscale into the container.
     network_mode: host
-    env_file: .env.deploy
+    environment:
+      FLEET_MEMORY_PG_DSN: ${FLEET_MEMORY_PG_DSN:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_URL: ${FLEET_MEMORY_EMBED_URL:?run via sops exec-env — see header}
+      FLEET_MEMORY_NATS_URL: ${FLEET_MEMORY_NATS_URL:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_MODEL: ${FLEET_MEMORY_EMBED_MODEL:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_DIMS: ${FLEET_MEMORY_EMBED_DIMS:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_TIMEOUT_S: ${FLEET_MEMORY_EMBED_TIMEOUT_S:?run via sops exec-env — see header}
+      FLEET_MEMORY_ACK_WAIT_S: ${FLEET_MEMORY_ACK_WAIT_S:?run via sops exec-env — see header}
+      FLEET_MEMORY_MAX_DELIVER: ${FLEET_MEMORY_MAX_DELIVER:?run via sops exec-env — see header}
