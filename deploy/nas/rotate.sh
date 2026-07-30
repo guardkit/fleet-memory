@@ -26,12 +26,31 @@
 
 set -euo pipefail
 
-if [ ! -f .env.deploy ]; then
-    echo "ERROR: .env.deploy not found. Copy from .env.deploy.example and fill values."
+# --- config load (DF-022 migration lane, Wave 2b: sops/age-aware) ------------
+# Post-cutover the deploy secrets (NAS_* + FLEET_MEMORY_PG_PASSWORD) live
+# sops-encrypted at the out-of-repo secrets root; pre-cutover (and on rollback)
+# a plaintext .env.deploy sits here. Load whichever is present — PREFERRING the
+# plaintext so this script's behavior is UNCHANGED before cutover and during a
+# rollback, and only decrypts once the plaintext has been shredded post-cutover.
+SOPS_BIN="${SOPS_BIN:-$HOME/.local/bin/sops}"
+SECRETS_ROOT="${SECRETS_ROOT:-$HOME/.config/fleet-secrets}"
+ENC_ENV="${ENC_ENV:-fleet-memory-pg/nas-env-deploy.enc.env}"
+if [ -f .env.deploy ]; then
+    # Plaintext present (pre-cutover or rollback) — today's behavior, unchanged.
+    # shellcheck disable=SC1091
+    source .env.deploy
+elif [ -x "${SOPS_BIN}" ] && [ -f "${SECRETS_ROOT}/${ENC_ENV}" ]; then
+    # Post-cutover: decrypt from the secrets root. Run sops FROM the root so it
+    # resolves the RIGHT .sops.yaml (custody §3 run-from-secrets-root law) — never
+    # a repo .sops.yaml. No plaintext file is written; values enter the env only.
+    # shellcheck disable=SC1090
+    source <( cd "${SECRETS_ROOT}" && "${SOPS_BIN}" -d "${ENC_ENV}" )
+else
+    echo "ERROR: no deploy config — neither a plaintext .env.deploy here nor the"
+    echo "       sops-encrypted ${SECRETS_ROOT}/${ENC_ENV} (via ${SOPS_BIN})."
+    echo "       Pre-cutover: copy from .env.deploy.example and fill values."
     exit 1
 fi
-
-source .env.deploy
 
 for var in NAS_HOST NAS_USER NAS_SSH_PORT NAS_DOCKER_ROOT FLEET_MEMORY_PG_PASSWORD; do
     if [ -z "${!var}" ]; then
