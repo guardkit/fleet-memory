@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 async def _read_projects(context: ServerContext) -> list[str]:
     """Read the list of projects that have memories in the store.
 
-    Uses list_namespaces to discover distinct project segments from
+    Uses alist_namespaces (the async store API) to discover distinct project segments from
     the fleet_memory namespace. The namespace shape is:
     ("fleet_memory", project, payload_type)
 
@@ -42,7 +42,7 @@ async def _read_projects(context: ServerContext) -> list[str]:
 
     # List namespaces with fleet_memory prefix
     # This returns tuples like ("fleet_memory", "guardkit", "Document")
-    namespaces = await context.store.list_namespaces(
+    namespaces = await context.store.alist_namespaces(
         prefix=("fleet_memory",),
         max_depth=2,  # Only go to project level
         limit=1000,  # Should be enough for listing projects

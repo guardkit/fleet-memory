@@ -25,7 +25,7 @@ async def test_lists_projects_with_memories() -> None:
     # Create a mock store that returns namespace tuples
     # Simulate namespace structure: ("fleet_memory", project, payload_type)
     mock_store = MagicMock()
-    mock_store.list_namespaces = AsyncMock(
+    mock_store.alist_namespaces = AsyncMock(
         return_value=[
             ("fleet_memory", "guardkit"),
             ("fleet_memory", "guardkit", "Document"),
@@ -67,7 +67,7 @@ async def test_store_down_degrades() -> None:
 
     # Create a mock store that raises TimeoutError
     mock_store = MagicMock()
-    mock_store.list_namespaces = AsyncMock(side_effect=TimeoutError("Connection timeout"))
+    mock_store.alist_namespaces = AsyncMock(side_effect=TimeoutError("Connection timeout"))
 
     context = ServerContext(store=mock_store, writer=None, settings=None)
 
@@ -114,7 +114,7 @@ async def test_empty_store_returns_empty_list() -> None:
 
     # Mock store with no namespaces
     mock_store = MagicMock()
-    mock_store.list_namespaces = AsyncMock(return_value=[])
+    mock_store.alist_namespaces = AsyncMock(return_value=[])
 
     context = ServerContext(store=mock_store, writer=None, settings=None)
 
@@ -136,7 +136,7 @@ async def test_deduplicates_projects() -> None:
 
     # Same project with many payload types
     mock_store = MagicMock()
-    mock_store.list_namespaces = AsyncMock(
+    mock_store.alist_namespaces = AsyncMock(
         return_value=[
             ("fleet_memory", "myproject", "Document"),
             ("fleet_memory", "myproject", "Chunk"),
@@ -188,7 +188,7 @@ async def test_projects_resource_returns_json() -> None:
 
     # Create a mock store with test data
     mock_store = MagicMock()
-    mock_store.list_namespaces = AsyncMock(
+    mock_store.alist_namespaces = AsyncMock(
         return_value=[
             ("fleet_memory", "proj_a", "Document"),
             ("fleet_memory", "proj_b", "Document"),
