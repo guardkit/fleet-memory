@@ -1,0 +1,66 @@
+# fleet-memory resident MCP service — HTTP MCP on :8005 over the NAS Postgres store.
+#
+# The one memory door for every Claude Code session and build leg on this box
+# (2026-08-03 reconnection ruling: resident HTTP over per-repo stdio — one URL,
+# zero per-repo secrets plumbing, the topology that survived config drift).
+#
+# Runs on the GB10 host with HOST networking so it reaches the NAS Postgres over
+# Tailscale (whitestocks.tailebf801.ts.net:5433) and the embed service by
+# hostname (promaxgb10-41b1:9000) exactly as the host does.
+#
+# Secrets (FLEET_MEMORY_PG_DSN carries a password) live in the sops-encrypted
+# fleet secrets root — this service reuses the relay's env file (same store,
+# same embedder; the MCP write path goes direct to Postgres via the
+# DeterministicWriter, so no NATS credential is needed):
+#   ~/.config/fleet-secrets/fleet-memory-pg/relay-env-deploy.enc.env
+# The `environment:` block interpolates ${VAR} values that `sops exec-env`
+# injects at `up -d` time — no plaintext env file exists. `:?` on every secret
+# var makes a bare `docker compose up -d` fail loudly instead of starting the
+# service with silently-empty credentials.
+#
+# Usage (the ONLY supported start path):
+#   cd ~/.config/fleet-secrets && \
+#     ~/.local/bin/sops exec-env fleet-memory-pg/relay-env-deploy.enc.env \
+#     'docker compose -f <abs>/deploy/mcp/docker-compose.yml up -d --build'
+#   docker compose logs -f          # expect "starting http transport on 0.0.0.0:8005"
+services:
+  fleet_memory_mcp:
+    build:
+      context: ../..
+      dockerfile: deploy/mcp/Dockerfile
+    image: fleet-memory-mcp
+    container_name: fleet-memory-mcp
+    restart: unless-stopped
+    # Host networking: reach Tailscale/host-resolved services (Postgres, embed)
+    # without bridging Tailscale into the container; serve :8005 on the host.
+    network_mode: host
+    environment:
+      FLEET_MEMORY_PG_DSN: ${FLEET_MEMORY_PG_DSN:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_URL: ${FLEET_MEMORY_EMBED_URL:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_MODEL: ${FLEET_MEMORY_EMBED_MODEL:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_DIMS: ${FLEET_MEMORY_EMBED_DIMS:?run via sops exec-env — see header}
+      FLEET_MEMORY_EMBED_TIMEOUT_S: ${FLEET_MEMORY_EMBED_TIMEOUT_S:?run via sops exec-env — see header}
+      # Non-secret transport settings — literal here, not in the secrets file
+      FLEET_MEMORY_MCP_TRANSPORT: http
+      FLEET_MEMORY_MCP_HOST: 0.0.0.0
+      FLEET_MEMORY_MCP_PORT: "8005"
+    healthcheck:
+      # Any HTTP response (even 4xx without the MCP Accept headers) proves the
+      # server is up; connection-refused is the failure signal. No curl in the
+      # slim image, so probe with the stdlib.
+      test:
+        - CMD
+        - python
+        - -c
+        - |
+          import urllib.request, urllib.error, sys
+          try:
+              urllib.request.urlopen("http://127.0.0.1:8005/mcp/", timeout=5)
+          except urllib.error.HTTPError:
+              pass
+          except Exception:
+              sys.exit(1)
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
