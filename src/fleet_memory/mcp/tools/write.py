@@ -97,7 +97,8 @@ def register(mcp, context) -> None:
         context: ServerContext with dependencies
     """
 
-    @mcp.tool()
+    # Canonical name — matches the command specs' mcp__fleet_memory__memory_write_payload
+    @mcp.tool(name="memory_write_payload")
     async def memory_write_payload_tool(payload: dict) -> dict:
         """Write a typed memory payload through the deterministic writer.
 
@@ -111,9 +112,8 @@ def register(mcp, context) -> None:
             Success: ToolResult with natural_key value
             Error: ToolResult with error details
         """
-        # Get writer from server state
-        state = mcp.get_state()
-        writer = state.get("writer")
+        # Writer comes from the shared ServerContext the lifespan populates
+        writer = context.writer
 
         if writer is None:
             return {

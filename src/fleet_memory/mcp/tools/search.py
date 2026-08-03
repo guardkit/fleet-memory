@@ -139,7 +139,10 @@ def register(mcp: Any, context: Any) -> None:
         search_tool.register(mcp, context)
     """
 
-    @mcp.tool()
+    # Registered under the canonical name every command spec selects
+    # (mcp__fleet_memory__memory_search). The inner function keeps a distinct
+    # name so it cannot shadow the module-level core function it calls.
+    @mcp.tool(name="memory_search")
     async def memory_search_tool(
         project: str,
         query: str | None = None,
@@ -161,20 +164,8 @@ def register(mcp: Any, context: Any) -> None:
         Returns:
             Dict with context_block, coverage_score, contributing_types, tokens_used
         """
-        # Get context from server state
-        state = mcp.get_state()
-        store = state.get("store")
-
-        # Build ServerContext from state
-        from fleet_memory.mcp.server import ServerContext
-
-        server_context = ServerContext(
-            store=store,
-            writer=state.get("writer"),
-            settings=state.get("settings"),
-        )
-
-        # Call the core search function (wrapped by @tool_safe)
+        # Dependencies come from the shared ServerContext the lifespan
+        # populates (fastmcp 3.x offers no get_state on the server).
         result = await memory_search(
             project=project,
             query=query,
@@ -183,7 +174,7 @@ def register(mcp: Any, context: Any) -> None:
             token_budget=token_budget,
             include_superseded=include_superseded,
             search_callable=None,  # Use real search
-            context=server_context,
+            context=context,
         )
 
         # Return the result (already wrapped by @tool_safe)

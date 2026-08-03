@@ -58,24 +58,25 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
     """
 
     @asynccontextmanager
-    async def lifespan() -> AsyncIterator[dict[str, Any]]:
+    async def lifespan(_server: FastMCP) -> AsyncIterator[dict[str, Any]]:
         """Lifespan context manager: lazy store initialization.
+
+        fastmcp invokes this with the server instance (LifespanCallable
+        contract). Dependencies are published by mutating the shared
+        ServerContext the tool closures hold — not via lifespan state,
+        which fastmcp 3.x does not expose to plain @mcp.tool functions.
 
         Entry:
             - If context has a settings instance, builds store + writer
-            - Yields a state dict with dependencies for tools
-            - Degraded mode (context.store=None): yields empty state
+              and sets them on the shared context
+            - Degraded mode (context.settings=None): leaves context as-is
 
         Exit:
-            - Closes store connection pool cleanly (if opened)
-
-        Yields:
-            State dict with 'store', 'writer', 'settings' keys
+            - Closes store connection pool cleanly and resets the context
         """
-        # Degraded/test mode: context has None dependencies
-        # Yield empty state and skip store initialization
+        # Degraded/test mode: context has None settings, or a store was
+        # injected directly (tests) — use the provided context untouched.
         if context.settings is None or context.store is not None:
-            # Test mode: use the provided context directly
             yield {
                 "store": context.store,
                 "writer": context.writer,
@@ -84,23 +85,43 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
             return
 
         # Production mode: lazy store initialization
-        # Import store context manager from existing infrastructure
+        import logging
+
         from fleet_memory.store import async_store_context
         from fleet_memory.writer.core import DeterministicWriter
 
-        # Enter store context (connects to Postgres, sets up embed callable)
-        async with async_store_context(context.settings) as store:
-            # Build writer with the connected store
-            writer = DeterministicWriter(store=store, settings=context.settings)
+        logger = logging.getLogger(__name__)
 
-            # Yield state for tools to access
+        # Enter store context (connects to Postgres, sets up embed callable).
+        # A down store must NOT kill the server: the documented contract is
+        # degraded mode — tools return structured infrastructure errors.
+        # The failure is logged LOUDLY (2026-08-03: silent degradation hid a
+        # month of dead memory; degraded is acceptable, quiet is not).
+        try:
+            store_cm = async_store_context(context.settings)
+            store = await store_cm.__aenter__()
+        except Exception:
+            logger.exception(
+                "MEMORY DEGRADED: store unreachable — serving structured "
+                "errors instead of memory. Fix the store connection."
+            )
+            yield {"store": None, "writer": None, "settings": context.settings}
+            return
+
+        context.store = store
+        context.writer = DeterministicWriter(store=store, settings=context.settings)
+        try:
             yield {
-                "store": store,
-                "writer": writer,
+                "store": context.store,
+                "writer": context.writer,
                 "settings": context.settings,
             }
-
-            # Exit: async_store_context closes pool automatically
+        finally:
+            # Reset so a stopped server never leaves tools holding a
+            # closed pool; async_store_context closes the pool itself.
+            context.store = None
+            context.writer = None
+            await store_cm.__aexit__(None, None, None)
 
     # Create FastMCP instance with lifespan
     # Name identifies this server in MCP client logs

@@ -29,14 +29,14 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> None:
-    """Build and run the MCP server over stdio transport.
+    """Build and run the MCP server.
 
     Constructs ServerContext with settings, builds the FastMCP server,
-    registers tools, and runs over stdio. The server starts even if
+    registers tools, and runs over the configured transport — stdio for
+    spawned clients (default), http for the resident fleet service
+    (FLEET_MEMORY_MCP_TRANSPORT=http). The server starts even if
     Postgres is unreachable (connection is lazy in the lifespan).
     """
-    logger.info("Starting fleet-memory MCP server (stdio transport)")
-
     # Load settings from environment
     try:
         settings = Settings()
@@ -54,11 +54,32 @@ def main() -> None:
     # Register all tools (Wave-1: no-op, Wave-3: adds tools)
     register_all(mcp, context)
 
-    logger.info("MCP server built, starting stdio transport...")
-
-    # Run the server over stdio
-    # This blocks until the client disconnects or the process is killed
-    mcp.run(transport="stdio")
+    transport = settings.mcp_transport.strip().lower()
+    if transport == "http":
+        allowed_hosts = [
+            h.strip() for h in settings.mcp_allowed_hosts.split(",") if h.strip()
+        ]
+        logger.info(
+            "MCP server built, starting http transport on %s:%s...",
+            settings.mcp_host,
+            settings.mcp_port,
+        )
+        mcp.run(
+            transport="http",
+            host=settings.mcp_host,
+            port=settings.mcp_port,
+            allowed_hosts=allowed_hosts or None,
+        )
+    elif transport == "stdio":
+        logger.info("MCP server built, starting stdio transport...")
+        # This blocks until the client disconnects or the process is killed
+        mcp.run(transport="stdio")
+    else:
+        logger.error(
+            "Unknown FLEET_MEMORY_MCP_TRANSPORT %r (expected 'stdio' or 'http')",
+            settings.mcp_transport,
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":

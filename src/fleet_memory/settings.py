@@ -119,6 +119,27 @@ class Settings(BaseSettings):
         description="NATS server URL",
     )
 
+    # MCP server transport (stdio for spawned clients, http for the resident service)
+    mcp_transport: str = Field(
+        default="stdio",
+        description="MCP transport: 'stdio' or 'http' (FLEET_MEMORY_MCP_TRANSPORT)",
+    )
+    mcp_host: str = Field(
+        default="127.0.0.1",
+        description="Bind address for http transport (FLEET_MEMORY_MCP_HOST)",
+    )
+    mcp_port: int = Field(
+        default=8005,
+        description="Bind port for http transport (FLEET_MEMORY_MCP_PORT)",
+    )
+    mcp_allowed_hosts: str = Field(
+        default="",
+        description="Comma-separated extra Host-header values accepted by the http "
+        "transport (e.g. 'promaxgb10-41b1:8005'). Needed when clients reach the "
+        "resident service by hostname rather than localhost "
+        "(FLEET_MEMORY_MCP_ALLOWED_HOSTS)",
+    )
+
     # DLQ configuration
     dlq_subject: str = Field(
         default="memory.dlq",

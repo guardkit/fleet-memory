@@ -103,11 +103,12 @@ def register(mcp, context) -> None:
         context: ServerContext with dependencies
     """
 
-    @mcp.tool()
+    # Canonical name — matches the command specs' mcp__fleet_memory__memory_supersede
+    @mcp.tool(name="memory_supersede")
     async def memory_supersede_tool(
         successor_key: str,
         predecessor_keys: list[str],
-    ) -> ToolResult:
+    ) -> dict:
         """Declare that a newer memory supersedes older ones.
 
         Marks predecessors as superseded by the successor. Superseded memories
@@ -118,18 +119,23 @@ def register(mcp, context) -> None:
             predecessor_keys: List of predecessor natural keys to mark as superseded
 
         Returns:
-            ToolResult with success message or error details
+            ToolResult envelope (dict) with success message or error details
         """
-        # Get store from server state
-        state = mcp.get_state()
-        store = state.get("store")
+        from dataclasses import asdict
+
+        # Store comes from the shared ServerContext the lifespan populates
+        store = context.store
 
         if store is None:
-            return ToolResult(
-                is_error=True,
-                error_type="infrastructure",
-                message="The memory store is unavailable",
+            return asdict(
+                ToolResult(
+                    is_error=True,
+                    error_type="infrastructure",
+                    message="The memory store is unavailable",
+                )
             )
 
-        # Call the wrapped implementation
-        return await memory_supersede(store, successor_key, predecessor_keys)
+        # Call the wrapped implementation; return the plain-dict envelope
+        # (a ToolResult annotation would make clients reconstruct a typed
+        # object instead of the envelope the command specs parse)
+        return asdict(await memory_supersede(store, successor_key, predecessor_keys))
