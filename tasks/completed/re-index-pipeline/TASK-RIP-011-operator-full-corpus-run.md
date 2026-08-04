@@ -105,7 +105,7 @@ ai-transition). Post-fix receipts:
   unparseable 0 (accounting exact).
 
 Artifacts (local, DF-008 — store-content excerpts stay out of the repo):
-`/tmp/claude-1000/reindex-report-run{1,2}.json`, `reindex-audit.json`,
+`/tmp/claude-1000/reindex-report-run{1,2}.json`, `reindex-audit.txt` (audit stdout capture),
 `/tmp/claude-1000/parity-candidate.json` (the freeze candidate, operator's
 ruling pending). Observed for the retrieval-quality family: small-budget
 generic queries now rank task outcomes above doc chunks (1,579 rows joined
