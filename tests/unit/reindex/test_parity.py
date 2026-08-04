@@ -17,6 +17,7 @@ from pathlib import Path
 import pytest
 
 from fleet_memory.reindex.parity import (
+    diff_against_baseline,
     generate_parity_report,
     load_probe_set,
     write_candidate_baseline,
@@ -178,3 +179,37 @@ class TestWriteCandidateBaseline:
         probes = load_probe_set(out_path)
         assert len(probes) == 2
         assert probes[0].baseline_answer == "frozen-me-later"
+
+
+class TestBaselineDiff:
+    """The operator-held frozen baseline: byte-diff with named divergences."""
+
+    def _rows(self, answer: str) -> list[dict]:
+        return [
+            {
+                "query": "q1",
+                "project": "guardkit",
+                "token_budget": 400,
+                "baseline_answer": answer,
+            }
+        ]
+
+    def test_identical_answers_zero_divergences(self) -> None:
+        diff = diff_against_baseline(self._rows("same"), self._rows("same"))
+        assert diff["divergence_count"] == 0
+        assert diff["compared"] == 1
+
+    def test_changed_answer_named(self) -> None:
+        diff = diff_against_baseline(self._rows("new"), self._rows("old"))
+        assert diff["divergence_count"] == 1
+        assert "answer diverged" in diff["divergences"][0]
+
+    def test_probe_missing_from_baseline_named(self) -> None:
+        diff = diff_against_baseline(self._rows("a"), [])
+        assert diff["divergence_count"] == 1
+        assert "not in baseline" in diff["divergences"][0]
+
+    def test_baseline_probe_missing_from_run_named(self) -> None:
+        diff = diff_against_baseline([], self._rows("a"))
+        assert diff["divergence_count"] == 1
+        assert "missing from run" in diff["divergences"][0]

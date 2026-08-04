@@ -79,6 +79,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="eval/probe_set.json",
         help="Probe set JSON for --parity (default: eval/probe_set.json)",
     )
+    parser.add_argument(
+        "--baseline",
+        default=None,
+        help=(
+            "Frozen baseline JSON to diff --parity answers against "
+            "(operator-held, OUT of repo — answers embed store content)"
+        ),
+    )
     return parser
 
 
@@ -265,6 +273,7 @@ async def run_audit(settings: Settings, args: argparse.Namespace) -> int:
 async def run_parity(settings: Settings, args: argparse.Namespace) -> int:
     """Probe-set retrieval-health run; writes the candidate baseline to --out."""
     from fleet_memory.reindex.parity import (
+        diff_against_baseline,
         generate_parity_report,
         load_probe_set,
         write_candidate_baseline,
@@ -282,6 +291,22 @@ async def run_parity(settings: Settings, args: argparse.Namespace) -> int:
             assemble_context,
         )
 
+    exit_code = 0
+    if args.baseline:
+        import json as _json
+        from pathlib import Path as _Path
+
+        baseline_rows = _json.loads(_Path(args.baseline).read_text())
+        diff = diff_against_baseline(report["candidate_baseline"], baseline_rows)
+        if diff["divergence_count"] == 0:
+            report["baseline_diff"] = f"0 divergences of {diff['compared']} probes"
+        else:
+            report["baseline_diff"] = (
+                f"{diff['divergence_count']} divergence(s): "
+                + "; ".join(diff["divergences"])
+            )
+            exit_code = 1
+
     print("\n=== Probe-Set Parity ===")
     print(f"Probes: {report['total_probes']}")
     print(f"Hits (non-empty context, coverage > 0): {report['hits']}")
@@ -291,7 +316,7 @@ async def run_parity(settings: Settings, args: argparse.Namespace) -> int:
 
     write_candidate_baseline(report, args.out)
     logger.info(f"Candidate baseline written to {args.out}")
-    return 0
+    return exit_code
 
 
 async def main(argv: list[str] | None = None) -> int:

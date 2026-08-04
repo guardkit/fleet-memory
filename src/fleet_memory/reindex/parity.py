@@ -155,3 +155,39 @@ def write_candidate_baseline(report: dict[str, Any], out_path: Path | str) -> No
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+
+
+def diff_against_baseline(
+    candidate_rows: list[dict[str, Any]],
+    baseline_rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Diff current answers against a frozen baseline (operator-held file).
+
+    The baseline file is the SAME shape --out writes (query/project/
+    token_budget/baseline_answer rows). It lives OUTSIDE the repo by rule:
+    answers embed store content, and this repository is public (DF-008 —
+    internal content structurally unable to leak; the operator freezes the
+    candidate at a local path and passes it back via --baseline).
+
+    A probe diverges when its current answer differs byte-wise from the
+    frozen one; probes present on only one side are named, never ignored.
+    """
+    key = lambda r: (r["query"], r["project"], r["token_budget"])  # noqa: E731
+    frozen = {key(r): r["baseline_answer"] for r in baseline_rows}
+    current = {key(r): r["baseline_answer"] for r in candidate_rows}
+
+    divergences: list[str] = []
+    for k, answer in current.items():
+        if k not in frozen:
+            divergences.append(f"probe not in baseline: {k[0]!r}")
+        elif frozen[k] != answer:
+            divergences.append(f"answer diverged: {k[0]!r}")
+    for k in frozen:
+        if k not in current:
+            divergences.append(f"baseline probe missing from run: {k[0]!r}")
+
+    return {
+        "compared": len(current),
+        "divergence_count": len(divergences),
+        "divergences": divergences,
+    }
