@@ -1,7 +1,7 @@
 ---
 id: TASK-RIP-011
 title: "Operator run: full guardkit corpus re-index verification"
-status: backlog
+status: completed
 created: 2026-06-13 20:30:00+00:00
 updated: 2026-06-13 20:30:00+00:00
 priority: high
@@ -76,3 +76,37 @@ task complete via `/task-complete`.
   records the result.
 - Attach the audit JSON and parity report to the task on completion as the
   verification record.
+
+---
+
+## Verification record (operator run, 2026-08-04 — COMPLETE)
+
+Run on the GB10 against the live relay + NAS Postgres, post classifier-reality
+merge (`67b4b75` + guardkit `55dcb5f8`). The first attempt of this task
+(2026-08-04 morning, pre-fix) is the finding of record: 70,903 processed /
+0 published — the classifier's front-matter contract existed nowhere in the
+live corpus (see `docs/…/classifier-reality-design-pass-2026-08-04.md` in
+ai-transition). Post-fix receipts:
+
+- **AC-1a** ✓ — census 1.66s · publish run 8.5s + relay drain ~2.5 min
+  (133→1,579 build_outcome rows) · second run 10.0s. All under the bar.
+- **AC-1b** ✓ — zero LLM/cloud calls (parse+publish only; embeds are the
+  relay's local llama-swap endpoint).
+- **AC-1c** ✓ — second run over the unchanged corpus: store byte-stable
+  (3,661 total; 1,579/953/775/59 identical), relay content-hash no-ops.
+- **AC-3** ✓ — audit: Published 1,496 / Stored 1,496 / Dead-lettered 0 /
+  Unaccounted 0 — 100% accounted, exit 0.
+- **AC-4** ✓ — parity: 16/16 probes hit (non-empty context, coverage > 0);
+  baseline diff honestly SKIPPED (the FEAT-MEM-05 freeze was declined
+  deliberately); candidate baseline written for the operator to freeze.
+- Invariants: `guardkit.adr` 59 and `guardkit.document` 775 UNCHANGED — the
+  08-03 export was upserted-against (~50 keys), never duplicated.
+- Census: walked 2,286 / publishable 1,496 / skipped-with-named-reasons 790 /
+  unparseable 0 (accounting exact).
+
+Artifacts (local, DF-008 — store-content excerpts stay out of the repo):
+`/tmp/claude-1000/reindex-report-run{1,2}.json`, `reindex-audit.json`,
+`/tmp/claude-1000/parity-candidate.json` (the freeze candidate, operator's
+ruling pending). Observed for the retrieval-quality family: small-budget
+generic queries now rank task outcomes above doc chunks (1,579 rows joined
+the mix) — a ranking-calibration follow-up, not a correctness defect.
