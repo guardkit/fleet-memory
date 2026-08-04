@@ -1,0 +1,17 @@
+# fleet-memory-chronicler.service — one Chronicler harvest pass (WS4-S7).
+# BATCH JOB by design (WS4 §4.2: no more resident consumers). Scheduled by
+# fleet-memory-chronicler.timer; one-shot; env arrives via sops exec-env from
+# the same leg-env family the factory reads (F10: values never at rest here).
+# Installed at ~/.config/systemd/user/ — this repo copy is the mirror of
+# record (the unit-mirror law). Watermark logic lives in chronicler-run.sh.
+
+[Unit]
+Description=fleet-memory Chronicler harvest pass (batch, WS4-S7)
+Documentation=file:///home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
+
+[Service]
+Type=oneshot
+ExecStart=/home/richardwoollcott/.local/bin/sops exec-env /home/richardwoollcott/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env /home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
+TimeoutStartSec=900
+StandardOutput=journal
+StandardError=journal

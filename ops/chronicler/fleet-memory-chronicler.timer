@@ -1,0 +1,15 @@
+# fleet-memory-chronicler.timer — daily Chronicler cadence (WS4-S7).
+# 07:15 local, Persistent so a powered-off morning still gets its pass on
+# boot. The service's watermark bounds each pass to the new window, so a
+# late or doubled fire never floods the review queue.
+
+[Unit]
+Description=Daily fleet-memory Chronicler harvest
+
+[Timer]
+OnCalendar=*-*-* 07:15:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
