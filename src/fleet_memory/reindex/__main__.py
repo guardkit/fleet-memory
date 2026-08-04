@@ -296,7 +296,8 @@ async def run_parity(settings: Settings, args: argparse.Namespace) -> int:
         import json as _json
         from pathlib import Path as _Path
 
-        baseline_rows = _json.loads(_Path(args.baseline).read_text())
+        _data = _json.loads(_Path(args.baseline).read_text())
+        baseline_rows = _data["probes"] if isinstance(_data, dict) else _data
         diff = diff_against_baseline(report["candidate_baseline"], baseline_rows)
         if diff["divergence_count"] == 0:
             report["baseline_diff"] = f"0 divergences of {diff['compared']} probes"
