@@ -21,7 +21,7 @@ from fleet_memory.reindex.backfill import (
 )
 
 if TYPE_CHECKING:
-    from unittest.mock import AsyncMock
+    pass
 
 
 @pytest.mark.asyncio
@@ -192,8 +192,9 @@ async def test_reviewed_backfill_uses_same_routing(
     """Reviewed backfill publishes byte-identically to deterministic re-index.
 
     Contract: content_format == 'json' + payload_type set, via the SAME
-    publisher (TASK-RIP-002) — no second write path.
-    Producer: TASK-RIP-002
+    ReindexPublisher JetStream path (subject memory.episode.{project}.{type})
+    — no second write path, and NEVER fleet_memory.app.broker (the old broker
+    path published to subject "MEMORY", which nothing captures).
 
     This is the seam test from the task file.
     """
@@ -213,23 +214,32 @@ async def test_reviewed_backfill_uses_same_routing(
     marker_path = tmp_path / "ADR_SEAM.json.reviewed"
     marker_path.touch()
 
-    # Capture what would be published to broker
-    published_episode = None
+    # Stub JetStream capturing the publish (subject + envelope + headers)
+    from unittest.mock import MagicMock
 
-    async def mock_broker_publish(episode_data, subject):
-        nonlocal published_episode
-        published_episode = episode_data
+    from fleet_memory.reindex import publisher as publisher_module
+    from fleet_memory.reindex.publisher import ReindexPublisher
 
-    # Mock broker.publish (the actual NATS publish from TASK-RIP-002)
-    from fleet_memory import app
+    published: list[tuple[str, dict, dict]] = []
 
-    monkeypatch.setattr(app.broker, "publish", mock_broker_publish)
+    class _StubJetStream:
+        async def publish(self, subject, body, headers=None):
+            published.append((subject, json.loads(body), headers or {}))
+
+    settings = MagicMock()
+    settings.publish_nats_url = "nats://stub:4222"
+    reindex_publisher = ReindexPublisher(settings)
+    reindex_publisher._js = _StubJetStream()
+    monkeypatch.setattr(publisher_module, "_active_publisher", reindex_publisher)
 
     # Process through the real backfill path
     await process_backfill_payload(payload_path)
 
     # Verify the episode matches the contract
-    assert published_episode is not None, "Episode should be published"
+    assert len(published) == 1, "Episode should be published"
+    subject, published_episode, headers = published[0]
+    assert subject == "memory.episode.test_project.adr"
     assert published_episode["content_format"] == "json"
     assert published_episode["payload_type"], "payload_type must be set"
     assert published_episode["payload_type"] == "adr"
+    assert headers["Nats-Msg-Id"] == published_episode["episode_id"]

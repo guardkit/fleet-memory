@@ -58,9 +58,12 @@ async def read_episodes(
     Args:
         store: The AsyncPostgresStore to read from.
         limit: Max records scanned per namespace.
-        since: Optional ISO-8601 lower bound on ``occurred_at`` (inclusive-exclusive by
-            string compare — ISO-8601 is lexicographically ordered); episodes with a known
-            earlier ``occurred_at`` are skipped. Undated episodes are always included.
+        since: Optional ISO-8601 lower bound (inclusive-exclusive by string compare —
+            ISO-8601 is lexicographically ordered). The bound is checked against
+            ``occurred_at`` when the episode carries one, else the store item's
+            ``created_at`` — 588/1090 live rows are undated, and an always-include
+            fallback re-emits every one of them on each daily timer run. Episodes
+            with neither timestamp are still always included.
 
     Returns:
         The list of rehydrated episodes across all projects and types.
@@ -78,7 +81,26 @@ async def read_episodes(
             episode = _rehydrate(namespace, item.value)
             if episode is None:
                 continue
-            if since and episode.occurred_at and episode.occurred_at < since:
-                continue
+            if since:
+                bound = episode.occurred_at or _item_created_at(item)
+                if bound and bound < since:
+                    continue
             episodes.append(episode)
     return episodes
+
+
+def _item_created_at(item: Any) -> str | None:
+    """Best-effort ISO-8601 ``created_at`` from a store item, or None.
+
+    The store stamps ``created_at`` on every row, so it is the honest
+    since-bound for episodes whose payload carries no ``occurred_at``.
+    """
+    created = getattr(item, "created_at", None)
+    if created is None:
+        return None
+    if isinstance(created, str):
+        return created
+    try:
+        return created.isoformat()
+    except AttributeError:
+        return None

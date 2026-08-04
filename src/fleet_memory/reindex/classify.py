@@ -1,62 +1,71 @@
-"""Document classification and parser dispatch for fleet-memory reindexing.
+"""Corpus-reality document classification for fleet-memory reindexing.
 
-Reads YAML front-matter from corpus documents and classifies their document kind
-deterministically from path conventions and front-matter fields. Dispatches to
-the appropriate parser based on kind.
+Classification is PATH-FIRST: the document's kind comes from the corpus manifest
+(longest-prefix match on its repo-relative path), never from a front-matter
+``type:`` field. Corpus reality killed the front-matter type contract: of 2,286
+live files under tasks/completed, zero carry ``type: completed_task`` — the old
+four-value contract classified everything "unrecognized" and published nothing
+("70,903 processed, 0 published").
 
-Security property: malformed front-matter and unrecognized kinds are reported
-with reasons, never guessed at and never silently dropped (ASSUM-004).
+For the tasks lane (kind ``build_outcome``) a file is publishable only when its
+YAML front-matter carries an ``id`` AND a TERMINAL status (completed /
+review_complete / closed / superseded, case-insensitive). Live census: 2,286 md
+files, 1,675 with front-matter, 1,561 with a terminal status.
+
+Security property: EVERY non-publishable file gets a named skip reason — never
+guessed at, never silently dropped (ASSUM-004).
 """
 
 from __future__ import annotations
 
 import re
-from collections.abc import Callable
 from dataclasses import dataclass
-from enum import Enum
 from pathlib import Path
 from typing import Any
 
 import yaml
 
+from fleet_memory.reindex.manifest import CorpusManifest
 from fleet_memory.reindex.walker import CorpusDocument
 
+# Terminal task statuses (case-insensitive): the file describes finished work.
+# Everything else (backlog, in_progress, blocked, template garbage like
+# "{status}") is curation noise that must not enter the store.
+TERMINAL_STATUSES = frozenset({"completed", "review_complete", "closed", "superseded"})
 
-class DocumentKind(str, Enum):
-    """Known document kinds in the corpus.
-
-    Each kind maps to a specific parser in the dispatch table.
-    """
-
-    SEED_MODULE = "seed_module"
-    ADR = "adr"
-    REVIEW_REPORT = "review_report"
-    COMPLETED_TASK = "completed_task"
+# Agent-definition front-matter shape: these .md files live under tasks/completed
+# (e.g. tasks/completed/agent-enhancement-implementation/agents/) but describe
+# agents, not build outcomes. Live census: 16 such files.
+AGENT_DEFINITION_KEYS = frozenset({"name", "model", "tools"})
 
 
 @dataclass(frozen=True)
-class ParseResult:
-    """Result of document classification and parsing.
+class Classification:
+    """Result of classifying one corpus document.
 
-    A tagged union representing one of three outcomes:
-    - parsed: Successfully classified with a known kind
-    - parse_failure: Front-matter could not be parsed
-    - unrecognized: Valid front-matter but unknown kind
+    Exactly one of two outcomes:
+    - publishable: kind is set, skip_reason is None
+    - skipped: skip_reason names why (never silently dropped)
 
     Attributes:
-        status: One of "parsed", "parse_failure", or "unrecognized"
         document_path: Source document path for accounting
-        kind: Document kind (only set when status == "parsed")
-        reason: Human-readable explanation (set for parse_failure and unrecognized)
+        kind: Manifest kind when publishable (e.g. "build_outcome")
+        frontmatter: Parsed front-matter dict when available (reused by parsers)
+        skip_reason: Named reason when not publishable
     """
 
-    status: str  # "parsed" | "parse_failure" | "unrecognized"
     document_path: Path
-    kind: DocumentKind | None = None
-    reason: str | None = None
+    kind: str | None = None
+    frontmatter: dict[str, Any] | None = None
+    skip_reason: str | None = None
+
+    @property
+    def publishable(self) -> bool:
+        """True when the document should be parsed and published."""
+        return self.skip_reason is None
 
 
-def _extract_frontmatter(text: str) -> dict[str, Any] | None:
+def extract_frontmatter(text: str) -> dict[str, Any] | None:
     """Extract and parse YAML front-matter from markdown text.
 
     Args:
@@ -80,117 +89,89 @@ def _extract_frontmatter(text: str) -> dict[str, Any] | None:
     return yaml.safe_load(yaml_content)
 
 
-def _classify_kind(frontmatter: dict[str, Any], path: Path) -> DocumentKind | None:
-    """Classify document kind from front-matter fields.
-
-    Classification is deterministic based on the 'type' field in front-matter.
-
-    Args:
-        frontmatter: Parsed front-matter dictionary
-        path: Document path (for path-based heuristics if needed)
-
-    Returns:
-        Classified DocumentKind, or None if unrecognized
-    """
-    doc_type = frontmatter.get("type", "").lower()
-
-    # Map type field to DocumentKind
-    type_mapping = {
-        "seed_module": DocumentKind.SEED_MODULE,
-        "adr": DocumentKind.ADR,
-        "review_report": DocumentKind.REVIEW_REPORT,
-        "completed_task": DocumentKind.COMPLETED_TASK,
-    }
-
-    return type_mapping.get(doc_type)
+def _repo_relative_path(doc: CorpusDocument, corpus_root: Path) -> str:
+    """Compute the document's repo-relative path with forward slashes."""
+    relative = doc.path.resolve().relative_to(corpus_root.resolve())
+    return str(relative).replace("\\", "/")
 
 
-def classify_document(doc: CorpusDocument) -> ParseResult:
-    """Classify a corpus document by reading its front-matter.
+def classify_document(
+    doc: CorpusDocument,
+    manifest: CorpusManifest,
+    corpus_root: Path,
+) -> Classification:
+    """Classify a corpus document: path-first kind, front-matter gate for tasks.
 
-    Returns a structured result for every document:
-    - Malformed front-matter → parse_failure with reason
-    - Missing/unrecognized kind → unrecognized with reason
-    - Known kind → parsed with kind
+    Only owner=="reindex" roots are ever walked, so in normal operation every
+    document resolves to a reindex-owned kind; the harvest-owned and
+    outside-manifest branches are defensive accounting, never silent drops.
 
     Args:
         doc: Corpus document to classify
+        manifest: Corpus manifest (ownership + kind resolution)
+        corpus_root: Repository checkout root the corpus was walked from
 
     Returns:
-        ParseResult with classification outcome
+        Classification — publishable with a kind, or skipped with a named reason
     """
-    # Try to extract front-matter
+    relative_path = _repo_relative_path(doc, corpus_root)
+
+    resolved = manifest.resolve_kind(relative_path)
+    if resolved is None:
+        return Classification(
+            document_path=doc.path,
+            skip_reason="path outside manifest roots",
+        )
+
+    kind, owner = resolved
+    if owner != "reindex":
+        # Harvest-owned paths (docs/adr, docs/code-review, ...) belong to
+        # guardkit's prose harvester — publishing them here would double-publish.
+        return Classification(
+            document_path=doc.path,
+            skip_reason=f"harvest-owned kind: {kind}",
+        )
+
+    # Tasks lane gate: front-matter with id + TERMINAL status
     try:
-        frontmatter = _extract_frontmatter(doc.text)
-    except yaml.YAMLError as e:
-        # Malformed YAML in front-matter
-        return ParseResult(
-            status="parse_failure",
-            document_path=doc.path,
-            reason=f"Failed to parse YAML front-matter: {str(e)}",
-        )
+        frontmatter = extract_frontmatter(doc.text)
+    except yaml.YAMLError:
+        return Classification(document_path=doc.path, skip_reason="bad YAML")
 
-    # No front-matter found
     if frontmatter is None:
-        return ParseResult(
-            status="unrecognized",
+        return Classification(document_path=doc.path, skip_reason="no front-matter")
+
+    if not isinstance(frontmatter, dict):
+        # Front-matter parsed to a scalar/list — it cannot carry an id
+        return Classification(
             document_path=doc.path,
-            reason="No YAML front-matter block found",
+            skip_reason="front-matter without id",
         )
 
-    # Classify the document kind
-    kind = _classify_kind(frontmatter, doc.path)
-
-    if kind is None:
-        # Valid front-matter but unrecognized type
-        doc_type = frontmatter.get("type", "(missing)")
-        return ParseResult(
-            status="unrecognized",
+    if AGENT_DEFINITION_KEYS.issubset(frontmatter.keys()):
+        return Classification(
             document_path=doc.path,
-            reason=f"Unrecognized document type: {doc_type}",
+            frontmatter=frontmatter,
+            skip_reason="agent-definition shape (name/model/tools keys)",
         )
 
-    # Successfully classified
-    return ParseResult(
-        status="parsed",
+    if not frontmatter.get("id"):
+        return Classification(
+            document_path=doc.path,
+            frontmatter=frontmatter,
+            skip_reason="front-matter without id",
+        )
+
+    status = str(frontmatter.get("status", "")).strip()
+    if status.lower() not in TERMINAL_STATUSES:
+        return Classification(
+            document_path=doc.path,
+            frontmatter=frontmatter,
+            skip_reason=f"non-terminal status: {status or '(missing)'}",
+        )
+
+    return Classification(
         document_path=doc.path,
         kind=kind,
+        frontmatter=frontmatter,
     )
-
-
-# Placeholder parser callables (actual parsers land in TASK-RIP-004)
-def _parse_seed_module(doc: CorpusDocument) -> dict[str, Any]:
-    """Placeholder parser for seed module documents."""
-    return {"kind": "seed_module", "path": str(doc.path)}
-
-
-def _parse_adr(doc: CorpusDocument) -> dict[str, Any]:
-    """Placeholder parser for ADR documents."""
-    return {"kind": "adr", "path": str(doc.path)}
-
-
-def _parse_review_report(doc: CorpusDocument) -> dict[str, Any]:
-    """Placeholder parser for review report documents."""
-    return {"kind": "review_report", "path": str(doc.path)}
-
-
-def _parse_completed_task(doc: CorpusDocument) -> dict[str, Any]:
-    """Placeholder parser for completed task documents."""
-    return {"kind": "completed_task", "path": str(doc.path)}
-
-
-def get_parser_dispatch_table() -> dict[DocumentKind, Callable[[CorpusDocument], Any]]:
-    """Get the dispatch table mapping document kinds to parser callables.
-
-    The parsers themselves are implemented in TASK-RIP-004. This task
-    establishes the dispatch mechanism.
-
-    Returns:
-        Dictionary mapping each DocumentKind to its parser function
-    """
-    return {
-        DocumentKind.SEED_MODULE: _parse_seed_module,
-        DocumentKind.ADR: _parse_adr,
-        DocumentKind.REVIEW_REPORT: _parse_review_report,
-        DocumentKind.COMPLETED_TASK: _parse_completed_task,
-    }

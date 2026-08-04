@@ -1,210 +1,140 @@
-"""Unit tests for document classification and parser dispatch.
+"""Unit tests for corpus-reality classification.
 
-Tests front-matter parsing, document kind classification, and dispatch logic.
+Every fixture is a VERBATIM copy of a live guardkit corpus file (see
+tests/fixtures/corpus/). The fixture table below is the corpus-reality
+contract: real file shapes -> named outcomes. The old front-matter ``type:``
+contract classified all of them "unrecognized" — that fiction is what this
+lane exists to bank against.
 """
 
 from __future__ import annotations
 
-from pathlib import Path
+import pytest
 
-from fleet_memory.reindex.classify import (
-    DocumentKind,
-    classify_document,
-    get_parser_dispatch_table,
-)
-from fleet_memory.reindex.walker import CorpusDocument
+from fleet_memory.reindex.classify import classify_document
+
+# Fixture table: (repo-relative path, expected kind or None, expected skip reason or None)
+FIXTURE_TABLE = [
+    # Plain completed task — publishable
+    (
+        "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md",
+        "build_outcome",
+        None,
+    ),
+    # Autobuild-block front-matter shape — publishable
+    (
+        "tasks/completed/2026-07/TASK-OBS-9F43-model-attribution-correlation-identity.md",
+        "build_outcome",
+        None,
+    ),
+    # status: COMPLETED uppercase — accepted (case-insensitive terminal)
+    (
+        "tasks/completed/TASK-GR-FULL-DOC-PARSER/TASK-GR-FULL-DOC-PARSER.md",
+        "build_outcome",
+        None,
+    ),
+    # Dotted id — publishable (identifier sanitized downstream)
+    (
+        "tasks/completed/TASK-CRS-014.7/TASK-CRS-014.7.md",
+        "build_outcome",
+        None,
+    ),
+    # Lessons-bearing completed task — publishable
+    (
+        "tasks/completed/2025-11/TASK-013-integration-tests.md",
+        "build_outcome",
+        None,
+    ),
+    # Backlog-status file archived under tasks/completed — named skip
+    (
+        "tasks/completed/TASK-09E9-comprehensive-template-create-review.md",
+        None,
+        "non-terminal status: backlog",
+    ),
+    # Agent definition (name/model/tools keys) living under tasks/completed
+    (
+        "tasks/completed/agent-enhancement-implementation/agents/python/python-api-specialist.md",
+        None,
+        "agent-definition shape (name/model/tools keys)",
+    ),
+    # Completion report with no front-matter block at all
+    (
+        "tasks/completed/TASK-066-COMPLETION-REPORT.md",
+        None,
+        "no front-matter",
+    ),
+    # Front-matter carries task_id but NOT id (live uppercase-status shape)
+    (
+        "tasks/completed/TASK-FIX-7C3D-file-io-error-handling.md",
+        None,
+        "front-matter without id",
+    ),
+    # Malformed YAML front-matter (10 such files live)
+    (
+        "tasks/completed/TASK-FIX-CDF8/TASK-FIX-CDF8.md",
+        None,
+        "bad YAML",
+    ),
+    # ADR under a harvest-owned root — never swallowed into the tasks lane
+    (
+        "docs/adr/0001-adopt-agentic-flow.md",
+        None,
+        "harvest-owned kind: adr",
+    ),
+]
 
 
-def test_malformed_frontmatter_reports_reason() -> None:
-    """A document with malformed YAML front-matter yields parse_failure with reason.
+class TestClassifyFixtureTable:
+    """The corpus-reality fixture table: real files -> named outcomes."""
 
-    The parser must not raise an exception - it returns a structured result
-    carrying the source reference and a human-readable reason.
-    """
-    # Arrange - document with invalid YAML front-matter
-    doc = CorpusDocument(
-        path=Path("/corpus/broken.md"),
-        text="""---
-invalid: yaml: content: [
-no: closing: bracket
----
-
-# Content
-""",
+    @pytest.mark.parametrize(
+        ("relative_path", "expected_kind", "expected_reason"),
+        FIXTURE_TABLE,
+        ids=[row[0].rsplit("/", 1)[-1] for row in FIXTURE_TABLE],
     )
+    def test_fixture_classification(
+        self, load_doc, manifest, corpus_root, relative_path, expected_kind, expected_reason
+    ) -> None:
+        doc = load_doc(relative_path)
+        result = classify_document(doc, manifest, corpus_root)
 
-    # Act
-    result = classify_document(doc)
+        assert result.skip_reason == expected_reason
+        assert result.kind == expected_kind
+        assert result.publishable is (expected_reason is None)
 
-    # Assert
-    assert result.status == "parse_failure"
-    assert result.document_path == Path("/corpus/broken.md")
-    assert result.reason is not None
-    assert len(result.reason) > 0
-    # Should mention YAML or parsing in the reason
-    assert any(keyword in result.reason.lower() for keyword in ["yaml", "parse", "front"])
+    def test_every_skip_has_a_named_reason(
+        self, load_doc, manifest, corpus_root
+    ) -> None:
+        """No fixture is ever silently dropped: skip implies a non-empty reason."""
+        for relative_path, _kind, _reason in FIXTURE_TABLE:
+            result = classify_document(load_doc(relative_path), manifest, corpus_root)
+            if not result.publishable:
+                assert result.skip_reason, f"{relative_path} skipped without a reason"
 
-
-def test_unrecognized_kind_reported() -> None:
-    """A document matching no known parser yields unrecognized with reason."""
-    # Arrange - valid YAML but unrecognized document kind
-    doc = CorpusDocument(
-        path=Path("/corpus/unknown.md"),
-        text="""---
-title: Some Document
-type: unknown_document_type
----
-
-# Content
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "unrecognized"
-    assert result.document_path == Path("/corpus/unknown.md")
-    assert result.reason is not None
-    assert len(result.reason) > 0
+    def test_publishable_classification_carries_frontmatter(
+        self, load_doc, manifest, corpus_root
+    ) -> None:
+        """Publishable results carry the parsed front-matter for the parser."""
+        doc = load_doc(
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md"
+        )
+        result = classify_document(doc, manifest, corpus_root)
+        assert result.publishable
+        assert result.frontmatter is not None
+        assert result.frontmatter["id"] == "TASK-FIX-RESUMEVENV01"
+        assert result.frontmatter["status"] == "completed"
 
 
-def test_each_known_kind_dispatches_to_a_parser() -> None:
-    """Each of the four known document kinds maps to a parser callable.
+class TestOldContractDeleted:
+    """The four-value front-matter type contract is gone outright."""
 
-    The dispatch table must contain entries for:
-    - seed_module
-    - adr
-    - review_report
-    - completed_task
-    """
-    # Act
-    dispatch_table = get_parser_dispatch_table()
+    def test_document_kind_enum_deleted(self) -> None:
+        import fleet_memory.reindex.classify as classify_module
 
-    # Assert
-    assert DocumentKind.SEED_MODULE in dispatch_table
-    assert DocumentKind.ADR in dispatch_table
-    assert DocumentKind.REVIEW_REPORT in dispatch_table
-    assert DocumentKind.COMPLETED_TASK in dispatch_table
+        assert not hasattr(classify_module, "DocumentKind")
 
-    # Each entry should be callable
-    for kind, parser in dispatch_table.items():
-        assert callable(parser), f"{kind} parser is not callable"
+    def test_dead_parser_kinds_deleted(self) -> None:
+        import fleet_memory.reindex.parsers as parsers_module
 
-
-def test_missing_frontmatter_yields_unrecognized() -> None:
-    """A document with no front-matter block is treated as unrecognized, not crash."""
-    # Arrange - document with no front-matter
-    doc = CorpusDocument(
-        path=Path("/corpus/no_fm.md"),
-        text="""# Just a heading
-
-Some content without front-matter.
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "unrecognized"
-    assert result.document_path == Path("/corpus/no_fm.md")
-    assert result.reason is not None
-
-
-def test_seed_module_recognized() -> None:
-    """A seed module document is correctly classified."""
-    # Arrange - document that looks like a seed module
-    doc = CorpusDocument(
-        path=Path("/corpus/modules/auth.md"),
-        text="""---
-module_id: auth
-type: seed_module
-title: Authentication Module
----
-
-# Auth Module
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "parsed"
-    assert result.kind == DocumentKind.SEED_MODULE
-    assert result.document_path == Path("/corpus/modules/auth.md")
-
-
-def test_adr_recognized() -> None:
-    """An ADR document is correctly classified."""
-    # Arrange - document that looks like an ADR
-    doc = CorpusDocument(
-        path=Path("/corpus/decisions/adr-001.md"),
-        text="""---
-id: ADR-001
-type: adr
-title: Use PostgreSQL for persistence
-status: accepted
----
-
-# ADR-001
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "parsed"
-    assert result.kind == DocumentKind.ADR
-    assert result.document_path == Path("/corpus/decisions/adr-001.md")
-
-
-def test_review_report_recognized() -> None:
-    """A review report document is correctly classified."""
-    # Arrange
-    doc = CorpusDocument(
-        path=Path("/corpus/reviews/review-001.md"),
-        text="""---
-review_id: REV-001
-type: review_report
-title: Code Review Report
----
-
-# Review Report
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "parsed"
-    assert result.kind == DocumentKind.REVIEW_REPORT
-    assert result.document_path == Path("/corpus/reviews/review-001.md")
-
-
-def test_completed_task_recognized() -> None:
-    """A completed task document is correctly classified."""
-    # Arrange
-    doc = CorpusDocument(
-        path=Path("/corpus/tasks/completed/TASK-001.md"),
-        text="""---
-id: TASK-001
-type: completed_task
-title: Implement feature X
-status: completed
----
-
-# Task Report
-""",
-    )
-
-    # Act
-    result = classify_document(doc)
-
-    # Assert
-    assert result.status == "parsed"
-    assert result.kind == DocumentKind.COMPLETED_TASK
-    assert result.document_path == Path("/corpus/tasks/completed/TASK-001.md")
+        for name in ("parse_seed_module", "parse_adr", "parse_review_report"):
+            assert not hasattr(parsers_module, name)

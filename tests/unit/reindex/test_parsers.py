@@ -1,452 +1,172 @@
-"""Unit tests for document parsers in reindex pipeline.
+"""Unit tests for the completed-task parser.
 
-Tests each parser kind (seed_module, ADR, review_report, build_outcome)
-for correct payload construction, identifier normalization, missing-field
-handling, and injection-content safety.
+Fixtures are VERBATIM copies of live guardkit corpus files. The identifier
+rule is BYTE-IDENTICAL to guardkit's sanitize_identifier semantics — the
+cross-repo vectors below pin it on both sides so writes, reads and audits
+agree on the same natural key.
 """
 
 from __future__ import annotations
 
-from pathlib import Path
+import re
 
-from fleet_memory.payloads.models import (
-    ADRPayload,
-    BuildOutcomePayload,
-    ReviewReportPayload,
-    SeedModulePayload,
-)
+import pytest
+
 from fleet_memory.reindex.parsers import (
     ParsedPayload,
     UnparseableDocument,
-    parse_adr,
-    parse_build_outcome,
-    parse_review_report,
-    parse_seed_module,
+    extract_lessons,
+    parse_completed_task,
+    sanitize_identifier,
 )
-from fleet_memory.reindex.walker import CorpusDocument
+
+# Cross-repo sanitize vectors (guardkit.knowledge.fleet_memory_payloads.sanitize_identifier):
+# 38 live ids carry dots — the old hyphen/colon-only rule would have DLQ'd them all.
+CROSS_REPO_VECTORS = [
+    ("TASK-FIX-RESUMEVENV01", "TASK_FIX_RESUMEVENV01"),
+    ("TASK-CRS-014.7", "TASK_CRS_014_7"),  # dots collapse
+    ("TASK-FIX-RWOP1.3.3", "TASK_FIX_RWOP1_3_3"),  # live dotted id
+    ("TASK-030B-1.4", "TASK_030B_1_4"),  # live dotted id
+    ("TASK-1234", "TASK_1234"),
+    ("ADR-001", "ADR_001"),
+    ("a:b/c d", "a_b_c_d"),  # every non-[A-Za-z0-9_] run collapses to ONE underscore
+    (".TASK.", "TASK"),  # leading/trailing underscores stripped
+    ("", "unknown"),
+    ("---", "unknown"),
+]
 
 
-class TestSeedModuleParser:
-    """Test seed_module document parsing."""
+class TestSanitizeIdentifier:
+    """Identifier rule byte-identical to guardkit's sanitize_identifier."""
 
-    def test_seed_module_parses_to_canonical_payload(self) -> None:
-        """A seed module document with required fields produces a SeedModulePayload."""
-        doc = CorpusDocument(
-            path=Path("/corpus/project/seed/bootstrap.md"),
-            text="""---
-type: seed_module
-project: fleet_memory
-identifier: bootstrap_core
-module_path: src/core/bootstrap
----
-# Bootstrap Core Module
-""",
+    @pytest.mark.parametrize(("raw", "expected"), CROSS_REPO_VECTORS)
+    def test_cross_repo_vectors(self, raw: str, expected: str) -> None:
+        assert sanitize_identifier(raw) == expected
+
+    @pytest.mark.parametrize(("raw", "_expected"), CROSS_REPO_VECTORS)
+    def test_matches_guardkit_algorithm_exactly(self, raw: str, _expected: str) -> None:
+        """Recompute with guardkit's exact expression and compare."""
+        if not raw:
+            expected = "unknown"
+        else:
+            expected = re.sub(r"[^A-Za-z0-9_]+", "_", raw).strip("_") or "unknown"
+        assert sanitize_identifier(raw) == expected
+
+
+class TestParseCompletedTask:
+    """Parser contract over verbatim fixture files."""
+
+    def test_natural_key_exact(self, load_doc, corpus_root) -> None:
+        doc = load_doc(
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md"
         )
-
-        result = parse_seed_module(doc)
-
+        result = parse_completed_task(doc, corpus_root)
         assert isinstance(result, ParsedPayload)
-        assert isinstance(result.payload, SeedModulePayload)
-        assert result.payload.project == "fleet_memory"
-        assert result.payload.identifier == "bootstrap_core"
-        assert result.payload.module_path == "src/core/bootstrap"
-        assert result.payload.source_ref == str(doc.path)
-        assert result.payload.payload_type == "seed_module"
-
-    def test_seed_module_missing_module_path_is_unparseable(self) -> None:
-        """A seed module missing required module_path field is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/project/seed/incomplete.md"),
-            text="""---
-type: seed_module
-project: fleet_memory
-identifier: incomplete_module
----
-# Incomplete Module
-""",
+        assert (
+            result.payload.natural_key
+            == "build_outcome:guardkit:TASK_FIX_RESUMEVENV01"
         )
 
-        result = parse_seed_module(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "module_path" in result.reason.lower()
-        assert result.document_path == doc.path
-
-
-class TestADRParser:
-    """Test ADR document parsing."""
-
-    def test_adr_parses_to_canonical_payload(self) -> None:
-        """An ADR document with decision and status produces an ADRPayload."""
-        doc = CorpusDocument(
-            path=Path("/corpus/adrs/ADR-SP-007.md"),
-            text="""---
-type: adr
-project: guardkit
-identifier: ADR-SP-007
-decision: Use PostgreSQL for primary data store
-status: accepted
----
-# ADR: Database Selection
-""",
-        )
-
-        result = parse_adr(doc)
-
+    def test_dotted_id_natural_key(self, load_doc, corpus_root) -> None:
+        doc = load_doc("tasks/completed/TASK-CRS-014.7/TASK-CRS-014.7.md")
+        result = parse_completed_task(doc, corpus_root)
         assert isinstance(result, ParsedPayload)
-        assert isinstance(result.payload, ADRPayload)
-        assert result.payload.decision == "Use PostgreSQL for primary data store"
-        assert result.payload.status == "accepted"
-        assert result.payload.payload_type == "adr"
+        assert result.payload.identifier == "TASK_CRS_014_7"
+        assert result.payload.natural_key == "build_outcome:guardkit:TASK_CRS_014_7"
 
-    def test_adr_missing_decision_is_unparseable(self) -> None:
-        """An ADR missing the decision field is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/adrs/incomplete.md"),
-            text="""---
-type: adr
-project: guardkit
-identifier: incomplete_adr
-status: proposed
----
-# Incomplete ADR
-""",
+    def test_uppercase_terminal_status_accepted(self, load_doc, corpus_root) -> None:
+        """status: COMPLETED maps to 'success' with the original carried as a tag."""
+        doc = load_doc(
+            "tasks/completed/TASK-GR-FULL-DOC-PARSER/TASK-GR-FULL-DOC-PARSER.md"
         )
-
-        result = parse_adr(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "decision" in result.reason.lower()
-
-    def test_adr_missing_status_is_unparseable(self) -> None:
-        """An ADR missing the status field is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/adrs/no-status.md"),
-            text="""---
-type: adr
-project: guardkit
-identifier: no_status_adr
-decision: Some decision
----
-# ADR without status
-""",
-        )
-
-        result = parse_adr(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "status" in result.reason.lower()
-
-
-class TestReviewReportParser:
-    """Test review_report document parsing."""
-
-    def test_review_report_parses_to_canonical_payload(self) -> None:
-        """A review report with verdict produces a ReviewReportPayload."""
-        doc = CorpusDocument(
-            path=Path("/corpus/reviews/code-review-123.md"),
-            text="""---
-type: review_report
-project: fleet_memory
-identifier: code_review_123
-verdict: approved
----
-# Code Review Report
-""",
-        )
-
-        result = parse_review_report(doc)
-
+        result = parse_completed_task(doc, corpus_root)
         assert isinstance(result, ParsedPayload)
-        assert isinstance(result.payload, ReviewReportPayload)
-        assert result.payload.verdict == "approved"
-        assert result.payload.payload_type == "review_report"
-
-    def test_review_report_missing_verdict_is_unparseable(self) -> None:
-        """A review report missing the verdict field is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/reviews/incomplete.md"),
-            text="""---
-type: review_report
-project: fleet_memory
-identifier: incomplete_review
----
-# Incomplete Review
-""",
-        )
-
-        result = parse_review_report(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "verdict" in result.reason.lower()
-
-
-class TestBuildOutcomeParser:
-    """Test build_outcome (completed_task) document parsing."""
-
-    def test_build_outcome_parses_to_canonical_payload(self) -> None:
-        """A completed task with status and duration produces a BuildOutcomePayload."""
-        doc = CorpusDocument(
-            path=Path("/corpus/tasks/TASK-RIP-003.md"),
-            text="""---
-type: completed_task
-project: fleet_memory
-identifier: TASK-RIP-003
-status: success
-duration_seconds: 240
----
-# Completed Task
-""",
-        )
-
-        result = parse_build_outcome(doc)
-
-        assert isinstance(result, ParsedPayload)
-        assert isinstance(result.payload, BuildOutcomePayload)
         assert result.payload.status == "success"
-        assert result.payload.duration_seconds == 240
-        assert result.payload.payload_type == "build_outcome"
+        assert "fm-status:COMPLETED" in result.payload.domain_tags
 
-    def test_build_outcome_missing_status_is_unparseable(self) -> None:
-        """A build outcome missing the status field is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/tasks/incomplete.md"),
-            text="""---
-type: completed_task
-project: fleet_memory
-identifier: incomplete_task
-duration_seconds: 100
----
-# Incomplete Task
-""",
+    def test_all_terminal_statuses_map_to_success(self, load_doc, corpus_root) -> None:
+        """One status vocabulary in the store: every terminal file status -> success."""
+        for relative_path in (
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md",
+            "tasks/completed/2026-07/TASK-OBS-9F43-model-attribution-correlation-identity.md",
+            "tasks/completed/TASK-GR-FULL-DOC-PARSER/TASK-GR-FULL-DOC-PARSER.md",
+        ):
+            result = parse_completed_task(load_doc(relative_path), corpus_root)
+            assert isinstance(result, ParsedPayload)
+            assert result.payload.status == "success"
+
+    def test_field_mapping(self, load_doc, corpus_root) -> None:
+        doc = load_doc(
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md"
         )
+        result = parse_completed_task(doc, corpus_root)
+        assert isinstance(result, ParsedPayload)
+        payload = result.payload
 
-        result = parse_build_outcome(doc)
+        assert payload.project == "guardkit"
+        assert payload.duration_seconds == 0
+        assert payload.task_id == payload.identifier
+        # source_ref is the repo-relative path
+        assert payload.source_ref == (
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md"
+        )
+        # domain_tags = front-matter tags + ["task", "fm-status:<s>"]
+        for tag in ("autobuild", "resume", "venv", "verifier-infrastructure"):
+            assert tag in payload.domain_tags
+        assert "task" in payload.domain_tags
+        assert "fm-status:completed" in payload.domain_tags
 
+    def test_lessons_extracted_when_present(self, load_doc, corpus_root) -> None:
+        doc = load_doc("tasks/completed/2025-11/TASK-013-integration-tests.md")
+        result = parse_completed_task(doc, corpus_root)
+        assert isinstance(result, ParsedPayload)
+        assert result.payload.lessons is not None
+        assert "Fixture Pattern" in result.payload.lessons
+
+    def test_lessons_none_when_absent(self, load_doc, corpus_root) -> None:
+        doc = load_doc(
+            "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md"
+        )
+        result = parse_completed_task(doc, corpus_root)
+        assert isinstance(result, ParsedPayload)
+        assert result.payload.lessons is None
+
+    def test_frontmatter_reuse_from_classification(self, load_doc, corpus_root) -> None:
+        """The parser accepts pre-parsed front-matter (no re-parse divergence)."""
+        doc = load_doc("tasks/completed/TASK-CRS-014.7/TASK-CRS-014.7.md")
+        frontmatter = {"id": "TASK-CRS-014.7", "status": "completed", "tags": ["x"]}
+        result = parse_completed_task(doc, corpus_root, frontmatter=frontmatter)
+        assert isinstance(result, ParsedPayload)
+        assert result.payload.identifier == "TASK_CRS_014_7"
+        assert "x" in result.payload.domain_tags
+
+    def test_missing_id_unparseable(self, load_doc, corpus_root) -> None:
+        doc = load_doc("tasks/completed/TASK-FIX-7C3D-file-io-error-handling.md")
+        result = parse_completed_task(doc, corpus_root)
         assert isinstance(result, UnparseableDocument)
-        assert "status" in result.reason.lower()
-
-    def test_build_outcome_missing_duration_is_unparseable(self) -> None:
-        """A build outcome missing duration_seconds is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/tasks/no-duration.md"),
-            text="""---
-type: completed_task
-project: fleet_memory
-identifier: no_duration_task
-status: failure
----
-# Task without duration
-""",
-        )
-
-        result = parse_build_outcome(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "duration_seconds" in result.reason.lower()
-
-    def test_build_outcome_non_integer_duration_is_unparseable(self) -> None:
-        """A build outcome with non-integer duration_seconds is unparseable."""
-        doc = CorpusDocument(
-            path=Path("/corpus/tasks/bad-duration.md"),
-            text="""---
-type: completed_task
-project: fleet_memory
-identifier: bad_duration_task
-status: success
-duration_seconds: "not-a-number"
----
-# Task with bad duration
-""",
-        )
-
-        result = parse_build_outcome(doc)
-
-        assert isinstance(result, UnparseableDocument)
-        assert "duration_seconds" in result.reason.lower()
+        assert "id" in result.reason
 
 
-class TestIdentifierNormalization:
-    """Test hyphenated guardkit ID normalization to underscores."""
+class TestExtractLessons:
+    """Lessons section extraction rules."""
 
-    def test_hyphenated_guardkit_id_normalized_to_underscores(self) -> None:
-        """Identifiers with hyphens are normalized to underscores."""
-        doc = CorpusDocument(
-            path=Path("/corpus/adrs/ADR-SP-007.md"),
-            text="""---
-type: adr
-project: guard-kit
-identifier: ADR-SP-007
-decision: Some decision
-status: accepted
----
-# ADR with hyphens
-""",
-        )
+    def test_lessons_heading_variants(self) -> None:
+        assert extract_lessons("## Lessons\n\nbody text\n") == "body text"
+        assert extract_lessons("## Lessons Learned\n\nbody text\n") == "body text"
+        assert extract_lessons("### Key Learnings\n\nbody text\n") == "body text"
 
-        result = parse_adr(doc)
+    def test_section_ends_at_next_heading(self) -> None:
+        text = "## Lessons\n\nlesson body\n\n## Next Section\n\nother\n"
+        assert extract_lessons(text) == "lesson body"
 
-        assert isinstance(result, ParsedPayload)
-        # Hyphens should be converted to underscores
-        assert result.payload.project == "guard_kit"
-        assert result.payload.identifier == "ADR_SP_007"
+    def test_subsections_included(self) -> None:
+        """Deeper sub-headings inside the lessons section are kept (live shape)."""
+        text = "## Lessons Learned\n\n### What Went Well\n\n1. thing\n"
+        lessons = extract_lessons(text)
+        # ### What Went Well is level-3 under a level-2 lessons heading: the live
+        # TASK-013 fixture carries exactly this shape and the sub-body must survive
+        assert lessons is not None
 
-    def test_colon_in_identifier_normalized_to_underscores(self) -> None:
-        """Identifiers with colons are normalized to underscores."""
-        doc = CorpusDocument(
-            path=Path("/corpus/features/FEAT-MEM-07.md"),
-            text="""---
-type: completed_task
-project: fleet:memory
-identifier: FEAT:MEM:07
-status: success
-duration_seconds: 300
----
-# Feature with colons
-""",
-        )
-
-        result = parse_build_outcome(doc)
-
-        assert isinstance(result, ParsedPayload)
-        assert result.payload.project == "fleet_memory"
-        assert result.payload.identifier == "FEAT_MEM_07"
-
-
-class TestInjectionSafety:
-    """Test that injection-shaped content is carried verbatim."""
-
-    def test_injection_body_carried_verbatim(self) -> None:
-        """Document body containing database commands is carried byte-for-byte."""
-        dangerous_content = """---
-type: seed_module
-project: test_project
-identifier: test_module
-module_path: src/dangerous
----
-# Dangerous Content
-
-DROP TABLE users; -- SQL injection attempt
-$(rm -rf /) # Shell injection attempt
-{{ exec('malicious code') }} # Template injection attempt
-"""
-
-        doc = CorpusDocument(
-            path=Path("/corpus/dangerous.md"),
-            text=dangerous_content,
-        )
-
-        result = parse_seed_module(doc)
-
-        # Parser should succeed - content is just data
-        assert isinstance(result, ParsedPayload)
-        # The payload is created, no execution should occur
-        assert result.payload.module_path == "src/dangerous"
-        # No error indicates nothing was executed
-
-
-class TestMissingRequiredFieldBoundaries:
-    """Test boundary cases for missing required fields."""
-
-    def test_missing_required_field_is_unparseable_with_reason(self) -> None:
-        """Each document type reports unparseable with reason when missing required field."""
-        # Already covered in individual parser tests, this is the general contract test
-        test_cases = [
-            (
-                "seed_module missing module_path",
-                CorpusDocument(
-                    path=Path("/test.md"),
-                    text="""---
-type: seed_module
-project: test
-identifier: test
----
-Content
-""",
-                ),
-                parse_seed_module,
-                "module_path",
-            ),
-            (
-                "adr missing decision",
-                CorpusDocument(
-                    path=Path("/test.md"),
-                    text="""---
-type: adr
-project: test
-identifier: test
-status: proposed
----
-Content
-""",
-                ),
-                parse_adr,
-                "decision",
-            ),
-            (
-                "review_report missing verdict",
-                CorpusDocument(
-                    path=Path("/test.md"),
-                    text="""---
-type: review_report
-project: test
-identifier: test
----
-Content
-""",
-                ),
-                parse_review_report,
-                "verdict",
-            ),
-            (
-                "build_outcome missing status",
-                CorpusDocument(
-                    path=Path("/test.md"),
-                    text="""---
-type: completed_task
-project: test
-identifier: test
-duration_seconds: 100
----
-Content
-""",
-                ),
-                parse_build_outcome,
-                "status",
-            ),
-        ]
-
-        for description, doc, parser, expected_field in test_cases:
-            result = parser(doc)
-            assert isinstance(result, UnparseableDocument), f"Failed: {description}"
-            assert (
-                expected_field in result.reason.lower()
-            ), f"Failed: {description} - expected '{expected_field}' in reason"
-
-
-class TestDocumentWithExactRequiredFields:
-    """Test just-inside boundary: documents with exactly the required fields."""
-
-    def test_document_with_exact_required_fields_parses(self) -> None:
-        """Document carrying exactly the required fields (no extras) parses successfully."""
-        # Seed module with only required fields
-        doc = CorpusDocument(
-            path=Path("/corpus/minimal.md"),
-            text="""---
-type: seed_module
-project: minimal_project
-identifier: minimal_module
-module_path: src/minimal
----
-Minimal content
-""",
-        )
-
-        result = parse_seed_module(doc)
-
-        assert isinstance(result, ParsedPayload)
-        assert result.payload.module_path == "src/minimal"
-        # Verify it's a valid payload with all base fields
-        assert result.payload.project == "minimal_project"
-        assert result.payload.identifier == "minimal_module"
-        assert result.payload.source_ref == str(doc.path)
+    def test_no_lessons_returns_none(self) -> None:
+        assert extract_lessons("# Title\n\nNo lessons here.\n") is None
+        assert extract_lessons("## Lessons\n\n\n") is None

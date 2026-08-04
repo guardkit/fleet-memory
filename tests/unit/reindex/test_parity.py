@@ -1,17 +1,30 @@
-"""Unit tests for probe-set parity report generator (TASK-RIP-008).
+"""Unit tests for the probe-set parity report generator.
 
-Tests the parity report generator that validates retrieval quality against
-the frozen probe set from FEAT-MEM-05.
+The probe set (eval/probe_set.json) carries 16 probes and NO baseline answers
+— the FEAT-MEM-05 freeze was declined deliberately. The old implementation
+routed through run_probe_harness whose hit metric is exact equality vs
+baseline: 0% hits BY CONSTRUCTION. These tests pin the corrected behavior:
+direct search+assemble, retrieval-health hits, SKIPPED baseline diff, and the
+candidate-baseline output.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
 
 import pytest
 
-from fleet_memory.reindex.parity import generate_parity_report
+from fleet_memory.reindex.parity import (
+    generate_parity_report,
+    load_probe_set,
+    write_candidate_baseline,
+)
 from fleet_memory.retrieval.probe_harness import ProbeQuery
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+LIVE_PROBE_SET = REPO_ROOT / "eval" / "probe_set.json"
 
 
 @dataclass
@@ -20,203 +33,148 @@ class MockAssemblyResult:
 
     context_block: str
     coverage_score: float
-    contributing_types: set[str]
-    tokens_used: int
+    contributing_types: set = field(default_factory=set)
+    tokens_used: int = 0
 
 
-@pytest.fixture
-def mock_search_fn():
-    """Provide a mock search function that returns empty results."""
+def _search_fn(results=None):
+    async def _search(request):
+        return results or []
 
-    async def _mock_search(request):
-        return []
-
-    return _mock_search
+    return _search
 
 
-@pytest.fixture
-def mock_assemble_fn_matching():
-    """Provide a mock assemble function that returns matching baselines."""
-
-    def _mock_assemble(results, token_budget):
-        # Return baselines that match the probe set
-        if not hasattr(_mock_assemble, "call_count"):
-            _mock_assemble.call_count = 0
-
-        baseline = f"baseline_{_mock_assemble.call_count}"
-        _mock_assemble.call_count += 1
-
+def _assemble_fn(context_block: str, coverage_score: float):
+    def _assemble(results, token_budget):
         return MockAssemblyResult(
-            context_block=baseline,
-            coverage_score=0.5,
-            contributing_types=set(),
-            tokens_used=100,
+            context_block=context_block, coverage_score=coverage_score
         )
 
-    return _mock_assemble
+    return _assemble
 
 
-@pytest.fixture
-def mock_assemble_fn_divergent():
-    """Provide a mock assemble function that returns divergent results."""
-
-    def _mock_assemble(results, token_budget):
-        # Return results that diverge from baseline
-        return MockAssemblyResult(
-            context_block="DIVERGENT_ANSWER",
-            coverage_score=0.5,
-            contributing_types=set(),
-            tokens_used=100,
-        )
-
-    return _mock_assemble
-
-
-@pytest.fixture
-def probe_set_minimal():
-    """Provide a minimal probe set with 3 queries for testing."""
+def _probes(count: int = 3) -> list[ProbeQuery]:
     return [
         ProbeQuery(
             query=f"query_{i}",
-            project="test_project",
-            token_budget=1000,
-            baseline_answer=f"baseline_{i}",
+            project="guardkit",
+            token_budget=2000,
+            baseline_answer="",
         )
-        for i in range(3)
+        for i in range(count)
     ]
 
 
-@pytest.mark.asyncio
-async def test_parity_report_shape(probe_set_minimal, mock_search_fn, mock_assemble_fn_matching):
-    """Test that parity report has all required fields and correct structure.
+class TestLoadProbeSet:
+    """Loader tolerant of missing baseline_answer."""
 
-    Satisfies AC-002: The report records per-probe hit/miss and an aggregate
-    parity figure.
-
-    Satisfies test requirement: test_parity_report_shape
-    """
-    report = await generate_parity_report(
-        probe_set_minimal, mock_search_fn, mock_assemble_fn_matching
-    )
-
-    # Verify report is a dictionary (JSON-serializable)
-    assert isinstance(report, dict)
-
-    # Verify required top-level fields
-    assert "total_probes" in report
-    assert "divergences_count" in report
-    assert "full_parity" in report
-    assert "aggregate_parity" in report
-    assert "per_probe_results" in report
-
-    # Verify per_probe_results structure
-    assert isinstance(report["per_probe_results"], list)
-    assert len(report["per_probe_results"]) == 3
-
-    # Verify each probe result has required fields
-    for probe_result in report["per_probe_results"]:
-        assert "query" in probe_result
-        assert "hit" in probe_result
-        assert isinstance(probe_result["hit"], bool)
-
-
-@pytest.mark.asyncio
-async def test_aggregate_parity_calculation(
-    probe_set_minimal, mock_search_fn, mock_assemble_fn_matching
-):
-    """Test that aggregate parity is calculated correctly.
-
-    Satisfies AC-002: The report records per-probe hit/miss and an aggregate
-    parity figure.
-
-    Satisfies test requirement: test_aggregate_parity_calculation
-    """
-    # Test with all matching results (100% parity)
-    report = await generate_parity_report(
-        probe_set_minimal, mock_search_fn, mock_assemble_fn_matching
-    )
-
-    assert report["aggregate_parity"] == 1.0
-    assert report["divergences_count"] == 0
-    assert report["full_parity"] is True
-
-    # Verify all probes are hits
-    for probe_result in report["per_probe_results"]:
-        assert probe_result["hit"] is True
-
-
-@pytest.mark.asyncio
-async def test_aggregate_parity_with_divergences(
-    probe_set_minimal, mock_search_fn, mock_assemble_fn_divergent
-):
-    """Test that aggregate parity correctly reflects divergences."""
-    # Test with all divergent results (0% parity)
-    report = await generate_parity_report(
-        probe_set_minimal, mock_search_fn, mock_assemble_fn_divergent
-    )
-
-    assert report["aggregate_parity"] == 0.0
-    assert report["divergences_count"] == 3
-    assert report["full_parity"] is False
-
-    # Verify all probes are misses
-    for probe_result in report["per_probe_results"]:
-        assert probe_result["hit"] is False
-
-
-@pytest.mark.asyncio
-async def test_parity_reuses_probe_harness(
-    probe_set_minimal, mock_search_fn, mock_assemble_fn_matching
-):
-    """Test that parity module reuses the existing probe harness.
-
-    Satisfies AC-003: Retrieval logic is reused from
-    src/fleet_memory/retrieval/probe_harness.py — no duplicate retrieval
-    implementation.
-    """
-    # This test verifies that the report is generated without reimplementing
-    # the probe harness logic by checking that the report structure matches
-    # the expected output from the harness
-    report = await generate_parity_report(
-        probe_set_minimal, mock_search_fn, mock_assemble_fn_matching
-    )
-
-    # If probe harness is reused, we should get consistent results
-    assert report["total_probes"] == 3
-    assert "full_parity" in report
-
-
-@pytest.mark.asyncio
-async def test_partial_parity(probe_set_minimal, mock_search_fn):
-    """Test parity calculation with mixed results (some hits, some misses)."""
-
-    def mock_assemble_partial(results, token_budget):
-        # Return matching baseline for first probe, divergent for others
-        if not hasattr(mock_assemble_partial, "call_count"):
-            mock_assemble_partial.call_count = 0
-
-        if mock_assemble_partial.call_count == 0:
-            baseline = "baseline_0"  # Match first probe
-        else:
-            baseline = "DIVERGENT"  # Diverge for others
-
-        mock_assemble_partial.call_count += 1
-
-        return MockAssemblyResult(
-            context_block=baseline,
-            coverage_score=0.5,
-            contributing_types=set(),
-            tokens_used=100,
+    def test_loads_probes_without_baselines(self, tmp_path: Path) -> None:
+        path = tmp_path / "probes.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "probes": [
+                        {"query": "What is X?", "project": "guardkit", "token_budget": 1500},
+                        {"query": "What is Y?", "project": "guardkit"},
+                    ]
+                }
+            ),
+            encoding="utf-8",
         )
 
-    report = await generate_parity_report(probe_set_minimal, mock_search_fn, mock_assemble_partial)
+        probes = load_probe_set(path)
 
-    # 1 hit out of 3 = 33.33% parity
-    assert abs(report["aggregate_parity"] - 0.3333) < 0.01
-    assert report["divergences_count"] == 2
-    assert report["full_parity"] is False
+        assert len(probes) == 2
+        assert probes[0].baseline_answer == ""
+        assert probes[0].token_budget == 1500
+        assert probes[1].token_budget == 2000  # default
 
-    # Verify per-probe results
-    assert report["per_probe_results"][0]["hit"] is True
-    assert report["per_probe_results"][1]["hit"] is False
-    assert report["per_probe_results"][2]["hit"] is False
+    def test_loads_the_live_probe_set(self) -> None:
+        """The real eval/probe_set.json (16 probes, no baselines) must load."""
+        if not LIVE_PROBE_SET.exists():
+            pytest.skip("eval/probe_set.json not present")
+        probes = load_probe_set(LIVE_PROBE_SET)
+        assert len(probes) == 16
+        assert all(probe.baseline_answer == "" for probe in probes)
+        assert all(probe.project == "guardkit" for probe in probes)
+
+
+class TestGenerateParityReport:
+    """Direct search+assemble; hit = non-empty context AND coverage > 0."""
+
+    async def test_hit_when_context_and_coverage(self) -> None:
+        report = await generate_parity_report(
+            _probes(3),
+            _search_fn([object()]),
+            _assemble_fn("some assembled context", 0.4),
+        )
+        assert report["total_probes"] == 3
+        assert report["hits"] == 3
+        assert report["hit_rate"] == 1.0
+        assert all(row["hit"] for row in report["per_probe_results"])
+
+    async def test_miss_when_context_empty(self) -> None:
+        report = await generate_parity_report(
+            _probes(2), _search_fn(), _assemble_fn("", 0.0)
+        )
+        assert report["hits"] == 0
+        assert report["hit_rate"] == 0.0
+
+    async def test_miss_when_coverage_zero_even_with_context(self) -> None:
+        report = await generate_parity_report(
+            _probes(1), _search_fn(), _assemble_fn("context", 0.0)
+        )
+        assert report["hits"] == 0
+
+    async def test_baseline_diff_skipped_without_baselines(self) -> None:
+        """No baselines -> named SKIPPED reason, never a fictitious 0% parity."""
+        report = await generate_parity_report(
+            _probes(2), _search_fn(), _assemble_fn("ctx", 0.5)
+        )
+        assert report["baseline_diff"].startswith("SKIPPED — ")
+        assert "FEAT-MEM-05" in report["baseline_diff"]
+
+    async def test_baseline_diff_computed_when_all_frozen(self) -> None:
+        probes = [
+            ProbeQuery(
+                query="q", project="guardkit", token_budget=2000, baseline_answer="ctx"
+            )
+        ]
+        report = await generate_parity_report(
+            probes, _search_fn(), _assemble_fn("ctx", 0.5)
+        )
+        assert report["baseline_diff"] == "0 divergences vs frozen baseline"
+
+    async def test_candidate_baseline_carries_answers(self) -> None:
+        report = await generate_parity_report(
+            _probes(2), _search_fn(), _assemble_fn("assembled answer", 0.5)
+        )
+        assert len(report["candidate_baseline"]) == 2
+        for row in report["candidate_baseline"]:
+            assert row["baseline_answer"] == "assembled answer"
+            assert row["project"] == "guardkit"
+
+    async def test_empty_probe_set(self) -> None:
+        report = await generate_parity_report([], _search_fn(), _assemble_fn("", 0.0))
+        assert report["total_probes"] == 0
+        assert report["hit_rate"] == 0.0
+
+
+class TestWriteCandidateBaseline:
+    """Per-probe answers are written to the --out JSON."""
+
+    async def test_writes_candidate_baseline_json(self, tmp_path: Path) -> None:
+        report = await generate_parity_report(
+            _probes(2), _search_fn(), _assemble_fn("frozen-me-later", 0.5)
+        )
+        out_path = tmp_path / "candidate.json"
+
+        write_candidate_baseline(report, out_path)
+
+        data = json.loads(out_path.read_text(encoding="utf-8"))
+        assert len(data["probes"]) == 2
+        assert data["probes"][0]["baseline_answer"] == "frozen-me-later"
+        # The written shape is itself loadable as a probe set
+        probes = load_probe_set(out_path)
+        assert len(probes) == 2
+        assert probes[0].baseline_answer == "frozen-me-later"

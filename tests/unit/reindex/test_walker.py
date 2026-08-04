@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from fleet_memory.reindex.walker import CorpusDocument, walk_corpus
+from fleet_memory.reindex.walker import CorpusDocument, walk_corpus, walk_roots
 
 
 def test_empty_corpus_yields_nothing(tmp_path: Path) -> None:
@@ -161,3 +161,106 @@ def test_resolved_path_returned(tmp_path: Path) -> None:
     # The path should be absolute and resolved
     assert documents[0].path.is_absolute()
     assert documents[0].path == doc.resolve()
+
+
+class TestWalkRoots:
+    """walk_roots descends ONLY the manifest's reindex-owned directories.
+
+    This is the structural kill for the 63,683-file worktree inflation: decoy
+    trees full of .md files outside the roots are never read.
+    """
+
+    def test_descends_only_given_roots(self, tmp_path: Path) -> None:
+        # Reindex-owned root
+        tasks = tmp_path / "tasks" / "completed"
+        tasks.mkdir(parents=True)
+        (tasks / "TASK-1.md").write_text("# Task 1")
+
+        # Decoy: a .guardkit/worktrees tree full of markdown (the live corpus
+        # carries 63k files here — walking it was the inflation)
+        decoy = tmp_path / ".guardkit" / "worktrees" / "FEAT-X" / "tasks" / "completed"
+        decoy.mkdir(parents=True)
+        for i in range(5):
+            (decoy / f"TASK-DECOY-{i}.md").write_text("# Decoy")
+
+        # Other repo content outside the roots
+        (tmp_path / "README.md").write_text("# Readme")
+
+        documents = list(walk_roots(tmp_path, ["tasks/completed"]))
+
+        assert len(documents) == 1
+        assert documents[0].path.name == "TASK-1.md"
+
+    def test_multiple_roots(self, tmp_path: Path) -> None:
+        for root in ("tasks/completed", "tasks/archive"):
+            directory = tmp_path / root
+            directory.mkdir(parents=True)
+            (directory / "doc.md").write_text("# Doc")
+
+        documents = list(walk_roots(tmp_path, ["tasks/completed", "tasks/archive"]))
+        assert len(documents) == 2
+
+    def test_missing_root_is_skipped(self, tmp_path: Path) -> None:
+        documents = list(walk_roots(tmp_path, ["tasks/completed"]))
+        assert documents == []
+
+    def test_root_escaping_corpus_never_descended(self, tmp_path: Path) -> None:
+        """Same traversal-safety invariant as walk_corpus: a relative root with
+        .. segments must never cause reads outside the corpus root."""
+        corpus_root = tmp_path / "corpus"
+        corpus_root.mkdir()
+        secret_dir = tmp_path / "secrets"
+        secret_dir.mkdir()
+        (secret_dir / "secret.md").write_text("TOP SECRET DATA")
+
+        documents = list(walk_roots(corpus_root, ["../secrets"]))
+
+        assert documents == []
+
+    def test_symlinked_root_escaping_corpus_never_descended(self, tmp_path: Path) -> None:
+        corpus_root = tmp_path / "corpus"
+        corpus_root.mkdir()
+        secret_dir = tmp_path / "secrets"
+        secret_dir.mkdir()
+        (secret_dir / "secret.md").write_text("TOP SECRET DATA")
+
+        link = corpus_root / "tasks"
+        try:
+            link.symlink_to(secret_dir, target_is_directory=True)
+        except OSError:
+            pytest.skip("Symlinks not supported on this platform")
+
+        documents = list(walk_roots(corpus_root, ["tasks"]))
+
+        assert documents == []
+
+    def test_symlink_file_escape_inside_root_not_read(self, tmp_path: Path) -> None:
+        corpus_root = tmp_path / "corpus"
+        tasks = corpus_root / "tasks" / "completed"
+        tasks.mkdir(parents=True)
+        (tasks / "real.md").write_text("# Real")
+
+        secret = tmp_path / "secret.md"
+        secret.write_text("TOP SECRET DATA")
+        link = tasks / "escape.md"
+        try:
+            link.symlink_to(secret)
+        except OSError:
+            pytest.skip("Symlinks not supported on this platform")
+
+        documents = list(walk_roots(corpus_root, ["tasks/completed"]))
+
+        assert len(documents) == 1
+        assert documents[0].path.name == "real.md"
+        all_text = " ".join(doc.text for doc in documents)
+        assert "TOP SECRET DATA" not in all_text
+
+    def test_only_markdown_yielded(self, tmp_path: Path) -> None:
+        tasks = tmp_path / "tasks" / "completed"
+        tasks.mkdir(parents=True)
+        (tasks / "doc.md").write_text("# Doc")
+        (tasks / "data.json").write_text("{}")
+        (tasks / "notes.txt").write_text("text")
+
+        documents = list(walk_roots(tmp_path, ["tasks/completed"]))
+        assert [doc.path.name for doc in documents] == ["doc.md"]

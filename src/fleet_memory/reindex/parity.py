@@ -1,92 +1,157 @@
-"""Probe-set parity report generator for re-index validation (TASK-RIP-008).
+"""Probe-set parity report generator for re-index validation.
 
-Generates a JSON report of retrieval parity against the frozen probe set,
-reusing the existing probe harness from FEAT-MEM-05. This report is used
-to validate that the re-indexed corpus maintains retrieval quality.
+Runs the frozen probe set (eval/probe_set.json — 16 probes, NONE carrying
+baseline answers: the FEAT-MEM-05 baseline freeze was declined deliberately)
+directly through search + assembly and reports a retrieval-health hit per probe.
 
-Producer: TASK-RIP-008
-Consumer: TASK-RIP-011 (operator verification)
+The old implementation routed through run_probe_harness, whose hit metric is
+exact string equality against baseline_answer — with no baselines that is 0%
+hits BY CONSTRUCTION, a fiction detector reporting fiction. Here a hit means
+the store actually answered: non-empty context_block and coverage_score > 0.
+
+The report also writes every assembled answer to a candidate-baseline JSON so
+an operator can freeze real baselines later (--out).
 """
 
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
-from typing import Any
+import json
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
-from fleet_memory.retrieval.probe_harness import ProbeQuery, run_probe_harness
+from fleet_memory.retrieval.probe_harness import ProbeQuery
+from fleet_memory.retrieval.search_request import SearchRequest
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+# Named reason the baseline diff is skipped while the probe set carries no baselines
+BASELINE_DIFF_SKIPPED = (
+    "SKIPPED — probe set carries no frozen baseline answers "
+    "(the FEAT-MEM-05 baseline freeze was declined deliberately)"
+)
+
+
+def load_probe_set(path: Path | str) -> list[ProbeQuery]:
+    """Load the probe set JSON, tolerant of missing baseline_answer.
+
+    eval/probe_set.json has 16 probes and none carry baselines; a loader that
+    required baseline_answer would refuse the only probe set we have.
+
+    Args:
+        path: Path to the probe set JSON ({"probes": [{query, project, ...}]})
+
+    Returns:
+        List of ProbeQuery (baseline_answer defaults to "")
+    """
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+
+    probes: list[ProbeQuery] = []
+    for row in data.get("probes", []):
+        probes.append(
+            ProbeQuery(
+                query=row["query"],
+                project=row["project"],
+                token_budget=row.get("token_budget", 2000),
+                baseline_answer=row.get("baseline_answer", ""),
+                payload_types=row.get("payload_types"),
+                domain_tags=row.get("domain_tags"),
+            )
+        )
+    return probes
 
 
 async def generate_parity_report(
     probe_set: list[ProbeQuery],
-    search_fn: Callable[[Any], Awaitable[list[Any]]],
+    search_fn: Callable[[SearchRequest], Awaitable[list[Any]]],
     assemble_fn: Callable[[list[Any], int], Any],
 ) -> dict[str, Any]:
-    """Generate a parity report for the given probe set.
+    """Generate a retrieval-health parity report for the given probe set.
 
-    Runs the frozen probe set against the re-indexed store using the existing
-    probe harness and generates a JSON-serializable report with per-probe
-    hit/miss status and aggregate parity metrics.
+    Runs search + assembly DIRECTLY per probe (NOT run_probe_harness — its hit
+    metric is exact-equality vs baseline, 0% by construction with no baselines).
+    A hit is a non-empty context_block with coverage_score > 0.
 
     Args:
-        probe_set: List of ProbeQuery objects with queries and baselines
+        probe_set: List of ProbeQuery objects
         search_fn: Async function that executes search (from core.search)
         assemble_fn: Function that assembles context (from assembly.assemble_context)
 
     Returns:
-        Dictionary with the following structure:
+        Report dict:
         {
             "total_probes": int,
-            "divergences_count": int,
-            "full_parity": bool,
-            "aggregate_parity": float,  # 0.0 to 1.0
-            "per_probe_results": [
-                {
-                    "query": str,
-                    "hit": bool
-                },
-                ...
-            ]
+            "hits": int,
+            "hit_rate": float,          # 0.0-1.0
+            "baseline_diff": str,        # "SKIPPED — <reason>" without baselines
+            "per_probe_results": [{"query": str, "hit": bool}, ...],
+            "candidate_baseline": [      # written to --out as a future frozen baseline
+                {"query", "project", "token_budget", "baseline_answer"}, ...
+            ],
         }
-
-    Example:
-        >>> from fleet_memory.retrieval.core import search
-        >>> from fleet_memory.retrieval.assembly import assemble_context
-        >>> probes = load_probe_set()
-        >>> async with async_store_context(settings) as store:
-        ...     report = await generate_parity_report(
-        ...         probes,
-        ...         lambda req: search(req, store),
-        ...         assemble_context
-        ...     )
-        >>> print(f"Parity: {report['aggregate_parity']:.2%}")
     """
-    # Reuse the existing probe harness from FEAT-MEM-05
-    harness_report = await run_probe_harness(probe_set, search_fn, assemble_fn)
-
-    # Calculate aggregate parity as percentage (hits / total)
-    if harness_report.total_probes > 0:
-        hits = harness_report.total_probes - harness_report.divergences_count
-        aggregate_parity = hits / harness_report.total_probes
-    else:
-        aggregate_parity = 0.0
-
-    # Build per-probe results list
-    per_probe_results = []
-    divergent_set = set(harness_report.divergent_queries)
+    per_probe_results: list[dict[str, Any]] = []
+    candidate_baseline: list[dict[str, Any]] = []
+    hits = 0
 
     for probe in probe_set:
-        per_probe_results.append(
+        request = SearchRequest(
+            project=probe.project,
+            query=probe.query,
+            token_budget=probe.token_budget,
+            payload_types=probe.payload_types or [],
+            domain_tags=probe.domain_tags or [],
+        )
+
+        search_results = await search_fn(request)
+        assembly_result = assemble_fn(search_results, probe.token_budget)
+
+        hit = bool(assembly_result.context_block) and assembly_result.coverage_score > 0
+        if hit:
+            hits += 1
+
+        per_probe_results.append({"query": probe.query, "hit": hit})
+        candidate_baseline.append(
             {
                 "query": probe.query,
-                "hit": probe.query not in divergent_set,
+                "project": probe.project,
+                "token_budget": probe.token_budget,
+                "baseline_answer": assembly_result.context_block,
             }
         )
 
-    # Return JSON-serializable report
+    total_probes = len(probe_set)
+    hit_rate = hits / total_probes if total_probes > 0 else 0.0
+
+    if all(probe.baseline_answer for probe in probe_set) and total_probes > 0:
+        divergences = sum(
+            1
+            for probe, candidate in zip(probe_set, candidate_baseline)
+            if candidate["baseline_answer"] != probe.baseline_answer
+        )
+        baseline_diff: str = f"{divergences} divergences vs frozen baseline"
+    else:
+        baseline_diff = BASELINE_DIFF_SKIPPED
+
     return {
-        "total_probes": harness_report.total_probes,
-        "divergences_count": harness_report.divergences_count,
-        "full_parity": harness_report.full_parity,
-        "aggregate_parity": aggregate_parity,
+        "total_probes": total_probes,
+        "hits": hits,
+        "hit_rate": hit_rate,
+        "baseline_diff": baseline_diff,
         "per_probe_results": per_probe_results,
+        "candidate_baseline": candidate_baseline,
     }
+
+
+def write_candidate_baseline(report: dict[str, Any], out_path: Path | str) -> None:
+    """Write the report's per-probe answers as a candidate-baseline JSON.
+
+    Args:
+        report: Report dict from generate_parity_report
+        out_path: Destination path (--out)
+    """
+    payload = {"probes": report.get("candidate_baseline", [])}
+    Path(out_path).write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
