@@ -1,181 +1,196 @@
-"""Unit tests for reindex publisher: MemoryEpisodeV1 publishing contract.
+"""Unit tests for the JetStream reindex publisher — the vanishing-publish fix.
 
-Tests verify that the publisher converts BasePayload instances to MemoryEpisodeV1
-with correct content_format="json", payload_type routing, deterministic episode_id,
-and body round-trip serialization.
-
-Producer: TASK-RIP-002
-Consumer: FEAT-MEM-07 re-index pipeline
+The old publisher wrote to subject "MEMORY" through fleet_memory.app.broker: a
+core-NATS publish NOTHING captures (the MEMORY stream binds memory.episode.>).
+These tests pin the corrected contract: partitioned subject, Nats-Msg-Id
+deduplication header, size guard, fail-loud configuration, and independence
+from the app broker.
 """
 
 from __future__ import annotations
 
 import json
-from unittest.mock import AsyncMock, patch
+import re
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from fleet_memory.payloads.models import ADRPayload
+from fleet_memory.payloads.models import BuildOutcomePayload
 from fleet_memory.payloads.registry import get_model_for_type
+from fleet_memory.reindex.publisher import (
+    MAX_EPISODE_BODY_BYTES,
+    ReindexPublisher,
+    ReindexPublishError,
+    _derive_episode_id,
+    episode_subject,
+    publish_episode,
+)
 from fleet_memory.relay.schema import MemoryEpisodeV1
 
 
-def _make_adr_payload(**overrides) -> ADRPayload:
-    """Factory for ADRPayload test instances."""
+def _make_payload(**overrides) -> BuildOutcomePayload:
     defaults = {
-        "project": "test_proj",
-        "identifier": "ADR_001",
-        "source_ref": "src/adrs/ADR_001.md",
-        "title": "Test ADR",
-        "status": "accepted",
-        "decision": "We will use test-driven development",
+        "project": "guardkit",
+        "identifier": "TASK_FIX_RESUMEVENV01",
+        "status": "success",
+        "duration_seconds": 0,
+        "task_id": "TASK_FIX_RESUMEVENV01",
+        "source_ref": "tasks/completed/2026-07/TASK-FIX-RESUMEVENV01-resume-venv-resolution.md",
+        "domain_tags": ["task", "fm-status:completed"],
     }
     defaults.update(overrides)
-    return ADRPayload(**defaults)
+    return BuildOutcomePayload(**defaults)
 
 
-@pytest.fixture
-def make_adr_payload():
-    """Fixture providing ADRPayload factory."""
-    return _make_adr_payload
+def _make_settings(publish_url: str = "nats://publish:4222") -> MagicMock:
+    settings = MagicMock()
+    settings.publish_nats_url = publish_url
+    return settings
 
 
-@pytest.fixture
-def mock_broker():
-    """Mock broker for publish verification."""
-    broker_mock = AsyncMock()
-    return broker_mock
+def _connected_publisher() -> tuple[ReindexPublisher, AsyncMock]:
+    publisher = ReindexPublisher(_make_settings())
+    fake_js = AsyncMock()
+    publisher._js = fake_js
+    return publisher, fake_js
 
 
-# AC-001: Publisher exposes function accepting BasePayload and publishes MemoryEpisodeV1
-# AC-002: Published episode has content_format=="json" and payload_type routing
-@pytest.mark.asyncio
-async def test_episode_is_json_with_payload_type(make_adr_payload, mock_broker):
-    """Verify published episode has content_format='json' and correct payload_type.
+class TestSubjectContract:
+    """Published subjects must land inside the MEMORY stream's filter."""
 
-    Contract: content_format must be literal "json" for RelayService routing.
-    payload_type must match the payload's type for dispatch registry lookup.
-    """
-    from fleet_memory.reindex import publisher
+    async def test_subject_is_partitioned(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        await publisher.publish(_make_payload())
 
-    payload = make_adr_payload()
+        subject = fake_js.publish.call_args[0][0]
+        assert subject == "memory.episode.guardkit.build_outcome"
 
-    # Mock broker.publish to capture the published episode
-    with patch.object(publisher, "broker", mock_broker):
-        await publisher.publish_episode(payload)
+    def test_episode_subject_helper(self) -> None:
+        assert (
+            episode_subject("guardkit", "build_outcome")
+            == "memory.episode.guardkit.build_outcome"
+        )
 
-    # Verify broker.publish was called once
-    mock_broker.publish.assert_awaited_once()
+    async def test_subject_matches_relay_consumer_filter(self) -> None:
+        """REGRESSION (the ops refuter's kill): the subject must match the
+        relay's memory.episode.> filter — subject "MEMORY" matched nothing."""
+        publisher, fake_js = _connected_publisher()
+        await publisher.publish(_make_payload())
 
-    # Extract the published episode (first positional arg)
-    call_args = mock_broker.publish.call_args
-    published_data = call_args[0][0]  # First positional argument
-
-    # Parse as MemoryEpisodeV1
-    episode = MemoryEpisodeV1(**published_data)
-
-    # AC-002: Verify content_format and payload_type for routing
-    assert (
-        episode.content_format == "json"
-    ), "content_format must be 'json' for relay routing"
-    assert episode.payload_type == "adr", "payload_type must match payload type"
-    assert episode.project_id == payload.project
+        subject = fake_js.publish.call_args[0][0]
+        # memory.episode.> matches subjects with the two-token prefix and at
+        # least one more token
+        prefix_tokens = subject.split(".")
+        assert prefix_tokens[:2] == ["memory", "episode"]
+        assert len(prefix_tokens) >= 3
+        assert subject != "MEMORY"
 
 
-# AC-003: Body round-trips through registry
-@pytest.mark.asyncio
-async def test_body_round_trips_through_registry(make_adr_payload, mock_broker):
-    """Verify body serializes and reconstructs payload through registry.
+class TestEnvelopeContract:
+    """Envelope fields route the episode to the DeterministicWriter."""
 
-    Contract: episode.body must be canonical JSON that deserializes to equal payload.
-    get_model_for_type(episode.payload_type)(**json.loads(episode.body)) == original
-    """
-    from fleet_memory.reindex import publisher
+    async def test_envelope_shape(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        payload = _make_payload()
+        await publisher.publish(payload)
 
-    original_payload = make_adr_payload()
+        raw = fake_js.publish.call_args[0][1]
+        envelope = json.loads(raw)
 
-    # Publish and capture
-    with patch.object(publisher, "broker", mock_broker):
-        await publisher.publish_episode(original_payload)
+        assert envelope["project_id"] == "guardkit"  # canonical field
+        assert envelope["episode_type"] == "build_outcome"
+        assert envelope["payload_type"] == "build_outcome"
+        assert envelope["content_format"] == "json"
+        assert envelope["source_ref"] == payload.source_ref
 
-    # Extract episode
-    published_data = mock_broker.publish.call_args[0][0]
-    episode = MemoryEpisodeV1(**published_data)
+        # The relay schema accepts the envelope as-is
+        episode = MemoryEpisodeV1(**envelope)
+        assert episode.project_id == "guardkit"
 
-    # Round-trip through registry
-    payload_model = get_model_for_type(episode.payload_type)
-    reconstructed = payload_model(**json.loads(episode.body))
+    async def test_body_round_trips_through_registry(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        payload = _make_payload(lessons="Distilled lesson prose")
+        await publisher.publish(payload)
 
-    # Verify equality (all fields match)
-    assert reconstructed == original_payload, "Body must round-trip to equal payload"
+        envelope = json.loads(fake_js.publish.call_args[0][1])
+        model_class = get_model_for_type(envelope["payload_type"])
+        reconstructed = model_class(**json.loads(envelope["body"]))
+        assert reconstructed == payload
 
+    async def test_msg_id_header_shape(self) -> None:
+        """Nats-Msg-Id carries the deterministic episode_id (JetStream dedup)."""
+        publisher, fake_js = _connected_publisher()
+        payload = _make_payload()
+        await publisher.publish(payload)
 
-# AC-004: episode_id is deterministic for natural_key
-@pytest.mark.asyncio
-async def test_episode_id_deterministic_for_natural_key(make_adr_payload, mock_broker):
-    """Verify same natural_key produces same episode_id for idempotent publish.
+        headers = fake_js.publish.call_args.kwargs["headers"]
+        msg_id = headers["Nats-Msg-Id"]
+        assert re.fullmatch(r"ep-[0-9a-f]{16}", msg_id)
+        assert msg_id == _derive_episode_id(payload.natural_key)
 
-    Contract: Publishing the same payload twice yields same episode_id.
-    This ensures JetStream Msg-Id deduplication works at publish layer.
-    """
-    from fleet_memory.reindex import publisher
+    def test_derive_episode_id_prefix(self) -> None:
+        """The one id-minting rule: 'ep-' + first 16 hex of sha256(natural_key)."""
+        episode_id = _derive_episode_id("build_outcome:guardkit:TASK_1")
+        assert episode_id.startswith("ep-")
+        assert len(episode_id) == 19
 
-    payload1 = make_adr_payload()
-    payload2 = make_adr_payload()  # Same natural key
-
-    # Publish both
-    with patch.object(publisher, "broker", mock_broker):
-        await publisher.publish_episode(payload1)
-        first_episode_data = mock_broker.publish.call_args[0][0]
-        first_episode = MemoryEpisodeV1(**first_episode_data)
-
-        mock_broker.reset_mock()
-
-        await publisher.publish_episode(payload2)
-        second_episode_data = mock_broker.publish.call_args[0][0]
-        second_episode = MemoryEpisodeV1(**second_episode_data)
-
-    # Verify episode_id is deterministic
-    assert (
-        first_episode.episode_id == second_episode.episode_id
-    ), "Same natural key must produce same episode_id for idempotent publish"
+    async def test_same_natural_key_same_episode_id(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        await publisher.publish(_make_payload())
+        first = json.loads(fake_js.publish.call_args[0][1])["episode_id"]
+        await publisher.publish(_make_payload())
+        second = json.loads(fake_js.publish.call_args[0][1])["episode_id"]
+        assert first == second
 
 
-# AC-005: No LLM/cloud/frontier-model call
-@pytest.mark.asyncio
-async def test_no_network_calls_during_publish(make_adr_payload, mock_broker):
-    """Verify publisher makes no network calls (no LLM/cloud requests).
+class TestSizeGuard:
+    """Oversized payloads are skipped with a named reason, mirroring harvest."""
 
-    Contract: Publisher must be pure transformation with no external requests.
-    This test asserts no unexpected network activity (DECISION-DF-001).
-    """
-    from fleet_memory.reindex import publisher
+    async def test_oversized_payload_skipped_with_reason(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        payload = _make_payload(lessons="x" * (MAX_EPISODE_BODY_BYTES + 100))
 
-    payload = make_adr_payload()
+        reason = await publisher.publish(payload)
 
-    # Mock broker to prevent actual NATS publish
-    with patch.object(publisher, "broker", mock_broker):
-        # This should complete without any network calls
-        # (broker.publish is mocked, so no NATS connection)
-        await publisher.publish_episode(payload)
+        assert reason is not None
+        assert "MAX_EPISODE_BODY_BYTES" in reason
+        fake_js.publish.assert_not_awaited()
 
-    # Success if we get here without timeout or network errors
-    # The mock prevents actual NATS publish, so no network activity occurs
-    assert True, "Publisher completed without network calls"
+    async def test_normal_payload_returns_none(self) -> None:
+        publisher, fake_js = _connected_publisher()
+        assert await publisher.publish(_make_payload()) is None
+        fake_js.publish.assert_awaited_once()
 
 
-# AC-006: source_ref is carried forward
-@pytest.mark.asyncio
-async def test_source_ref_preserved(make_adr_payload, mock_broker):
-    """Verify source_ref from payload is preserved in episode."""
-    from fleet_memory.reindex import publisher
+class TestFailLoudConfiguration:
+    """A publish run with nowhere to publish dies before walking."""
 
-    payload = make_adr_payload(source_ref="docs/decisions/ADR_TEST.md")
+    def test_unset_publish_url_fails_at_construction(self) -> None:
+        with pytest.raises(ReindexPublishError, match="FLEET_MEMORY_PUBLISH_NATS_URL"):
+            ReindexPublisher(_make_settings(publish_url=""))
 
-    with patch.object(publisher, "broker", mock_broker):
-        await publisher.publish_episode(payload)
+    async def test_publish_before_connect_fails_loud(self) -> None:
+        publisher = ReindexPublisher(_make_settings())
+        with pytest.raises(ReindexPublishError, match="before connect"):
+            await publisher.publish(_make_payload())
 
-    published_data = mock_broker.publish.call_args[0][0]
-    episode = MemoryEpisodeV1(**published_data)
+    async def test_publish_episode_without_active_publisher_fails_loud(self) -> None:
+        with pytest.raises(ReindexPublishError, match="No active ReindexPublisher"):
+            await publish_episode(_make_payload())
 
-    assert episode.source_ref == payload.source_ref
+
+class TestBrokerIndependence:
+    """The publisher NEVER touches fleet_memory.app.broker."""
+
+    def test_module_has_no_broker_reference(self) -> None:
+        import fleet_memory.reindex.publisher as publisher_module
+
+        assert not hasattr(publisher_module, "broker")
+
+    def test_module_source_never_imports_app_broker(self) -> None:
+        import inspect
+
+        import fleet_memory.reindex.publisher as publisher_module
+
+        source = inspect.getsource(publisher_module)
+        assert "from fleet_memory.app import" not in source

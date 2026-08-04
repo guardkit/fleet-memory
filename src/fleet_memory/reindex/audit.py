@@ -10,10 +10,13 @@ FEAT-MEM-07 AC-3: "no episode is unaccounted for" invariant.
 
 from __future__ import annotations
 
-import hashlib
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Protocol
 
+# ONE rule mints the episode_id: the audit imports the publisher's derivation.
+# A private copy here already drifted once — it omitted the "ep-" prefix, so
+# every DLQ hit would have read UNACCOUNTED.
+from fleet_memory.reindex.publisher import _derive_episode_id
 from fleet_memory.writer.identity import record_identity
 
 if TYPE_CHECKING:
@@ -21,9 +24,9 @@ if TYPE_CHECKING:
 
 
 class StoreProtocol(Protocol):
-    """Protocol for store interface used by audit."""
+    """Protocol for store interface used by audit (AsyncPostgresStore.aget)."""
 
-    async def get(self, namespace: tuple[str, ...], key: str) -> dict[str, Any] | None:
+    async def aget(self, namespace: tuple[str, ...], key: str) -> Any | None:
         """Get a record from the store by namespace and key."""
         ...
 
@@ -65,27 +68,30 @@ class AuditResult:
         return self.unaccounted_count == 0
 
 
-def _derive_episode_id(natural_key: str) -> str:
-    """Derive episode ID from natural key using same logic as publisher.
+def _namespace_for_key(natural_key: str) -> tuple[str, str, str] | None:
+    """Derive the store namespace from a 3-segment natural key.
 
-    Must match the derivation in src/fleet_memory/reindex/publisher.py
-    to correctly identify DLQ episodes.
+    The writer stores records under ("fleet_memory", project, payload_type)
+    (writer.core), so the audit must look each key up in ITS namespace — a
+    single namespace parameter would miss every record.
 
     Args:
         natural_key: Three-segment colon-separated key (<type>:<project>:<id>)
 
     Returns:
-        Deterministic 16-character hex string derived from natural_key
+        ("fleet_memory", project, payload_type) or None for malformed keys
     """
-    hash_bytes = hashlib.sha256(natural_key.encode("utf-8")).digest()
-    return hash_bytes.hex()[:16]
+    segments = natural_key.split(":")
+    if len(segments) != 3:
+        return None
+    payload_type, project, _identifier = segments
+    return ("fleet_memory", project, payload_type)
 
 
 async def audit_published_episodes(
     run_report: Any,
     store: StoreProtocol,
     dlq_client: DLQClientProtocol,
-    namespace: tuple[str, ...] = ("fleet_memory",),
 ) -> AuditResult:
     """Audit published episodes against store and DLQ for 100% accounting.
 
@@ -99,9 +105,9 @@ async def audit_published_episodes(
 
     Args:
         run_report: RunReport with published_natural_keys list
-        store: Store instance supporting get(namespace, key) lookups
+        store: Store instance supporting aget(namespace, key) lookups
+            (namespace is derived PER KEY from the natural key)
         dlq_client: DLQ client supporting check_episode_on_dlq(episode_id)
-        namespace: Store namespace tuple (default: ("fleet_memory",))
 
     Returns:
         AuditResult with counts and list of unaccounted episodes
@@ -135,9 +141,17 @@ async def audit_published_episodes(
 
     # Audit each published episode
     for natural_key in published_natural_keys:
+        # Derive the store namespace from THIS key (writer stores per
+        # (fleet_memory, project, payload_type) namespace)
+        namespace = _namespace_for_key(natural_key)
+        if namespace is None:
+            # Malformed key can never be stored - unaccounted
+            unaccounted_episodes.append(natural_key)
+            continue
+
         # Check if stored: derive record UUID from natural key
         record_uuid = record_identity(natural_key)
-        record = await store.get(namespace, str(record_uuid))
+        record = await store.aget(namespace, str(record_uuid))
 
         if record is not None:
             # Episode is stored (writer committed successfully)

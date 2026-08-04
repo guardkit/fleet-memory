@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "project": "guardkit",
+  "entries": [
+    {
+      "kind": "adr",
+      "episode_type": "adr",
+      "directories": [
+        "docs/adr",
+        "docs/adrs",
+        "docs/decisions"
+      ],
+      "owner": "harvest",
+      "content_format": "markdown"
+    },
+    {
+      "kind": "review_report",
+      "episode_type": "review_report",
+      "directories": [
+        "docs/code-review"
+      ],
+      "owner": "harvest",
+      "content_format": "markdown"
+    },
+    {
+      "kind": "feature_outcome",
+      "episode_type": "feature_outcome",
+      "directories": [
+        "docs/completion-reports",
+        "docs/retro"
+      ],
+      "owner": "harvest",
+      "content_format": "markdown"
+    },
+    {
+      "kind": "document",
+      "episode_type": "document",
+      "directories": [
+        "docs/design",
+        "docs/guides",
+        "docs/reference"
+      ],
+      "owner": "harvest",
+      "content_format": "markdown"
+    },
+    {
+      "kind": "build_outcome",
+      "episode_type": "build_outcome",
+      "directories": [
+        "tasks/completed"
+      ],
+      "owner": "reindex",
+      "content_format": "markdown"
+    }
+  ]
+}

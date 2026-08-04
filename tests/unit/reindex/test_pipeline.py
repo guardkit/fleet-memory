@@ -1,242 +1,297 @@
-"""Tests for the re-index orchestrator pipeline.
+"""Unit tests for the manifest-driven reindex pipeline.
 
-Tests verify the orchestrator coordinates walker, classifier, parser, and publisher
-to process a full corpus, producing a RunReport that accounts for every document.
+Covers the accounting invariant (walked == published + skipped + unparseable),
+both arms of the within-run collision policy, and lessons preservation
+(read-before-write).
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
-from fleet_memory.payloads.base import BasePayload
-from fleet_memory.reindex.pipeline import reindex_corpus
+from fleet_memory.reindex.manifest import CorpusManifest, ManifestEntry
+from fleet_memory.reindex.pipeline import RunReport, reindex_corpus
+from fleet_memory.writer.identity import record_identity
 
-
-@dataclass(frozen=True)
-class FakePublisher:
-    """Test double for capturing published episodes."""
-
-    published: list[BasePayload]
-
-    async def publish(self, payload: BasePayload) -> None:
-        """Capture published payload."""
-        self.published.append(payload)
-
-
-def _create_test_corpus(tmp_path: Path, documents: dict[str, str]) -> Path:
-    """Create a test corpus with the given documents.
-
-    Args:
-        tmp_path: Temporary directory for the corpus
-        documents: Mapping of filename to content
-
-    Returns:
-        Path to the corpus root
-    """
-    corpus_root = tmp_path / "corpus"
-    corpus_root.mkdir()
-
-    for filename, content in documents.items():
-        doc_path = corpus_root / filename
-        doc_path.write_text(content, encoding="utf-8")
-
-    return corpus_root
-
-
-@pytest.mark.asyncio
-async def test_full_corpus_publishes_one_episode_per_recognized_doc(tmp_path: Path):
-    """Verify full corpus run publishes exactly one episode per recognized document.
-
-    Acceptance criteria: Every recognized document is published as a typed episode.
-    """
-    # Create corpus with multiple recognized documents
-    documents = {
-        "seed_module.md": """---
-type: seed_module
-project: test_project
-identifier: core_auth
-module_path: src/auth.py
+# A live completed-task head (verbatim shape) parameterized per test
+TASK_TEMPLATE = """---
+id: {task_id}
+title: {title}
+status: completed
+tags: [testing]
 ---
-# Seed Module
-""",
-        "adr.md": """---
-type: adr
-project: test_project
-identifier: ADR_001
-decision: Use PostgreSQL
-status: accepted
----
-# ADR
-""",
-        "review.md": """---
-type: review_report
-project: test_project
-identifier: REV_001
-verdict: approved
----
-# Review Report
-""",
-    }
-    corpus_root = _create_test_corpus(tmp_path, documents)
 
-    # Run pipeline with fake publisher
-    published: list[BasePayload] = []
-    fake_publisher = FakePublisher(published=published)
+# {task_id}: {title}
 
-    report = await reindex_corpus(
-        corpus_root=corpus_root,
-        publisher=fake_publisher.publish,
+Body prose.
+"""
+
+
+def _manifest() -> CorpusManifest:
+    return CorpusManifest(
+        schema_version=1,
+        project="guardkit",
+        entries=[
+            ManifestEntry(
+                kind="build_outcome",
+                episode_type="build_outcome",
+                directories=["tasks/completed"],
+                owner="reindex",
+                content_format="markdown",
+            ),
+        ],
     )
 
-    # Verify one episode per recognized document
-    assert len(published) == 3, f"Expected 3 episodes, got {len(published)}"
-    assert report.published_count == 3
-    assert report.unparseable_count == 0
-    assert report.unrecognized_count == 0
+
+def _write_task(root: Path, relative: str, task_id: str, title: str) -> None:
+    path = root / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(TASK_TEMPLATE.format(task_id=task_id, title=title), encoding="utf-8")
 
 
-@pytest.mark.asyncio
-async def test_single_unparseable_doc_does_not_abort_run(tmp_path: Path):
-    """Verify a single unparseable document does not abort the full corpus run.
+class _CollectingPublisher:
+    """Publisher stub recording payloads; returns None (published)."""
 
-    Acceptance criteria: One bad document does not prevent publishing valid documents.
-    """
-    # Create corpus with one bad document and two good ones
-    documents = {
-        "good1.md": """---
-type: seed_module
-project: test_project
-identifier: module_1
-module_path: src/module1.py
----
-# Good Module 1
-""",
-        "bad.md": """---
-type: seed_module
-project: test_project
-# Missing required field: identifier
-module_path: src/bad.py
----
-# Bad Module
-""",
-        "good2.md": """---
-type: adr
-project: test_project
-identifier: ADR_002
-decision: Use async
-status: accepted
----
-# Good ADR
-""",
-    }
-    corpus_root = _create_test_corpus(tmp_path, documents)
+    def __init__(self) -> None:
+        self.payloads = []
 
-    # Run pipeline
-    published: list[BasePayload] = []
-    fake_publisher = FakePublisher(published=published)
-
-    report = await reindex_corpus(
-        corpus_root=corpus_root,
-        publisher=fake_publisher.publish,
-    )
-
-    # Verify good documents were published despite the bad one
-    assert len(published) == 2, "Both good documents should be published"
-    assert report.published_count == 2
-    assert report.unparseable_count == 1
-    assert report.unrecognized_count == 0
-
-    # Verify bad document is in unparseable list with reason
-    assert len(report.unparseable) == 1
-    unparseable = report.unparseable[0]
-    assert "identifier" in unparseable["reason"].lower()
+    async def __call__(self, payload):
+        self.payloads.append(payload)
+        return None
 
 
-@pytest.mark.asyncio
-async def test_empty_corpus_publishes_nothing(tmp_path: Path):
-    """Verify empty corpus completes cleanly without publishing anything.
+class TestAccountingInvariant:
+    """walked == published + skipped + unparseable, always."""
 
-    Acceptance criteria: Empty corpus publishes nothing and completes successfully.
-    """
-    # Create empty corpus directory
-    corpus_root = tmp_path / "empty_corpus"
-    corpus_root.mkdir()
+    async def test_invariant_over_mixed_corpus(self, tmp_path: Path) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-A.md", "TASK-A", "Task A")
+        _write_task(tmp_path, "tasks/completed/2026-07/TASK-B.md", "TASK-B", "Task B")
+        # Non-terminal status -> skipped
+        (tmp_path / "tasks/completed/TASK-C.md").write_text(
+            "---\nid: TASK-C\nstatus: backlog\n---\n\n# C\n", encoding="utf-8"
+        )
+        # No front-matter -> skipped
+        (tmp_path / "tasks/completed/REPORT.md").write_text("# Report\n", encoding="utf-8")
 
-    # Run pipeline
-    published: list[BasePayload] = []
-    fake_publisher = FakePublisher(published=published)
+        publisher = _CollectingPublisher()
+        report = await reindex_corpus(tmp_path, _manifest(), publisher)
 
-    report = await reindex_corpus(
-        corpus_root=corpus_root,
-        publisher=fake_publisher.publish,
-    )
+        assert report.walked_count == 4
+        assert report.published_count == 2
+        assert report.skipped_count == 2
+        assert report.unparseable_count == 0
+        assert report.walked_count == (
+            report.published_count + report.skipped_count + report.unparseable_count
+        )
+        assert len(publisher.payloads) == 2
 
-    # Verify nothing was published
-    assert len(published) == 0
-    assert report.published_count == 0
-    assert report.unparseable_count == 0
-    assert report.unrecognized_count == 0
+    async def test_every_skip_carries_path_and_reason(self, tmp_path: Path) -> None:
+        (tmp_path / "tasks/completed").mkdir(parents=True)
+        (tmp_path / "tasks/completed/REPORT.md").write_text("# Report\n", encoding="utf-8")
+
+        report = await reindex_corpus(tmp_path, _manifest(), _CollectingPublisher())
+
+        assert report.skipped == [
+            {"path": "tasks/completed/REPORT.md", "reason": "no front-matter"}
+        ]
+
+    async def test_publisher_skip_reason_lands_in_skipped(self, tmp_path: Path) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-A.md", "TASK-A", "Task A")
+
+        async def skipping_publisher(payload):
+            return "payload body 1 bytes exceeds MAX_EPISODE_BODY_BYTES (2)"
+
+        report = await reindex_corpus(tmp_path, _manifest(), skipping_publisher)
+
+        assert report.published_count == 0
+        assert report.skipped_count == 1
+        assert "MAX_EPISODE_BODY_BYTES" in report.skipped[0]["reason"]
+
+    async def test_census_mode_counts_without_publishing(self, tmp_path: Path) -> None:
+        """publisher=None (--dry-run): census only, nothing to connect to."""
+        _write_task(tmp_path, "tasks/completed/TASK-A.md", "TASK-A", "Task A")
+
+        report = await reindex_corpus(tmp_path, _manifest(), publisher=None)
+
+        assert report.published_count == 1
+        assert report.published_natural_keys == ["build_outcome:guardkit:TASK_A"]
+
+    async def test_empty_corpus_completes_cleanly(self, tmp_path: Path) -> None:
+        report = await reindex_corpus(tmp_path, _manifest(), _CollectingPublisher())
+        assert report.walked_count == 0
+        assert report.published_count == 0
+
+    async def test_report_fields_serialize(self, tmp_path: Path) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-A.md", "TASK-A", "Task A")
+        report = await reindex_corpus(tmp_path, _manifest(), _CollectingPublisher())
+
+        data = report.to_json_dict()
+        # Round-trips through JSON (the run report file the audit reads)
+        parsed = json.loads(json.dumps(data))
+        assert parsed["published_natural_keys"] == ["build_outcome:guardkit:TASK_A"]
+        assert parsed["per_kind_counts"] == {"build_outcome": 1}
 
 
-@pytest.mark.asyncio
-async def test_report_accounts_for_every_walked_document(tmp_path: Path):
-    """Verify RunReport accounts for every document walked.
+class TestCollisionPolicy:
+    """Within-run id collisions (40 duplicate ids live, 20 distinct tasks)."""
 
-    Acceptance criteria: published + unparseable + unrecognized = total walked.
-    """
-    # Create corpus with all three categories
-    documents = {
-        "recognized.md": """---
-type: seed_module
-project: test_project
-identifier: module_recognized
-module_path: src/recognized.py
----
-# Recognized
-""",
-        "unparseable.md": """---
-type: seed_module
-project: test_project
-# Missing required field: identifier
----
-# Unparseable
-""",
-        "unrecognized.md": """---
-type: unknown_type
----
-# Unrecognized
-""",
-        "no_frontmatter.md": """# Just a markdown file
-No frontmatter at all.
-""",
-    }
-    corpus_root = _create_test_corpus(tmp_path, documents)
+    async def test_same_id_same_title_collapses_deepest_path_wins(
+        self, tmp_path: Path
+    ) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-012.md", "TASK-012", "Packaging")
+        _write_task(
+            tmp_path, "tasks/completed/2025-10/TASK-012.md", "TASK-012", "Packaging"
+        )
 
-    # Run pipeline
-    published: list[BasePayload] = []
-    fake_publisher = FakePublisher(published=published)
+        publisher = _CollectingPublisher()
+        report = await reindex_corpus(tmp_path, _manifest(), publisher)
 
-    report = await reindex_corpus(
-        corpus_root=corpus_root,
-        publisher=fake_publisher.publish,
-    )
+        # Exactly one published; the shallower copy is recorded as shadowed
+        assert report.published_count == 1
+        assert len(publisher.payloads) == 1
+        assert (
+            publisher.payloads[0].source_ref == "tasks/completed/2025-10/TASK-012.md"
+        )
+        shadowed = [s for s in report.skipped if "shadowed" in s["reason"]]
+        assert len(shadowed) == 1
+        assert shadowed[0]["path"] == "tasks/completed/TASK-012.md"
+        assert "tasks/completed/2025-10/TASK-012.md" in shadowed[0]["reason"]
 
-    # Verify accounting: every document is accounted for
-    total_walked = 4
-    total_accounted = (
-        report.published_count + report.unparseable_count + report.unrecognized_count
-    )
-    assert total_accounted == total_walked, (
-        f"Accounting mismatch: {report.published_count} published + "
-        f"{report.unparseable_count} unparseable + "
-        f"{report.unrecognized_count} unrecognized = "
-        f"{total_accounted}, but walked {total_walked} documents"
-    )
+    async def test_same_id_different_title_skips_both(self, tmp_path: Path) -> None:
+        """A curation ruling, never silent last-wins."""
+        _write_task(tmp_path, "tasks/completed/TASK-003-parent.md", "TASK-003", "Parent")
+        _write_task(
+            tmp_path, "tasks/completed/TASK-003-scanner.md", "TASK-003", "Scanner"
+        )
 
-    # Verify categorization
-    assert report.published_count == 1
-    assert report.unparseable_count == 1
-    assert report.unrecognized_count == 2  # unknown_type + no_frontmatter
+        publisher = _CollectingPublisher()
+        report = await reindex_corpus(tmp_path, _manifest(), publisher)
+
+        assert report.published_count == 0
+        assert len(publisher.payloads) == 0
+        collision_skips = [
+            s for s in report.skipped if "id collision across distinct tasks" in s["reason"]
+        ]
+        assert len(collision_skips) == 2
+        # The named reason carries both paths
+        for skip in collision_skips:
+            assert "tasks/completed/TASK-003-parent.md" in skip["reason"]
+            assert "tasks/completed/TASK-003-scanner.md" in skip["reason"]
+
+    async def test_collisions_preserve_invariant(self, tmp_path: Path) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-1.md", "TASK-1", "Same")
+        _write_task(tmp_path, "tasks/completed/2026-01/TASK-1.md", "TASK-1", "Same")
+        _write_task(tmp_path, "tasks/completed/TASK-2a.md", "TASK-2", "Alpha")
+        _write_task(tmp_path, "tasks/completed/TASK-2b.md", "TASK-2", "Beta")
+
+        report = await reindex_corpus(tmp_path, _manifest(), _CollectingPublisher())
+
+        assert report.walked_count == 4
+        assert report.published_count == 1  # deepest TASK-1
+        assert report.skipped_count == 3  # 1 shadowed + 2 distinct-title
+        assert report.walked_count == (
+            report.published_count + report.skipped_count + report.unparseable_count
+        )
+
+
+class FakeStore:
+    """aget-only store stub returning pre-seeded rows keyed by (namespace, key)."""
+
+    def __init__(self) -> None:
+        self.rows: dict[tuple[tuple[str, ...], str], dict] = {}
+
+    def seed(self, natural_key: str, value: dict) -> None:
+        payload_type, project, _ = natural_key.split(":")
+        namespace = ("fleet_memory", project, payload_type)
+        self.rows[(namespace, str(record_identity(natural_key)))] = value
+
+    async def aget(self, namespace: tuple[str, ...], key: str):
+        value = self.rows.get((namespace, key))
+        return SimpleNamespace(value=value) if value is not None else None
+
+
+class TestLessonsPreservation:
+    """Read-before-write: existing distilled lessons are never nulled."""
+
+    @pytest.fixture
+    def store(self) -> FakeStore:
+        return FakeStore()
+
+    async def test_existing_lessons_carried_forward(
+        self, tmp_path: Path, store: FakeStore
+    ) -> None:
+        # Fixture task has NO lessons section; the store row carries prose
+        _write_task(tmp_path, "tasks/completed/TASK-A.md", "TASK-A", "Task A")
+        store.seed(
+            "build_outcome:guardkit:TASK_A",
+            {
+                "content": json.dumps({"lessons": "Distilled: never trust mtime"}),
+                "version": 2,
+            },
+        )
+
+        publisher = _CollectingPublisher()
+        await reindex_corpus(tmp_path, _manifest(), publisher, store=store)
+
+        assert publisher.payloads[0].lessons == "Distilled: never trust mtime"
+
+    async def test_fresh_lessons_win_over_stored(
+        self, tmp_path: Path, store: FakeStore
+    ) -> None:
+        path = tmp_path / "tasks/completed/TASK-B.md"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            "---\nid: TASK-B\ntitle: B\nstatus: completed\n---\n\n"
+            "# B\n\n## Lessons\n\nFresh lesson from the file\n",
+            encoding="utf-8",
+        )
+        store.seed(
+            "build_outcome:guardkit:TASK_B",
+            {"content": json.dumps({"lessons": "Old stored lesson"}), "version": 1},
+        )
+
+        publisher = _CollectingPublisher()
+        await reindex_corpus(tmp_path, _manifest(), publisher, store=store)
+
+        assert publisher.payloads[0].lessons == "Fresh lesson from the file"
+
+    async def test_no_existing_row_leaves_lessons_none(
+        self, tmp_path: Path, store: FakeStore
+    ) -> None:
+        _write_task(tmp_path, "tasks/completed/TASK-C.md", "TASK-C", "Task C")
+
+        publisher = _CollectingPublisher()
+        await reindex_corpus(tmp_path, _manifest(), publisher, store=store)
+
+        assert publisher.payloads[0].lessons is None
+
+    async def test_carried_lessons_keep_natural_key(
+        self, tmp_path: Path, store: FakeStore
+    ) -> None:
+        """model_copy must not disturb the computed natural key."""
+        _write_task(tmp_path, "tasks/completed/TASK-D.md", "TASK-D", "Task D")
+        store.seed(
+            "build_outcome:guardkit:TASK_D",
+            {"content": json.dumps({"lessons": "kept"}), "version": 1},
+        )
+
+        publisher = _CollectingPublisher()
+        report = await reindex_corpus(tmp_path, _manifest(), publisher, store=store)
+
+        assert report.published_natural_keys == ["build_outcome:guardkit:TASK_D"]
+        assert publisher.payloads[0].natural_key == "build_outcome:guardkit:TASK_D"
+
+
+class TestRunReportDefaults:
+    """RunReport dataclass shape."""
+
+    def test_defaults(self) -> None:
+        report = RunReport()
+        assert report.walked_count == 0
+        assert report.published_natural_keys == []
+        assert report.skipped == []
+        assert report.per_kind_counts == {}

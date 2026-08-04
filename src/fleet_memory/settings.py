@@ -34,6 +34,26 @@ class Settings(BaseSettings):
         description="Directory for backfill staging payloads (FLEET_MEMORY_BACKFILL_DIR)",
     )
 
+    # Reindex publish path configuration
+    publish_nats_url: str = Field(
+        default="",
+        description=(
+            "NATS URL the reindex publisher connects to — consumed ONLY by the reindex "
+            "publish path (ReindexPublisher owns its own JetStream connection; it never "
+            "touches fleet_memory.app.broker). Publish runs fail loud BEFORE walking "
+            "when unset (FLEET_MEMORY_PUBLISH_NATS_URL)"
+        ),
+    )
+    corpus_manifest: str = Field(
+        default="",
+        description=(
+            "Path to the corpus manifest JSON exported by guardkit "
+            "(python -m guardkit.memory.harvest_taxonomy --json). The reindex pipeline "
+            "walks ONLY the manifest's reindex-owned directories "
+            "(FLEET_MEMORY_CORPUS_MANIFEST)"
+        ),
+    )
+
     # Chronicler batch harvester (WS4-S7). The Chronicler is a BATCH JOB, not a resident
     # consumer (the relay's operational record argues against another resident consumer,
     # WS4 §4.2); it reads the durable store and emits two DF-008-split outputs.
