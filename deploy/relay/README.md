@@ -34,6 +34,41 @@ The relay binds the existing durable pull consumer `fleet-memory-relay` (filter
 Uses `network_mode: host` so the container reaches the broker on `127.0.0.1:4222`, the NAS
 Postgres over Tailscale, and the embed service by hostname — exactly as the host does.
 
+## The progress marker (liveness fence, ladder ⑦)
+
+A clean ingest is completely silent — the relay logs only failures — so from outside
+the container "working" and "dead" look identical. That is how the memory flywheel went
+dark for a month without anyone noticing.
+
+The relay therefore writes one small file after every message:
+
+```
+/var/lib/fleet-memory/relay-progress.json      (inside the container)
+~/.local/state/fleet-memory/relay-progress.json (on the host, via the bind mount)
+```
+
+It records when the relay started, when it last wrote something to memory, when it last
+received anything at all, and how many of each since start. The liveness fence
+(`python -m fleet_memory.fence`, units in `ops/fence/`) reads it from the host.
+
+Three things to know:
+
+- **Any relay code change needs a rebuild + recreate anyway** (the Dockerfile copies
+  `src/` into the image), so adding the marker costs no extra deploy step — but the
+  marker only starts existing after that rebuild. Until then the fence reports that it
+  cannot see the relay, which is the honest answer.
+- **It is written root-owned but world-readable (`-rw-r--r--`), on purpose.** The image
+  runs as root (no `USER` in the Dockerfile), so the marker lands root-owned inside your
+  user-owned state directory — that part is fine and needs no fixing. The mode is the
+  part that matters: the fence runs as your own user, so the relay sets `0644` on every
+  write. Left at the `0600` a temporary file is created with, the marker would be
+  root-only, the fence would hit a permission error, and it would report BLIND forever —
+  the very silence this marker exists to end.
+  If you ever see the marker at `-rw-------`, the running relay image predates that fix;
+  rebuild it rather than chmod-ing the file, which the next message would overwrite.
+- **A failed marker write never costs a message.** The writer swallows its own errors
+  and logs one warning per process; ingestion and acking are unaffected.
+
 ## Verify (RLY-007 gates)
 
 Publish probe episodes as a publisher-capable identity (e.g. `rich`; the `fleet-memory`

@@ -1,0 +1,18 @@
+# fleet-memory-liveness-fence-alert.service — what happens when the fence trips.
+#
+# Pulled in by OnFailure= on fleet-memory-liveness-fence.service. Its whole job is to
+# put one unmissable line in the journal naming the status file, so the lapse is
+# findable without knowing where to look.
+#
+# Journal-only in v1, deliberately: no email, no Slack, no new credential, no new
+# secret path. Adding a delivery channel later is a separate, opt-in change.
+# This repo copy is the mirror of record. NOT installed by the authoring lane.
+
+[Unit]
+Description=fleet-memory liveness fence tripped — say so loudly in the journal
+
+[Service]
+Type=oneshot
+ExecStart=/home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/fence-alert.sh
+StandardOutput=journal
+StandardError=journal

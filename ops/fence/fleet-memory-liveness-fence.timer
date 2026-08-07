@@ -1,0 +1,24 @@
+# fleet-memory-liveness-fence.timer — four-hourly liveness cadence (memory ladder ⑦).
+#
+# Four hours, not four minutes: both signals are days-scale (a store max-age measured
+# in days, a build window measured in days), so a four-hour detection lag is
+# immaterial and the journal stays readable. OnBootSec= is what covers a powered-off
+# stretch: the box comes back, the fence runs ten minutes later, and the days-old store
+# it finds is exactly what it should shout about. (Persistent= would be the wrong tool
+# and is deliberately absent — systemd.timer(5) says it only affects OnCalendar=
+# timers, and this one has none.) The randomised delay keeps it off the same second as
+# everything else on the box.
+#
+# Enabling THIS TIMER is the single install action — the service is inert until it
+# fires. Not installed by the lane that authored it; see ops/fence/README.md.
+
+[Unit]
+Description=Four-hourly fleet-memory liveness check
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=4h
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target

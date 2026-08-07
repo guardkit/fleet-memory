@@ -1,0 +1,24 @@
+# fleet-memory-liveness-fence.service — one liveness-fence pass (memory ladder ⑦).
+# One-shot, triggered by fleet-memory-liveness-fence.timer; env arrives via sops
+# exec-env from the same leg-env family the Chronicler reads (values never at rest
+# here). This repo copy is the mirror of record (the unit-mirror law).
+#
+# NOT INSTALLED BY THE LANE THAT AUTHORED IT. These four files were written and
+# checked with `systemd-analyze verify`; copying them to ~/.config/systemd/user/ and
+# enabling the timer is an attended coordinator step — see ops/fence/README.md.
+#
+# The exit code is deliberately NOT masked: a tripped fence must appear in
+# `systemctl --user --failed`. That failed-unit list, plus the OnFailure= alert
+# below, IS the visibility channel.
+
+[Unit]
+Description=fleet-memory liveness fence (is the memory flywheel still turning?)
+Documentation=file:///home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/README.md
+OnFailure=fleet-memory-liveness-fence-alert.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/richardwoollcott/.local/bin/sops exec-env /home/richardwoollcott/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env /home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/liveness-fence-run.sh
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal

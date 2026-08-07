@@ -15,6 +15,26 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
+@pytest.fixture(autouse=True)
+def isolate_fence_state(tmp_path_factory, monkeypatch) -> None:
+    """Keep every test out of the operator's real ``~/.local/state/fleet-memory``.
+
+    Since the relay mints a liveness-fence progress marker in its lifespan, any test
+    that enters that lifespan would otherwise write a real file into the operator's
+    state directory — and a stale marker there is exactly what would make the
+    installed fence believe a dead relay had just started. (This is not theoretical:
+    running the suite once did it.) Autouse, so no future test has to remember.
+
+    Tests that want a specific path still set one explicitly; this only moves the
+    default out of harm's way.
+    """
+    state_dir = tmp_path_factory.mktemp("fence_state")
+    monkeypatch.setenv("FLEET_MEMORY_FENCE_STATE_DIR", str(state_dir))
+    monkeypatch.setenv(
+        "FLEET_MEMORY_FENCE_RELAY_MARKER_PATH", str(state_dir / "relay-progress.json")
+    )
+
+
 @pytest.fixture
 def fake_embed() -> Callable[[str], list[float]]:
     """Deterministic fake embedding function for unit tests.
