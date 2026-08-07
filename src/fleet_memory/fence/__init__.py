@@ -119,10 +119,10 @@ class FenceReport:
         out += [f"{c.status.value.upper():<6} {c.message}" for c in self.checks]
         if self.status is Status.ALARM:
             count = len(self.alarms)
-            noun = "check is" if count == 1 else "checks are"
+            verb = "is" if count == 1 else "are"
             out.append(
-                f"VERDICT ALARM — {count} of {len(self.checks)} {noun} unhappy. "
-                "Memory may be dark; see the lines above."
+                f"VERDICT ALARM — {count} of {len(self.checks)} checks {verb} "
+                "unhappy. Memory may be dark; see the lines above."
             )
         else:
             held = sum(1 for c in self.checks if c.status is Status.HELD)

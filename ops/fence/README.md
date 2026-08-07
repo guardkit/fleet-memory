@@ -41,7 +41,8 @@ only supported start path:
 cd ~/.config/fleet-secrets && \
   ~/.local/bin/sops exec-env fleet-memory-pg/relay-env-deploy.enc.env \
   'docker compose -f ~/Projects/appmilla_github/fleet-memory/deploy/relay/docker-compose.yml up -d --build'
-docker compose logs -f     # expect: "FastStream app started successfully!"
+docker compose -f ~/Projects/appmilla_github/fleet-memory/deploy/relay/docker-compose.yml logs -f
+# expect: "FastStream app started successfully!"
 ```
 
 *Why before the timer:* until the relay has been rebuilt there is no marker, and the
