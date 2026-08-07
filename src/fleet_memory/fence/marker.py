@@ -28,6 +28,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 __all__ = [
+    "MARKER_FILE_MODE",
     "MARKER_SCHEMA",
     "MarkerRead",
     "MarkerState",
@@ -39,6 +40,16 @@ logger = logging.getLogger(__name__)
 
 #: Bump only on an incompatible field change; the reader tolerates unknown versions.
 MARKER_SCHEMA = 1
+
+#: The marker is written world-readable on purpose: the relay writes it as root from
+#: inside its container, and the fence reads it as the operator's own user. Anything
+#: tighter makes the fence blind. The file carries no secret — timestamps and counts.
+MARKER_FILE_MODE = 0o644
+
+#: Same reasoning one level up: a directory the relay creates must stay traversable, or
+#: the readable file inside it is unreachable anyway. Applied ONLY to a directory this
+#: code creates — an existing directory belongs to whoever made it and is left alone.
+MARKER_DIR_MODE = 0o755
 
 
 def _now_iso() -> str:
@@ -155,10 +166,27 @@ class RelayMarker:
             "last_disposition": self._last_disposition,
         }
 
+    def _ensure_parent(self) -> None:
+        """Make the state directory if it is missing, and leave it traversable.
+
+        ``mkdir`` applies the process umask, so a relay started under a tight umask
+        would create a root-only directory and the fence could not reach the readable
+        file inside it. A directory that already exists is never touched — that one
+        belongs to the operator (it is the Chronicler's state directory too).
+        """
+        parent = self.path.parent
+        if parent.is_dir():
+            return
+        parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.chmod(parent, MARKER_DIR_MODE)
+        except OSError:
+            pass  # a mode we cannot set is not a reason to lose a message
+
     def _write(self) -> None:
         """Atomically replace the marker file. Never raises, never blocks an ack."""
         try:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self._ensure_parent()
             text = json.dumps(self._payload(), sort_keys=True)
             fd, tmp_name = tempfile.mkstemp(
                 dir=str(self.path.parent), prefix=".relay-progress-", suffix=".tmp"
@@ -166,6 +194,14 @@ class RelayMarker:
             try:
                 with os.fdopen(fd, "w", encoding="utf-8") as handle:
                     handle.write(text + "\n")
+                    # LOAD-BEARING. mkstemp creates the file 0600, and os.replace keeps
+                    # whatever mode and owner the temporary file had. The relay runs as
+                    # root inside its container; the fence runs as the operator's own
+                    # user. Left at 0600 the marker is root-only, so the fence gets a
+                    # PermissionError and the relay check is permanently BLIND — the
+                    # exact silence this whole rung exists to end. fchmod ignores umask,
+                    # so this is 0644 on every box.
+                    os.fchmod(handle.fileno(), MARKER_FILE_MODE)
                 os.replace(tmp_name, self.path)
             except Exception:
                 _quiet_unlink(tmp_name)

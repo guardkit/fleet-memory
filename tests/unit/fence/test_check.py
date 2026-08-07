@@ -10,6 +10,7 @@ The property under test throughout: **the fence never reports OK when it cannot 
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -193,6 +194,25 @@ def test_too_few_builds_to_judge_is_ok():
     facts = FenceFacts(builds=_builds(2), marker=_marker(last_ingest_hours_ago=500.0))
     report = evaluate(facts, THRESHOLDS, NOW, relay_only=True)
     assert _by_name(report, "relay_idle").status is Status.OK
+
+
+def test_too_few_builds_names_the_threshold_as_well_as_the_count():
+    """The line has to read straight when the threshold, not the count, is unusual.
+
+    Raise --min-builds above what the box actually does and the old wording said
+    "only 3 builds finished", which sounds like the box went quiet when in fact the
+    operator moved the bar. Both numbers appear so it is obvious which one moved.
+    """
+    thresholds = replace(THRESHOLDS, min_builds_in_window=9)
+    facts = FenceFacts(builds=_builds(3), marker=_marker(last_ingest_hours_ago=500.0))
+    report = evaluate(facts, thresholds, NOW, relay_only=True)
+
+    check = _by_name(report, "relay_idle")
+    assert check.status is Status.OK
+    assert "3 builds finished" in check.message
+    assert "9" in check.message
+    assert "only 3" not in check.message
+    assert check.detail["min_builds_in_window"] == 9
 
 
 def test_zero_builds_is_ok_because_quiet_days_are_legitimately_quiet():

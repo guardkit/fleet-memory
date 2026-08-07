@@ -47,14 +47,24 @@ docker compose logs -f     # expect: "FastStream app started successfully!"
 *Why before the timer:* until the relay has been rebuilt there is no marker, and the
 fence will correctly report that it cannot see the relay.
 
-**3. Check the marker exists.**
+**3. Check the marker exists — and that you can read it.**
 
 ```bash
-cat ~/.local/state/fleet-memory/relay-progress.json
+ls -l ~/.local/state/fleet-memory/relay-progress.json
+cat  ~/.local/state/fleet-memory/relay-progress.json
 ```
 
-It should carry a `started_at`. The file will be **owned by root** — the relay image
-runs as root. That is expected; the fence only reads it. Do not change the ownership.
+Expect two things: a `started_at` in the JSON, and a mode of `-rw-r--r--`.
+
+The file is **owned by root** — the relay image runs as root — and that part is fine.
+What matters is the `r` for everyone else: the fence runs as your own user, so if the
+marker were root-only the fence could not read it and would report BLIND on every run
+forever. The relay sets the mode explicitly on every write for exactly this reason.
+
+If `cat` says *Permission denied*, stop: that is a real fault, not a cosmetic one. It
+means the relay was rebuilt from code that predates this fix. Rebuild it again from the
+current lane (step 2) rather than loosening the file by hand — a hand-fixed file is
+overwritten by the very next message the relay handles.
 
 **4. Confirm the box keeps user services running when you log out.**
 
@@ -65,8 +75,10 @@ loginctl show-user "$USER" -p Linger      # expect Linger=yes
 Without lingering the timer will not fire while you are logged out, and the fence will
 quietly not run — which would be the original disease all over again.
 
-**5. Copy the units and enable the timer** (attended). Copy verbatim — no substitution;
-per-box variance is handled inside the units:
+**5. Copy the units and enable the timer** (attended). Copy verbatim on this box — the
+units spell out absolute `/home/richardwoollcott/...` paths, matching the installed
+Chronicler units exactly, so nothing needs substituting here. On any other box, or under
+any other account, those paths are the one thing to edit first:
 
 ```bash
 cp ~/Projects/appmilla_github/fleet-memory/ops/fence/fleet-memory-liveness-fence.service \
@@ -132,8 +144,14 @@ recorded in the status file, and does not fail the run. Rules that keep it hones
 - **No new secret.** The fence reuses the Chronicler's own env family
   (`fleet-memory-pg/leg-env.enc.env`), so there is no fleet-secrets register row to add
   and no `/connz` baseline diff to take — nothing touches the broker.
-- **The fence never writes to the store.** Its database session sets
-  `default_transaction_read_only = on` before it asks anything.
+- **The fence never writes to the store.** Its database session issues
+  `SET TRANSACTION READ ONLY` first, then `SET default_transaction_read_only = on`. Both
+  lines are needed and the order is load-bearing: the setting only binds transactions
+  that start *after* it, so on its own it leaves the fence's own already-open
+  transaction writable. `SET TRANSACTION READ ONLY` is the statement that actually seals
+  the session in front of you; the setting covers everything that comes later. Do not
+  "simplify" the pair — an integration test asserts both, and an earlier version of this
+  code let an INSERT through with only the setting.
 - **No DSN on the command line, by policy.** There is no `--dsn` flag. The DSN arrives
   only as `FLEET_MEMORY_PG_DSN` from the `sops exec-env` wrap, and no environment value
   ever appears in the output, the status file, or the log.

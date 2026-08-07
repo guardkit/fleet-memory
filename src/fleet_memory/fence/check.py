@@ -305,8 +305,9 @@ def _relay_check(
             name="relay_idle",
             status=Status.OK,
             message=(
-                f"relay: only {len(in_window)} builds finished in the last "
-                f"{window_phrase}, which is too few to judge silence by. "
+                f"relay: {len(in_window)} builds finished in the last {window_phrase}, "
+                f"fewer than the {thresholds.min_builds_in_window} this check needs "
+                f"before silence means anything. "
                 f"{_relay_activity_phrase().capitalize()}."
             ),
             detail=detail,

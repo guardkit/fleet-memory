@@ -16,7 +16,13 @@ from pathlib import Path
 
 import pytest
 
-from fleet_memory.fence.marker import MARKER_SCHEMA, RelayMarker, read_marker
+from fleet_memory.fence.marker import (
+    MARKER_DIR_MODE,
+    MARKER_FILE_MODE,
+    MARKER_SCHEMA,
+    RelayMarker,
+    read_marker,
+)
 
 
 @pytest.fixture
@@ -104,6 +110,79 @@ def test_the_write_is_atomic_leaving_no_stray_temp_files(marker_path: Path):
     marker.record_ingest()
     leftovers = [p.name for p in marker_path.parent.iterdir() if p.name != marker_path.name]
     assert leftovers == []
+
+
+def test_the_marker_is_readable_by_a_different_user_than_the_writer(marker_path: Path):
+    """The whole rung hangs on this.
+
+    The relay writes the marker as root from inside its container; the fence reads it as
+    the operator's own user. ``tempfile.mkstemp`` makes the file 0600 and ``os.replace``
+    keeps that mode, so without an explicit chmod the fence would get a PermissionError
+    on every run and the relay check could never go green.
+    """
+    marker = RelayMarker(marker_path)
+    marker.record_start()
+
+    mode = marker_path.stat().st_mode & 0o777
+    assert mode == MARKER_FILE_MODE
+    assert mode & 0o044, "others must be able to read it, or the fence goes blind"
+
+
+def test_every_rewrite_keeps_the_readable_mode(marker_path: Path):
+    """os.replace takes the temp file's mode, so each write must set it again."""
+    marker = RelayMarker(marker_path)
+    marker.record_start()
+    marker.record_ingest()
+    marker.record_message(disposition="dlq")
+    assert marker_path.stat().st_mode & 0o777 == MARKER_FILE_MODE
+
+
+def test_a_tight_umask_does_not_make_the_marker_private(marker_path: Path):
+    """fchmod ignores umask — a locked-down box must not silently blind the fence."""
+    previous = os.umask(0o077)
+    try:
+        RelayMarker(marker_path).record_start()
+    finally:
+        os.umask(previous)
+    assert marker_path.stat().st_mode & 0o777 == MARKER_FILE_MODE
+
+
+def test_a_state_directory_the_relay_creates_stays_traversable(marker_path: Path):
+    """A readable file inside a root-only directory is still unreachable."""
+    previous = os.umask(0o077)
+    try:
+        RelayMarker(marker_path).record_start()
+    finally:
+        os.umask(previous)
+    assert marker_path.parent.stat().st_mode & 0o777 == MARKER_DIR_MODE
+
+
+def test_an_existing_state_directory_is_left_exactly_as_the_operator_made_it(
+    tmp_path: Path,
+):
+    """It is the Chronicler's directory too — the relay must not re-permission it."""
+    state = tmp_path / "state"
+    state.mkdir(mode=0o700)
+    os.chmod(state, 0o700)  # mkdir's mode is umask-filtered; be explicit
+
+    RelayMarker(state / "relay-progress.json").record_start()
+
+    assert state.stat().st_mode & 0o777 == 0o700
+
+
+def test_an_unreadable_marker_is_blind_not_a_crash(marker_path: Path):
+    """The failure this fix prevents, kept as a test: unreadable must still report."""
+    marker = RelayMarker(marker_path)
+    marker.record_start()
+    os.chmod(marker_path, 0o000)
+    try:
+        read = read_marker(marker_path)
+    finally:
+        os.chmod(marker_path, MARKER_FILE_MODE)
+    if os.geteuid() == 0:
+        pytest.skip("root reads through any mode, so there is nothing to observe here")
+    assert read.blind
+    assert "cannot be read" in read.problem
 
 
 def test_missing_file_is_blind_with_a_plain_language_reason(tmp_path: Path):

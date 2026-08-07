@@ -57,9 +57,15 @@ Three things to know:
   `src/` into the image), so adding the marker costs no extra deploy step — but the
   marker only starts existing after that rebuild. Until then the fence reports that it
   cannot see the relay, which is the honest answer.
-- **The file will be owned by root.** The image runs as root (no `USER` in the
-  Dockerfile), so the marker lands root-owned inside your user-owned state directory.
-  That is expected. The fence only ever reads it — do not "fix" the ownership.
+- **It is written root-owned but world-readable (`-rw-r--r--`), on purpose.** The image
+  runs as root (no `USER` in the Dockerfile), so the marker lands root-owned inside your
+  user-owned state directory — that part is fine and needs no fixing. The mode is the
+  part that matters: the fence runs as your own user, so the relay sets `0644` on every
+  write. Left at the `0600` a temporary file is created with, the marker would be
+  root-only, the fence would hit a permission error, and it would report BLIND forever —
+  the very silence this marker exists to end.
+  If you ever see the marker at `-rw-------`, the running relay image predates that fix;
+  rebuild it rather than chmod-ing the file, which the next message would overwrite.
 - **A failed marker write never costs a message.** The writer swallows its own errors
   and logs one warning per process; ingestion and acking are unaffected.
 
