@@ -181,6 +181,83 @@ class Settings(BaseSettings):
         "recovery, 2026-06-27). Raised from the v2 default of 60. MUST stay > embed_timeout_s.",
     )
 
+    # Liveness fence (ladder ⑦). The structural "never dark again" guarantee: the
+    # memory flywheel once went dark for a month and nothing said so. Two checks run
+    # on a timer — the newest row in the store aging past a limit, and the relay
+    # ingesting nothing while builds are finishing. One rule, one place: the relay
+    # (which WRITES the progress marker) and the checker (which READS it) both take
+    # the path from fence_relay_marker_path; neither restates the default.
+    fence_store_max_age_hours: int = Field(
+        default=168,
+        gt=0,
+        description=(
+            "Alarm when the newest row in the store is older than this many hours. "
+            "Default 168 (a dark week): long enough to tolerate a quiet weekend plus "
+            "a bank holiday, short enough that a real blackout is caught in days "
+            "rather than a month (FLEET_MEMORY_FENCE_STORE_MAX_AGE_HOURS)"
+        ),
+    )
+    fence_build_window_hours: int = Field(
+        default=72,
+        gt=0,
+        description=(
+            "How far back the relay-idle check looks for finished builds. The alarm "
+            "sentence is 'three or more builds finished in the last three days and "
+            "memory recorded nothing in that time' (FLEET_MEMORY_FENCE_BUILD_WINDOW_HOURS)"
+        ),
+    )
+    fence_min_builds_in_window: int = Field(
+        default=3,
+        gt=0,
+        description=(
+            "How many finished builds must sit inside the window before relay silence "
+            "counts as an alarm. One build proves nothing; three across three days is a "
+            "pattern (FLEET_MEMORY_FENCE_MIN_BUILDS_IN_WINDOW)"
+        ),
+    )
+    fence_relay_restart_grace_minutes: int = Field(
+        default=75,
+        ge=0,
+        description=(
+            "Grace period after a relay restart before relay silence counts. A container "
+            "recreate orphans an in-flight delivery until ack_wait expires (~1h by "
+            "record); 75 minutes covers that with slack. Applies ONLY to the relay-idle "
+            "check (FLEET_MEMORY_FENCE_RELAY_RESTART_GRACE_MINUTES)"
+        ),
+    )
+    fence_watch_projects: str = Field(
+        default="guardkit",
+        description=(
+            "Comma-separated projects given their own max-age check on top of the "
+            "whole-store one. 'jarvis' is deliberately absent: its writer is dark by "
+            "record, so it would alarm truthfully but uselessly every run — add it once "
+            "re-armed (FLEET_MEMORY_FENCE_WATCH_PROJECTS)"
+        ),
+    )
+    fence_builds_dir: str = Field(
+        default="~/forge-state/receipts",
+        description=(
+            "Directory of forge build receipts. The fence reads only the directory "
+            "NAMES (build-FEAT-<id>-<YYYYMMDDHHMMSS>) — no database, no file lock "
+            "(FLEET_MEMORY_FENCE_BUILDS_DIR)"
+        ),
+    )
+    fence_relay_marker_path: str = Field(
+        default="~/.local/state/fleet-memory/relay-progress.json",
+        description=(
+            "The relay's progress marker. The relay writes it after every message; the "
+            "fence reads it. This is the ONLY progress signal the relay emits — a clean "
+            "ingest is otherwise completely silent (FLEET_MEMORY_FENCE_RELAY_MARKER_PATH)"
+        ),
+    )
+    fence_state_dir: str = Field(
+        default="~/.local/state/fleet-memory",
+        description=(
+            "Where the fence writes its status file, its alarm log, and where it looks "
+            "for an acknowledgement file (FLEET_MEMORY_FENCE_STATE_DIR)"
+        ),
+    )
+
     # Chunking configuration
     chunk_target_tokens: int = Field(
         default=1000,

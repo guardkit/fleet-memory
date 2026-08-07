@@ -412,3 +412,116 @@ class TestSettingsIntegration:
         assert settings.pg_pool_max == 50
         assert settings.pg_connect_timeout_s == 20.0
         assert settings.nats_url == "nats://custom-nats:4222"
+
+
+class TestLivenessFenceSettings:
+    """The liveness fence's knobs (memory ladder 7).
+
+    One rule, one place: the relay writes the progress marker and the fence reads it,
+    and BOTH take the path from ``fence_relay_marker_path``. If these defaults drift,
+    a rebuilt relay would write where the fence is not looking and the fence would
+    report BLIND forever — so the defaults are pinned here on purpose.
+    """
+
+    def _clean_settings(self, monkeypatch) -> Settings:
+        for key in list(os.environ.keys()):
+            if key.startswith("FLEET_MEMORY_"):
+                monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", "postgresql://u:p@localhost/db")
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://localhost:9000")
+        return Settings()
+
+    def test_fence_defaults_are_the_ruled_values(self, monkeypatch) -> None:
+        settings = self._clean_settings(monkeypatch)
+
+        assert settings.fence_store_max_age_hours == 168  # a dark week
+        assert settings.fence_build_window_hours == 72  # three days
+        assert settings.fence_min_builds_in_window == 3  # a pattern, not a blip
+        assert settings.fence_relay_restart_grace_minutes == 75  # covers ack_wait + slack
+        assert settings.fence_watch_projects == "guardkit"
+        assert settings.fence_builds_dir == "~/forge-state/receipts"
+        assert settings.fence_relay_marker_path == (
+            "~/.local/state/fleet-memory/relay-progress.json"
+        )
+        assert settings.fence_state_dir == "~/.local/state/fleet-memory"
+
+    def test_the_marker_lives_in_the_state_dir_by_default(self, monkeypatch) -> None:
+        """The marker and the fence's own files share one directory, as documented."""
+        settings = self._clean_settings(monkeypatch)
+        assert settings.fence_relay_marker_path.startswith(settings.fence_state_dir + "/")
+
+    def test_jarvis_is_deliberately_not_watched(self, monkeypatch) -> None:
+        """Its writer is dark by record: watching it would alarm truthfully but
+        uselessly on every run until it is re-armed."""
+        settings = self._clean_settings(monkeypatch)
+        assert "jarvis" not in settings.fence_watch_projects
+
+    def test_the_restart_grace_outlasts_the_ack_wait(self, monkeypatch) -> None:
+        """A container recreate orphans a delivery until ack_wait expires; the grace
+        period must cover that or every restart would raise a false alarm."""
+        settings = self._clean_settings(monkeypatch)
+        assert settings.fence_relay_restart_grace_minutes * 60 > settings.ack_wait_s
+
+    def test_every_fence_knob_reads_its_prefixed_env_var(self, monkeypatch) -> None:
+        for key in list(os.environ.keys()):
+            if key.startswith("FLEET_MEMORY_"):
+                monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", "postgresql://u:p@localhost/db")
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://localhost:9000")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_STORE_MAX_AGE_HOURS", "72")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_BUILD_WINDOW_HOURS", "24")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_MIN_BUILDS_IN_WINDOW", "5")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_RELAY_RESTART_GRACE_MINUTES", "30")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_WATCH_PROJECTS", "guardkit,jarvis")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_BUILDS_DIR", "/srv/receipts")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_RELAY_MARKER_PATH", "/var/lib/fm/progress.json")
+        monkeypatch.setenv("FLEET_MEMORY_FENCE_STATE_DIR", "/var/lib/fm")
+
+        settings = Settings()
+
+        assert settings.fence_store_max_age_hours == 72
+        assert settings.fence_build_window_hours == 24
+        assert settings.fence_min_builds_in_window == 5
+        assert settings.fence_relay_restart_grace_minutes == 30
+        assert settings.fence_watch_projects == "guardkit,jarvis"
+        assert settings.fence_builds_dir == "/srv/receipts"
+        assert settings.fence_relay_marker_path == "/var/lib/fm/progress.json"
+        assert settings.fence_state_dir == "/var/lib/fm"
+
+    def test_the_container_supplies_the_marker_path_as_an_absolute_override(
+        self, monkeypatch
+    ) -> None:
+        """deploy/relay/docker-compose.yml sets exactly this value on the relay."""
+        for key in list(os.environ.keys()):
+            if key.startswith("FLEET_MEMORY_"):
+                monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", "postgresql://u:p@localhost/db")
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://localhost:9000")
+        monkeypatch.setenv(
+            "FLEET_MEMORY_FENCE_RELAY_MARKER_PATH", "/var/lib/fleet-memory/relay-progress.json"
+        )
+
+        settings = Settings()
+        assert settings.fence_relay_marker_path == "/var/lib/fleet-memory/relay-progress.json"
+
+    @pytest.mark.parametrize(
+        "var,bad_value",
+        [
+            ("FLEET_MEMORY_FENCE_STORE_MAX_AGE_HOURS", "0"),
+            ("FLEET_MEMORY_FENCE_BUILD_WINDOW_HOURS", "0"),
+            ("FLEET_MEMORY_FENCE_MIN_BUILDS_IN_WINDOW", "0"),
+        ],
+    )
+    def test_a_zero_threshold_is_refused_rather_than_silently_disabling_a_check(
+        self, monkeypatch, var, bad_value
+    ) -> None:
+        """Zeroing a threshold would quietly turn a check into nonsense. Refuse it."""
+        for key in list(os.environ.keys()):
+            if key.startswith("FLEET_MEMORY_"):
+                monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", "postgresql://u:p@localhost/db")
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://localhost:9000")
+        monkeypatch.setenv(var, bad_value)
+
+        with pytest.raises(ValidationError):
+            Settings()

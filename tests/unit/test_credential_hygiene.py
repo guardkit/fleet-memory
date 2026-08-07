@@ -296,3 +296,149 @@ class TestErrorMessageFormat:
             assert password not in error_msg, f"Password leaked in error: {error_msg}"
             assert "MULTIPASS" not in error_msg, f"Password leaked in error: {error_msg}"
             assert "postgresql://" not in error_msg, f"DSN leaked in error: {error_msg}"
+
+
+class TestLivenessFenceHygiene:
+    """The liveness fence runs on a schedule and writes durable files.
+
+    That makes it the single most likely place for a credential to end up at rest:
+    it holds the DSN, it prints to the journal, and it leaves two files on disk that
+    nobody reads for weeks. So the bar here is absolute — for a DSN that carries a
+    password, no part of it may appear in stdout, stderr, the status file, the lapse
+    log, or any exception, on any path including total failure.
+    """
+
+    DSN = "postgresql://fenceuser:FENCEPASS987@memory.internal:5433/fleet_memory"
+    PASSWORD = "FENCEPASS987"
+
+    def _assert_clean(self, *texts: str) -> None:
+        for text in texts:
+            assert self.PASSWORD not in text, f"password leaked: {text}"
+            assert "FENCEPASS" not in text, f"password fragment leaked: {text}"
+            assert self.DSN not in text, f"DSN leaked: {text}"
+            assert "postgresql://" not in text, f"DSN scheme leaked: {text}"
+            assert "fenceuser" not in text, f"DSN user leaked: {text}"
+
+    def test_a_connection_failure_names_the_host_but_never_the_credential(self) -> None:
+        from fleet_memory.fence.store_age import read_store_facts
+
+        def explode(dsn: str):
+            # A driver error that quotes the whole DSN back at you — the realistic
+            # worst case, and exactly what psycopg does for a bad connection string.
+            raise RuntimeError(f"could not connect using {dsn}")
+
+        facts = read_store_facts(self.DSN, ("guardkit",), connection_factory=explode)
+
+        assert facts.reachable is False
+        self._assert_clean(facts.problem, facts.target)
+        assert "memory.internal:5433/fleet_memory" in facts.target  # host IS named
+
+    def test_a_query_failure_never_leaks_the_credential(self) -> None:
+        from fleet_memory.fence.store_age import read_store_facts
+
+        class _Cursor:
+            def execute(self, sql, params=None):
+                raise RuntimeError(f"permission denied for connection {self.__dict__} ")
+
+            def fetchone(self):  # pragma: no cover - never reached
+                return None
+
+        class _Conn:
+            def cursor(self):
+                return _Cursor()
+
+            def close(self):
+                pass
+
+        facts = read_store_facts(self.DSN, (), connection_factory=lambda dsn: _Conn())
+        assert facts.reachable is False
+        self._assert_clean(facts.problem)
+
+    def test_no_credential_reaches_stdout_stderr_the_status_file_or_the_log(
+        self, tmp_path, monkeypatch, capsys
+    ) -> None:
+        """The whole-run bar, on the worst path: an unreachable store on an alarm run."""
+        import json as _json
+
+        from fleet_memory.fence import __main__ as fence_cli
+        from fleet_memory.fence.report import LOG_FILENAME, STATUS_FILENAME
+
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", self.DSN)
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://embed.invalid:9000")
+        state_dir = tmp_path / "state"
+        receipts = tmp_path / "receipts"
+        receipts.mkdir()
+
+        def explode(dsn: str):
+            raise RuntimeError(f"FATAL: password authentication failed, dsn={dsn}")
+
+        code = fence_cli.main(
+            [
+                "--state-dir",
+                str(state_dir),
+                "--builds-dir",
+                str(receipts),
+                "--marker",
+                str(tmp_path / "absent.json"),
+                "--watch-projects",
+                "guardkit",
+            ],
+            connection_factory=explode,
+        )
+        captured = capsys.readouterr()
+
+        assert code == 1  # unreachable store is an alarm, not a crash
+        status_text = (state_dir / STATUS_FILENAME).read_text(encoding="utf-8")
+        log_text = (state_dir / LOG_FILENAME).read_text(encoding="utf-8")
+        self._assert_clean(captured.out, captured.err, status_text, log_text)
+        # And the status file really is the run's record, not an empty stub.
+        assert _json.loads(status_text)["status"] == "alarm"
+
+    def test_the_json_output_carries_no_credential_either(
+        self, tmp_path, monkeypatch, capsys
+    ) -> None:
+        from fleet_memory.fence import __main__ as fence_cli
+
+        monkeypatch.setenv("FLEET_MEMORY_PG_DSN", self.DSN)
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://embed.invalid:9000")
+        receipts = tmp_path / "receipts"
+        receipts.mkdir()
+
+        fence_cli.main(
+            [
+                "--json",
+                "--state-dir",
+                str(tmp_path / "state"),
+                "--builds-dir",
+                str(receipts),
+                "--marker",
+                str(tmp_path / "absent.json"),
+                "--watch-projects",
+                "",
+            ],
+            connection_factory=lambda dsn: (_ for _ in ()).throw(RuntimeError(dsn)),
+        )
+        self._assert_clean(capsys.readouterr().out)
+
+    def test_the_cli_offers_no_dsn_flag_at_all(self) -> None:
+        """Policy, not preference: a DSN on argv is visible in every process listing."""
+        from fleet_memory.fence.__main__ import build_arg_parser
+
+        options = {opt for action in build_arg_parser()._actions for opt in action.option_strings}
+        assert "--dsn" not in options
+        assert "--pg-dsn" not in options
+
+    def test_a_missing_dsn_is_named_by_variable_never_by_value(
+        self, tmp_path, monkeypatch, capsys
+    ) -> None:
+        from fleet_memory.fence import __main__ as fence_cli
+
+        monkeypatch.delenv("FLEET_MEMORY_PG_DSN", raising=False)
+        monkeypatch.setenv("FLEET_MEMORY_EMBED_URL", "http://embed.invalid:9000")
+
+        code = fence_cli.main(["--state-dir", str(tmp_path)])
+        err = capsys.readouterr().err
+
+        assert code == 2
+        assert "FLEET_MEMORY_PG_DSN" in err
+        self._assert_clean(err)
