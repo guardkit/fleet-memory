@@ -27,6 +27,7 @@ from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
 from fleet_memory.relay.schema import MemoryEpisodeV1
 
 if TYPE_CHECKING:
+    from fleet_memory.fence.marker import RelayMarker
     from fleet_memory.relay.service import RelayService
 
 # Import broker + settings singletons from app (handler never creates either).
@@ -38,6 +39,38 @@ logger = logging.getLogger(__name__)
 # Service instance set by app.py lifespan (module-level for handler access)
 # Initialized as None for type checking; set to real instance in lifespan
 service: RelayService | None = None
+
+# Liveness-fence progress marker, set by app.py lifespan (ladder ⑦). None until then,
+# and None forever in tests — every call site below no-ops when it is None. This is
+# the ONLY progress signal the relay emits: a clean ingest logs nothing, so without
+# it a dead relay and a busy relay are indistinguishable from outside. The marker's
+# own methods swallow every error, so recording progress can never cost an ack.
+marker: RelayMarker | None = None
+
+
+def _record_ingest() -> None:
+    """Note a committed write on the progress marker (no-op when unset).
+
+    Defensive belt-and-braces: RelayMarker already swallows its own errors, and this
+    swallows anything left over. Recording progress is a courtesy to the fence; an
+    ack must never depend on it.
+    """
+    if marker is None:
+        return
+    try:
+        marker.record_ingest()
+    except Exception:  # pragma: no cover - RelayMarker does not raise
+        logger.debug("Progress marker write failed; ingestion is unaffected")
+
+
+def _record_message(disposition: str) -> None:
+    """Note a message that arrived but did not become a write (no-op when unset)."""
+    if marker is None:
+        return
+    try:
+        marker.record_message(disposition=disposition)
+    except Exception:  # pragma: no cover - RelayMarker does not raise
+        logger.debug("Progress marker write failed; routing is unaffected")
 
 # --- Durable JetStream consumer wiring (post-Graphiti write-path v2) -----------
 # The MEMORY stream (subjects memory.episode.> + memory.dlq.>) is provisioned by
@@ -144,6 +177,9 @@ async def _route_transient(
             delivery_count=num_delivered,
             max_deliver=_MAX_DELIVER,
         )
+        # Recorded here rather than at the two call sites because this is the only
+        # place that knows which way a transient failure actually went.
+        _record_message("dlq")
         raise RejectMessage()
 
     logger.info(
@@ -153,6 +189,7 @@ async def _route_transient(
         last_error,
         extra={"episode_id": episode.episode_id},
     )
+    _record_message("nak")
     raise NackMessage()
 
 
@@ -194,6 +231,8 @@ async def handle_memory_episode(episode: MemoryEpisodeV1, msg: NatsMessage) -> N
         # Delegate ALL business logic to service
         # Clean return → implicit ACK
         await service.ingest(episode)
+        # The liveness fence's only proof the relay is alive (ladder ⑦).
+        _record_ingest()
 
     except PoisonEpisodeError as e:
         # Deterministic failure → reject/terminate + publish to DLQ
@@ -206,6 +245,10 @@ async def handle_memory_episode(episode: MemoryEpisodeV1, msg: NatsMessage) -> N
 
         # Publish to the per-project DLQ subject (memory.dlq.{project_id}) with reason
         await _publish_dlq(episode, reason=e.reason, detail=e.detail)
+
+        # A message arrived and was handled, but nothing was written — recorded so an
+        # operator can tell "receiving but failing" from "receiving nothing".
+        _record_message("dlq")
 
         # Reject/terminate the message (consumer continues)
         raise RejectMessage()

@@ -105,6 +105,19 @@ def _create_app() -> tuple[NatsBroker, FastStream, Settings | None]:
 
             handler.service = relay_service
 
+            # Liveness-fence progress marker (ladder ⑦). A clean ingest is otherwise
+            # completely silent, so "the relay is working" and "the relay is dead"
+            # look identical from outside — that is how the flywheel went dark for a
+            # month. The relay therefore mints its own marker file; the fence reads
+            # it. record_start() preserves the previous process's last-write times so
+            # a container recreate does not erase the history the fence judges on.
+            # RelayMarker never raises: a filesystem problem must never cost an ack.
+            from fleet_memory.fence.marker import RelayMarker
+
+            marker = RelayMarker(settings.fence_relay_marker_path)
+            marker.record_start()
+            handler.marker = marker
+
             # Yield to run the app - store and service are available during lifetime
             yield
 

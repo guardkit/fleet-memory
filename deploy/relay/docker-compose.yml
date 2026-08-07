@@ -31,7 +31,16 @@ services:
     # Host networking: reach the broker on localhost + Tailscale/host-resolved
     # services (Postgres, embed) without bridging Tailscale into the container.
     network_mode: host
+    # The relay's liveness-fence progress marker (ladder ⑦) lands in the host's
+    # fleet-memory state directory — the same one the Chronicler keeps its watermark
+    # in — so the fence (which runs on the host, not in this container) can read it.
+    # Without this bind the fence is BLIND by design and will alarm.
+    volumes:
+      - ${HOME}/.local/state/fleet-memory:/var/lib/fleet-memory
     environment:
+      # A plain path, NOT a secret — deliberately no `:?` guard (that is reserved for
+      # the credential vars below, so a bare `docker compose up` fails loudly on them).
+      FLEET_MEMORY_FENCE_RELAY_MARKER_PATH: /var/lib/fleet-memory/relay-progress.json
       FLEET_MEMORY_PG_DSN: ${FLEET_MEMORY_PG_DSN:?run via sops exec-env — see header}
       FLEET_MEMORY_EMBED_URL: ${FLEET_MEMORY_EMBED_URL:?run via sops exec-env — see header}
       FLEET_MEMORY_NATS_URL: ${FLEET_MEMORY_NATS_URL:?run via sops exec-env — see header}
