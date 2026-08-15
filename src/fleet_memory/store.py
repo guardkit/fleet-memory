@@ -134,7 +134,36 @@ async def async_store_context(
     pool_config = PoolConfig(
         min_size=settings.pg_pool_min,
         max_size=settings.pg_pool_max,
-        kwargs={"connect_timeout": settings.pg_connect_timeout_s},
+        kwargs={
+            "connect_timeout": settings.pg_connect_timeout_s,
+            # DETERMINISM LEG 1 -- plan pinning.
+            # AsyncPostgresStore.from_conn_string defaults every pooled connection
+            # to prepare_threshold=0, so the vector-search statement becomes a
+            # server-side prepared statement on its FIRST execution. PostgreSQL then
+            # runs a custom (parameter-aware) plan for executions 1-5 and switches to
+            # a GENERIC plan on execution 6. Under the generic plan the selectivity of
+            # `store.prefix LIKE $2` is unknown, the cost model flips, and the query
+            # changes scan path -- approximate HNSW index scan vs exact sequential
+            # scan. The two paths return DIFFERENT rows, so an identical query on an
+            # identical store answers differently depending on how many times that
+            # pooled connection has been used. Disabling prepared statements keeps
+            # every execution on a custom plan.
+            "prepare_threshold": None,
+            # DETERMINISM LEG 2 -- the approximate scan must not come back short.
+            # A pgvector HNSW index scan yields at most `hnsw.ef_search` (default
+            # 40) candidate vectors and stops, so a search asking for more than
+            # that many candidates silently returns fewer rows than it asked for
+            # once the namespace filter has removed some of them -- measured:
+            # 51 candidates asked, 30 returned. `strict_order` makes the scan
+            # continue until the LIMIT is satisfied, in exact distance order.
+            # This is a completeness setting, not a ranking one: ef_search itself
+            # is deliberately left at its default, because raising it changes
+            # which rows rank where and that is a policy call.
+            "options": (
+                "-c plan_cache_mode=force_custom_plan "
+                "-c hnsw.iterative_scan=strict_order"
+            ),
+        },
     )
 
     # Bound context entry (pool open + setup) with asyncio.timeout: the
