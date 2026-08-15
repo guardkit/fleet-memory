@@ -90,8 +90,9 @@ def _bulk_seed(dsn: str, dims: int, rows: int) -> None:
 
     with psycopg.connect(dsn, autocommit=True) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT count(*) FROM store WHERE prefix LIKE %s",
-                        (f"fleet_memory.{PROJECT}%",))
+            cur.execute(
+                "SELECT count(*) FROM store WHERE prefix LIKE %s", (f"fleet_memory.{PROJECT}%",)
+            )
             if cur.fetchone()[0] >= rows:
                 return  # ephemeral_pg is session-scoped; seed once
             with cur.copy("COPY store (prefix, key, value) FROM STDIN") as copy:
@@ -135,9 +136,7 @@ async def test_repeated_identical_search_returns_identical_results(seeded_store)
     store = seeded_store
     answers = []
     for _ in range(REPEATS):
-        results = await store.asearch(
-            ("fleet_memory", PROJECT), query=QUERY, limit=DEPTH
-        )
+        results = await store.asearch(("fleet_memory", PROJECT), query=QUERY, limit=DEPTH)
         answers.append([(item.key, item.score) for item in results])
 
     first = answers[0]
@@ -160,9 +159,7 @@ async def test_search_returns_the_full_depth_asked_for(seeded_store) -> None:
     """
     store = seeded_store
     for depth in (10, 25, 26, 50, 100):
-        results = await store.asearch(
-            ("fleet_memory", PROJECT), query=QUERY, limit=depth
-        )
+        results = await store.asearch(("fleet_memory", PROJECT), query=QUERY, limit=depth)
         assert len(results) == depth, (
             f"Asked for {depth} rows from a {SEED_ROWS}-row project, got {len(results)}"
         )

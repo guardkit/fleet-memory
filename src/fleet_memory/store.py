@@ -159,10 +159,7 @@ async def async_store_context(
             # This is a completeness setting, not a ranking one: ef_search itself
             # is deliberately left at its default, because raising it changes
             # which rows rank where and that is a policy call.
-            "options": (
-                "-c plan_cache_mode=force_custom_plan "
-                "-c hnsw.iterative_scan=strict_order"
-            ),
+            "options": "-c plan_cache_mode=force_custom_plan -c hnsw.iterative_scan=strict_order",
         },
     )
 
