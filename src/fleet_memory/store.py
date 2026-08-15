@@ -7,6 +7,7 @@ Namespace validation enforces underscores-only identifiers before database opera
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 from collections.abc import AsyncIterator
 from contextlib import AsyncExitStack, asynccontextmanager
@@ -17,6 +18,8 @@ from langgraph.store.postgres.aio import AsyncPostgresStore, PoolConfig
 
 from fleet_memory.embed import embed
 from fleet_memory.errors import NamespaceValidationError
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from fleet_memory.settings import Settings
@@ -189,5 +192,37 @@ async def async_store_context(
                 f"after {entry_timeout_s}s "
                 f"(pg_connect_timeout_s={settings.pg_connect_timeout_s})"
             ) from exc
+
+        # Determinism-guard honesty check (coach risk finding, 2026-08-15):
+        # ``hnsw.iterative_scan`` is a NAMESPACED setting, so Postgres accepts
+        # it at connection startup as a placeholder even on a pgvector that
+        # does not define it (pre-0.8.0) — the guarantee would vanish
+        # SILENTLY on an image downgrade. Ask the extension its version and
+        # say so out loud; never fatal (the store still works, only the
+        # strict-order guarantee is at risk).
+        try:
+            async with store.conn.connection() as conn:  # type: ignore[attr-defined]
+                row = await (
+                    await conn.execute(
+                        "SELECT extversion FROM pg_extension WHERE extname = 'vector'"
+                    )
+                ).fetchone()
+            version = (row or {}).get("extversion") or "absent"
+            if version == "absent" or tuple(
+                int(p) for p in str(version).split(".")[:2] if p.isdigit()
+            ) < (0, 8):
+                logger.warning(
+                    "search determinism guard: pgvector %s does not define "
+                    "hnsw.iterative_scan (needs >= 0.8.0) — the strict-order "
+                    "setting is a silent placeholder on this server and the "
+                    "determinism guarantee is NOT in force",
+                    version,
+                )
+        except Exception:  # noqa: BLE001 — a guard must never cost the store
+            logger.warning(
+                "search determinism guard: could not read the pgvector "
+                "version; the strict-order guarantee is unverified on this "
+                "connection"
+            )
 
         yield store
