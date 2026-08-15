@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# PATH hardening (2026-08-15): after the 08-13 reboot the systemd user manager's
+# environment no longer carried ~/.local/bin, so the bare `uv` below exited 127 —
+# ELEVEN consecutive silent fence failures. The fence must never depend on the
+# session's PATH mood: state it explicitly.
+export PATH="$HOME/.local/bin:$PATH"
 # Liveness-fence run wrapper (memory ladder ⑦). One invocation == one check pass.
 #
 # Two questions per pass: how old is the newest thing memory learned, and did the
