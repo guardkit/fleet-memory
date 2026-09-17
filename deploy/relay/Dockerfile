@@ -7,10 +7,10 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Install the package (src layout: [tool.setuptools.packages.find] where=["src"]).
-# faststream[cli] (needed by `faststream run`) is pulled in via the pinned dependency.
+# faststream[cli] (needed by `faststream run`) is pulled in explicitly via the relay extra.
 COPY pyproject.toml ./
 COPY src ./src
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ".[relay]"
 
 # Run the relay app. Settings are supplied via FLEET_MEMORY_* env vars (env_file).
 CMD ["faststream", "run", "fleet_memory.app:app"]
