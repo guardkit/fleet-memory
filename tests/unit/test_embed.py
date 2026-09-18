@@ -456,6 +456,93 @@ async def test_missing_data_field_raises_embed_service_error():
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [],
+        {"data": "not-a-list"},
+        {"data": []},
+        {"data": [{"embedding": [0.1, 0.2]}, {"embedding": [0.3, 0.4]}]},
+        {"data": [None]},
+        {"data": [{}]},
+        {"data": [{"embedding": "not-a-list"}]},
+    ],
+    ids=[
+        "top-level-list",
+        "data-not-list",
+        "empty-cardinality",
+        "excess-cardinality",
+        "item-not-object",
+        "missing-embedding",
+        "embedding-not-list",
+    ],
+)
+async def test_malformed_embedding_shapes_are_not_success(payload):
+    """Malformed successful responses fail once without retry."""
+    settings = make_settings(embed_dims=2)
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(status_code=200, json=payload, request=request)
+
+    with pytest.raises(EmbedServiceError):
+        await embed(["test"], settings, transport=httpx.MockTransport(handler))
+
+    assert calls == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "bad_value",
+    [True, False, "1.0", None, float("nan"), float("inf"), float("-inf")],
+    ids=["true", "false", "string", "null", "nan", "positive-inf", "negative-inf"],
+)
+async def test_embedding_values_must_be_finite_numbers(bad_value):
+    """Boolean, nonnumeric, and non-finite vector values are malformed."""
+    settings = make_settings(embed_dims=2)
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        return httpx.Response(
+            status_code=200,
+            json={"data": [{"embedding": [0.1, bad_value]}]},
+            request=request,
+        )
+
+    with pytest.raises(EmbedServiceError):
+        await embed(["test"], settings, transport=httpx.MockTransport(handler))
+
+    assert calls == 1
+
+
+@pytest.mark.asyncio
+async def test_5xx_then_empty_data_propagates_after_exactly_two_calls():
+    """A retry cannot turn an empty vector response into apparent success."""
+    settings = make_settings(embed_dims=2)
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return httpx.Response(
+                status_code=503,
+                json={"error": "temporary"},
+                request=request,
+            )
+        return httpx.Response(status_code=200, json={"data": []}, request=request)
+
+    with pytest.raises(EmbedServiceError):
+        await embed(["test"], settings, transport=httpx.MockTransport(handler))
+
+    assert calls == 2
+
+
+@pytest.mark.asyncio
 async def test_timeout_raises_embed_timeout_error():
     """Test that timeout raises EmbedTimeoutError within embed_timeout_s.
 

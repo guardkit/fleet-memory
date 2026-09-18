@@ -217,14 +217,53 @@ async def _embed_request(
             url=url,
         ) from e
 
-    # Extract embeddings
-    if "data" not in data:
+    if not isinstance(data, dict):
         raise EmbedServiceError(
-            "Response missing 'data' field",
+            "Embedding response must be a JSON object",
             url=url,
         )
 
-    embeddings = [item["embedding"] for item in data["data"]]
+    response_items = data.get("data")
+    if not isinstance(response_items, list):
+        raise EmbedServiceError(
+            "Embedding response 'data' must be a list",
+            url=url,
+        )
+    if len(response_items) != len(texts):
+        raise EmbedServiceError(
+            "Embedding response cardinality does not match input count",
+            url=url,
+        )
+
+    embeddings: list[list[float]] = []
+    for item_index, item in enumerate(response_items):
+        if not isinstance(item, dict):
+            raise EmbedServiceError(
+                f"Embedding response item {item_index} must be an object",
+                url=url,
+            )
+        embedding = item.get("embedding")
+        if not isinstance(embedding, list):
+            raise EmbedServiceError(
+                f"Embedding response item {item_index} has no vector list",
+                url=url,
+            )
+        for value_index, value in enumerate(embedding):
+            numeric = not isinstance(value, bool) and isinstance(
+                value, (int, float)
+            )
+            try:
+                finite = numeric and math.isfinite(value)
+            except OverflowError:
+                finite = False
+            if not finite:
+                raise EmbedServiceError(
+                    "Embedding response item "
+                    f"{item_index} vector value {value_index} "
+                    "must be a finite number",
+                    url=url,
+                )
+        embeddings.append(embedding)
 
     # Validate dimensions
     for embedding in embeddings:
