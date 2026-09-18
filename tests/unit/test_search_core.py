@@ -400,9 +400,36 @@ async def test_search_timeout_fails_explicitly(make_search_request, monkeypatch,
 
     monkeypatch.setattr(core, "_SEARCH_TIMEOUT_SECONDS", 0)
     with pytest.raises(TimeoutError):
-        await search(make_search_request(), SlowStore())
+        await search(
+            make_search_request(
+                payload_types=["build_outcome"],
+                require_substantive=True,
+            ),
+            SlowStore(),
+        )
 
     assert "exceeded 0s timeout" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_default_search_does_not_gain_substantive_deadline(
+    make_search_request, monkeypatch,
+):
+    import fleet_memory.retrieval.core as core
+
+    class SlowStore:
+        async def asearch(self, *args, **kwargs):
+            await asyncio.sleep(0.01)
+            return [_outcome_item(1, substantive=False)]
+
+    monkeypatch.setattr(core, "_SEARCH_TIMEOUT_SECONDS", 0)
+    results = await search(
+        make_search_request(payload_types=["build_outcome"]),
+        SlowStore(),
+    )
+
+    assert [item.key for item in results] == ["key-1"]
+
 
 @pytest.mark.asyncio
 async def test_search_returns_only_requested_project_memories_ranked_descending(

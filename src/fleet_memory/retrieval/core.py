@@ -322,41 +322,39 @@ async def search(
     partitions: list[str | None] = (
         sorted(set(request.payload_types)) if request.payload_types else [None]
     )
-    try:
-        async with asyncio.timeout(_SEARCH_TIMEOUT_SECONDS):
-            if request.require_substantive:
+    if request.require_substantive:
+        try:
+            async with asyncio.timeout(_SEARCH_TIMEOUT_SECONDS):
                 partition_results = [
                     await _search_partition(request, store, payload_type)
                     for payload_type in partitions
                 ]
-            else:
-                # Preserve the accepted single-page behavior for ordinary history
-                # and metadata consumers. Pagination is an explicit contextual
-                # task-outcome capability, never an implicit generic search change.
-                partition_results = []
-                for payload_type in partitions:
-                    namespace = ("fleet_memory", request.project)
-                    metadata_filter: dict[str, object] = {
-                        "project": request.project
-                    }
-                    if payload_type is not None:
-                        namespace = (*namespace, payload_type)
-                        metadata_filter["payload_type"] = payload_type
-                    partition_results.append(
-                        await store.asearch(
-                            namespace,
-                            query=request.query,
-                            filter=metadata_filter,
-                            limit=_RANKED_RESULT_LIMIT,
-                            offset=0,
-                        )
-                    )
-    except TimeoutError:
-        logger.error(
-            "filtered search incomplete: exceeded %ss timeout",
-            _SEARCH_TIMEOUT_SECONDS,
-        )
-        raise
+        except TimeoutError:
+            logger.error(
+                "filtered search incomplete: exceeded %ss timeout",
+                _SEARCH_TIMEOUT_SECONDS,
+            )
+            raise
+    else:
+        # Preserve the accepted single-page behavior for ordinary history and
+        # metadata consumers. Pagination and its deadline are explicit contextual
+        # task-outcome capabilities, never implicit generic search changes.
+        partition_results = []
+        for payload_type in partitions:
+            namespace = ("fleet_memory", request.project)
+            metadata_filter: dict[str, object] = {"project": request.project}
+            if payload_type is not None:
+                namespace = (*namespace, payload_type)
+                metadata_filter["payload_type"] = payload_type
+            partition_results.append(
+                await store.asearch(
+                    namespace,
+                    query=request.query,
+                    filter=metadata_filter,
+                    limit=_RANKED_RESULT_LIMIT,
+                    offset=0,
+                )
+            )
     raw_results = [
         item for partition in partition_results for item in partition
     ]
