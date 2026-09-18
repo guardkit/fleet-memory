@@ -27,6 +27,10 @@ if TYPE_CHECKING:
 # Type alias for search results
 SearchResult = SearchItem
 
+# Preserve AsyncPostgresStore's accepted default result bound explicitly. Partitioned
+# type searches merge back to this same global cap after deterministic ordering.
+_RANKED_RESULT_LIMIT = 10
+
 
 def _extract_payload_type(natural_key: str) -> str | None:
     """Extract payload type from natural key format type:project:identifier.
@@ -198,14 +202,36 @@ async def search(
     # Format: ("fleet_memory", project)
     namespace_prefix = ("fleet_memory", request.project)
 
-    # Execute vector search with query
-    # The store handles embedding and vector similarity via its index config
-    # Any EmbedServiceError or TimeoutError will propagate with credential hygiene
-    # (already enforced by embed.py and store.py)
-    raw_results = await store.asearch(
-        namespace_prefix,
-        query=request.query,
-    )
+    # Apply the exact top-level project/type metadata before vector ranking and
+    # the store's default limit. Filtering these facets after a project-wide top-10
+    # made a relevant typed record invisible whenever ten unrelated types ranked
+    # above it. AsyncPostgresStore has no $in operator, so multiple requested types
+    # are searched independently and merged by the deterministic ordering below.
+    #
+    # domain_tags remain a post-search filter: the accepted stored schema keeps
+    # them inside serialized content and the installed store API has no nested
+    # array-membership predicate. Do not hide that limitation with over-fetching.
+    if request.payload_types:
+        raw_results = []
+        for payload_type in sorted(set(request.payload_types)):
+            raw_results.extend(
+                await store.asearch(
+                    (*namespace_prefix, payload_type),
+                    query=request.query,
+                    filter={
+                        "project": request.project,
+                        "payload_type": payload_type,
+                    },
+                    limit=_RANKED_RESULT_LIMIT,
+                )
+            )
+    else:
+        raw_results = await store.asearch(
+            namespace_prefix,
+            query=request.query,
+            filter={"project": request.project},
+            limit=_RANKED_RESULT_LIMIT,
+        )
 
     # Apply filters
     filtered_results = raw_results
@@ -250,4 +276,4 @@ async def search(
     # Sort by score descending, then natural_key ascending for deterministic ordering
     sorted_results = sorted(deduplicated_results, key=_sort_key)
 
-    return sorted_results
+    return sorted_results[:_RANKED_RESULT_LIMIT]

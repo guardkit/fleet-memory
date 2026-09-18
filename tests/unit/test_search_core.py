@@ -14,10 +14,9 @@ Tests cover all acceptance criteria for TASK-RA-002:
 
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock
-
-import json
 
 import pytest
 from langgraph.store.base import SearchItem
@@ -73,7 +72,9 @@ def test_item_domain_tags_falls_back_to_content_json():
 
 def test_item_domain_tags_chunk_prose_is_empty():
     # Chunk records carry prose (not JSON) in content and have no tags.
-    item = _make_search_item(("fleet_memory", "guardkit", "chunk"), "k", {"content": "# A doc"}, 0.9)
+    item = _make_search_item(
+        ("fleet_memory", "guardkit", "chunk"), "k", {"content": "# A doc"}, 0.9
+    )
     assert _item_domain_tags(item) == []
 
 
@@ -100,6 +101,156 @@ def make_search_request():
         return SearchRequest(**defaults)
 
     return _make
+
+
+
+
+class _FilterThenLimitStore:
+    """Small fake matching AsyncPostgresStore's filter-before-limit contract."""
+
+    def __init__(self, items: list[SearchItem]) -> None:
+        self.items = items
+        self.calls: list[tuple[tuple[str, ...], dict]] = []
+
+    async def asearch(self, namespace_prefix, **kwargs):
+        self.calls.append((namespace_prefix, kwargs))
+        metadata_filter = kwargs.get("filter") or {}
+        matches = [
+            item
+            for item in self.items
+            if item.namespace[: len(namespace_prefix)] == namespace_prefix
+            and all(item.value.get(key) == value for key, value in metadata_filter.items())
+        ]
+        return sorted(matches, key=lambda item: -(item.score or 0.0))[:10]
+
+
+@pytest.mark.asyncio
+async def test_project_and_type_filters_apply_before_ranked_limit(make_search_request):
+    """Ten higher-ranked wrong types cannot hide the requested typed result."""
+    wrong = [
+        _make_search_item(
+            ("fleet_memory", "test_project", "adr"),
+            f"wrong-{idx}",
+            {
+                "content": "wrong type",
+                "natural_key": f"adr:test_project:{idx}",
+                "project": "test_project",
+                "payload_type": "adr",
+            },
+            0.99 - idx / 1000,
+        )
+        for idx in range(10)
+    ]
+    wanted = _make_search_item(
+        ("fleet_memory", "test_project", "document"),
+        "wanted",
+        {
+            "content": "relevant document",
+            "natural_key": "document:test_project:wanted",
+            "project": "test_project",
+            "payload_type": "document",
+        },
+        0.80,
+    )
+    store = _FilterThenLimitStore([*wrong, wanted])
+
+    results = await search(
+        make_search_request(payload_types=["document"]),
+        store,
+    )
+
+    assert [item.key for item in results] == ["wanted"]
+    assert store.calls == [
+        (
+            ("fleet_memory", "test_project", "document"),
+            {
+                "query": "test query",
+                "filter": {
+                    "project": "test_project",
+                    "payload_type": "document",
+                },
+                "limit": 10,
+            },
+        )
+    ]
+
+
+@pytest.mark.asyncio
+async def test_exact_project_filter_precedes_prefix_ranked_limit(make_search_request):
+    """A sibling project sharing the namespace prefix cannot consume top ten."""
+    sibling = [
+        _make_search_item(
+            ("fleet_memory", "guardkit_factory", "document"),
+            f"sibling-{idx}",
+            {
+                "content": "sibling",
+                "natural_key": f"document:guardkit_factory:{idx}",
+                "project": "guardkit_factory",
+                "payload_type": "document",
+            },
+            0.99 - idx / 1000,
+        )
+        for idx in range(10)
+    ]
+    wanted = _make_search_item(
+        ("fleet_memory", "guardkit", "document"),
+        "wanted",
+        {
+            "content": "exact project",
+            "natural_key": "document:guardkit:wanted",
+            "project": "guardkit",
+            "payload_type": "document",
+        },
+        0.80,
+    )
+    store = _FilterThenLimitStore([*sibling, wanted])
+
+    results = await search(make_search_request(project="guardkit"), store)
+
+    assert [item.key for item in results] == ["wanted"]
+    assert store.calls[0][1]["filter"] == {"project": "guardkit"}
+
+
+@pytest.mark.asyncio
+async def test_many_types_are_prefiltered_separately_then_ranked(make_search_request):
+    """The store's missing $in support is handled without over-fetching."""
+    store = AsyncMock()
+    document = _make_search_item(
+        ("fleet_memory", "test_project", "document"),
+        "doc",
+        {
+            "content": "document",
+            "natural_key": "document:test_project:doc",
+            "project": "test_project",
+            "payload_type": "document",
+        },
+        0.70,
+    )
+    adr = _make_search_item(
+        ("fleet_memory", "test_project", "adr"),
+        "adr",
+        {
+            "content": "decision",
+            "natural_key": "adr:test_project:adr",
+            "project": "test_project",
+            "payload_type": "adr",
+        },
+        0.90,
+    )
+    store.asearch.side_effect = [[adr], [document]]
+
+    results = await search(
+        make_search_request(payload_types=["document", "adr"]),
+        store,
+    )
+
+    assert [item.key for item in results] == ["adr", "doc"]
+    assert [call.args[0] for call in store.asearch.await_args_list] == [
+        ("fleet_memory", "test_project", "adr"),
+        ("fleet_memory", "test_project", "document"),
+    ]
+    assert all(call.kwargs["limit"] == 10 for call in store.asearch.await_args_list)
+    assert len(results) <= 10
 
 
 @pytest.mark.asyncio
