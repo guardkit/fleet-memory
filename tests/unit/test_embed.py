@@ -217,6 +217,70 @@ async def test_one_http_500_retry_can_recover():
     assert calls == 2
 
 
+@pytest.mark.asyncio
+async def test_each_sub_batch_has_an_independent_two_call_budget():
+    """Two sub-batches can each recover once without sharing retry budget."""
+    settings = make_settings(embed_dims=2, embed_max_batch_tokens=1)
+    attempts: dict[str, int] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        text = json.loads(request.content)["input"][0]
+        attempts[text] = attempts.get(text, 0) + 1
+        if attempts[text] == 1:
+            return httpx.Response(
+                status_code=503,
+                json={"error": "temporary failure"},
+                request=request,
+            )
+        return mock_embed_response(
+            [[0.1, 0.2] if text == "one" else [0.3, 0.4]]
+        )
+
+    result = await embed(
+        ["one", "two"],
+        settings,
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert result == [[0.1, 0.2], [0.3, 0.4]]
+    assert attempts == {"one": 2, "two": 2}
+
+
+@pytest.mark.asyncio
+async def test_retry_5xx_then_deterministic_4xx_propagates_after_two_calls():
+    """A retry that gets a deterministic 4xx stops without another attempt."""
+    from fleet_memory.errors import EmbedRequestError
+
+    settings = make_settings()
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return httpx.Response(
+                status_code=500,
+                json={"error": "temporary failure"},
+                request=request,
+            )
+        return httpx.Response(
+            status_code=400,
+            json={
+                "error": {
+                    "type": "invalid_request",
+                    "message": "deterministic rejection",
+                }
+            },
+            request=request,
+        )
+
+    with pytest.raises(EmbedRequestError) as exc_info:
+        await embed(["test"], settings, transport=httpx.MockTransport(handler))
+
+    assert exc_info.value.status_code == 400
+    assert calls == 2
+
+
 # ---------------------------------------------------------------------------
 # Deterministic 4xx classification (TASK-FIX-RELAYDROP01)
 #
