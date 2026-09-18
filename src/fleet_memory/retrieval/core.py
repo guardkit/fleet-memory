@@ -14,7 +14,9 @@ Consumer: FEAT-MEM-05 (assembly, harness)
 
 from __future__ import annotations
 
+import asyncio
 import json
+import logging
 from typing import TYPE_CHECKING
 
 from langgraph.store.base import SearchItem
@@ -30,6 +32,10 @@ SearchResult = SearchItem
 # Preserve AsyncPostgresStore's accepted default result bound explicitly. Partitioned
 # type searches merge back to this same global cap after deterministic ordering.
 _RANKED_RESULT_LIMIT = 10
+_LOGICAL_PAGE_SIZE = 10
+_MAX_SCANNED_PER_PARTITION = 1024
+_SEARCH_TIMEOUT_SECONDS = 20
+logger = logging.getLogger(__name__)
 
 
 def _extract_payload_type(natural_key: str) -> str | None:
@@ -136,6 +142,116 @@ def _matches_domain_tags(item: SearchItem, domain_tags: list[str]) -> bool:
     return any(tag in item_tags for tag in domain_tags)
 
 
+def _has_substantive_content(item: SearchItem) -> bool:
+    """Return whether a typed outcome/document carries canonical usable content.
+
+    This predicate is opt-in. Normal retrieval continues to return metadata-only
+    records. Contextual task-outcome retrieval uses it to avoid status/tag shells
+    whose approach and lessons are both blank.
+    """
+    content = item.value.get("content")
+    if not isinstance(content, str):
+        return False
+    try:
+        payload = json.loads(content)
+    except (TypeError, ValueError):
+        return False
+    if not isinstance(payload, dict):
+        return False
+
+    payload_type = item.value.get("payload_type") or _extract_payload_type(
+        item.value.get("natural_key", "")
+    )
+    if payload_type == "build_outcome":
+        fields = (payload.get("approach"), payload.get("lessons"))
+    elif payload_type == "document":
+        fields = (payload.get("content"),)
+    else:
+        return False
+    return any(isinstance(value, str) and bool(value.strip()) for value in fields)
+
+
+async def _search_partition(
+    request: SearchRequest,
+    store: AsyncPostgresStore,
+    payload_type: str | None,
+) -> list[SearchResult]:
+    """Return up to ten accepted results from one prefiltered type partition."""
+    namespace = ("fleet_memory", request.project)
+    metadata_filter: dict[str, object] = {"project": request.project}
+    if payload_type is not None:
+        namespace = (*namespace, payload_type)
+        metadata_filter["payload_type"] = payload_type
+
+    accepted: list[SearchResult] = []
+    seen_keys: set[str] = set()
+    offset = 0
+    exhausted = False
+    while len(accepted) < _RANKED_RESULT_LIMIT and not exhausted:
+        remaining = _MAX_SCANNED_PER_PARTITION - offset
+        if remaining <= 0:
+            logger.error(
+                "filtered search incomplete: scanned %d candidates in %s without "
+                "finding %d accepted results",
+                _MAX_SCANNED_PER_PARTITION,
+                payload_type or "all-types",
+                _RANKED_RESULT_LIMIT,
+            )
+            raise RuntimeError("filtered search incomplete at candidate scan bound")
+
+        logical_size = min(_LOGICAL_PAGE_SIZE, remaining)
+        # Installed langgraph-postgres expands its inner vector candidate window
+        # from limit but ignores offset. Compensate with limit=offset+page size,
+        # then consume exactly one logical page. A plain limit=10/offset=20
+        # falsely exhausts after rank 21.
+        fetched = await store.asearch(
+            namespace,
+            query=request.query,
+            filter=metadata_filter,
+            limit=offset + logical_size,
+            offset=offset,
+        )
+        page = fetched[:logical_size]
+        request_limit = offset + logical_size
+        exhausted = len(fetched) < request_limit and len(fetched) <= logical_size
+
+        for item in page:
+            if not _matches_project(item, request.project):
+                continue
+            if payload_type is not None and not _matches_payload_types(
+                item, [payload_type]
+            ):
+                continue
+            if not _matches_domain_tags(item, request.domain_tags):
+                continue
+            if not request.include_superseded and _is_superseded(item):
+                continue
+            if request.require_substantive and not _has_substantive_content(item):
+                continue
+            if item.key in seen_keys:
+                continue
+            seen_keys.add(item.key)
+            accepted.append(item)
+            if len(accepted) >= _RANKED_RESULT_LIMIT:
+                break
+
+        offset += len(page)
+        if len(page) < logical_size:
+            exhausted = True
+        if (
+            offset >= _MAX_SCANNED_PER_PARTITION
+            and len(accepted) < _RANKED_RESULT_LIMIT
+            and not exhausted
+        ):
+            logger.error(
+                "filtered search incomplete: scan bound reached in %s",
+                payload_type or "all-types",
+            )
+            raise RuntimeError("filtered search incomplete at candidate scan bound")
+
+    return accepted
+
+
 def _is_superseded(item: SearchItem) -> bool:
     """Check if search item is marked as superseded.
 
@@ -198,40 +314,52 @@ async def search(
         ...     for result in results:
         ...         print(f"{result.score}: {result.value['content']}")
     """
-    # Build namespace prefix for project scope
-    # Format: ("fleet_memory", project)
-    namespace_prefix = ("fleet_memory", request.project)
-
-    # Apply the exact top-level project/type metadata before vector ranking and
-    # the store's default limit. Filtering these facets after a project-wide top-10
-    # made a relevant typed record invisible whenever ten unrelated types ranked
-    # above it. AsyncPostgresStore has no $in operator, so multiple requested types
-    # are searched independently and merged by the deterministic ordering below.
-    #
-    # domain_tags remain a post-search filter: the accepted stored schema keeps
-    # them inside serialized content and the installed store API has no nested
-    # array-membership predicate. Do not hide that limitation with over-fetching.
-    if request.payload_types:
-        raw_results = []
-        for payload_type in sorted(set(request.payload_types)):
-            raw_results.extend(
-                await store.asearch(
-                    (*namespace_prefix, payload_type),
-                    query=request.query,
-                    filter={
-                        "project": request.project,
-                        "payload_type": payload_type,
-                    },
-                    limit=_RANKED_RESULT_LIMIT,
-                )
-            )
-    else:
-        raw_results = await store.asearch(
-            namespace_prefix,
-            query=request.query,
-            filter={"project": request.project},
-            limit=_RANKED_RESULT_LIMIT,
+    # Filter project/type before ranking, then page until each requested
+    # partition has enough accepted candidates for the final global top ten.
+    # Domain tags, supersession absence, and opt-in substantive content cannot be
+    # expressed by the installed store's scalar metadata filter, so pagination
+    # applies those predicates without a single arbitrary over-fetch depth.
+    partitions: list[str | None] = (
+        sorted(set(request.payload_types)) if request.payload_types else [None]
+    )
+    try:
+        async with asyncio.timeout(_SEARCH_TIMEOUT_SECONDS):
+            if request.require_substantive:
+                partition_results = [
+                    await _search_partition(request, store, payload_type)
+                    for payload_type in partitions
+                ]
+            else:
+                # Preserve the accepted single-page behavior for ordinary history
+                # and metadata consumers. Pagination is an explicit contextual
+                # task-outcome capability, never an implicit generic search change.
+                partition_results = []
+                for payload_type in partitions:
+                    namespace = ("fleet_memory", request.project)
+                    metadata_filter: dict[str, object] = {
+                        "project": request.project
+                    }
+                    if payload_type is not None:
+                        namespace = (*namespace, payload_type)
+                        metadata_filter["payload_type"] = payload_type
+                    partition_results.append(
+                        await store.asearch(
+                            namespace,
+                            query=request.query,
+                            filter=metadata_filter,
+                            limit=_RANKED_RESULT_LIMIT,
+                            offset=0,
+                        )
+                    )
+    except TimeoutError:
+        logger.error(
+            "filtered search incomplete: exceeded %ss timeout",
+            _SEARCH_TIMEOUT_SECONDS,
         )
+        raise
+    raw_results = [
+        item for partition in partition_results for item in partition
+    ]
 
     # Apply filters
     filtered_results = raw_results

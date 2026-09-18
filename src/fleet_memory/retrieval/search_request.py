@@ -44,6 +44,7 @@ class SearchRequest(BaseModel):
     query: str | None = None
     token_budget: int
     include_superseded: bool = False
+    require_substantive: bool = False
 
     @field_validator("project")
     @classmethod

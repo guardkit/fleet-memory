@@ -14,6 +14,7 @@ Tests cover all acceptance criteria for TASK-RA-002:
 
 from __future__ import annotations
 
+import asyncio
 import json
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock
@@ -86,7 +87,6 @@ def test_matches_domain_tags_via_content_fallback():
     # No filter still matches everything.
     assert _matches_domain_tags(item, []) is True
 
-
 @pytest.fixture
 def make_search_request():
     """Factory fixture for SearchRequest test data."""
@@ -121,8 +121,13 @@ class _FilterThenLimitStore:
             if item.namespace[: len(namespace_prefix)] == namespace_prefix
             and all(item.value.get(key) == value for key, value in metadata_filter.items())
         ]
-        return sorted(matches, key=lambda item: -(item.score or 0.0))[:10]
-
+        ranked = sorted(matches, key=lambda item: -(item.score or 0.0))
+        limit = kwargs.get("limit", 10)
+        offset = kwargs.get("offset", 0)
+        # Match installed langgraph-postgres: inner candidate expansion uses
+        # limit but ignores offset, then the outer query applies both.
+        inner = ranked[: limit * 2 + 1]
+        return inner[offset : offset + limit]
 
 @pytest.mark.asyncio
 async def test_project_and_type_filters_apply_before_ranked_limit(make_search_request):
@@ -170,10 +175,10 @@ async def test_project_and_type_filters_apply_before_ranked_limit(make_search_re
                     "payload_type": "document",
                 },
                 "limit": 10,
+                "offset": 0,
             },
         )
     ]
-
 
 @pytest.mark.asyncio
 async def test_exact_project_filter_precedes_prefix_ranked_limit(make_search_request):
@@ -209,7 +214,6 @@ async def test_exact_project_filter_precedes_prefix_ranked_limit(make_search_req
 
     assert [item.key for item in results] == ["wanted"]
     assert store.calls[0][1]["filter"] == {"project": "guardkit"}
-
 
 @pytest.mark.asyncio
 async def test_many_types_are_prefiltered_separately_then_ranked(make_search_request):
@@ -252,6 +256,153 @@ async def test_many_types_are_prefiltered_separately_then_ranked(make_search_req
     assert all(call.kwargs["limit"] == 10 for call in store.asearch.await_args_list)
     assert len(results) <= 10
 
+
+
+
+def _outcome_item(rank: int, *, substantive: bool) -> SearchItem:
+    payload = {
+        "natural_key": f"build_outcome:test_project:T{rank}",
+        "project": "test_project",
+        "payload_type": "build_outcome",
+        "domain_tags": ["task"],
+        "approach": "actual approach" if substantive else None,
+        "lessons": "actual lesson" if substantive else None,
+    }
+    return _make_search_item(
+        ("fleet_memory", "test_project", "build_outcome"),
+        f"key-{rank}",
+        {
+            "content": json.dumps(payload),
+            "natural_key": payload["natural_key"],
+            "project": "test_project",
+            "payload_type": "build_outcome",
+        },
+        1.0 - rank / 1000,
+    )
+
+@pytest.mark.asyncio
+async def test_substantive_pagination_recovers_rank_thirteen(make_search_request):
+    store = _FilterThenLimitStore(
+        [
+            *[_outcome_item(rank, substantive=False) for rank in range(1, 13)],
+            _outcome_item(13, substantive=True),
+        ]
+    )
+
+    results = await search(
+        make_search_request(
+            payload_types=["build_outcome"],
+            domain_tags=["task"],
+            require_substantive=True,
+        ),
+        store,
+    )
+
+    assert [item.key for item in results] == ["key-13"]
+    assert [(call[1]["limit"], call[1]["offset"]) for call in store.calls] == [
+        (10, 0),
+        (20, 10),
+    ]
+
+@pytest.mark.asyncio
+async def test_offset_compensation_recovers_results_beyond_rank_twenty(
+    make_search_request,
+):
+    store = _FilterThenLimitStore(
+        [
+            *[_outcome_item(rank, substantive=False) for rank in range(1, 23)],
+            *[_outcome_item(rank, substantive=True) for rank in range(23, 33)],
+        ]
+    )
+
+    results = await search(
+        make_search_request(
+            payload_types=["build_outcome"],
+            domain_tags=["task"],
+            require_substantive=True,
+        ),
+        store,
+    )
+
+    assert [item.key for item in results] == [
+        f"key-{rank}" for rank in range(23, 33)
+    ]
+    assert [(call[1]["limit"], call[1]["offset"]) for call in store.calls] == [
+        (10, 0),
+        (20, 10),
+        (30, 20),
+        (40, 30),
+    ]
+
+@pytest.mark.asyncio
+async def test_substantive_opt_in_rejects_malformed_and_blank_payloads(
+    make_search_request,
+):
+    malformed = _make_search_item(
+        ("fleet_memory", "test_project", "build_outcome"),
+        "malformed",
+        {
+            "content": "not-json",
+            "natural_key": "build_outcome:test_project:malformed",
+            "project": "test_project",
+            "payload_type": "build_outcome",
+        },
+        0.9,
+    )
+    blank = _outcome_item(2, substantive=False)
+    valid = _outcome_item(3, substantive=True)
+    store = _FilterThenLimitStore([malformed, blank, valid])
+
+    opted_in = await search(
+        make_search_request(
+            payload_types=["build_outcome"],
+            require_substantive=True,
+        ),
+        store,
+    )
+    default_store = _FilterThenLimitStore([malformed, blank, valid])
+    default = await search(
+        make_search_request(payload_types=["build_outcome"]),
+        default_store,
+    )
+
+    assert [item.key for item in opted_in] == ["key-3"]
+    assert [item.key for item in default] == ["key-2", "key-3", "malformed"]
+
+@pytest.mark.asyncio
+async def test_substantive_scan_bound_fails_explicitly(make_search_request, caplog):
+    store = _FilterThenLimitStore(
+        [_outcome_item(rank, substantive=False) for rank in range(1, 1101)]
+    )
+
+    with pytest.raises(RuntimeError, match="filtered search incomplete"):
+        await search(
+            make_search_request(
+                payload_types=["build_outcome"],
+                require_substantive=True,
+            ),
+            store,
+        )
+
+    assert len(store.calls) == 103
+    assert store.calls[-1][1]["offset"] == 1020
+    assert store.calls[-1][1]["limit"] == 1024
+    assert "scan bound" in caplog.text
+
+@pytest.mark.asyncio
+async def test_search_timeout_fails_explicitly(make_search_request, monkeypatch, caplog):
+    import fleet_memory.retrieval.core as core
+
+    class SlowStore:
+        async def asearch(self, *args, **kwargs):
+            await asyncio.sleep(0.01)
+            return []
+
+    monkeypatch.setattr(core, "_SEARCH_TIMEOUT_SECONDS", 0)
+    with pytest.raises(TimeoutError):
+        await search(make_search_request(), SlowStore())
+
+    assert "exceeded 0s timeout" in caplog.text
 
 @pytest.mark.asyncio
 async def test_search_returns_only_requested_project_memories_ranked_descending(
@@ -296,7 +447,6 @@ async def test_search_returns_only_requested_project_memories_ranked_descending(
     call_args = mock_store.asearch.call_args
     assert call_args[0][0] == ("fleet_memory", "proj_a")
 
-
 @pytest.mark.asyncio
 async def test_search_with_zero_payload_types_returns_all_types(make_search_request):
     """AC: Restricting to payload types - zero means all registered types."""
@@ -325,7 +475,6 @@ async def test_search_with_zero_payload_types_returns_all_types(make_search_requ
     assert any("document" in r.value.get("natural_key", "") for r in results)
     assert any("adr" in r.value.get("natural_key", "") for r in results)
 
-
 @pytest.mark.asyncio
 async def test_search_with_one_payload_type_returns_only_that_type(make_search_request):
     """AC: Restricting to payload types - one type returns only that type."""
@@ -353,7 +502,6 @@ async def test_search_with_one_payload_type_returns_only_that_type(make_search_r
     # Only document type returned
     assert len(results) == 1
     assert "document:test_project:1" in results[0].value["natural_key"]
-
 
 @pytest.mark.asyncio
 async def test_search_with_many_payload_types_returns_those_types(make_search_request):
@@ -391,7 +539,6 @@ async def test_search_with_many_payload_types_returns_those_types(make_search_re
     assert "adr:test_project:2" in natural_keys
     assert "pattern:test_project:3" not in natural_keys
 
-
 @pytest.mark.asyncio
 async def test_search_with_domain_tag_returns_only_tagged_memories(make_search_request):
     """AC: Restricting to domain tag returns only memories carrying that tag."""
@@ -427,7 +574,6 @@ async def test_search_with_domain_tag_returns_only_tagged_memories(make_search_r
     assert len(results) == 1
     assert "authentication" in results[0].value.get("domain_tags", [])
 
-
 @pytest.mark.asyncio
 async def test_search_excludes_superseded_records_by_default(make_search_request):
     """AC: Superseded records are excluded by default; only current successors return."""
@@ -461,7 +607,6 @@ async def test_search_excludes_superseded_records_by_default(make_search_request
     # Only current (non-superseded) returned
     assert len(results) == 1
     assert "superseded_by" not in results[0].value
-
 
 @pytest.mark.asyncio
 async def test_search_includes_superseded_when_requested(make_search_request):
@@ -499,7 +644,6 @@ async def test_search_includes_superseded_when_requested(make_search_request):
     current_results = [r for r in results if "superseded_by" not in r.value]
     assert len(superseded_results) == 1
     assert len(current_results) == 1
-
 
 @pytest.mark.asyncio
 async def test_search_orders_equal_relevance_deterministically(make_search_request):
@@ -547,7 +691,6 @@ async def test_search_orders_equal_relevance_deterministically(make_search_reque
     natural_keys = [r.value["natural_key"] for r in results]
     assert natural_keys == sorted(natural_keys)
 
-
 @pytest.mark.asyncio
 async def test_search_empty_project_returns_empty_result(make_search_request):
     """AC: Search against project with no memories returns empty result, no error."""
@@ -559,7 +702,6 @@ async def test_search_empty_project_returns_empty_result(make_search_request):
     results = await search(request, mock_store)
 
     assert results == []
-
 
 @pytest.mark.asyncio
 async def test_search_treats_filter_syntax_in_query_as_text(make_search_request):
@@ -593,7 +735,6 @@ async def test_search_treats_filter_syntax_in_query_as_text(make_search_request)
     call_args = mock_store.asearch.call_args
     assert call_args[1]["query"] == "payload_type:adr OR include_superseded=true"
 
-
 @pytest.mark.asyncio
 async def test_search_raises_clear_error_when_embed_service_unavailable(
     make_search_request,
@@ -618,7 +759,6 @@ async def test_search_raises_clear_error_when_embed_service_unavailable(
     assert "password" not in error_msg.lower()
     assert "postgresql://" not in error_msg
 
-
 @pytest.mark.asyncio
 async def test_search_raises_clear_error_when_store_unreachable(make_search_request):
     """AC: When store unreachable, caller receives clear failure, no credentials."""
@@ -639,7 +779,6 @@ async def test_search_raises_clear_error_when_store_unreachable(make_search_requ
     assert "Postgres" in error_msg
     # Should NOT contain credentials
     assert "password" not in error_msg.lower()
-
 
 @pytest.mark.asyncio
 async def test_search_mid_search_supersession_resolves_to_one_state(
@@ -681,7 +820,6 @@ async def test_search_mid_search_supersession_resolves_to_one_state(
     assert len(results) == 1
     assert "superseded_by" not in results[0].value
 
-
 @pytest.mark.seam
 @pytest.mark.integration_contract("SearchRequest")
 def test_search_core_consumes_validated_request():
@@ -716,7 +854,6 @@ def test_matches_project_requires_exact_segment():
 def test_matches_project_rejects_missing_or_short_namespace():
     item = _make_search_item(("fleet_memory",), "k", {}, 0.5)
     assert _matches_project(item, "guardkit") is False
-
 
 @pytest.mark.asyncio
 async def test_search_excludes_sibling_prefix_project_bleed(make_search_request):
