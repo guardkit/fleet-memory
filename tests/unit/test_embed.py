@@ -167,8 +167,11 @@ async def test_dimension_mismatch_raises_error(actual_dims: int):
 async def test_http_500_raises_embed_service_error():
     """Test that HTTP 500 raises EmbedServiceError."""
     settings = make_settings()
+    calls = 0
 
     def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
         return httpx.Response(
             status_code=500,
             json={"error": "Internal server error"},
@@ -183,6 +186,35 @@ async def test_http_500_raises_embed_service_error():
     error = exc_info.value
     assert error.status_code == 500
     assert "500" in str(error)
+    assert calls == 2
+
+
+@pytest.mark.asyncio
+async def test_one_http_500_retry_can_recover():
+    """A transient first 500 gets exactly one immediate retry."""
+    settings = make_settings()
+    embedding = [0.1] * 768
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return httpx.Response(
+                status_code=500,
+                json={"error": "temporary failure"},
+                request=request,
+            )
+        return mock_embed_response([embedding])
+
+    result = await embed(
+        ["test"],
+        settings,
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert result == [embedding]
+    assert calls == 2
 
 
 # ---------------------------------------------------------------------------
@@ -276,8 +308,11 @@ async def test_transient_status_codes_stay_embed_service_error(status_code: int)
     from fleet_memory.errors import EmbedRequestError, EmbedServiceError
 
     settings = make_settings()
+    calls = 0
 
     def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
         return make_error_response(status_code, message="transient")
 
     transport = httpx.MockTransport(handler)
@@ -289,6 +324,7 @@ async def test_transient_status_codes_stay_embed_service_error(status_code: int)
     assert error.status_code == status_code
     # The boundary that matters: transient failures must NOT be the poison subclass.
     assert not isinstance(error, EmbedRequestError)
+    assert calls == (2 if status_code >= 500 else 1)
 
 
 @pytest.mark.asyncio
@@ -314,8 +350,11 @@ async def test_deterministic_4xx_without_error_body_still_classified():
 async def test_malformed_json_raises_embed_service_error():
     """Test that malformed JSON raises EmbedServiceError."""
     settings = make_settings()
+    calls = 0
 
     def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
         return httpx.Response(
             status_code=200,
             content=b"not valid json",
@@ -329,6 +368,7 @@ async def test_malformed_json_raises_embed_service_error():
         await embed(["test"], settings, transport=transport)
 
     assert "malformed" in str(exc_info.value).lower() or "json" in str(exc_info.value).lower()
+    assert calls == 1
 
 
 @pytest.mark.asyncio

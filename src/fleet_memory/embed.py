@@ -238,6 +238,32 @@ async def _embed_request(
     return embeddings
 
 
+async def _embed_request_with_one_5xx_retry(
+    client: httpx.AsyncClient,
+    url: str,
+    texts: list[str],
+    settings: Settings,
+) -> list[list[float]]:
+    """Issue one bounded retry when the embedding service returns HTTP 5xx.
+
+    The total call budget is two attempts for this sub-batch. Deterministic
+    4xx, 408/429, transport timeouts, malformed responses, and dimension
+    failures are not retried here; their existing classification and caller
+    behavior remain unchanged.
+    """
+    try:
+        return await _embed_request(client, url, texts, settings)
+    except EmbedServiceError as error:
+        status = error.status_code
+        if status is None or not 500 <= status < 600:
+            raise
+        logger.warning(
+            "Embedding service returned HTTP %d; retrying sub-batch once",
+            status,
+        )
+        return await _embed_request(client, url, texts, settings)
+
+
 async def embed(
     texts: list[str],
     settings: Settings,
@@ -289,7 +315,14 @@ async def embed(
         # One client across all sub-batches so connections are reused.
         async with httpx.AsyncClient(timeout=timeout, transport=transport) as client:
             for batch in batches:
-                embeddings.extend(await _embed_request(client, url, batch, settings))
+                embeddings.extend(
+                    await _embed_request_with_one_5xx_retry(
+                        client,
+                        url,
+                        batch,
+                        settings,
+                    )
+                )
 
         return embeddings
 
