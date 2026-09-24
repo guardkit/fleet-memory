@@ -11,8 +11,9 @@ relay as a managed container (`restart: unless-stopped`) so it survives reboots 
 
 - `ships-computer-nats` broker running, with the `fleet-memory` NATS user provisioned and
   the `MEMORY` stream created (`memory.episode.>` + `memory.dlq.>`). See `nats-infrastructure`.
-- NAS Postgres reachable at `whitestocks.tailebf801.ts.net:5433` (pgvector installed).
-- Embed service reachable at `http://promaxgb10-41b1:9000`.
+- Postgres with pgvector installed, reachable from this host at the address you put in
+  `FLEET_MEMORY_PG_DSN`.
+- Embed service reachable from this host at the address you put in `FLEET_MEMORY_EMBED_URL`.
 
 ## Deploy
 

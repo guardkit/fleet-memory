@@ -10,7 +10,7 @@ and the embed endpoint (``FLEET_MEMORY_EMBED_URL``) — i.e. the Mac over Tailsc
 or the GB10. It reads the repo's existing ``.env`` (the same one the relay/app use),
 so if the relay can write, this can.
 
-    cd ~/Projects/appmilla_github/fleet-memory
+    cd <this checkout>
     uv run python scripts/seed_df006.py
     # or: .venv/bin/python scripts/seed_df006.py
 

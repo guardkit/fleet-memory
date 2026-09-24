@@ -3,8 +3,9 @@
 # Runs on the GB10 host alongside the ships-computer-nats broker. Uses HOST networking
 # so the relay reaches everything the host can with no extra wiring:
 #   - the NATS broker on 127.0.0.1:4222 (published by nats-infrastructure)
-#   - the NAS Postgres over Tailscale (whitestocks.tailebf801.ts.net:5433)
-#   - the embed service by hostname (promaxgb10-41b1:9000)
+#   - the Postgres store at whatever FLEET_MEMORY_PG_DSN names (over a VPN, if that
+#     is how this deployment reaches it)
+#   - the embed service at whatever FLEET_MEMORY_EMBED_URL names
 #
 # Secrets (FLEET_MEMORY_PG_DSN / FLEET_MEMORY_NATS_URL carry passwords) live in
 # the sops-encrypted fleet secrets root (DF-022 sops cutover, Wave 2 2026-07-30):

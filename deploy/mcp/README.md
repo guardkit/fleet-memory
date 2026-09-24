@@ -12,10 +12,14 @@ resident-HTTP topology (graphiti-mcp's) survived untouched for three months.
 
 ## Deploy (the ONLY supported start path)
 
+Run the first line from anywhere inside this checkout; it is the only thing here
+that depends on where you cloned the repository.
+
 ```bash
+FLEET_MEMORY_REPO=$(git rev-parse --show-toplevel)
 cd ~/.config/fleet-secrets && \
   ~/.local/bin/sops exec-env fleet-memory-pg/relay-env-deploy.enc.env \
-  'docker compose -f ~/Projects/appmilla_github/fleet-memory/deploy/mcp/docker-compose.yml up -d --build'
+  "docker compose -f $FLEET_MEMORY_REPO/deploy/mcp/docker-compose.yml up -d --build"
 ```
 
 No plaintext env file exists or may be created; `:?` interpolation makes a

@@ -4,9 +4,10 @@
 # (2026-08-03 reconnection ruling: resident HTTP over per-repo stdio — one URL,
 # zero per-repo secrets plumbing, the topology that survived config drift).
 #
-# Runs on the GB10 host with HOST networking so it reaches the NAS Postgres over
-# Tailscale (whitestocks.tailebf801.ts.net:5433) and the embed service by
-# hostname (promaxgb10-41b1:9000) exactly as the host does.
+# Runs with HOST networking so it reaches the Postgres store (over a VPN, if that
+# is how this deployment reaches it) and the embed service by whatever name the
+# host resolves, exactly as the host does. Both addresses come from
+# FLEET_MEMORY_PG_DSN and FLEET_MEMORY_EMBED_URL below; no host is named here.
 #
 # Secrets (FLEET_MEMORY_PG_DSN carries a password) live in the sops-encrypted
 # fleet secrets root — this service reuses the relay's env file (same store,

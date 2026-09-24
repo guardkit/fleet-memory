@@ -155,8 +155,8 @@ class Settings(BaseSettings):
     mcp_allowed_hosts: str = Field(
         default="",
         description="Comma-separated extra Host-header values accepted by the http "
-        "transport (e.g. 'promaxgb10-41b1:8005'). Needed when clients reach the "
-        "resident service by hostname rather than localhost "
+        "transport (e.g. 'memory-host:8005' — whatever name the clients use). "
+        "Needed when clients reach the resident service by hostname rather than localhost "
         "(FLEET_MEMORY_MCP_ALLOWED_HOSTS)",
     )
 
