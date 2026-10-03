@@ -45,6 +45,9 @@ services:
       FLEET_MEMORY_MCP_TRANSPORT: http
       FLEET_MEMORY_MCP_HOST: 0.0.0.0
       FLEET_MEMORY_MCP_PORT: "8005"
+      # Optional host-name check (see README): when set, any other Host gets 421.
+      # Include host.docker.internal:8005 if clients use the default URL.
+      # FLEET_MEMORY_MCP_ALLOWED_HOSTS: "memory:8005,host.docker.internal:8005"
     healthcheck:
       # Any HTTP response (even 4xx without the MCP Accept headers) proves the
       # server is up; connection-refused is the failure signal. No curl in the
