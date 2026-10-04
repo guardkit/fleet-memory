@@ -17,13 +17,20 @@ from fleet_memory.payloads.base import BasePayload
 class ADRPayload(BasePayload):
     """Architecture Decision Record payload.
 
-    Tracks architectural decisions with decision text and status.
+    Tracks architectural decisions with decision text and status. The optional
+    fields carry the rest of a written ADR so its reasoning is stored and,
+    because the whole record is embedded, searchable. Records without them
+    remain valid.
     """
 
     payload_type: ClassVar[str] = "adr"
 
     decision: str  # The architectural decision being documented
     status: str  # e.g., "proposed", "accepted", "deprecated", "superseded"
+    title: str | None = None  # Short name of the decision
+    context: str | None = None  # The forces and situation that led to it
+    consequences: str | None = None  # What follows from it, good and bad
+    alternatives: list[str] | None = None  # Options considered and not chosen
 
 
 class ReviewReportPayload(BasePayload):

@@ -248,3 +248,54 @@ async def test_embed_down_no_partial_write(fake_writer):
     assert "unavailable" in result.message.lower() or "temporarily" in result.message.lower()
     # Nothing persisted - writer was never called successfully
     assert len(fake_writer.writes) == 0
+
+
+@pytest.mark.asyncio
+async def test_full_adr_keeps_its_reasoning(fake_writer):
+    """An ADR's optional title, context, consequences and alternatives are stored."""
+    from fleet_memory.mcp.tools.write import memory_write_payload
+
+    payload_dict = {
+        "payload_type": "adr",
+        "project": "my_project",
+        "identifier": "ADR_ARCH_001",
+        "source_ref": "docs/architecture/decisions/ADR-ARCH-001-api.md",
+        "title": "FastAPI for the API",
+        "decision": "Use FastAPI for the HTTP API",
+        "status": "accepted",
+        "context": "The agent is Python and the API must validate input.",
+        "consequences": "One language across agent and API; async handlers.",
+        "alternatives": ["Flask", "Django REST framework"],
+    }
+
+    result = await memory_write_payload(payload_dict, fake_writer)
+
+    assert result.is_error is False
+    assert result.value == "adr:my_project:ADR_ARCH_001"
+    stored = fake_writer.writes[0].model_dump()
+    assert stored["title"] == "FastAPI for the API"
+    assert stored["context"].startswith("The agent is Python")
+    assert stored["consequences"].startswith("One language")
+    assert stored["alternatives"] == ["Flask", "Django REST framework"]
+
+
+@pytest.mark.asyncio
+async def test_minimal_adr_still_valid(fake_writer):
+    """An ADR with only decision and status is still accepted; the new fields are absent."""
+    from fleet_memory.mcp.tools.write import memory_write_payload
+
+    result = await memory_write_payload(
+        {
+            "payload_type": "adr",
+            "project": "my_project",
+            "identifier": "ADR_002",
+            "source_ref": "test",
+            "decision": "Keep it small",
+            "status": "accepted",
+        },
+        fake_writer,
+    )
+
+    assert result.is_error is False
+    stored = fake_writer.writes[0].model_dump()
+    assert stored["title"] is None and stored["alternatives"] is None
