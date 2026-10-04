@@ -157,13 +157,13 @@ As-built record of the first real provisioning, kept for rebuilds. It **diverges
 
 ```bash
 NAS_HOST=<nas-host>.<tailnet>.ts.net     # Tailscale MagicDNS name (IPv4 <nas-tailnet-address>)
-NAS_USER=RichardWoollcott                  # DSM account NAME (not the email); must be in administrators
+NAS_USER=<nas-user>                  # DSM account NAME (not the email); must be in administrators
 NAS_SSH_PORT=22
 NAS_DOCKER_ROOT=/volume1/docker/fleet_memory
 # FLEET_MEMORY_PG_PASSWORD: openssl rand -base64 24, lives ONLY in deploy/nas/.env.deploy (gitignored) — never committed
 ```
 
-DSM had several near-identical accounts (`RichardWoollcott`, `<user>hotmail.com`, a deactivated `admin`). `RichardWoollcott` is the chosen deploy identity — use it consistently as `NAS_USER` so the account owning the container files is the one Forge connects as.
+DSM had several near-identical accounts (`<nas-user>`, `<owner email address>`, a deactivated `admin`). `<nas-user>` is the chosen deploy identity — use it consistently as `NAS_USER` so the account owning the container files is the one Forge connects as.
 
 **Step 1 — generate the key (GB10)**
 
@@ -181,13 +181,13 @@ DSM → Control Panel → User & Group → Advanced → tick *Enable user home s
 
 **Step 3 — DSM prerequisite #2: user in administrators  [Phase 0 assumed it — verify explicitly]**
 
-DSM → User & Group → User → click `RichardWoollcott` → ensure **administrators** is ticked. Synology SSH only accepts administrators-group accounts, and the deploy needs sudo.
+DSM → User & Group → User → click `<nas-user>` → ensure **administrators** is ticked. Synology SSH only accepts administrators-group accounts, and the deploy needs sudo.
 
 **Step 4 — install the key on the NAS (run on the GB10; lands on <nas-host>)**
 
 ```bash
 ssh-copy-id -i ~/.ssh/fleet_memory_nas_ed25519.pub -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST"
-# prompts for RichardWoollcott's DSM password ONCE (bootstrap); expect: Number of key(s) added: 1
+# prompts for <nas-user>'s DSM password ONCE (bootstrap); expect: Number of key(s) added: 1
 ```
 
 **Step 5 — passwordless docker-sudo (interactive NAS session)**
@@ -197,7 +197,7 @@ Phase 0 names this drop-in `fleet_memory_deploy`; this run created `fleet_memory
 ```bash
 ssh -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST"          # interactive; DSM password OK here
 which docker                                          # CONFIRM the path — was /usr/local/bin/docker
-echo 'RichardWoollcott ALL=(ALL) NOPASSWD: /usr/local/bin/docker' | sudo tee /etc/sudoers.d/fleet_memory_docker
+echo '<nas-user> ALL=(ALL) NOPASSWD: /usr/local/bin/docker' | sudo tee /etc/sudoers.d/fleet_memory_docker
 sudo chmod 440 /etc/sudoers.d/fleet_memory_docker
 sudo visudo -c -f /etc/sudoers.d/fleet_memory_docker  # must report: parsed OK
 exit
