@@ -170,3 +170,10 @@ recorded in the status file, and does not fail the run. Rules that keep it hones
 | `fleet-memory-liveness-fence.timer` | Four-hourly cadence. **This is the thing you enable.** |
 | `fleet-memory-liveness-fence-alert.service` | Pulled in by `OnFailure=`. |
 | `fence-alert.sh` | Always writes one loud journal line; always exits 0. |
+
+**Since the move to containers (drop-in added 4 October 2026).** The relay now writes its progress
+marker inside the estate's `forge-estate_memory-state` volume, and factory builds file their memory
+under `api_test`. `fleet-memory-liveness-fence.service.d/estate-relay-marker.conf` points the fence
+at the volume (read through a cached `alpine` image ID; any image with `/bin/cat` will do) and watches
+`api_test`. Install it beside the unit in `~/.config/systemd/user/` and run `systemctl --user
+daemon-reload`. If that image is ever removed, the fence reports "cannot read" rather than a wrong date.
