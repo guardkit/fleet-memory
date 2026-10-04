@@ -34,6 +34,22 @@ Registered once at user scope so every Claude Code session on the box gets it:
 claude mcp add --transport http --scope user fleet_memory http://127.0.0.1:8005/mcp/
 ```
 
+## Which host names the service accepts
+
+`FLEET_MEMORY_MCP_ALLOWED_HOSTS` is a comma-separated list of the names clients
+put in the URL, for example `memory:8005,host.docker.internal:8005,example-host:31822`.
+When it is set, the service refuses any other `Host` header with 421 and a
+browser `Origin` from another site with 403. `localhost`, `127.0.0.1`, `::1`
+and the address the request arrived on are always accepted, and only the name
+is compared (the port in an entry is ignored).
+
+List every name a client really uses. specialist-agent and guardkit both
+default to `http://host.docker.internal:8005/mcp`, so `host.docker.internal:8005`
+must be on the list unless every such client overrides that URL.
+
+Left empty (the default, and this compose file's setting), no host check is
+made, as before. The registration below uses `127.0.0.1`, which needs no entry.
+
 ## Verify
 
 - `docker logs fleet-memory-mcp` → `starting http transport on 0.0.0.0:8005`,
