@@ -41,7 +41,7 @@ The relay **binds** to the stream with `JStream(name="MEMORY", declare=False)` â
 
 ## Live verification (TASK-RLY-007 â€” GB10 only)
 
-Run against the live broker (`nats-infrastructure` on the GB10) + NAS Postgres (`whitestocks:5433`):
+Run against the live broker (`nats-infrastructure` on the GB10) + NAS Postgres (`<nas-host>:5433`):
 
 1. `nats-infrastructure/streams/provision-streams.sh` after adding the `MEMORY` stream (`memory.>`); confirm the stream + the `fleet-memory-relay` consumer (filter `memory.episode`, `max_deliver=5`) exist.
 2. Run the relay (`FLEET_MEMORY_PG_DSN`, `FLEET_MEMORY_EMBED_URL`, `FLEET_MEMORY_NATS_URL`, `FLEET_MEMORY_DLQ_SUBJECT`, `FLEET_MEMORY_MAX_DELIVER`).

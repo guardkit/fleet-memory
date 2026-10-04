@@ -1,7 +1,7 @@
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0 -- /usr/local/bin/python
 cachedir: .pytest_cache
-rootdir: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+rootdir: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
 configfile: pyproject.toml
 plugins: anyio-4.12.0, timeout-2.4.0, asyncio-1.3.0, langsmith-0.7.22, bdd-8.1.0, Faker-40.11.1, cov-7.0.0
 timeout: 120.0s

@@ -78,7 +78,7 @@ The scope's recommendation stands; verification strengthened it:
   nothing earlier.
 - [ ] **P3: Fixture source creds** — live DSN recoverable via
   `docker inspect fleet-memory-relay` on GB10 (`Dell-ProMax` SSH alias); store
-  at `whitestocks.tailebf801.ts.net:5433`. Verified working 2026-07-03.
+  at `<nas-host>.<tailnet>.ts.net:5433`. Verified working 2026-07-03.
 - [ ] **P4: On-arm env contract** — rollouts must set `FLEET_MEMORY_ENABLED=true`,
   `FLEET_MEMORY_PG_DSN=<fixture>`, **`FLEET_MEMORY_EMBED_MODEL=nomic-embed-text-v1.5`,
   `FLEET_MEMORY_EMBED_DIMS=768`** explicitly: the guardkit adapter's defaults
@@ -115,7 +115,7 @@ python3 -m venv ~/harbor-venv && ~/harbor-venv/bin/pip install harbor
 # 1. run one Harbor sample task end-to-end with -e Docker
 # 2. author one ARM64 task image (FROM an arm64 python base; repo pinned via
 #    git archive <pre-FEAT sha>), prove `docker build` on aarch64
-# 3. in-container: curl http://promaxgb10-41b1:9000/health  (llama-swap route;
+# 3. in-container: curl http://<dell-host>:9000/health  (llama-swap route;
 #    if container DNS misses the LAN name, --add-host or the Tailscale IP)
 # 4. one rollout, one reward score collected
 ```

@@ -155,14 +155,14 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** none
 **estimated_minutes:** 40
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/pyproject.toml`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/__init__.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/__init__.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/__init__.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/__init__.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/pytest.ini`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/ruff.toml`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.gitignore` (update — already exists and modified per git status)
+- `~/Projects/appmilla_github/fleet-memory/pyproject.toml`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/__init__.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/__init__.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/__init__.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/__init__.py`
+- `~/Projects/appmilla_github/fleet-memory/pytest.ini`
+- `~/Projects/appmilla_github/fleet-memory/ruff.toml`
+- `~/Projects/appmilla_github/fleet-memory/.gitignore` (update — already exists and modified per git status)
 
 **Acceptance criteria:**
 1. `file_exists: pyproject.toml` — contains `[project]` with `name = "fleet_memory"`, `[tool.ruff]` section, and pinned deps for `faststream[nats]`, `pydantic>=2`, `pydantic-settings>=2`, `langgraph-checkpoint-postgres`, `httpx`, `asyncpg`, `pytest`, `pytest-asyncio`, `pytest-anyio`
@@ -183,8 +183,8 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `scaffold_project_layout`
 **estimated_minutes:** 35
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/settings.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.env.example`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/settings.py`
+- `~/Projects/appmilla_github/fleet-memory/.env.example`
 
 **Acceptance criteria:**
 1. `command_runs: python -c "from fleet_memory.settings import Settings; s = Settings(FLEET_MEMORY_PG_DSN='postgresql://u:p@localhost/db', FLEET_MEMORY_EMBED_URL='http://localhost:9000'); assert s.pg_pool_max == 10; assert s.embed_timeout_s == 10.0; assert s.pg_connect_timeout_s == 10.0"` — exits 0 (verifies ASSUM-004/006/008 defaults; values may be revised once asyncpg/httpx actuals are confirmed)
@@ -205,9 +205,9 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `settings_class`
 **estimated_minutes:** 45
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/embed.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/errors.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_embed.py`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/embed.py`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/errors.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_embed.py`
 
 **Acceptance criteria:**
 1. `command_runs: python -m pytest tests/unit/test_embed.py -v` — all tests pass with zero network calls (httpx `MockTransport` used throughout; verified by asserting no real socket is opened)
@@ -228,10 +228,10 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `scaffold_project_layout`
 **estimated_minutes:** 60
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/local/docker-compose.yml`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/local/initdb/01_extensions.sql`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/conftest.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/conftest.py` (fake embed fixture)
+- `~/Projects/appmilla_github/fleet-memory/deploy/local/docker-compose.yml`
+- `~/Projects/appmilla_github/fleet-memory/deploy/local/initdb/01_extensions.sql`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/conftest.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/conftest.py` (fake embed fixture)
 
 **Acceptance criteria:**
 1. `file_exists: deploy/local/docker-compose.yml` — uses image `pgvector/pgvector:pg16`, no fixed host port (port mapping `"${PGPORT:-5432}:5432"` or equivalent that allows env override to an OS-assigned random port), mounts `./initdb` to `/docker-entrypoint-initdb.d`
@@ -252,8 +252,8 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `embed_callable`, `settings_class`
 **estimated_minutes:** 55
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/store.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_store_validation.py`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/store.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_store_validation.py`
 
 **Acceptance criteria:**
 1. `file_exists: src/fleet_memory/store.py` — exports `async_store_context(settings, embed_fn)` as an `asynccontextmanager` that yields a configured `AsyncPostgresStore`; `embed_fn` defaults to the httpx callable but is injectable; `index` config is `{"dims": 768, "embed": embed_fn, "fields": ["content"]}`
@@ -274,8 +274,8 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `store_factory_and_namespace_validation`, `embed_callable`
 **estimated_minutes:** 45
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/src/fleet_memory/app.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_app_lifespan.py`
+- `~/Projects/appmilla_github/fleet-memory/src/fleet_memory/app.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_app_lifespan.py`
 
 **Acceptance criteria:**
 1. `file_exists: src/fleet_memory/app.py` — exports a module-level `broker = NatsBroker(settings.nats_url)` and a `FastStream(broker)` app with a `@asynccontextmanager` lifespan that enters `async_store_context`, stores the store on `broker._state` or app context, and yields; no `@broker.subscriber` decorators present
@@ -296,11 +296,11 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `local_ephemeral_compose_and_fixtures` (for consistency of compose patterns and `initdb/` convention)
 **estimated_minutes:** 50
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/nas/docker-compose.yml`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/nas/initdb/01_extensions.sql`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/nas/.env.deploy.example`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/nas/deploy.sh`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/deploy/nas/smoke.sh`
+- `~/Projects/appmilla_github/fleet-memory/deploy/nas/docker-compose.yml`
+- `~/Projects/appmilla_github/fleet-memory/deploy/nas/initdb/01_extensions.sql`
+- `~/Projects/appmilla_github/fleet-memory/deploy/nas/.env.deploy.example`
+- `~/Projects/appmilla_github/fleet-memory/deploy/nas/deploy.sh`
+- `~/Projects/appmilla_github/fleet-memory/deploy/nas/smoke.sh`
 
 **Acceptance criteria:**
 1. `file_exists: deploy/nas/docker-compose.yml` — uses `pgvector/pgvector:pg16`, service name `fleet_memory_postgres`, `restart: unless-stopped`, bind mount of `${NAS_DOCKER_ROOT}/pgdata:/var/lib/postgresql/data`, port `5432:5432`, `env_file: .env` (compose auto-loads `POSTGRES_PASSWORD`)
@@ -341,11 +341,11 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `embed_callable`, `settings_class`, `store_factory_and_namespace_validation`, `app_shell_lifespan`
 **estimated_minutes:** 60
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_settings.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_embed.py` (expanded from Task 03 stub)
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_store_validation.py` (expanded from Task 05 stub)
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_app_lifespan.py` (expanded from Task 06 stub)
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/unit/test_credential_hygiene.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_settings.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_embed.py` (expanded from Task 03 stub)
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_store_validation.py` (expanded from Task 05 stub)
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_app_lifespan.py` (expanded from Task 06 stub)
+- `~/Projects/appmilla_github/fleet-memory/tests/unit/test_credential_hygiene.py`
 
 **Acceptance criteria:**
 1. `command_runs: python -m pytest tests/unit/ -v --timeout=30` — all tests pass; `FLEET_MEMORY_PG_DSN` and `FLEET_MEMORY_EMBED_URL` are not set in the test environment (unit tier is hermetic by construction)
@@ -366,9 +366,9 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `store_factory_and_namespace_validation`, `embed_callable`, `local_ephemeral_compose_and_fixtures`, `app_shell_lifespan`
 **estimated_minutes:** 90
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_store_round_trip.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_store_semantics.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_pool_lifecycle.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_store_round_trip.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_store_semantics.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_pool_lifecycle.py`
 
 **Acceptance criteria:**
 1. `command_runs: python -m pytest tests/integration/ -m integration -v --timeout=120` — all tests pass against the ephemeral Postgres instance with real nomic embeddings over Tailscale (GB10 llama-swap :9000); NAS is not referenced anywhere in the test DSN
@@ -389,9 +389,9 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `integration_test_suite_store_semantics`
 **estimated_minutes:** 70
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_search_boundaries.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_embed_failures.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_injection_safety.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_search_boundaries.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_embed_failures.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_injection_safety.py`
 
 **Acceptance criteria:**
 1. `test_passes: test_search_boundaries.py::test_search_limit_1` — with 15 stored memories, `asearch(query, limit=1)` returns exactly 1 result
@@ -412,8 +412,8 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `integration_test_suite_store_semantics`
 **estimated_minutes:** 60
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_metadata_filter.py`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tests/integration/test_concurrent_writes.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_metadata_filter.py`
+- `~/Projects/appmilla_github/fleet-memory/tests/integration/test_concurrent_writes.py`
 
 **Acceptance criteria:**
 1. `test_passes: test_metadata_filter.py::test_search_constrained_by_project_filter` — storing memories from `project_a` and `project_b` that are both semantically related to the query; `asearch` with `filter={"project": "project_a"}` returns only `project_a` memories, still ranked by relevance
@@ -434,7 +434,7 @@ Provision the repo with a single scaffolding task that establishes `pyproject.to
 **dependencies:** `integration_test_suite_store_semantics`, `integration_test_suite_boundary_and_edge`, `unit_test_suite`
 **estimated_minutes:** 20
 **primary files created/touched:**
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml` (update the three low-confidence entries)
+- `~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml` (update the three low-confidence entries)
 
 **Acceptance criteria:**
 1. `file_exists: features/storage-substrate/storage-substrate_assumptions.yaml` — ASSUM-004 entry updated with `verified_value` field recording the actual asyncpg pool queuing behavior observed in Task 10 acceptance criterion 6
@@ -559,8 +559,8 @@ The package exposing `langgraph.store.postgres.aio.AsyncPostgresStore` is `langg
 
 **Relevant file paths for the implementation agent:**
 
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_summary.md`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md`
-- `/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md`
+- `~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature`
+- `~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml`
+- `~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_summary.md`
+- `~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md`
+- `~/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md`

@@ -14,7 +14,7 @@
   "files_modified": [
     ".claude/task-plans/TASK-MEM-009-implementation-plan.md",
     ".claude/task-plans/TASK-MEM-010-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml",
     "coverage.json",
     "pyproject.toml",
     "src/fleet_memory/store.py",

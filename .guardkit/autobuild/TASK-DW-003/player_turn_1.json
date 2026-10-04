@@ -2,16 +2,16 @@
   "task_id": "TASK-DW-003",
   "turn": 1,
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py",
     "src/fleet_memory/writer/core.py"
   ],
   "files_created": [
     ".claude/task-plans/TASK-DW-003-implementation-plan.md",
     ".claude/task-plans/TASK-DW-004-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py",
     "coverage_task_dw_004.json",
     "src/fleet_memory/writer/supersession.py",
     "tests/integration/test_writer_idempotency.py",
@@ -19,7 +19,7 @@
     "tests/unit/test_writer_idempotency.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py"
   ],
   "tests_run": false,
   "tests_passed": false,
@@ -42,10 +42,10 @@
   "sdk_max_turns": 160,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-003/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-003/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/supersession.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_supersession.py"
   ],
   "completion_promises": [
     {

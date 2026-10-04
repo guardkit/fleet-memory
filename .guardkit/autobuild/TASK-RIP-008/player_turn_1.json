@@ -8,8 +8,8 @@
     ".claude/task-plans/TASK-RIP-006-implementation-plan.md",
     ".claude/task-plans/TASK-RIP-007-implementation-plan.md",
     ".claude/task-plans/TASK-RIP-008-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py",
     "src/fleet_memory/reindex/audit.py",
     "src/fleet_memory/reindex/backfill.py",
     "src/fleet_memory/reindex/parity.py",
@@ -18,7 +18,7 @@
     "tests/unit/reindex/test_parity.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
   ],
   "tests_run": true,
   "tests_passed": true,
@@ -37,9 +37,9 @@
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-008/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-008/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/parity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_parity.py"
   ],
   "tests_passed_count": 5,
   "completion_promises": [

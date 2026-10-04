@@ -29,7 +29,7 @@ test_results:
 autobuild_state:
   current_turn: 3
   max_turns: 5
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
   base_branch: main
   started_at: '2026-06-12T18:52:05.398237'
   last_updated: '2026-06-12T19:22:22.361465'

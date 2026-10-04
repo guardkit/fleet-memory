@@ -18,7 +18,7 @@
     ".guardkit/bdd/TASK-MCP-003_junit.xml",
     ".guardkit/bdd/TASK-MCP-004_junit.xml",
     ".guardkit/bdd/TASK-MCP-005_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
     "coverage.json",
     "coverage_mcp_003.json",
     "src/fleet_memory/mcp/resources.py",
@@ -31,7 +31,7 @@
     "tests/unit/test_mcp_search.py",
     "tests/unit/test_mcp_supersede.py",
     "tests/unit/test_mcp_write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
     "tests/integration/test_mcp_supersede.py"
   ],
   "tests_passed": 36,

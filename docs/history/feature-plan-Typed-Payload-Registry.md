@@ -9,15 +9,15 @@ Let me look at the full feature spec directory for more detail.
 
 Bash List feature spec directory contents
 IN
-ls -la /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/
+ls -la ~/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/
 
 OUT
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 09:38 .
-drwxr-xr-x  4 richardwoollcott  staff    128 Jun 13 09:37 ..
--rw-r--r--  1 richardwoollcott  staff   4054 Jun 13 09:38 typed-payload-registry_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2171 Jun 13 09:38 typed-payload-registry_summary.md
--rw-r--r--  1 richardwoollcott  staff  14781 Jun 13 09:37 typed-payload-registry.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 09:38 .
+drwxr-xr-x  4 <user>  staff    128 Jun 13 09:37 ..
+-rw-r--r--  1 <user>  staff   4054 Jun 13 09:38 typed-payload-registry_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2171 Jun 13 09:38 typed-payload-registry_summary.md
+-rw-r--r--  1 <user>  staff  14781 Jun 13 09:37 typed-payload-registry.feature
 Read typed-payload-registry.feature
 Let me check the assumptions file and existing project structure to inform planning.
 
@@ -60,39 +60,39 @@ OUT
 ./.claude/hooks/capture_slash_command.py
 ---DIRS---
 total 376
-drwxr-xr-x   33 richardwoollcott  staff   1056 Jun 13 08:22 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   16 richardwoollcott  staff    512 Jun 13 08:52 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  10 richardwoollcott  staff    320 Jun 13 08:22 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff  14788 Jun 13 08:22 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff  15290 Jun 13 08:22 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 09:37 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1191 Jun 13 08:22 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x    8 richardwoollcott  staff    256 Jun 13 08:22 tests
+drwxr-xr-x   33 <user>  staff   1056 Jun 13 08:22 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   16 <user>  staff    512 Jun 13 08:52 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  10 <user>  staff    320 Jun 13 08:22 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff  14788 Jun 13 08:22 coverage_review.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff  15290 Jun 13 08:22 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    4 <user>  staff    128 Jun 13 09:37 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1191 Jun 13 08:22 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x    8 <user>  staff    256 Jun 13 08:22 tests
 ---SRC---
 ./src
 ./features/typed-payload-registry
@@ -275,17 +275,17 @@ OUT
 project_id: fleet_memory
 enabled: true
 graph_store: falkordb
-falkordb_host: whitestocks
+falkordb_host: <nas-host>
 falkordb_port: 6379
 timeout: 30.0
 max_concurrent_episodes: 3
 chunk_extraction_concurrency: 4
 llm_provider: vllm
-llm_base_url: http://promaxgb10-41b1:9000/v1
+llm_base_url: http://<dell-host>:9000/v1
 llm_model: qwen-graphiti
 llm_max_tokens: 4096
 embedding_provider: vllm
-embedding_base_url: http://promaxgb10-41b1:9000/v1
+embedding_base_url: http://<dell-host>:9000/v1
 embedding_model: nomic-embed
 group_ids:
 - product_knowledge
@@ -299,11 +299,11 @@ completed
 design_approved
 in_progress
 in_review
-Graphiti is enabled (CLI path, FalkorDB at whitestocks). Let me query for pre-planning context, with graceful degradation.
+Graphiti is enabled (CLI path, FalkorDB at <nas-host>). Let me query for pre-planning context, with graceful degradation.
 
 Bash Query Graphiti pre-planning context
 IN
-timeout 35 /Users/richardwoollcott/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Typed Payload Registry: seven Pydantic payload types with natural key, supersession, domain tags, source_ref, and a payload_type dispatch registry" --phase plan 2>&1 | head -40 || echo "GRAPHITI_UNAVAILABLE (continuing without)"
+timeout 35 ~/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Typed Payload Registry: seven Pydantic payload types with natural key, supersession, domain tags, source_ref, and a payload_type dispatch registry" --phase plan 2>&1 | head -40 || echo "GRAPHITI_UNAVAILABLE (continuing without)"
 
 OUT
 {"available": true, "error": null, "context": null, "categories": 0, "tokens_used": 0, "tokens_budget": 0}
@@ -1140,7 +1140,7 @@ IN
 (guardkit feature validate FEAT-MEM-02 2>&1 | grep -v "UserWarning\|pydantic.v1" | head -30 || echo "guardkit CLI not available")
 
 OUT
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-02.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-02.yaml
 ✓ Feature FEAT-MEM-02 is valid
 Feature validates. Now Step 11 — BDD scenario linking (prepare phase).
 
@@ -1159,7 +1159,7 @@ python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
 OUT
 REQ_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.XrZqaqgDi7
 RESP_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-resp-XXXXXX.json.Cf2PxNVotJ
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature", "scenarios_to_match": 29, "task_count": 4, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.XrZqaqgDi7"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature", "scenarios_to_match": 29, "task_count": 4, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.XrZqaqgDi7"}
 Status ready: 29 scenarios, 4 tasks. Now invoking the bdd-linker subagent with the request payload (Step 11.2).
 
 Bash Read the BDD link request payload
@@ -1168,7 +1168,7 @@ cat /var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.Xr
 
 OUT
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature",
   "feature_name": "Typed Payload Registry",
   "confidence_threshold": 0.6,
   "scenarios": [
@@ -1665,7 +1665,7 @@ Now I'll invoke the bdd-linker subagent with this payload.
 Agent:Match scenarios to tasks
 IN
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/typed-payload-registry/typed-payload-registry.feature",
   "feature_name": "Typed Payload Registry",
   "confidence_threshold": 0.6,
   "scenarios": [

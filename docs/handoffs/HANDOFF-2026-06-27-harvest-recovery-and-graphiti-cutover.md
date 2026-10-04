@@ -1,6 +1,6 @@
 # HANDOFF — harvest recovery (in progress) + Graphiti→fleet-memory cutover / Qwen2.5 removal (2026-06-27)
 
-Resumable handoff for a fresh session. Runs **on the box `promaxgb10-41b1`**
+Resumable handoff for a fresh session. Runs **on the box `<dell-host>`**
 (relay, broker `127.0.0.1:4222`, Postgres-over-Tailscale, and the `:9000`
 llama-swap are all local). Picks up from
 `HANDOFF-2026-06-26-harvest-recovery.md` and the RELAYDROP01-fix validation.
@@ -206,7 +206,7 @@ study-tutor / dgx-spark / lpa-platform-poc / nats-infrastructure this session.**
 ### guardkit↔Graphiti cutover surface (what FEAT-MEM-08 must repoint)
 - `.guardkit/graphiti.yaml` → fleet-memory config (Postgres DSN + embed URL/model;
   no LLM)
-- `.mcp.json` graphiti HTTP server (`promaxgb10-41b1:8004/mcp`) → fleet-memory MCP
+- `.mcp.json` graphiti HTTP server (`<dell-host>:8004/mcp`) → fleet-memory MCP
 - `guardkit/knowledge/graphiti_client.py` → fleet-memory client / thin adapter
 - `/task-complete` outcome capture: Tier-0 `mcp__graphiti__add_memory` + Tier-1
   `guardkit graphiti capture-outcome` → fleet-memory equivalents

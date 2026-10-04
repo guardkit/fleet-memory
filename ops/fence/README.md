@@ -76,10 +76,10 @@ loginctl show-user "$USER" -p Linger      # expect Linger=yes
 Without lingering the timer will not fire while you are logged out, and the fence will
 quietly not run — which would be the original disease all over again.
 
-**5. Copy the units and enable the timer** (attended). Copy verbatim on this box — the
-units spell out absolute `/home/richardwoollcott/...` paths, matching the installed
-Chronicler units exactly, so nothing needs substituting here. On any other box, or under
-any other account, those paths are the one thing to edit first:
+**5. Copy the units and enable the timer** (attended). The units write the home folder as
+systemd's `%h` (the scripts use `$HOME`), so they can be copied verbatim under any account
+whose checkout, `sops` and secrets sit at the same places under the home folder. If any of
+those live elsewhere, those paths are the one thing to edit first:
 
 ```bash
 cp ~/Projects/appmilla_github/fleet-memory/ops/fence/fleet-memory-liveness-fence.service \

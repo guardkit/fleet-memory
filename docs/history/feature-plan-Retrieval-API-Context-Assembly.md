@@ -15,11 +15,11 @@ echo "=== features/retrieval-api ===" && ls -la features/retrieval-api/ && echo 
 OUT
 === features/retrieval-api ===
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 12:48 .
-drwxr-xr-x  7 richardwoollcott  staff    224 Jun 13 12:47 ..
--rw-r--r--  1 richardwoollcott  staff   3474 Jun 13 12:48 retrieval-api_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2495 Jun 13 12:48 retrieval-api_summary.md
--rw-r--r--  1 richardwoollcott  staff  16287 Jun 13 12:47 retrieval-api.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 12:48 .
+drwxr-xr-x  7 <user>  staff    224 Jun 13 12:47 ..
+-rw-r--r--  1 <user>  staff   3474 Jun 13 12:48 retrieval-api_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2495 Jun 13 12:48 retrieval-api_summary.md
+-rw-r--r--  1 <user>  staff  16287 Jun 13 12:47 retrieval-api.feature
 
 === features/ ===
 deterministic-writer
@@ -216,7 +216,7 @@ evidence_repos: []
 execution:
   started_at: '2026-06-13T12:40:57.582632'
   completed_at: '2026-06-13T13:27:33.812590'
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
   total_turns: 5
   tasks_completed: 5
   tasks_failed: 0
@@ -1517,7 +1517,7 @@ OUT
 
 === 8.5 feature validate (if CLI present) ===
   from pydantic.v1.fields import FieldInfo as FieldInfoV1
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-05.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-05.yaml
 ✓ Feature FEAT-MEM-05 is valid
 Both validations pass. Now Step 11: BDD scenario linking — tag the 31 scenarios with @task: IDs. Starting with prepare:
 
@@ -1539,7 +1539,7 @@ echo "$RESP_FILE" > /tmp/ra05_resp_path
 OUT
 REQ_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.cvVk2nSBym
 RESP_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-resp-XXXXXX.json.6t1554nVp9
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature", "scenarios_to_match": 31, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.cvVk2nSBym"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature", "scenarios_to_match": 31, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.cvVk2nSBym"}
 ---REQ_FILE_PATHS---
 Status ready — 31 scenarios, 7 tasks. Now invoking the bdd-linker subagent with the request payload:
 
@@ -1549,7 +1549,7 @@ cat "$(cat /tmp/ra05_req_path)"
 
 OUT
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature",
   "feature_name": "Retrieval API + Context Assembly",
   "confidence_threshold": 0.6,
   "scenarios": [
@@ -2136,7 +2136,7 @@ I have the matching request. Now I'll invoke the bdd-linker subagent to map the 
 Agent:Match scenarios to tasks for retrieval-api
 IN
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/retrieval-api/retrieval-api.feature",
   "feature_name": "Retrieval API + Context Assembly",
   "confidence_threshold": 0.6,
   "scenarios": [

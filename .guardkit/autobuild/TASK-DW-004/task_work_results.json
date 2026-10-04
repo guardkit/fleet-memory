@@ -23,21 +23,21 @@
   "files_created": [
     ".claude/task-plans/TASK-DW-003-implementation-plan.md",
     ".claude/task-plans/TASK-DW-004-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py",
     "src/fleet_memory/writer/supersession.py",
     "tests/integration/test_writer_idempotency.py",
     "tests/unit/test_supersession.py",
     "tests/unit/test_writer_idempotency.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-004/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-004/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/integration/test_writer_idempotency.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_idempotency.py"
   ],
   "summary": "19 tests passed",
   "sdk_turns": {

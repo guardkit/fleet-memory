@@ -10,39 +10,39 @@ ls -la && echo "---PYPROJECT---" && ls pyproject.toml setup.py requirements.txt 
 OUT
 Exit code 1
 total 376
-drwxr-xr-x   33 richardwoollcott  staff   1056 Jun 13 08:22 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   17 richardwoollcott  staff    544 Jun 13 10:49 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  10 richardwoollcott  staff    320 Jun 13 08:22 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff  14788 Jun 13 08:22 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff  15290 Jun 13 08:22 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 09:37 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1191 Jun 13 08:22 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x    8 richardwoollcott  staff    256 Jun 13 08:22 tests
+drwxr-xr-x   33 <user>  staff   1056 Jun 13 08:22 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   17 <user>  staff    544 Jun 13 10:49 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  10 <user>  staff    320 Jun 13 08:22 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff  14788 Jun 13 08:22 coverage_review.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff  15290 Jun 13 08:22 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    4 <user>  staff    128 Jun 13 09:37 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1191 Jun 13 08:22 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x    8 <user>  staff    256 Jun 13 08:22 tests
 ---PYPROJECT---
 pyproject.toml
 Bash Read FEAT-MEM-02 feature spec
@@ -133,7 +133,7 @@ evidence_repos: []
 execution:
   started_at: '2026-06-13T10:49:36.778760'
   completed_at: null
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
   total_turns: 0
   tasks_completed: 0
   tasks_failed: 0
@@ -166,7 +166,7 @@ status: in_progress
 autobuild_state:
   current_turn: 0
   max_turns: 5
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02
   base_branch: main
   started_at: '2026-06-13T10:49:37.138148'
   last_updated: '2026-06-13T10:49:37.138150'
@@ -2159,7 +2159,7 @@ Reply per item (e.g. 1: accept, 8: reject — forward supersession should fail, 
 <task-notification>
 <task-id>bwhd55yfi</task-id>
 <tool-use-id>toolu_01AudecBZ3dA82BS6DHzSsN3</tool-use-id>
-<output-file>/private/tmp/claude-501/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output</output-file>
+<output-file>/private/tmp/claude-501/-Users-<user>-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output</output-file>
 <status>completed</status>
 <summary>Background command "Find normalizer and check gherkin parser availability" completed (exit code 0)</summary>
 </task-notification>
@@ -2599,7 +2599,7 @@ IN
 source .venv/bin/activate 2>/dev/null; python -m installer.core.commands.lib.feature_spec_normalize features/deterministic-writer/deterministic-writer.feature; echo "EXIT=$?"
 
 OUT
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
+~/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
 EXIT=1
 The normalizer module isn't part of this repo (it ships with the GuardKit installer). Let me locate it or fall back to a direct gherkin parse validation.
 
@@ -2608,10 +2608,10 @@ IN
 find / -name "feature_spec_normalize*" 2>/dev/null | head; echo "---gherkin module?---"; source .venv/bin/activate 2>/dev/null; python -c "import gherkin; print('gherkin available', gherkin.__file__)" 2>&1 | head -1; python -c "import gherkin_official; print('gherkin_official available')" 2>&1 | head -1
 
 OUT
-Command running in background with ID: bwhd55yfi. Output is being written to: /private/tmp/claude-501/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output. You will be notified when it completes. To check interim output, use Read on that file path.
+Command running in background with ID: bwhd55yfi. Output is being written to: /private/tmp/claude-501/-Users-<user>-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output. You will be notified when it completes. To check interim output, use Read on that file path.
 Bash Read background find output
 IN
-sleep 3; cat /private/tmp/claude-501/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output 2>/dev/null
+sleep 3; cat /private/tmp/claude-501/-Users-<user>-Projects-appmilla-github-fleet-memory/f7556467-fa16-465b-bc18-82e5e18a24e2/tasks/bwhd55yfi.output 2>/dev/null
 
 OUT
 (Bash completed with no output)
@@ -2641,7 +2641,7 @@ OUT
 Exit code 1
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-ImportError: cannot import name 'Parser' from 'pytest_bdd.parser' (/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/pytest_bdd/parser.py). Did you mean: 'parser'?
+ImportError: cannot import name 'Parser' from 'pytest_bdd.parser' (~/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/pytest_bdd/parser.py). Did you mean: 'parser'?
 Bash Discover pytest-bdd parse entrypoint and validate
 IN
 source .venv/bin/activate 2>/dev/null && python - <<'PY'
@@ -2688,7 +2688,7 @@ PY
 OUT
 FeatureParser.__init__: (self, basedir: 'str', filename: 'str', encoding: 'str' = 'utf-8')
 parse methods: ['_parse_and_add_rule', '_parse_and_add_scenario', '_parse_feature_file', 'parse', 'parse_background', 'parse_scenario', 'parse_steps']
-PARSE OK args=('/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/deterministic-writer', 'deterministic-writer.feature') feature='Deterministic Writer' scenarios=29
+PARSE OK args=('~/Projects/appmilla_github/fleet-memory/features/deterministic-writer', 'deterministic-writer.feature') feature='Deterministic Writer' scenarios=29
 Parses cleanly — 29 scenarios, feature Deterministic Writer, validated by the same pytest-bdd grammar used downstream by /feature-plan Step 11. Let me stop the stray background find.
 
 Bash Kill background find job
@@ -2734,7 +2734,7 @@ Note on the normalization backstop: the documented installer.core.commands.lib.f
 
 The two low-confidence assumptions (forward supersession, batch failure mode) are genuine design decisions the build plan doesn't pin down — worth settling before or during /feature-plan rather than letting the writer implementation make the call silently.
 
-please can you update the status in /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
+please can you update the status in ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
 Read phase-core-build-plan.md (lines 37-48)
 Read phase-core-build-plan.md (lines 99-143)
 I'll mirror the FEAT-MEM-02 pattern: update the summary-table row and add a **Status:** line plus annotate the spec command.
@@ -2797,19 +2797,19 @@ echo "===features dir===" && ls -la features/ && echo "===deterministic-writer==
 OUT
 ===features dir===
 total 0
-drwxr-xr-x   6 richardwoollcott  staff   192 Jun 13 12:05 .
-drwxr-xr-x  34 richardwoollcott  staff  1088 Jun 13 12:25 ..
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 11:21 deterministic-writer
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 12:05 relay-integration
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 08:22 storage-substrate
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 10:46 typed-payload-registry
+drwxr-xr-x   6 <user>  staff   192 Jun 13 12:05 .
+drwxr-xr-x  34 <user>  staff  1088 Jun 13 12:25 ..
+drwxr-xr-x   5 <user>  staff   160 Jun 13 11:21 deterministic-writer
+drwxr-xr-x   5 <user>  staff   160 Jun 13 12:05 relay-integration
+drwxr-xr-x   5 <user>  staff   160 Jun 13 08:22 storage-substrate
+drwxr-xr-x   5 <user>  staff   160 Jun 13 10:46 typed-payload-registry
 ===deterministic-writer===
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 11:21 .
-drwxr-xr-x  6 richardwoollcott  staff    192 Jun 13 12:05 ..
--rw-r--r--  1 richardwoollcott  staff   4084 Jun 13 11:21 deterministic-writer_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2226 Jun 13 11:21 deterministic-writer_summary.md
--rw-r--r--  1 richardwoollcott  staff  15782 Jun 13 11:21 deterministic-writer.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 11:21 .
+drwxr-xr-x  6 <user>  staff    192 Jun 13 12:05 ..
+-rw-r--r--  1 <user>  staff   4084 Jun 13 11:21 deterministic-writer_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2226 Jun 13 11:21 deterministic-writer_summary.md
+-rw-r--r--  1 <user>  staff  15782 Jun 13 11:21 deterministic-writer.feature
 ===git check-ignore===
 ---
 ?? features/relay-integration/

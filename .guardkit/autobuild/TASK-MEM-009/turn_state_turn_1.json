@@ -12,7 +12,7 @@
   "progress_summary": "Turn 1: approve",
   "acceptance_criteria_status": {},
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py",
     "tests/unit/test_app_lifespan.py",
     "coverage_integration.json",
     "test_integration_output.txt"

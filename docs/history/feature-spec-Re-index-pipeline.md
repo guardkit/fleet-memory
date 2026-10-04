@@ -12,50 +12,50 @@ ls -la && echo "---STACK---" && ls pyproject.toml setup.py requirements.txt go.m
 OUT
 Exit code 1
 total 744
-drwxr-xr-x   44 richardwoollcott  staff   1408 Jun 13 19:02 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   17 richardwoollcott  staff    544 Jun 13 19:47 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 13 19:02 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   2681 Jun 13 16:09 coverage_chunk_writer.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff   9028 Jun 13 19:02 coverage_ra_002.json
--rw-r--r--    1 richardwoollcott  staff   4269 Jun 13 19:02 coverage_ra_004.json
--rw-r--r--    1 richardwoollcott  staff   2933 Jun 13 19:02 coverage_ra_005.json
--rw-r--r--    1 richardwoollcott  staff  70619 Jun 13 19:02 coverage_ra_007.json
--rw-r--r--    1 richardwoollcott  staff   3978 Jun 13 16:09 coverage_relay_service.json
--rw-r--r--    1 richardwoollcott  staff   3681 Jun 13 16:09 coverage_relay.json
--rw-r--r--    1 richardwoollcott  staff   5248 Jun 13 19:02 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   6729 Jun 13 13:49 coverage_task_dw_002.json
--rw-r--r--    1 richardwoollcott  staff   9524 Jun 13 13:49 coverage_task_dw_004.json
--rw-r--r--    1 richardwoollcott  staff   9578 Jun 13 13:49 coverage_task_dw_005.json
--rw-r--r--    1 richardwoollcott  staff   2300 Jun 13 12:25 coverage_task.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff  63341 Jun 13 19:02 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    8 richardwoollcott  staff    256 Jun 13 16:12 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1207 Jun 13 19:02 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x   10 richardwoollcott  staff    320 Jun 13 12:25 tests
+drwxr-xr-x   44 <user>  staff   1408 Jun 13 19:02 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   17 <user>  staff    544 Jun 13 19:47 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  11 <user>  staff    352 Jun 13 19:02 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   2681 Jun 13 16:09 coverage_chunk_writer.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff   9028 Jun 13 19:02 coverage_ra_002.json
+-rw-r--r--    1 <user>  staff   4269 Jun 13 19:02 coverage_ra_004.json
+-rw-r--r--    1 <user>  staff   2933 Jun 13 19:02 coverage_ra_005.json
+-rw-r--r--    1 <user>  staff  70619 Jun 13 19:02 coverage_ra_007.json
+-rw-r--r--    1 <user>  staff   3978 Jun 13 16:09 coverage_relay_service.json
+-rw-r--r--    1 <user>  staff   3681 Jun 13 16:09 coverage_relay.json
+-rw-r--r--    1 <user>  staff   5248 Jun 13 19:02 coverage_review.json
+-rw-r--r--    1 <user>  staff   6729 Jun 13 13:49 coverage_task_dw_002.json
+-rw-r--r--    1 <user>  staff   9524 Jun 13 13:49 coverage_task_dw_004.json
+-rw-r--r--    1 <user>  staff   9578 Jun 13 13:49 coverage_task_dw_005.json
+-rw-r--r--    1 <user>  staff   2300 Jun 13 12:25 coverage_task.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff  63341 Jun 13 19:02 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    8 <user>  staff    256 Jun 13 16:12 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1207 Jun 13 19:02 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x   10 <user>  staff    320 Jun 13 12:25 tests
 ---STACK---
 pyproject.toml
 Bash Find source layout and MemoryEpisodeV1
@@ -121,12 +121,12 @@ src/fleet_memory/writer/identity.py
 src/fleet_memory/writer/supersession.py
 ===PAYLOADS===
 total 40
--rw-r--r--   1 richardwoollcott  staff   437 Jun 13 12:25 __init__.py
-drwxr-xr-x   6 richardwoollcott  staff   192 Jun 13 12:25 .
-drwxr-xr-x  13 richardwoollcott  staff   416 Jun 13 19:02 ..
--rw-r--r--   1 richardwoollcott  staff  5900 Jun 13 12:25 base.py
--rw-r--r--   1 richardwoollcott  staff  2677 Jun 13 12:25 models.py
--rw-r--r--   1 richardwoollcott  staff  2154 Jun 13 12:25 registry.py
+-rw-r--r--   1 <user>  staff   437 Jun 13 12:25 __init__.py
+drwxr-xr-x   6 <user>  staff   192 Jun 13 12:25 .
+drwxr-xr-x  13 <user>  staff   416 Jun 13 19:02 ..
+-rw-r--r--   1 <user>  staff  5900 Jun 13 12:25 base.py
+-rw-r--r--   1 <user>  staff  2677 Jun 13 12:25 models.py
+-rw-r--r--   1 <user>  staff  2154 Jun 13 12:25 registry.py
 Bash List existing feature specs
 IN
 echo "===EXISTING FEATURES==="; ls -la features/; echo "===FEATURE DIRS==="; find features -maxdepth 2 -type f | sort
@@ -134,14 +134,14 @@ echo "===EXISTING FEATURES==="; ls -la features/; echo "===FEATURE DIRS==="; fin
 OUT
 ===EXISTING FEATURES===
 total 0
-drwxr-xr-x   8 richardwoollcott  staff   256 Jun 13 16:12 .
-drwxr-xr-x  44 richardwoollcott  staff  1408 Jun 13 19:02 ..
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 12:34 deterministic-writer
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 19:08 memory-mcp-server
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 14:20 relay-integration
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 19:02 retrieval-api
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 08:22 storage-substrate
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 10:46 typed-payload-registry
+drwxr-xr-x   8 <user>  staff   256 Jun 13 16:12 .
+drwxr-xr-x  44 <user>  staff  1408 Jun 13 19:02 ..
+drwxr-xr-x   5 <user>  staff   160 Jun 13 12:34 deterministic-writer
+drwxr-xr-x   5 <user>  staff   160 Jun 13 19:08 memory-mcp-server
+drwxr-xr-x   5 <user>  staff   160 Jun 13 14:20 relay-integration
+drwxr-xr-x   5 <user>  staff   160 Jun 13 19:02 retrieval-api
+drwxr-xr-x   5 <user>  staff   160 Jun 13 08:22 storage-substrate
+drwxr-xr-x   5 <user>  staff   160 Jun 13 10:46 typed-payload-registry
 ===FEATURE DIRS===
 features/deterministic-writer/deterministic-writer_assumptions.yaml
 features/deterministic-writer/deterministic-writer_summary.md
@@ -614,7 +614,7 @@ evidence_repos: []
 execution:
   started_at: '2026-06-13T19:16:03.369589'
   completed_at: null
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
   total_turns: 0
   tasks_completed: 0
   tasks_failed: 0
@@ -1368,7 +1368,7 @@ Let me check the build plan docs for re-index/backfill context.
 
 Bash Search build plan for re-index/backfill terms
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; grep -niE "re-?index|backfill|seed module|corpus|fable|staging|review gate|nats-core|live relay|publish" docs/research/ideas/phase-core-build-plan.md docs/research/ideas/phase-core-scope.md 2>/dev/null | head -60
+cd ~/Projects/appmilla_github/fleet-memory; grep -niE "re-?index|backfill|seed module|corpus|fable|staging|review gate|nats-core|live relay|publish" docs/research/ideas/phase-core-build-plan.md docs/research/ideas/phase-core-scope.md 2>/dev/null | head -60
 
 OUT
 docs/research/ideas/phase-core-scope.md:5:## Status: **Phase CORE not started.** Repo initialized from `nats-asyncio-service` template 2026-06-12; slash-command capture hook wired same day. Fable 5 subscription window: ~10 days from 2026-06-12 — the one-time backfill (FEAT-MEM-07) and heavy planning sessions must land inside it.
@@ -1421,7 +1421,7 @@ Let me read the full FEAT-MEM-07 section and the nats-core publisher helper deta
 
 Bash Read FEAT-MEM-07 detail section
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; sed -n '195,232p' docs/research/ideas/phase-core-build-plan.md
+cd ~/Projects/appmilla_github/fleet-memory; sed -n '195,232p' docs/research/ideas/phase-core-build-plan.md
 
 OUT
 ## FEAT-MEM-07: Re-index + Fable Backfill
@@ -2257,20 +2257,20 @@ IN
 (source .venv/bin/activate 2>/dev/null; python -m installer.core.commands.lib.feature_spec_normalize features/re-index-pipeline/re-index-pipeline.feature; echo "EXIT=$?")
 
 OUT
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
+~/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
 EXIT=1
 The normalizer module isn't shipped in this repo. Let me check and fall back to validating with the official gherkin parser directly.
 
 Bash Locate normalizer and check gherkin parser
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; find . -name "feature_spec_normalize*" -not -path "*/.git/*" 2>/dev/null | head; echo "---gherkin available?---"; (source .venv/bin/activate 2>/dev/null; python -c "import gherkin; print('gherkin ok', gherkin.__file__)" 2>&1 | head -3)
+cd ~/Projects/appmilla_github/fleet-memory; find . -name "feature_spec_normalize*" -not -path "*/.git/*" 2>/dev/null | head; echo "---gherkin available?---"; (source .venv/bin/activate 2>/dev/null; python -c "import gherkin; print('gherkin ok', gherkin.__file__)" 2>&1 | head -3)
 
 OUT
 ---gherkin available?---
-gherkin ok /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/gherkin/__init__.py
+gherkin ok ~/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/gherkin/__init__.py
 Bash Validate feature with official gherkin parser
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; source .venv/bin/activate 2>/dev/null; python -c "
+cd ~/Projects/appmilla_github/fleet-memory; source .venv/bin/activate 2>/dev/null; python -c "
 from gherkin.parser import Parser
 from gherkin.token_scanner import TokenScanner
 import sys

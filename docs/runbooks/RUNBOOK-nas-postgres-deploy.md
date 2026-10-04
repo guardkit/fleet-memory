@@ -144,26 +144,26 @@ $SSH "ls ${NAS_DOCKER_ROOT}/pgdata/PG_VERSION && cat ${NAS_DOCKER_ROOT}/pgdata/P
 
 ---
 
-## Provisioning record & corrections — 2026-06-21 (executed on the GB10, target `whitestocks`)
+## Provisioning record & corrections — 2026-06-21 (executed on the GB10, target `<nas-host>`)
 
 As-built record of the first real provisioning, kept for rebuilds. It **diverges from Phase 0 above**, and Phase 0 was **missing two DSM prerequisites** that blocked the run — both captured below. On a rebuild, follow *this* checklist; Phase 0's snippets are the template it corrects.
 
 **Divergences from the 2026-06-12 plan**
 
-- **Host = the GB10 (`promaxgb10-41b1`), not the Mac.** The output-side loop runs Forge on the GB10, so the key + `.env.deploy` are provisioned on that box (the one that runs the deploy). Everything below was run on the GB10 unless it says *interactive NAS session*.
+- **Host = the GB10 (`<dell-host>`), not the Mac.** The output-side loop runs Forge on the GB10, so the key + `.env.deploy` are provisioned on that box (the one that runs the deploy). Everything below was run on the GB10 unless it says *interactive NAS session*.
 - **The key did not pre-exist** anywhere; it was generated fresh on the GB10 (the Mac had no `fleet_memory_nas_ed25519`).
 
 **Worked values (non-secret)**
 
 ```bash
-NAS_HOST=whitestocks.tailebf801.ts.net     # Tailscale MagicDNS name (IPv4 100.92.74.2)
+NAS_HOST=<nas-host>.<tailnet>.ts.net     # Tailscale MagicDNS name (IPv4 <nas-tailnet-address>)
 NAS_USER=RichardWoollcott                  # DSM account NAME (not the email); must be in administrators
 NAS_SSH_PORT=22
 NAS_DOCKER_ROOT=/volume1/docker/fleet_memory
 # FLEET_MEMORY_PG_PASSWORD: openssl rand -base64 24, lives ONLY in deploy/nas/.env.deploy (gitignored) — never committed
 ```
 
-DSM had several near-identical accounts (`RichardWoollcott`, `richardwoollcotthotmail.com`, a deactivated `admin`). `RichardWoollcott` is the chosen deploy identity — use it consistently as `NAS_USER` so the account owning the container files is the one Forge connects as.
+DSM had several near-identical accounts (`RichardWoollcott`, `<user>hotmail.com`, a deactivated `admin`). `RichardWoollcott` is the chosen deploy identity — use it consistently as `NAS_USER` so the account owning the container files is the one Forge connects as.
 
 **Step 1 — generate the key (GB10)**
 
@@ -183,7 +183,7 @@ DSM → Control Panel → User & Group → Advanced → tick *Enable user home s
 
 DSM → User & Group → User → click `RichardWoollcott` → ensure **administrators** is ticked. Synology SSH only accepts administrators-group accounts, and the deploy needs sudo.
 
-**Step 4 — install the key on the NAS (run on the GB10; lands on whitestocks)**
+**Step 4 — install the key on the NAS (run on the GB10; lands on <nas-host>)**
 
 ```bash
 ssh-copy-id -i ~/.ssh/fleet_memory_nas_ed25519.pub -p "$NAS_SSH_PORT" "$NAS_USER@$NAS_HOST"
@@ -231,7 +231,7 @@ Both gates green on this run. Provisioning complete — the actual stand-up is d
 **Forward caveats (most likely rebuild-breakers)**
 
 - **DSM major upgrades can wipe `/etc/sudoers.d/`.** If a working deploy suddenly demands a sudo password, re-do Step 5 first.
-- **Tailscale node-key expiry.** On 2026-06-21 `whitestocks` showed *Key expiry: in 1 month*; when it lapses the NAS drops off the tailnet and the deploy loses its route. Disable key expiry for the NAS in the Tailscale admin console (Machines → whitestocks → Disable key expiry) — it is fixed infrastructure.
+- **Tailscale node-key expiry.** On 2026-06-21 `<nas-host>` showed *Key expiry: in 1 month*; when it lapses the NAS drops off the tailnet and the deploy loses its route. Disable key expiry for the NAS in the Tailscale admin console (Machines → <nas-host> → Disable key expiry) — it is fixed infrastructure.
 - **Re-provisioning a different host** (e.g. the second Spark): repeat Steps 1, 4, 6 on that host; Steps 2/3/5 are NAS-side and already done. One key per host beats copying the private key.
 
 *FEAT-MEM-01 productizes Phases 2–3 as `deploy/nas/deploy.sh` + `deploy/nas/smoke.sh` with these gates inline; this runbook remains the operator reference and the Phase 0 record.*

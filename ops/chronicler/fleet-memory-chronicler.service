@@ -7,11 +7,11 @@
 
 [Unit]
 Description=fleet-memory Chronicler harvest pass (batch, WS4-S7)
-Documentation=file:///home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
+Documentation=file://%h/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
 
 [Service]
 Type=oneshot
-ExecStart=/home/richardwoollcott/.local/bin/sops exec-env /home/richardwoollcott/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env /home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
+ExecStart=%h/.local/bin/sops exec-env %h/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env %h/Projects/appmilla_github/fleet-memory/ops/chronicler/chronicler-run.sh
 TimeoutStartSec=900
 StandardOutput=journal
 StandardError=journal

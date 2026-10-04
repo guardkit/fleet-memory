@@ -23,8 +23,8 @@
   "files_created": [
     ".claude/task-plans/TASK-RLY-001-implementation-plan.md",
     ".claude/task-plans/TASK-RLY-002-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py",
     "src/fleet_memory/relay/__init__.py",
     "src/fleet_memory/relay/schema.py",
     "tests/unit/relay/__init__.py",
@@ -32,12 +32,12 @@
     "tests/unit/relay/test_schema.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/.guardkit/autobuild/TASK-RLY-001/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/.guardkit/autobuild/TASK-RLY-001/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/relay/schema.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_schema.py"
   ],
   "summary": "17 tests passed",
   "sdk_turns": {

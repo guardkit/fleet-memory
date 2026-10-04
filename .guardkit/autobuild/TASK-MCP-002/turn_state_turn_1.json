@@ -12,11 +12,11 @@
   "progress_summary": "Turn 1: feedback",
   "acceptance_criteria_status": {},
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
     ".claude/task-plans/TASK-MCP-002-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
     "src/fleet_memory/mcp/degradation.py",
     "tests/unit/test_mcp_degradation.py"
   ],

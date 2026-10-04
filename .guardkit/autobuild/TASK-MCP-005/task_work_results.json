@@ -24,7 +24,7 @@
     ".guardkit/bdd/TASK-MCP-003_junit.xml",
     ".guardkit/bdd/TASK-MCP-004_junit.xml",
     ".guardkit/bdd/TASK-MCP-005_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
     "coverage.json",
     "coverage_mcp_003.json",
     "src/fleet_memory/mcp/resources.py",
@@ -39,14 +39,14 @@
     "tests/unit/test_mcp_write.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py",
     "tests/integration/test_mcp_supersede.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/integration/test_mcp_supersede.py"
   ],
   "summary": "Implementation completed",
   "sdk_turns": {
@@ -60,10 +60,10 @@
     "scenarios_pending": 0,
     "failures": [
       {
-        "feature_file": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature",
+        "feature_file": "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature",
         "scenario_name": "pytest_runner_error",
         "failing_step": "",
-        "reason": "pytest_runner_error: exit=4; ERROR: not found: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature\n(no match in any of [<Dir memory..."
+        "reason": "pytest_runner_error: exit=4; ERROR: not found: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature\n(no match in any of [<Dir memory..."
       }
     ],
     "pending": [],

@@ -18,24 +18,24 @@
     "all_passed": null
   },
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
   ],
   "files_created": [
     ".claude/task-plans/TASK-RA-004-implementation-plan.md",
     ".claude/task-plans/TASK-RA-005-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py",
     "src/fleet_memory/retrieval/probe_harness.py",
     "tests/unit/test_probe_harness.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-005/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-005/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/probe_harness.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_probe_harness.py"
   ],
   "summary": "7 tests passed",
   "sdk_turns": {

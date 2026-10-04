@@ -2800,7 +2800,7 @@ E       AttributeError: 'FastMCP' object has no attribute 'resource'
 src/fleet_memory/mcp/resources.py:72: AttributeError
 ___________________________ test_invalid_fixture_id ____________________________
 
-tmp_path = PosixPath('/tmp/pytest-of-richardwoollcott/pytest-215/test_invalid_fixture_id0')
+tmp_path = PosixPath('/tmp/pytest-of-<user>/pytest-215/test_invalid_fixture_id0')
 
     def test_invalid_fixture_id(tmp_path: Path):
         from fleet_memory.fixture import fixture_dir
@@ -2810,7 +2810,7 @@ tmp_path = PosixPath('/tmp/pytest-of-richardwoollcott/pytest-215/test_invalid_fi
 tests/unit/fixture/test_manifest.py:86: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-fixture_id = PosixPath('/tmp/pytest-of-richardwoollcott/pytest-215/test_invalid_fixture_id0')
+fixture_id = PosixPath('/tmp/pytest-of-<user>/pytest-215/test_invalid_fixture_id0')
 fixtures_root = 'Invalid/ID'
 
     def fixture_dir(fixture_id: str, fixtures_root: Path | str = Path.cwd() / "eval" / "fixtures") -> Path:
@@ -3032,96 +3032,96 @@ _____________________________ test_package_imports _____________________________
     
 >       assert hasattr(fleet_memory, "__version__")
 E       AssertionError: assert False
-E        +  where False = hasattr(<module 'fleet_memory' from '/home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/fleet_memory/__init__.py'>, '__version__')
+E        +  where False = hasattr(<module 'fleet_memory' from '~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/fleet_memory/__init__.py'>, '__version__')
 
 tests/unit/test_scaffold.py:8: AssertionError
 =============================== warnings summary ===============================
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.key-example - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.key-example - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.memory-mcp-server - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.memory-mcp-server - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-007 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-007 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.smoke - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.smoke - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-004 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-004 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-005 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-005 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-006 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-006 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.boundary - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.boundary - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.negative - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.negative - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.edge-case - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.edge-case - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-MCP-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.typed-payload-registry - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.typed-payload-registry - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-001 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-003 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 .venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-002 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/plugin.py:137: PytestUnknownMarkWarning: Unknown pytest.mark.task:TASK-TPR-002 - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     mark = getattr(pytest.mark, tag)
 
 src/fleet_memory/fixture/__init__.py:108
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:108: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:108: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
     @validator("fixture_id")
 
 src/fleet_memory/fixture/__init__.py:94
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:94: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/src/fleet_memory/fixture/__init__.py:94: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
     class FixtureManifest(BaseModel):
 
 tests/unit/relay/test_chunk_writer.py:232
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/tests/unit/relay/test_chunk_writer.py:232: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/tests/unit/relay/test_chunk_writer.py:232: PytestUnknownMarkWarning: Unknown pytest.mark.regression - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
     @pytest.mark.regression
 
 tests/bdd/test_typed_payload_registry.py: 39 warnings
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/compat.py:28: PytestRemovedIn10Warning: Passing nodeid to _register_fixture is deprecated. Pass node instead for fixture scoping.
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/pytest_bdd/compat.py:28: PytestRemovedIn10Warning: Passing nodeid to _register_fixture is deprecated. Pass node instead for fixture scoping.
     request._fixturemanager._register_fixture(
 
 tests/bdd/test_typed_payload_registry.py: 39 warnings
-  /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1986: PytestRemovedIn10Warning: Passing baseid to FixtureDef is deprecated. Pass node instead for fixture scoping.
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005/.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1986: PytestRemovedIn10Warning: Passing baseid to FixtureDef is deprecated. Pass node instead for fixture scoping.
     fixture_def = FixtureDef(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

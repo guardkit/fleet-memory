@@ -5,7 +5,7 @@
 # script always writes its loud line first and always exits 0, whatever else fails.
 # Journal-only by design: no email, no Slack, no credential.
 
-STATE_DIR=/home/richardwoollcott/.local/state/fleet-memory
+STATE_DIR=$HOME/.local/state/fleet-memory
 STATUS_FILE="$STATE_DIR/liveness-fence-status.json"
 LOG_FILE="$STATE_DIR/liveness-fence.log"
 

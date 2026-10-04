@@ -2,9 +2,9 @@
   "task_id": "TASK-RIP-006",
   "turn": 1,
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
     "src/fleet_memory/settings.py"
   ],
   "files_created": [
@@ -13,8 +13,8 @@
     ".claude/task-plans/TASK-RIP-008-implementation-plan.md",
     ".guardkit/bdd/TASK-RIP-006_junit.xml",
     ".guardkit/bdd/TASK-RIP-007_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py",
     "coverage_task_rip_007.json",
     "src/fleet_memory/reindex/audit.py",
     "src/fleet_memory/reindex/backfill.py",
@@ -24,7 +24,7 @@
     "tests/unit/reindex/test_parity.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
   ],
   "tests_run": true,
   "tests_passed": true,
@@ -45,10 +45,10 @@
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-006/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-006/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/backfill.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/settings.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/tests/unit/reindex/test_backfill.py"
   ],
   "tests_passed_count": 465,
   "completion_promises": [

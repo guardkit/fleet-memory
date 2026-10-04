@@ -19,10 +19,10 @@
   },
   "files_modified": [],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-010/player_turn_1.json"
   ],
   "tests_written": [],
   "summary": "16 tests passed",

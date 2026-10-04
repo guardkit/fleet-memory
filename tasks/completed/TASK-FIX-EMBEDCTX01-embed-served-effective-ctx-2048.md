@@ -21,7 +21,7 @@ related:
 
 ## Resolution (2026-06-26) — COMPLETE (applied live + canonical, verified on-box)
 
-The agent was **running on `promaxgb10-41b1` itself**, so the live deploy was done
+The agent was **running on `<dell-host>` itself**, so the live deploy was done
 directly (the earlier SSH failure was just unkeyed self-SSH; the box's filesystem
 and `:9000` are local).
 

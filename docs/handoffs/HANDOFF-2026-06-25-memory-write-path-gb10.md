@@ -101,8 +101,8 @@ CLI; a compose service / systemd unit is a follow-up worth creating.
 
 ```bash
 cd fleet-memory  # with the project installed in a venv (pip install -e .)
-export FLEET_MEMORY_PG_DSN="postgresql://fleet_memory:<DB_PW>@whitestocks.tailebf801.ts.net:5433/fleet_memory"
-export FLEET_MEMORY_EMBED_URL="http://promaxgb10-41b1:9000"
+export FLEET_MEMORY_PG_DSN="postgresql://fleet_memory:<DB_PW>@<nas-host>.<tailnet>.ts.net:5433/fleet_memory"
+export FLEET_MEMORY_EMBED_URL="http://<dell-host>:9000"
 export FLEET_MEMORY_NATS_URL="nats://fleet-memory:<NATS_PW>@127.0.0.1:4222"
 # defaults are fine but confirm vs the provisioned consumer:
 export FLEET_MEMORY_DLQ_SUBJECT="memory.dlq"   # handler appends .{project_id}
@@ -176,12 +176,12 @@ eval vs the Graphiti baseline (FEAT-MEM-05 harness) → go/no-go → FEAT-MEM-08
 - **AutoBuild false-green pattern** (see `docs/retros/FEAT-MEM-04-relay-integration-retro.md`): always run the
   full unit suite in the real venv before trusting a green build.
 - **Synology/Tailscale** (from `docs/runbooks/RUNBOOK-nas-postgres-deploy.md`): DSM upgrades can wipe
-  `/etc/sudoers.d/`; disable Tailscale key expiry for `whitestocks`.
+  `/etc/sudoers.d/`; disable Tailscale key expiry for `<nas-host>`.
 
 ## References
 
 - `nats-infrastructure/docs/design/specs/memory-relay/memory-write-path-v2-post-graphiti.md` — authoritative design.
 - `nats-core/docs/design/specs/memory-publisher/P1-memory-publisher-feature-brief.md` — P1 publisher.
 - `fleet-memory/docs/decisions/MEM-04-relay-jetstream-contract.md` — relay consumer contract.
-- `fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md` — NAS Postgres provisioning (already live on `whitestocks:5433`).
+- `fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md` — NAS Postgres provisioning (already live on `<nas-host>:5433`).
 - `forge/docs/reviews/forge-fleet-state-review-2026-06-24.md` — migration framing (fleet-memory replaces Graphiti).

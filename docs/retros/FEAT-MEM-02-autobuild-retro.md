@@ -45,7 +45,7 @@ WARNING:guardkit.knowledge.graphiti_client:Search request failed: Request timed 
 
 **Impact:** Context retrieval (not implementation) dominated wall-clock. The advertised "~600–800ms per turn" budget was exceeded by 3–4 orders of magnitude on several turns. The payload returned was tiny (~350 chars) regardless of load time, so the latency bought almost no context.
 
-**Recommendation:** Add a hard per-call timeout + fallback-to-empty-context on the Graphiti client (it already times out internally but still blocked ~31 min on one call). Investigate the embedding endpoint (`promaxgb10-41b1:9000`) / FalkorDB query latency. Consider caching or making context load fully async/non-blocking with a short ceiling.
+**Recommendation:** Add a hard per-call timeout + fallback-to-empty-context on the Graphiti client (it already times out internally but still blocked ~31 min on one call). Investigate the embedding endpoint (`<dell-host>:9000`) / FalkorDB query latency. Consider caching or making context load fully async/non-blocking with a short ceiling.
 
 ---
 

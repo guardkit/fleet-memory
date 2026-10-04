@@ -21,16 +21,16 @@
   "files_created": [
     ".claude/task-plans/TASK-RA-006-implementation-plan.md",
     ".claude/task-plans/TASK-RA-007-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py",
     "tests/integration/test_retrieval_pipeline.py",
     "tests/unit/test_retrieval_suite.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-007/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-007/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/integration/test_retrieval_pipeline.py"
   ],
   "summary": "49 tests passed",
   "sdk_turns": {

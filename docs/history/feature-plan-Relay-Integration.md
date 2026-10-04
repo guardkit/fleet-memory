@@ -10,15 +10,15 @@ Let me explore the feature directory and related context in parallel.
 
 Bash List relay-integration and feature dirs
 IN
-ls -la /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/relay-integration/ && echo "---FEATURES---" && ls /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/ && echo "---GUARDKIT FEATURES---" && ls /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/
+ls -la ~/Projects/appmilla_github/fleet-memory/features/relay-integration/ && echo "---FEATURES---" && ls ~/Projects/appmilla_github/fleet-memory/features/ && echo "---GUARDKIT FEATURES---" && ls ~/Projects/appmilla_github/fleet-memory/.guardkit/features/
 
 OUT
 total 64
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 12:05 .
-drwxr-xr-x  7 richardwoollcott  staff    224 Jun 13 12:47 ..
--rw-r--r--  1 richardwoollcott  staff   4452 Jun 13 12:05 relay-integration_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2833 Jun 13 12:05 relay-integration_summary.md
--rw-r--r--  1 richardwoollcott  staff  19349 Jun 13 12:05 relay-integration.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 12:05 .
+drwxr-xr-x  7 <user>  staff    224 Jun 13 12:47 ..
+-rw-r--r--  1 <user>  staff   4452 Jun 13 12:05 relay-integration_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2833 Jun 13 12:05 relay-integration_summary.md
+-rw-r--r--  1 <user>  staff  19349 Jun 13 12:05 relay-integration.feature
 ---FEATURES---
 deterministic-writer
 relay-integration
@@ -62,43 +62,43 @@ src/fleet_memory/writer/core.py
 src/fleet_memory/writer/identity.py
 ---ROOT---
 total 432
-drwxr-xr-x   37 richardwoollcott  staff   1184 Jun 13 13:49 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   16 richardwoollcott  staff    512 Jun 13 13:50 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 13 13:49 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff  14788 Jun 13 08:22 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   6729 Jun 13 13:49 coverage_task_dw_002.json
--rw-r--r--    1 richardwoollcott  staff   9524 Jun 13 13:49 coverage_task_dw_004.json
--rw-r--r--    1 richardwoollcott  staff   9578 Jun 13 13:49 coverage_task_dw_005.json
--rw-r--r--    1 richardwoollcott  staff   2300 Jun 13 12:25 coverage_task.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff   6649 Jun 13 13:49 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    7 richardwoollcott  staff    224 Jun 13 12:47 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1191 Jun 13 08:22 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x   10 richardwoollcott  staff    320 Jun 13 12:25 tests
+drwxr-xr-x   37 <user>  staff   1184 Jun 13 13:49 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   16 <user>  staff    512 Jun 13 13:50 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  11 <user>  staff    352 Jun 13 13:49 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff  14788 Jun 13 08:22 coverage_review.json
+-rw-r--r--    1 <user>  staff   6729 Jun 13 13:49 coverage_task_dw_002.json
+-rw-r--r--    1 <user>  staff   9524 Jun 13 13:49 coverage_task_dw_004.json
+-rw-r--r--    1 <user>  staff   9578 Jun 13 13:49 coverage_task_dw_005.json
+-rw-r--r--    1 <user>  staff   2300 Jun 13 12:25 coverage_task.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff   6649 Jun 13 13:49 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    7 <user>  staff    224 Jun 13 12:47 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1191 Jun 13 08:22 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x   10 <user>  staff    320 Jun 13 12:25 tests
 ---TASKS BACKLOG---
 deterministic-writer
 storage-substrate
@@ -252,7 +252,7 @@ evidence_repos: []
 execution:
   started_at: '2026-06-13T12:40:57.582632'
   completed_at: '2026-06-13T13:27:33.812590'
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
   total_turns: 5
   tasks_completed: 5
   tasks_failed: 0
@@ -1554,7 +1554,7 @@ Now the pre-flight validation (Step 8.5) and the hand-injected smoke-gate valida
 
 Bash Run pre-flight and smoke-gate validation
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== 8.5 feature validate ==="
 guardkit feature validate FEAT-MEM-04 2>&1 || python3 -m guardkit feature validate FEAT-MEM-04 2>&1 || echo "(guardkit CLI not available on PATH — skipping 8.5)"
 echo "=== 8.6 validate-smoke-gates ==="
@@ -1564,7 +1564,7 @@ OUT
 === 8.5 feature validate ===
 /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:25: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
   from pydantic.v1.fields import FieldInfo as FieldInfoV1
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-04.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-04.yaml
 ✓ Feature FEAT-MEM-04 is valid
 === 8.6 validate-smoke-gates ===
 /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:25: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
@@ -1574,7 +1574,7 @@ Both validations pass. Now Step 11 — BDD scenario linking (tag the .feature sc
 
 Bash Prepare BDD linking request
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json)
 echo "REQ_FILE=$REQ_FILE"
 python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
@@ -1585,7 +1585,7 @@ python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
 
 OUT
 REQ_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.Kp7Y9NPLyC
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/relay-integration/relay-integration.feature", "scenarios_to_match": 32, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.Kp7Y9NPLyC"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/relay-integration/relay-integration.feature", "scenarios_to_match": 32, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.Kp7Y9NPLyC"}
 Status ready — 32 scenarios, 7 tasks. Let me read the request payload and invoke the bdd-linker subagent to map scenarios to tasks.
 
 Bash Read BDD link request payload
@@ -1594,7 +1594,7 @@ cat /var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.Kp
 
 OUT
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/relay-integration/relay-integration.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/relay-integration/relay-integration.feature",
   "feature_name": "Relay Integration",
   "confidence_threshold": 0.6,
   "scenarios": [
@@ -2297,7 +2297,7 @@ Write bdd-link-resp-rly04.json
 ]
 Bash Apply BDD scenario-to-task tagging
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 python3 ~/.agentecflow/bin/feature-plan-bdd-link apply \
   --project-root . \
   --feature-slug "relay-integration" \
@@ -2309,7 +2309,7 @@ All 32 scenarios tagged — R2 BDD oracle is now active. Let me verify the tags 
 
 Bash Verify BDD tags and list generated files
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== @task: tag counts by task ==="
 grep -oE '@task:TASK-RLY-00[0-9]' features/relay-integration/relay-integration.feature | sort | uniq -c
 echo "=== sample tagged scenario ==="
@@ -2390,7 +2390,7 @@ Git status changed since session start — there are also retrieval-api artifact
 
 Bash Create branch and stage relay-integration artifacts
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 git checkout -b plan/relay-integration-feat-mem-04
 git add \
   .guardkit/features/FEAT-MEM-04.yaml \
@@ -2419,7 +2419,7 @@ A  tasks/backlog/relay-integration/TASK-RLY-007-verify-dlq-contract.md
 ?? tasks/backlog/TASK-REV-RA05-plan-retrieval-api.md
 Bash Commit relay-integration plan
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 git commit -m "$(cat <<'EOF'
 Plan Relay Integration (FEAT-MEM-04)
 
@@ -2465,7 +2465,7 @@ Something went wrong — the commit landed on a branch called spec/retrieval-api
 
 Bash Investigate branch and hook state
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== current branch ==="; git branch --show-current
 echo "=== branches ==="; git branch
 echo "=== last commit files ==="; git show --stat --oneline HEAD | head -30
@@ -2501,8 +2501,8 @@ spec/retrieval-api-feat-mem-05
  17 files changed, 1899 insertions(+)
 === git hooks ===
 total 128
-drwxr-xr-x  16 richardwoollcott  staff   512 Jun 12 12:43 .
-drwxr-xr-x  16 richardwoollcott  staff   512 Jun 13 14:15 ..
+drwxr-xr-x  16 <user>  staff   512 Jun 12 12:43 .
+drwxr-xr-x  16 <user>  staff   512 Jun 13 14:15 ..
 --- core.hooksPath ---
 === status ===
 ?? tasks/backlog/TASK-REV-RA05-plan-retrieval-api.md
@@ -2510,7 +2510,7 @@ The commit landed on the wrong branch and swept in retrieval-api files I never s
 
 Bash Inspect reflog, branch tips, lock
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== HEAD reflog (last 12) ==="; git reflog -12
 echo "=== branch tips ==="
 echo "main:               $(git rev-parse --short main)"
@@ -2537,7 +2537,7 @@ main:               201f09d
 plan/relay...:      201f09d
 spec/retrieval...:  38914f1
 === lock file ===
--rw-r--r--  1 richardwoollcott  staff  0 Jun 13 08:22 .guardkit-git.lock
+-rw-r--r--  1 <user>  staff  0 Jun 13 08:22 .guardkit-git.lock
 (lock not held by any open fd)
 Now I have the full picture from the reflog:
 
@@ -2548,7 +2548,7 @@ The lock is free now, so I'll cleanly split this: restore the spec branch to exa
 
 Bash Restore spec branch to pre-race state, keep files on disk
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 # Step 1: restore spec/retrieval-api branch to its pre-race tip (main), unstaging all
 # but keeping every file on disk (untracked). This undoes my accidental commit onto it.
 git reset --mixed 201f09d
@@ -2569,7 +2569,7 @@ spec/retrieval-api-feat-mem-05 is back at main with all files preserved on disk 
 
 Bash Switch to plan branch, stage relay-only files
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 git checkout plan/relay-integration-feat-mem-04
 echo "=== on branch: $(git branch --show-current) @ $(git rev-parse --short HEAD) ==="
 git add \
@@ -2604,7 +2604,7 @@ Staging is correct — only relay-integration files, with retrieval-api left unt
 
 Bash Commit relay plan and verify final state
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 git commit -q -m "$(cat <<'EOF'
 Plan Relay Integration (FEAT-MEM-04)
 

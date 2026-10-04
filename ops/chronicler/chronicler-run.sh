@@ -13,9 +13,9 @@
 # wrap — never from this file, never on argv (the CLI's own DSN policy).
 set -euo pipefail
 
-REPO=/home/richardwoollcott/Projects/appmilla_github/fleet-memory
-OUT=/home/richardwoollcott/fleet-memory-out/chronicler
-STATE_DIR=/home/richardwoollcott/.local/state/fleet-memory
+REPO=$HOME/Projects/appmilla_github/fleet-memory
+OUT=$HOME/fleet-memory-out/chronicler
+STATE_DIR=$HOME/.local/state/fleet-memory
 WATERMARK="$STATE_DIR/chronicler.since"
 
 mkdir -p "$OUT/dataset_intake" "$OUT/story_card_queue" "$STATE_DIR"

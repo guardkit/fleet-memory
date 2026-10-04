@@ -297,7 +297,7 @@ preflight_strict: false
 execution:
   started_at: '2026-06-12T18:11:20.714478'
   completed_at: '2026-06-12T23:11:31.099209'
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
   total_turns: 15
   tasks_completed: 13
   tasks_failed: 0

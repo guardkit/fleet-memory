@@ -2,18 +2,18 @@
   "task_id": "TASK-MCP-002",
   "turn": 1,
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
   ],
   "files_created": [
     ".claude/task-plans/TASK-MCP-002-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py",
     "src/fleet_memory/mcp/degradation.py",
     "tests/unit/test_mcp_degradation.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
   ],
   "tests_run": true,
   "tests_passed": true,
@@ -37,9 +37,9 @@
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/degradation.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_degradation.py"
   ],
   "tests_passed_count": 11,
   "completion_promises": [

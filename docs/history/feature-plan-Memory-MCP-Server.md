@@ -6,15 +6,15 @@ I'll execute the /feature-plan workflow for "Memory MCP Server". Let me start by
 Read memory-mcp-server_summary.md
 Bash List memory-mcp-server feature dir
 IN
-ls -la /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/ 2>/dev/null; echo "---FEATURES---"; ls /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/ 2>/dev/null
+ls -la ~/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/ 2>/dev/null; echo "---FEATURES---"; ls ~/Projects/appmilla_github/fleet-memory/features/ 2>/dev/null
 
 OUT
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 16:14 .
-drwxr-xr-x  8 richardwoollcott  staff    256 Jun 13 16:12 ..
--rw-r--r--  1 richardwoollcott  staff   3257 Jun 13 16:13 memory-mcp-server_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2595 Jun 13 16:14 memory-mcp-server_summary.md
--rw-r--r--  1 richardwoollcott  staff  15919 Jun 13 16:13 memory-mcp-server.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 16:14 .
+drwxr-xr-x  8 <user>  staff    256 Jun 13 16:12 ..
+-rw-r--r--  1 <user>  staff   3257 Jun 13 16:13 memory-mcp-server_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2595 Jun 13 16:14 memory-mcp-server_summary.md
+-rw-r--r--  1 <user>  staff  15919 Jun 13 16:13 memory-mcp-server.feature
 ---FEATURES---
 deterministic-writer
 memory-mcp-server
@@ -437,17 +437,17 @@ OUT
 project_id: fleet_memory
 enabled: true
 graph_store: falkordb
-falkordb_host: whitestocks
+falkordb_host: <nas-host>
 falkordb_port: 6379
 timeout: 30.0
 max_concurrent_episodes: 3
 chunk_extraction_concurrency: 4
 llm_provider: vllm
-llm_base_url: http://promaxgb10-41b1:9000/v1
+llm_base_url: http://<dell-host>:9000/v1
 llm_model: qwen-graphiti
 llm_max_tokens: 4096
 embedding_provider: vllm
-embedding_base_url: http://promaxgb10-41b1:9000/v1
+embedding_base_url: http://<dell-host>:9000/v1
 embedding_model: nomic-embed
 group_ids:
 - product_knowledge
@@ -468,7 +468,7 @@ Graphiti is enabled (CLI access path). Let me query it for pre-planning context 
 
 Bash Query Graphiti pre-planning context
 IN
-timeout 30 /Users/richardwoollcott/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Memory MCP Server FastMCP stdio tools memory_search memory_write_payload memory_supersede over retrieval API and deterministic writer" --phase plan 2>&1 | head -40 || echo "[graphiti unavailable - continuing without]"
+timeout 30 ~/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Memory MCP Server FastMCP stdio tools memory_search memory_write_payload memory_supersede over retrieval API and deterministic writer" --phase plan 2>&1 | head -40 || echo "[graphiti unavailable - continuing without]"
 
 OUT
 {"available": true, "error": null, "context": null, "categories": 0, "tokens_used": 0, "tokens_budget": 0}
@@ -1942,7 +1942,7 @@ Now generating the structured YAML feature file (this also runs the AC-linter, B
 
 Bash Generate FEAT-MEM-06 structured YAML
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory && python3 ~/.agentecflow/bin/generate-feature-yaml \
+cd ~/Projects/appmilla_github/fleet-memory && python3 ~/.agentecflow/bin/generate-feature-yaml \
   --name "Memory MCP Server" \
   --description "FEAT-MEM-06 FastMCP server over stdio: memory_search, memory_write_payload, memory_supersede tools plus a memory://projects resource, layered over the FEAT-MEM-05 retrieval API and the FEAT-MEM-03 deterministic writer. Single write path (byte-identical to relay writes); failures surfaced as structured tool-error results (graceful degradation, no crash)." \
   --feature-id FEAT-MEM-06 \
@@ -2063,7 +2063,7 @@ echo "=== 8.5 feature validate ===" && (guardkit feature validate FEAT-MEM-06 2>
 
 OUT
 === 8.5 feature validate ===
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-06.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-06.yaml
 ✓ Feature FEAT-MEM-06 is valid
 === 8.6 validate smoke gates ===
 ✓ smoke_gates.command paths OK
@@ -2080,7 +2080,7 @@ REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json) && RESP_FILE=$(mktemp -t bdd-link
 OUT
 REQ=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.9BbKiWAwiy
 RESP=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-resp-XXXXXX.json.QAWV2oSF50
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/memory-mcp-server.feature", "scenarios_to_match": 31, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.9BbKiWAwiy"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/memory-mcp-server.feature", "scenarios_to_match": 31, "task_count": 7, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.9BbKiWAwiy"}
 Ready: 31 scenarios, 7 tasks. Let me read the request payload and invoke the bdd-linker subagent to map scenarios → tasks.
 
 Bash Read BDD link request payload
@@ -2089,7 +2089,7 @@ cat /var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.9B
 
 OUT
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/memory-mcp-server.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/memory-mcp-server/memory-mcp-server.feature",
   "feature_name": "Memory MCP Server",
   "confidence_threshold": 0.6,
   "scenarios": [

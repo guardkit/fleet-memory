@@ -6,15 +6,15 @@ I'll orchestrate the /feature-plan workflow for "Memory Storage Substrate". Firs
 Read storage-substrate_summary.md
 Bash List feature spec directory contents
 IN
-ls -la /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/ 2>/dev/null; echo "---"; ls /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/ 2>/dev/null; echo "---"; ls /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/ 2>/dev/null
+ls -la ~/Projects/appmilla_github/fleet-memory/features/storage-substrate/ 2>/dev/null; echo "---"; ls ~/Projects/appmilla_github/fleet-memory/features/ 2>/dev/null; echo "---"; ls ~/Projects/appmilla_github/fleet-memory/ 2>/dev/null
 
 OUT
 total 64
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 12 16:21 .
-drwxr-xr-x  3 richardwoollcott  staff     96 Jun 12 16:20 ..
--rw-r--r--  1 richardwoollcott  staff   5203 Jun 12 16:21 storage-substrate_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   3006 Jun 12 16:21 storage-substrate_summary.md
--rw-r--r--  1 richardwoollcott  staff  17819 Jun 12 16:20 storage-substrate.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 12 16:21 .
+drwxr-xr-x  3 <user>  staff     96 Jun 12 16:20 ..
+-rw-r--r--  1 <user>  staff   5203 Jun 12 16:21 storage-substrate_assumptions.yaml
+-rw-r--r--  1 <user>  staff   3006 Jun 12 16:21 storage-substrate_summary.md
+-rw-r--r--  1 <user>  staff  17819 Jun 12 16:20 storage-substrate.feature
 ---
 storage-substrate
 ---
@@ -26,23 +26,23 @@ README.md
 tasks
 Bash Check Graphiti config and agentecflow scripts
 IN
-cat /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/graphiti.yaml 2>/dev/null || echo "NO_GRAPHITI_CONFIG"; echo "---"; ls ~/.agentecflow/bin/ 2>/dev/null | head -30
+cat ~/Projects/appmilla_github/fleet-memory/.guardkit/graphiti.yaml 2>/dev/null || echo "NO_GRAPHITI_CONFIG"; echo "---"; ls ~/.agentecflow/bin/ 2>/dev/null | head -30
 
 OUT
 project_id: fleet_memory
 enabled: true
 graph_store: falkordb
-falkordb_host: whitestocks
+falkordb_host: <nas-host>
 falkordb_port: 6379
 timeout: 30.0
 max_concurrent_episodes: 3
 chunk_extraction_concurrency: 4
 llm_provider: vllm
-llm_base_url: http://promaxgb10-41b1:9000/v1
+llm_base_url: http://<dell-host>:9000/v1
 llm_model: qwen-graphiti
 llm_max_tokens: 4096
 embedding_provider: vllm
-embedding_base_url: http://promaxgb10-41b1:9000/v1
+embedding_base_url: http://<dell-host>:9000/v1
 embedding_model: nomic-embed
 group_ids:
 - product_knowledge
@@ -63,14 +63,14 @@ guardkit-init
 Read README.md
 Bash Map docs, tasks, migrations, and .guardkit directories
 IN
-find /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tasks /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/migrations -type f 2>/dev/null | head -40; echo "---GUARDKIT---"; find /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit -type f 2>/dev/null | head -20
+find ~/Projects/appmilla_github/fleet-memory/docs ~/Projects/appmilla_github/fleet-memory/tasks ~/Projects/appmilla_github/fleet-memory/migrations -type f 2>/dev/null | head -40; echo "---GUARDKIT---"; find ~/Projects/appmilla_github/fleet-memory/.guardkit -type f 2>/dev/null | head -20
 
 OUT
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
+~/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md
+~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
+~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
 ---GUARDKIT---
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/graphiti.yaml
+~/Projects/appmilla_github/fleet-memory/.guardkit/graphiti.yaml
 Bash Query Graphiti knowledge graph for feature planning context
 IN
 ~/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Memory Storage Substrate: LangGraph AsyncPostgresStore on Postgres 16 + pgvector, 768-dim nomic-embed-text embeddings via llama-swap, ephemeral local deploy for tests and durable NAS deploy" --phase plan 2>&1 | head -100
@@ -85,18 +85,18 @@ ls -la; echo "---TASKS---"; find tasks migrations -type d 2>/dev/null; echo "---
 
 OUT
 total 32
-drwxr-xr-x   12 richardwoollcott  staff   384 Jun 12 16:20 .
-drwxr-xr-x  173 richardwoollcott  staff  5536 Jun 12 12:43 ..
-drwxr-xr-x@  10 richardwoollcott  staff   320 Jun 12 13:01 .claude
-drwxr-xr-x   14 richardwoollcott  staff   448 Jun 12 12:50 .git
--rw-r--r--@   1 richardwoollcott  staff  4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@   3 richardwoollcott  staff    96 Jun 12 12:48 .guardkit
-drwxr-xr-x@   4 richardwoollcott  staff   128 Jun 12 15:28 docs
-drwxr-xr-x    3 richardwoollcott  staff    96 Jun 12 16:20 features
--rw-r--r--    1 richardwoollcott  staff  1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff    64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff    38 Jun 12 12:43 README.md
-drwxr-xr-x@   7 richardwoollcott  staff   224 Jun 12 12:48 tasks
+drwxr-xr-x   12 <user>  staff   384 Jun 12 16:20 .
+drwxr-xr-x  173 <user>  staff  5536 Jun 12 12:43 ..
+drwxr-xr-x@  10 <user>  staff   320 Jun 12 13:01 .claude
+drwxr-xr-x   14 <user>  staff   448 Jun 12 12:50 .git
+-rw-r--r--@   1 <user>  staff  4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@   3 <user>  staff    96 Jun 12 12:48 .guardkit
+drwxr-xr-x@   4 <user>  staff   128 Jun 12 15:28 docs
+drwxr-xr-x    3 <user>  staff    96 Jun 12 16:20 features
+-rw-r--r--    1 <user>  staff  1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff    64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff    38 Jun 12 12:43 README.md
+drwxr-xr-x@   7 <user>  staff   224 Jun 12 12:48 tasks
 ---TASKS---
 tasks
 migrations
@@ -384,14 +384,14 @@ Step 11: BDD scenario linking (@task tags)
 task-review skill
 Agent:Decision review FEAT-MEM-01 substrate
 IN
-You are performing a DECISION-MODE feature-planning review (TASK-REV-CA81) for FEAT-MEM-01 "Memory Storage Substrate" in the fleet-memory repo at /Users/richardwoollcott/Projects/appmilla_github/fleet-memory. Your final message is consumed by an orchestrator (not shown to a human directly) — return the full structured analysis described at the end.
+You are performing a DECISION-MODE feature-planning review (TASK-REV-CA81) for FEAT-MEM-01 "Memory Storage Substrate" in the fleet-memory repo at ~/Projects/appmilla_github/fleet-memory. Your final message is consumed by an orchestrator (not shown to a human directly) — return the full structured analysis described at the end.
 
 READ THESE FILES FIRST (they are the authoritative context):
-1. /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_summary.md
-2. /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature (34 BDD scenarios)
-3. /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml
-4. /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md (§FEAT-MEM-01, architectural constraints, RD-1..8)
-5. /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md (full runbook — gates G0–G6, Phases 0–4)
+1. ~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_summary.md
+2. ~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature (34 BDD scenarios)
+3. ~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate_assumptions.yaml
+4. ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md (§FEAT-MEM-01, architectural constraints, RD-1..8)
+5. ~/Projects/appmilla_github/fleet-memory/docs/runbooks/RUNBOOK-nas-postgres-deploy.md (full runbook — gates G0–G6, Phases 0–4)
 
 REVIEW SCOPE (Context A clarification from user):
 - Focus: ALL areas (hermetic test infra, store semantics, lifespan/pool wiring, settings profiles, NAS security boundary, scaffolding)
@@ -441,7 +441,7 @@ Bash Extract architect analysis to temp file
 IN
 python3 -c "
 import json
-with open('/Users/richardwoollcott/.claude/projects/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/1e9796e2-b0b2-428e-9269-04718afdff32/tool-results/toolu_01WmtDErGtSw9eLnqtqt3sMZ.json') as f:
+with open('~/.claude/projects/-Users-<user>-Projects-appmilla-github-fleet-memory/1e9796e2-b0b2-428e-9269-04718afdff32/tool-results/toolu_01WmtDErGtSw9eLnqtqt3sMZ.json') as f:
     data = json.load(f)
 text = data[0]['text']
 print(text)
@@ -452,7 +452,7 @@ OUT
 Read review-analysis.md
 Bash Write review report to .claude/reviews/
 IN
-mkdir -p /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.claude/reviews && { cat <<'HEADER'
+mkdir -p ~/Projects/appmilla_github/fleet-memory/.claude/reviews && { cat <<'HEADER'
 # Review Report: TASK-REV-CA81 — Plan: Memory Storage Substrate (FEAT-MEM-01)
 
 ## Review Details
@@ -465,16 +465,16 @@ mkdir -p /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.claude/r
 - **Context sources**: storage-substrate_summary.md, storage-substrate.feature (34 scenarios), storage-substrate_assumptions.yaml, phase-core-build-plan.md, RUNBOOK-nas-postgres-deploy.md
 
 HEADER
-tail -n +3 /tmp/review-analysis.md; } > /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
-wc -l /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
+tail -n +3 /tmp/review-analysis.md; } > ~/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
+wc -l ~/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
 
 OUT
-     566 /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
+     566 ~/Projects/appmilla_github/fleet-memory/.claude/reviews/TASK-REV-CA81-review-report.md
 Edit TASK-REV-CA81-plan-memory-storage-substrate.md
 Added 8 lines
 Bash Move review task to in_review state
 IN
-mv /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tasks/backlog/TASK-REV-CA81-plan-memory-storage-substrate.md /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tasks/in_review/
+mv ~/Projects/appmilla_github/fleet-memory/tasks/backlog/TASK-REV-CA81-plan-memory-storage-substrate.md ~/Projects/appmilla_github/fleet-memory/tasks/in_review/
 
 OUT
 (Bash completed with no output)
@@ -1998,12 +1998,12 @@ IN
 ~/.agentecflow/bin/guardkit feature validate FEAT-CA81 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "===EXIT: $?==="; echo "===SMOKE GATES VALIDATION==="; python3 ~/.agentecflow/bin/generate-feature-yaml --validate-smoke-gates --feature-id FEAT-CA81 --base-path . 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "===EXIT: $?==="
 
 OUT
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-CA81.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-CA81.yaml
 ✗ Feature FEAT-CA81 has validation errors:
 
 Structural errors:
 smoke_gates.command references non-existent path:
-  tests/unit   (repo root: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory)
+  tests/unit   (repo root: ~/Projects/appmilla_github/fleet-memory)
 Available test roots: (none — no tests/<name> subdirectories found)
 ===EXIT: 0===
 ===SMOKE GATES VALIDATION===
@@ -2016,7 +2016,7 @@ IN
 mkdir -p tests/unit tests/integration && touch tests/unit/.gitkeep tests/integration/.gitkeep && ~/.agentecflow/bin/guardkit feature validate FEAT-CA81 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "===SMOKE==="; python3 ~/.agentecflow/bin/generate-feature-yaml --validate-smoke-gates --feature-id FEAT-CA81 --base-path . 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "EXIT=$?"
 
 OUT
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-CA81.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-CA81.yaml
 ✓ Feature FEAT-CA81 is valid
 ===SMOKE===
 ✓ smoke_gates.command paths OK
@@ -2051,7 +2051,7 @@ REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json) && RESP_FILE=$(mktemp -t bdd-link
 OUT
 REQ_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.KUqyIi2B1w
 RESP_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-resp-XXXXXX.json.t3DZbLvgrU
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature", "scenarios_to_match": 34, "task_count": 13, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.KUqyIi2B1w"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature", "scenarios_to_match": 34, "task_count": 13, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.KUqyIi2B1w"}
 Prepare returned ready: 34 scenarios × 13 tasks. Reading the request payload and invoking the bdd-linker agent:
 
 Bash Read BDD matching request payload
@@ -2060,11 +2060,11 @@ cat /var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.KU
 
 OUT
 <persisted-output>
-Output too large (34.6KB). Full output saved to: /Users/richardwoollcott/.claude/projects/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/1e9796e2-b0b2-428e-9269-04718afdff32/tool-results/br82mi86q.txt
+Output too large (34.6KB). Full output saved to: ~/.claude/projects/-Users-<user>-Projects-appmilla-github-fleet-memory/1e9796e2-b0b2-428e-9269-04718afdff32/tool-results/br82mi86q.txt
 
 Preview (first 2KB):
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/storage-substrate/storage-substrate.feature",
   "feature_name": "Memory Storage Substrate",
   "confidence_threshold": 0.6,
   "scenarios": [

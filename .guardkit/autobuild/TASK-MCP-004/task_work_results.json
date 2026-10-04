@@ -22,9 +22,9 @@
     ".claude/task-plans/TASK-MCP-004-implementation-plan.md",
     ".claude/task-plans/TASK-MCP-005-implementation-plan.md",
     ".guardkit/bdd/TASK-MCP-005_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py",
     "coverage.json",
     "src/fleet_memory/mcp/resources.py",
     "src/fleet_memory/mcp/server.py",
@@ -38,20 +38,20 @@
     "tests/unit/test_mcp_write.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "summary": "Implementation completed",
   "sdk_turns": {
@@ -65,10 +65,10 @@
     "scenarios_pending": 0,
     "failures": [
       {
-        "feature_file": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature",
+        "feature_file": "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature",
         "scenario_name": "pytest_runner_error",
         "failing_step": "",
-        "reason": "pytest_runner_error: exit=4; ERROR: not found: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature\n(no match in any of [<Dir memory..."
+        "reason": "pytest_runner_error: exit=4; ERROR: not found: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/features/memory-mcp-server/memory-mcp-server.feature\n(no match in any of [<Dir memory..."
       }
     ],
     "pending": [],

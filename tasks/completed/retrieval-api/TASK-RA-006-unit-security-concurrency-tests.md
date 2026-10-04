@@ -17,7 +17,7 @@ pre_sweep_status: in_review
 autobuild_state:
   current_turn: 1
   max_turns: 5
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05
   base_branch: main
   started_at: '2026-06-13T17:25:11.542622'
   last_updated: '2026-06-13T17:36:05.220374'

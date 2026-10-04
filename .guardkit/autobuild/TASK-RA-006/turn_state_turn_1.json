@@ -14,7 +14,7 @@
   "files_modified": [
     ".claude/task-plans/TASK-RA-006-implementation-plan.md",
     ".claude/task-plans/TASK-RA-007-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_retrieval_suite.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_retrieval_suite.py",
     "tests/integration/test_retrieval_pipeline.py",
     "tests/unit/test_retrieval_suite.py"
   ],

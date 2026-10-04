@@ -28,10 +28,10 @@
     "src/fleet_memory/reindex/walker.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_3.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_3.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_3.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-002/player_turn_3.json"
   ],
   "tests_written": [],
   "summary": "5 tests passed, 100.0% coverage, all quality gates passed",

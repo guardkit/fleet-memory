@@ -506,7 +506,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
-    { name = "faststream", extra = ["cli", "nats"] },
+    { name = "faststream", extra = ["nats"] },
     { name = "httpx" },
     { name = "langgraph-checkpoint-postgres" },
     { name = "psycopg", extra = ["binary"] },
@@ -525,11 +525,15 @@ dev = [
     { name = "pyyaml" },
     { name = "ruff" },
 ]
+relay = [
+    { name = "faststream", extra = ["cli"] },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "fastmcp", specifier = ">=0.1.0" },
-    { name = "faststream", extras = ["nats", "cli"], specifier = ">=0.7,<0.8" },
+    { name = "faststream", extras = ["cli"], marker = "extra == 'relay'", specifier = ">=0.7,<0.8" },
+    { name = "faststream", extras = ["nats"], specifier = ">=0.7,<0.8" },
     { name = "httpx" },
     { name = "langgraph-checkpoint-postgres", specifier = ">=2.0" },
     { name = "psycopg", extras = ["binary"] },
@@ -544,7 +548,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'" },
     { name = "tiktoken" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["relay", "dev"]
 
 [[package]]
 name = "gherkin-official"

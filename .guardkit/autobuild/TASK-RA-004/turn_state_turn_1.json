@@ -14,14 +14,14 @@
   "files_modified": [
     ".claude/task-plans/TASK-RA-004-implementation-plan.md",
     ".claude/task-plans/TASK-RA-005-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
     "coverage_ra_005.json",
     "src/fleet_memory/retrieval/composition.py",
     "src/fleet_memory/retrieval/probe_harness.py",
     "tests/unit/test_composition.py",
     "tests/unit/test_probe_harness.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_composition.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/src/fleet_memory/retrieval/composition.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/tests/unit/test_composition.py"
   ],
   "tests_passed": 15,
   "tests_failed": 0,

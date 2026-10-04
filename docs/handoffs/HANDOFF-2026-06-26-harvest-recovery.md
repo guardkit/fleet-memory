@@ -1,6 +1,6 @@
 # HANDOFF — recover the harvest (338 → 447) now the three embed fixes have landed (2026-06-26)
 
-Resumable handoff for a fresh session, **on the box `promaxgb10-41b1`** (the
+Resumable handoff for a fresh session, **on the box `<dell-host>`** (the
 Claude session runs ON it — `/opt/llama-swap` + `:9000` + the relay + Postgres
 are all local; "SSH denied" earlier was just unkeyed self-SSH). Picks up from
 `HANDOFF-2026-06-25-qwen-embed-switch-and-harvest.md` and the first harvest's

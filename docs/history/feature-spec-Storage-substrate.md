@@ -4,21 +4,21 @@ I'll run the /feature-spec workflow for this storage-substrate description. Star
 
 Bash List repo root and all files to 3 levels
 IN
-ls -la /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo '=== FILES (3 levels deep) ==='; find /Users/richardwoollcott/Projects/appmilla_github/fleet-memory -maxdepth 3 -not -path '*/.git/*' -not -path '*/node_modules/*' -type f | sed 's|/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/||' | sort
+ls -la ~/Projects/appmilla_github/fleet-memory; echo '=== FILES (3 levels deep) ==='; find ~/Projects/appmilla_github/fleet-memory -maxdepth 3 -not -path '*/.git/*' -not -path '*/node_modules/*' -type f | sed 's|~/Projects/appmilla_github/fleet-memory/||' | sort
 
 OUT
 total 32
-drwxr-xr-x   11 richardwoollcott  staff   352 Jun 12 15:18 .
-drwxr-xr-x  173 richardwoollcott  staff  5536 Jun 12 12:43 ..
-drwxr-xr-x@  10 richardwoollcott  staff   320 Jun 12 13:01 .claude
-drwxr-xr-x   14 richardwoollcott  staff   448 Jun 12 12:50 .git
--rw-r--r--@   1 richardwoollcott  staff  4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@   3 richardwoollcott  staff    96 Jun 12 12:48 .guardkit
-drwxr-xr-x@   4 richardwoollcott  staff   128 Jun 12 15:28 docs
--rw-r--r--    1 richardwoollcott  staff  1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff    64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff    38 Jun 12 12:43 README.md
-drwxr-xr-x@   7 richardwoollcott  staff   224 Jun 12 12:48 tasks
+drwxr-xr-x   11 <user>  staff   352 Jun 12 15:18 .
+drwxr-xr-x  173 <user>  staff  5536 Jun 12 12:43 ..
+drwxr-xr-x@  10 <user>  staff   320 Jun 12 13:01 .claude
+drwxr-xr-x   14 <user>  staff   448 Jun 12 12:50 .git
+-rw-r--r--@   1 <user>  staff  4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@   3 <user>  staff    96 Jun 12 12:48 .guardkit
+drwxr-xr-x@   4 <user>  staff   128 Jun 12 15:28 docs
+-rw-r--r--    1 <user>  staff  1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff    64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff    38 Jun 12 12:43 README.md
+drwxr-xr-x@   7 <user>  staff   224 Jun 12 12:48 tasks
 === FILES (3 levels deep) ===
 .claude/agents/faststream-nats-broker-specialist-ext.md
 .claude/agents/faststream-nats-broker-specialist.md
@@ -50,7 +50,7 @@ Read testing.md
 Read manifest.json
 Bash Find all docs/tasks/guardkit files and FEAT-MEM-01 references
 IN
-find /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/tasks /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit -type f | sed 's|/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/||'; echo '=== grep FEAT-MEM-01 / ADR-SP-007 ==='; grep -rln 'FEAT-MEM-01\|ADR-SP-007' /Users/richardwoollcott/Projects/appmilla_github/fleet-memory --include='*.md' --include='*.yaml' -s | sed 's|/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/||'
+find ~/Projects/appmilla_github/fleet-memory/docs ~/Projects/appmilla_github/fleet-memory/tasks ~/Projects/appmilla_github/fleet-memory/.guardkit -type f | sed 's|~/Projects/appmilla_github/fleet-memory/||'; echo '=== grep FEAT-MEM-01 / ADR-SP-007 ==='; grep -rln 'FEAT-MEM-01\|ADR-SP-007' ~/Projects/appmilla_github/fleet-memory --include='*.md' --include='*.yaml' -s | sed 's|~/Projects/appmilla_github/fleet-memory/||'
 
 OUT
 .guardkit/graphiti.yaml
@@ -63,11 +63,11 @@ docs/research/ideas/phase-core-scope.md
 docs/research/ideas/phase-core-build-plan.md
 Bash Check line counts of the two research docs
 IN
-wc -l /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
+wc -l ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
 
 OUT
-     278 /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
-     110 /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
+     278 ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md
+     110 ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-scope.md
      388 total
 Read phase-core-build-plan.md
 Read phase-core-scope.md

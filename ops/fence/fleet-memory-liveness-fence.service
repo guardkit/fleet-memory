@@ -13,12 +13,12 @@
 
 [Unit]
 Description=fleet-memory liveness fence (is the memory flywheel still turning?)
-Documentation=file:///home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/README.md
+Documentation=file://%h/Projects/appmilla_github/fleet-memory/ops/fence/README.md
 OnFailure=fleet-memory-liveness-fence-alert.service
 
 [Service]
 Type=oneshot
-ExecStart=/home/richardwoollcott/.local/bin/sops exec-env /home/richardwoollcott/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env /home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/liveness-fence-run.sh
+ExecStart=%h/.local/bin/sops exec-env %h/.config/fleet-secrets/fleet-memory-pg/leg-env.enc.env %h/Projects/appmilla_github/fleet-memory/ops/fence/liveness-fence-run.sh
 TimeoutStartSec=300
 StandardOutput=journal
 StandardError=journal

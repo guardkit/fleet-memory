@@ -12,24 +12,24 @@ ls -la features/deterministic-writer/ && echo "---FEATURE FILE---" && ls -la fea
 
 OUT
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 11:21 .
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 11:20 ..
--rw-r--r--  1 richardwoollcott  staff   4084 Jun 13 11:21 deterministic-writer_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2226 Jun 13 11:21 deterministic-writer_summary.md
--rw-r--r--  1 richardwoollcott  staff  15782 Jun 13 11:21 deterministic-writer.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 11:21 .
+drwxr-xr-x  5 <user>  staff    160 Jun 13 11:20 ..
+-rw-r--r--  1 <user>  staff   4084 Jun 13 11:21 deterministic-writer_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2226 Jun 13 11:21 deterministic-writer_summary.md
+-rw-r--r--  1 <user>  staff  15782 Jun 13 11:21 deterministic-writer.feature
 ---FEATURE FILE---
 total 0
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 11:20 .
-drwxr-xr-x  33 richardwoollcott  staff  1056 Jun 13 08:22 ..
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 11:21 deterministic-writer
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 08:22 storage-substrate
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 10:46 typed-payload-registry
+drwxr-xr-x   5 <user>  staff   160 Jun 13 11:20 .
+drwxr-xr-x  33 <user>  staff  1056 Jun 13 08:22 ..
+drwxr-xr-x   5 <user>  staff   160 Jun 13 11:21 deterministic-writer
+drwxr-xr-x   5 <user>  staff   160 Jun 13 08:22 storage-substrate
+drwxr-xr-x   5 <user>  staff   160 Jun 13 10:46 typed-payload-registry
 ---GUARDKIT FEATURES---
 total 32
-drwxr-xr-x   4 richardwoollcott  staff   128 Jun 13 10:44 .
-drwxr-xr-x@ 10 richardwoollcott  staff   320 Jun 13 08:22 ..
--rw-r--r--@  1 richardwoollcott  staff  8578 Jun 12 23:11 FEAT-CA81.yaml
--rw-r--r--@  1 richardwoollcott  staff  2969 Jun 13 11:55 FEAT-MEM-02.yaml
+drwxr-xr-x   4 <user>  staff   128 Jun 13 10:44 .
+drwxr-xr-x@ 10 <user>  staff   320 Jun 13 08:22 ..
+-rw-r--r--@  1 <user>  staff  8578 Jun 12 23:11 FEAT-CA81.yaml
+-rw-r--r--@  1 <user>  staff  2969 Jun 13 11:55 FEAT-MEM-02.yaml
 I'll read the feature file, assumptions, and related prior features to ground the planning.
 
 Read deterministic-writer.feature
@@ -594,9 +594,9 @@ echo "===existing tasks backlog==="; ls tasks/backlog/ 2>/dev/null
 
 OUT
 ===bin helpers===
-lrwxr-xr-x@  1 richardwoollcott  staff    110 May 10 20:45 feature-plan-bdd-link -> /Users/richardwoollcott/Projects/appmilla_github/guardkit/installer/core/commands/lib/feature_plan_bdd_link.py
-lrwxr-xr-x@  1 richardwoollcott  staff    110 May 10 20:45 generate-feature-yaml -> /Users/richardwoollcott/Projects/appmilla_github/guardkit/installer/core/commands/lib/generate_feature_yaml.py
--rwxr-xr-x@  1 richardwoollcott  staff    873 May 10 20:45 graphiti-check
+lrwxr-xr-x@  1 <user>  staff    110 May 10 20:45 feature-plan-bdd-link -> ~/Projects/appmilla_github/guardkit/installer/core/commands/lib/feature_plan_bdd_link.py
+lrwxr-xr-x@  1 <user>  staff    110 May 10 20:45 generate-feature-yaml -> ~/Projects/appmilla_github/guardkit/installer/core/commands/lib/generate_feature_yaml.py
+-rwxr-xr-x@  1 <user>  staff    873 May 10 20:45 graphiti-check
 ===generate-feature-yaml help===
 /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/langchain_core/_api/deprecation.py:25: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
   from pydantic.v1.fields import FieldInfo as FieldInfoV1
@@ -1672,7 +1672,7 @@ Now generate the structured feature YAML (with --discover to resolve paths from 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 python3 ~/.agentecflow/bin/generate-feature-yaml \
     --name "Deterministic Writer" \
     --description "Typed payload to AsyncPostgresStore records: UUIDv5 natural-key identity, content-hash idempotent upsert, declared supersession linking, embed-on-write, per-project namespaces; zero LLM by construction." \
@@ -1754,7 +1754,7 @@ Edit FEAT-MEM-03.yaml
 Added 7 lines
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== smoke-gate validation (8.6) ==="
 python3 ~/.agentecflow/bin/generate-feature-yaml --validate-smoke-gates --feature-id FEAT-MEM-03 --base-path . 2>&1 | grep -v "Pydantic V1\|pydantic.v1"
 echo "EXIT: $?"
@@ -1769,14 +1769,14 @@ OUT
 EXIT: 0
 
 === feature pre-flight validation (8.5) ===
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-03.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-03.yaml
 ✓ Feature FEAT-MEM-03 is valid
 EXIT:
 Both validations pass (smoke_gates.command paths OK, Feature FEAT-MEM-03 is valid). Now Step 11 — link the .feature scenarios to the tasks via the bdd-linker subagent.
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json)
 echo "REQ_FILE=$REQ_FILE"
 python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
@@ -1788,7 +1788,7 @@ echo "---REQ FILE SIZE---"; wc -c "$REQ_FILE"
 
 OUT
 REQ_FILE=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.2Wk0MJgRum
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/deterministic-writer/deterministic-writer.feature", "scenarios_to_match": 29, "task_count": 5, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.2Wk0MJgRum"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/deterministic-writer/deterministic-writer.feature", "scenarios_to_match": 29, "task_count": 5, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.2Wk0MJgRum"}
 ---REQ FILE SIZE---
    19528 /var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.2Wk0MJgRum
 Status ready: 29 scenarios, 5 tasks. Let me read the request payload and pass it to the bdd-linker subagent.
@@ -1799,7 +1799,7 @@ Now I'll invoke the bdd-linker subagent with this payload.
 Agent:Match scenarios to tasks for deterministic-writer
 IN
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/deterministic-writer/deterministic-writer.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/deterministic-writer/deterministic-writer.feature",
   "feature_name": "Deterministic Writer",
   "confidence_threshold": 0.6,
   "scenarios": [
@@ -1846,7 +1846,7 @@ All 29 scenarios matched above threshold. Now apply the mapping to rewrite the .
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 RESP_FILE=$(mktemp -t bdd-link-resp-XXXXXX.json)
 cat > "$RESP_FILE" <<'EOF'
 [
@@ -1895,7 +1895,7 @@ All 29 linked. Let me verify the @task: tags landed in the .feature file.
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory
+cd ~/Projects/appmilla_github/fleet-memory
 echo "=== @task: tag distribution ==="
 grep -oE "@task:TASK-DW-00[0-9]" features/deterministic-writer/deterministic-writer.feature | sort | uniq -c
 echo ""

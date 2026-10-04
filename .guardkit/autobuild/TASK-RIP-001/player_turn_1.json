@@ -3,7 +3,7 @@
   "turn": 1,
   "files_modified": [
     ".guardkit/bdd/TASK-RIP-001_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py",
     "src/fleet_memory/reindex/walker.py"
   ],
   "files_created": [],
@@ -28,8 +28,8 @@
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-001/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-001/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py"
   ],
   "tests_passed_count": 5,
   "completion_promises": [

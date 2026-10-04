@@ -18,7 +18,7 @@
     "all_passed": null
   },
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py",
     "tests/unit/test_app_lifespan.py"
   ],
   "files_created": [
@@ -26,11 +26,11 @@
     "test_integration_output.txt"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-009/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-009/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/tests/unit/test_app_lifespan.py"
   ],
   "summary": "78 tests passed",
   "sdk_turns": {

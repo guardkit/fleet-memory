@@ -12,12 +12,12 @@
   "progress_summary": "Turn 1: approve",
   "acceptance_criteria_status": {},
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/src/fleet_memory/payloads/base.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/test_typed_payload_registry.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/src/fleet_memory/payloads/base.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/test_typed_payload_registry.py",
     "src/fleet_memory/payloads/base.py",
     ".claude/task-plans/TASK-TPR-004-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/test_typed_payload_registry.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-02/tests/bdd/test_typed_payload_registry.py",
     "tests/bdd/__init__.py",
     "tests/bdd/test_typed_payload_registry.py"
   ],

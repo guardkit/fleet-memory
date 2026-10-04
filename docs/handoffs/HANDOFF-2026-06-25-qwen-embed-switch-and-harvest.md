@@ -1,7 +1,7 @@
 # HANDOFF — Qwen embed switch → guardkit harvest (2026-06-25)
 
 Resumable handoff for a fresh session. The post-Graphiti **memory write path is LIVE and verified** on the
-GB10 (`promaxgb10-41b1`). Two things remain to "run the harvest on the GB10": **(1) switch the embedder to
+GB10 (`<dell-host>`). Two things remain to "run the harvest on the GB10": **(1) switch the embedder to
 Qwen3-Embedding-0.6B/1024 (surgically)**, then **(2) run the guardkit harvest (FEAT-HARV)**. This doc carries
 the adversarially-verified procedure so step 1 doesn't take down the rest of the box.
 
@@ -53,7 +53,7 @@ The `embed` serving spec to copy is the `embed` block in `dgx-spark/examples/lla
 sudo cp /opt/llama-swap/config/config.yaml ~/config.live.bak
 cp ~/Projects/appmilla_github/fleet-memory/deploy/relay/.env.deploy ~/relay.env.deploy.bak   # gitignored — only copy
 # Note the ORIGINAL triplet: served=nomic-embed/768, FLEET_MEMORY_EMBED_DIMS=768 (unset/default), store_vectors=vector(768)
-export FLEET_MEMORY_PG_DSN="postgresql://fleet_memory:<PW>@whitestocks.tailebf801.ts.net:5433/fleet_memory"  # PW in deploy/nas/.env.deploy
+export FLEET_MEMORY_PG_DSN="postgresql://fleet_memory:<PW>@<nas-host>.<tailnet>.ts.net:5433/fleet_memory"  # PW in deploy/nas/.env.deploy
 ```
 **1. Confirm the store is still empty** (the whole low-risk premise):
 ```bash
@@ -117,7 +117,7 @@ quality, so evaluate the store as it will actually run.
 
 ## Gotchas / hard-won facts
 
-- This box `promaxgb10-41b1` runs the broker, the relay, AND the `:9000` llama-swap the relay embeds against —
+- This box `<dell-host>` runs the broker, the relay, AND the `:9000` llama-swap the relay embeds against —
   the embedder switch is a live op, not a sandbox. Other live consumers of `:9000`: graphiti-mcp, forge,
   specialist agents, study-tutor (see the full-bring-up blocker above).
 - The relay container reads `FLEET_MEMORY_EMBED_MODEL` (default `nomic-embed-text-v1.5`) and `EMBED_DIMS`

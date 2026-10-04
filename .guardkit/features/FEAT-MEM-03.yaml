@@ -126,7 +126,7 @@ evidence_repos: []
 execution:
   started_at: '2026-06-13T12:40:57.582632'
   completed_at: '2026-06-13T13:27:33.812590'
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03
   total_turns: 5
   tasks_completed: 5
   tasks_failed: 0

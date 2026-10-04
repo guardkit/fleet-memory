@@ -144,7 +144,7 @@ evidence_repos: []
 execution:
   started_at: '2026-07-03T17:42:27.492561'
   completed_at: '2026-07-04T07:55:30.207847'
-  worktree_path: /home/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-ABL-005
   total_turns: 3
   tasks_completed: 0
   tasks_failed: 1

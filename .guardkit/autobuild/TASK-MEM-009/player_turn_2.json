@@ -4,7 +4,7 @@
   "files_modified": [
     ".claude/task-plans/TASK-MEM-009-implementation-plan.md",
     ".claude/task-plans/TASK-MEM-010-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml",
     "coverage.json",
     "pyproject.toml",
     "src/fleet_memory/store.py",
@@ -33,8 +33,8 @@
   "sdk_max_turns": 150,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-009/player_turn_2.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-009/player_turn_2.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/pyproject.toml"
   ],
   "tests_passed_count": 9,
   "completion_promises": [

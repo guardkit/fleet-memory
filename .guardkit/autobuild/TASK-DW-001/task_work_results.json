@@ -20,19 +20,19 @@
   "files_modified": [],
   "files_created": [
     ".claude/task-plans/TASK-DW-001-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py",
     "src/fleet_memory/writer/__init__.py",
     "src/fleet_memory/writer/identity.py",
     "tests/unit/test_writer_identity.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-001/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/.guardkit/autobuild/TASK-DW-001/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py"
   ],
   "summary": "16 tests passed",
   "sdk_turns": {

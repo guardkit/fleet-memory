@@ -18,10 +18,10 @@
     "tests/unit/test_mcp_degradation.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-002/player_turn_2.json"
   ],
   "tests_written": [],
   "summary": "Implementation completed",

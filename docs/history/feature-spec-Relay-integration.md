@@ -11,39 +11,39 @@ ls -la && echo "---PYPROJECT---" && ls pyproject.toml setup.py requirements.txt 
 OUT
 Exit code 1
 total 376
-drwxr-xr-x   33 richardwoollcott  staff   1056 Jun 13 08:22 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   17 richardwoollcott  staff    544 Jun 13 11:58 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  10 richardwoollcott  staff    320 Jun 13 08:22 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff  14788 Jun 13 08:22 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff  15290 Jun 13 08:22 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    5 richardwoollcott  staff    160 Jun 13 11:20 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1191 Jun 13 08:22 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x    8 richardwoollcott  staff    256 Jun 13 08:22 tests
+drwxr-xr-x   33 <user>  staff   1056 Jun 13 08:22 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   17 <user>  staff    544 Jun 13 11:58 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  10 <user>  staff    320 Jun 13 08:22 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff  14788 Jun 13 08:22 coverage_review.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff  15290 Jun 13 08:22 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    5 <user>  staff    160 Jun 13 11:20 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1191 Jun 13 08:22 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x    8 <user>  staff    256 Jun 13 08:22 tests
 ---PYPROJECT---
 pyproject.toml
 Bash List Python source files

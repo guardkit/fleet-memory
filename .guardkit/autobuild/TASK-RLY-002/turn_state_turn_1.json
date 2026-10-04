@@ -12,11 +12,11 @@
   "progress_summary": "Turn 1: approve",
   "acceptance_criteria_status": {},
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/errors.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/src/fleet_memory/errors.py",
     "src/fleet_memory/errors.py",
     ".claude/task-plans/TASK-RLY-001-implementation-plan.md",
     ".claude/task-plans/TASK-RLY-002-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_errors.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-04/tests/unit/relay/test_errors.py",
     "src/fleet_memory/relay/__init__.py",
     "src/fleet_memory/relay/schema.py",
     "tests/unit/relay/__init__.py",

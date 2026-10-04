@@ -78,9 +78,9 @@
     {
       "type": "test_failure",
       "severity": "critical",
-      "description": "Independent test verification failed during collection: ModuleNotFoundError: No module named 'tiktoken'. The test file tests/unit/test_assembly.py and implementation src/fleet_memory/retrieval/assembly.py both import tiktoken, but it is not installed in the Coach's verification environment at /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/. This is the SAME issue identified in Turn 1 feedback.",
+      "description": "Independent test verification failed during collection: ModuleNotFoundError: No module named 'tiktoken'. The test file tests/unit/test_assembly.py and implementation src/fleet_memory/retrieval/assembly.py both import tiktoken, but it is not installed in the Coach's verification environment at ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/. This is the SAME issue identified in Turn 1 feedback.",
       "requirement": "All acceptance criteria require working tests for independent verification",
-      "suggestion": "Ensure tiktoken is installed in the worktree environment. Run 'cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/ && pip install -e .' to install the package with its dependencies including tiktoken. Then verify with 'pytest tests/unit/test_assembly.py -v' in that same directory. The Player's own environment may have tiktoken installed, but the Coach's verification environment does not."
+      "suggestion": "Ensure tiktoken is installed in the worktree environment. Run 'cd ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/ && pip install -e .' to install the package with its dependencies including tiktoken. Then verify with 'pytest tests/unit/test_assembly.py -v' in that same directory. The Player's own environment may have tiktoken installed, but the Coach's verification environment does not."
     },
     {
       "type": "code_quality",

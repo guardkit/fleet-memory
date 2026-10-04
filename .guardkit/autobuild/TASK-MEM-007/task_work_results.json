@@ -21,11 +21,11 @@
   "files_created": [
     ".claude/task-plans/TASK-MEM-003-implementation-plan.md",
     ".claude/task-plans/TASK-MEM-007-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/.env.deploy.example",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/deploy.sh",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/docker-compose.yml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/initdb/01_extensions.sql",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/smoke.sh",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/.env.deploy.example",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/deploy.sh",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/docker-compose.yml",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/initdb/01_extensions.sql",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/smoke.sh",
     "deploy/nas/.env.deploy.example",
     "deploy/nas/deploy.sh",
     "deploy/nas/docker-compose.yml",
@@ -36,12 +36,12 @@
     "tests/unit/test_embed.py"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-007/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/.env.deploy.example",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/deploy.sh",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/docker-compose.yml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/initdb/01_extensions.sql",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/smoke.sh"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.guardkit/autobuild/TASK-MEM-007/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/.env.deploy.example",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/deploy.sh",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/docker-compose.yml",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/initdb/01_extensions.sql",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/deploy/nas/smoke.sh"
   ],
   "tests_written": [],
   "summary": "Implementation completed",

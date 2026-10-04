@@ -12,12 +12,12 @@
   "progress_summary": "Turn 1: approve",
   "acceptance_criteria_status": {},
   "files_modified": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_core.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_core.py",
     "src/fleet_memory/writer/__init__.py",
     ".claude/task-plans/TASK-DW-002-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_core.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/core.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_core.py",
     "src/fleet_memory/writer/core.py",
     "tests/unit/test_writer_core.py"
   ],

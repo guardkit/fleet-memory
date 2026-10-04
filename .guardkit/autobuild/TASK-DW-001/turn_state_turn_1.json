@@ -13,8 +13,8 @@
   "acceptance_criteria_status": {},
   "files_modified": [
     ".claude/task-plans/TASK-DW-001-implementation-plan.md",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/src/fleet_memory/writer/identity.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-03/tests/unit/test_writer_identity.py",
     "src/fleet_memory/writer/__init__.py",
     "src/fleet_memory/writer/identity.py",
     "tests/unit/test_writer_identity.py"

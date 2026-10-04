@@ -34,7 +34,7 @@
   "sdk_max_turns": 160,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-003/player_turn_2.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.guardkit/autobuild/TASK-RA-003/player_turn_2.json"
   ],
   "tests_passed_count": 14,
   "completion_promises": [

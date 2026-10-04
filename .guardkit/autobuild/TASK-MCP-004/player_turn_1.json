@@ -6,9 +6,9 @@
     ".claude/task-plans/TASK-MCP-004-implementation-plan.md",
     ".claude/task-plans/TASK-MCP-005-implementation-plan.md",
     ".guardkit/bdd/TASK-MCP-005_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py",
     "coverage.json",
     "src/fleet_memory/mcp/resources.py",
     "src/fleet_memory/mcp/server.py",
@@ -23,12 +23,12 @@
   ],
   "files_created": [
     ".guardkit/bdd/TASK-MCP-004_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "tests_run": false,
   "tests_passed": false,
@@ -56,11 +56,11 @@
   "sdk_max_turns": 160,
   "sdk_ceiling_hit": false,
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/.guardkit/autobuild/TASK-MCP-004/player_turn_1.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/server.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/__init__.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/src/fleet_memory/mcp/tools/write.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06/tests/unit/test_mcp_write.py"
   ],
   "completion_promises": [
     {

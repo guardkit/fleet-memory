@@ -13,6 +13,6 @@ Description=fleet-memory liveness fence tripped — say so loudly in the journal
 
 [Service]
 Type=oneshot
-ExecStart=/home/richardwoollcott/Projects/appmilla_github/fleet-memory/ops/fence/fence-alert.sh
+ExecStart=%h/Projects/appmilla_github/fleet-memory/ops/fence/fence-alert.sh
 StandardOutput=journal
 StandardError=journal

@@ -26,7 +26,7 @@ flowchart LR
     end
 
     subgraph Storage["Storage"]
-        S0[("live store\nwhitestocks:5433\nREAD-ONLY")]
+        S0[("live store\n<nas-host>:5433\nREAD-ONLY")]
         S1[("fixture dir\neval/fixtures/<id>/\nschema.sql + data/*.copy\n+ manifest.json")]
         S2[("per-run Postgres\n(ephemeral, per rollout)")]
     end

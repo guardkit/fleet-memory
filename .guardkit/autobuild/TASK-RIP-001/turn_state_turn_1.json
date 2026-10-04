@@ -13,7 +13,7 @@
   "acceptance_criteria_status": {},
   "files_modified": [
     ".guardkit/bdd/TASK-RIP-001_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/src/fleet_memory/reindex/walker.py",
     "src/fleet_memory/reindex/walker.py"
   ],
   "tests_passed": null,

@@ -1,7 +1,7 @@
 ============================= test session starts ==============================
-platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.venv/bin/python
+platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05/.venv/bin/python
 cachedir: .pytest_cache
-rootdir: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05
+rootdir: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-05
 configfile: pyproject.toml
 plugins: cov-7.1.0, timeout-2.4.0, asyncio-1.4.0, langsmith-0.8.15, bdd-8.1.0, anyio-4.13.0
 asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function

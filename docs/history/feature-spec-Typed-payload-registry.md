@@ -9,39 +9,39 @@ ls -la && echo "---PYPROJECT---" && (test -f pyproject.toml && echo "pyproject.t
 
 OUT
 total 376
-drwxr-xr-x   33 richardwoollcott  staff   1056 Jun 13 08:22 .
-drwxr-xr-x  173 richardwoollcott  staff   5536 Jun 12 12:43 ..
-drwxr-xr-x@  11 richardwoollcott  staff    352 Jun 12 16:41 .claude
--rw-r--r--    1 richardwoollcott  staff   1771 Jun 13 08:22 .env.example
-drwxr-xr-x   16 richardwoollcott  staff    512 Jun 13 08:52 .git
--rw-r--r--@   1 richardwoollcott  staff   4723 Jun 12 13:02 .gitignore
-drwxr-xr-x@  10 richardwoollcott  staff    320 Jun 13 08:22 .guardkit
--rw-r--r--    1 richardwoollcott  staff      0 Jun 13 08:22 .guardkit-git.lock
-drwxr-xr-x@   6 richardwoollcott  staff    192 Jun 12 22:51 .pytest_cache
-drwxr-xr-x@   7 richardwoollcott  staff    224 Jun 13 08:22 .venv
--rw-r--r--    1 richardwoollcott  staff  15711 Jun 13 08:22 coverage_all.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_final.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_integration.json
--rw-r--r--    1 richardwoollcott  staff  15663 Jun 13 08:22 coverage_phase4_new.json
--rw-r--r--    1 richardwoollcott  staff  15302 Jun 13 08:22 coverage_phase4_test.json
--rw-r--r--    1 richardwoollcott  staff  22820 Jun 13 08:22 coverage_phase4.json
--rw-r--r--    1 richardwoollcott  staff  14788 Jun 13 08:22 coverage_review.json
--rw-r--r--    1 richardwoollcott  staff   3318 Jun 13 08:22 coverage_test.json
--rw-r--r--    1 richardwoollcott  staff  15290 Jun 13 08:22 coverage.json
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 deploy
-drwxr-xr-x@   4 richardwoollcott  staff    128 Jun 12 15:28 docs
-drwxr-xr-x    3 richardwoollcott  staff     96 Jun 12 16:20 features
--rw-r--r--    1 richardwoollcott  staff   1065 Jun 12 12:43 LICENSE
-drwxr-xr-x@   2 richardwoollcott  staff     64 Jun 12 15:18 migrations
--rw-r--r--    1 richardwoollcott  staff   1191 Jun 13 08:22 pyproject.toml
--rw-r--r--    1 richardwoollcott  staff     38 Jun 12 12:43 README.md
-drwxr-xr-x    4 richardwoollcott  staff    128 Jun 13 08:22 src
-drwxr-xr-x@   8 richardwoollcott  staff    256 Jun 13 08:22 tasks
--rw-r--r--    1 richardwoollcott  staff  10326 Jun 13 08:22 test_all_output.txt
--rw-r--r--    1 richardwoollcott  staff   3192 Jun 13 08:22 test_integration_output.txt
--rw-r--r--    1 richardwoollcott  staff  10645 Jun 13 08:22 test_output.txt
--rw-r--r--    1 richardwoollcott  staff   5646 Jun 13 08:22 test_phase4_output.txt
-drwxr-xr-x    8 richardwoollcott  staff    256 Jun 13 08:22 tests
+drwxr-xr-x   33 <user>  staff   1056 Jun 13 08:22 .
+drwxr-xr-x  173 <user>  staff   5536 Jun 12 12:43 ..
+drwxr-xr-x@  11 <user>  staff    352 Jun 12 16:41 .claude
+-rw-r--r--    1 <user>  staff   1771 Jun 13 08:22 .env.example
+drwxr-xr-x   16 <user>  staff    512 Jun 13 08:52 .git
+-rw-r--r--@   1 <user>  staff   4723 Jun 12 13:02 .gitignore
+drwxr-xr-x@  10 <user>  staff    320 Jun 13 08:22 .guardkit
+-rw-r--r--    1 <user>  staff      0 Jun 13 08:22 .guardkit-git.lock
+drwxr-xr-x@   6 <user>  staff    192 Jun 12 22:51 .pytest_cache
+drwxr-xr-x@   7 <user>  staff    224 Jun 13 08:22 .venv
+-rw-r--r--    1 <user>  staff  15711 Jun 13 08:22 coverage_all.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_final.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_integration.json
+-rw-r--r--    1 <user>  staff  15663 Jun 13 08:22 coverage_phase4_new.json
+-rw-r--r--    1 <user>  staff  15302 Jun 13 08:22 coverage_phase4_test.json
+-rw-r--r--    1 <user>  staff  22820 Jun 13 08:22 coverage_phase4.json
+-rw-r--r--    1 <user>  staff  14788 Jun 13 08:22 coverage_review.json
+-rw-r--r--    1 <user>  staff   3318 Jun 13 08:22 coverage_test.json
+-rw-r--r--    1 <user>  staff  15290 Jun 13 08:22 coverage.json
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 deploy
+drwxr-xr-x@   4 <user>  staff    128 Jun 12 15:28 docs
+drwxr-xr-x    3 <user>  staff     96 Jun 12 16:20 features
+-rw-r--r--    1 <user>  staff   1065 Jun 12 12:43 LICENSE
+drwxr-xr-x@   2 <user>  staff     64 Jun 12 15:18 migrations
+-rw-r--r--    1 <user>  staff   1191 Jun 13 08:22 pyproject.toml
+-rw-r--r--    1 <user>  staff     38 Jun 12 12:43 README.md
+drwxr-xr-x    4 <user>  staff    128 Jun 13 08:22 src
+drwxr-xr-x@   8 <user>  staff    256 Jun 13 08:22 tasks
+-rw-r--r--    1 <user>  staff  10326 Jun 13 08:22 test_all_output.txt
+-rw-r--r--    1 <user>  staff   3192 Jun 13 08:22 test_integration_output.txt
+-rw-r--r--    1 <user>  staff  10645 Jun 13 08:22 test_output.txt
+-rw-r--r--    1 <user>  staff   5646 Jun 13 08:22 test_phase4_output.txt
+drwxr-xr-x    8 <user>  staff    256 Jun 13 08:22 tests
 ---PYPROJECT---
 pyproject.toml EXISTS
 ---REQ---
@@ -1084,7 +1084,7 @@ IN
 .venv/bin/python -m installer.core.commands.lib.feature_spec_normalize features/typed-payload-registry/typed-payload-registry.feature 2>&1; echo "EXIT=$?"
 
 OUT
-/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
+~/Projects/appmilla_github/fleet-memory/.venv/bin/python: Error while finding module specification for 'installer.core.commands.lib.feature_spec_normalize' (ModuleNotFoundError: No module named 'installer')
 EXIT=1
 The normalizer module isn't present in this repo. Let me locate it or fall back to the official gherkin parser directly.
 
@@ -1093,13 +1093,13 @@ IN
 find / -name "feature_spec_normalize*" 2>/dev/null | head; echo "---gherkin pkg---"; .venv/bin/python -c "import gherkin; print('gherkin available', gherkin.__file__)" 2>&1 | head -3
 
 OUT
-Command running in background with ID: bbao016m8. Output is being written to: /private/tmp/claude-501/-Users-richardwoollcott-Projects-appmilla-github-fleet-memory/fdef6a27-ea70-4f10-b3d5-0fc75967062c/tasks/bbao016m8.output. You will be notified when it completes. To check interim output, use Read on that file path.
+Command running in background with ID: bbao016m8. Output is being written to: /private/tmp/claude-501/-Users-<user>-Projects-appmilla-github-fleet-memory/fdef6a27-ea70-4f10-b3d5-0fc75967062c/tasks/bbao016m8.output. You will be notified when it completes. To check interim output, use Read on that file path.
 Bash Check gherkin and pytest_bdd availability
 IN
 .venv/bin/python -c "import gherkin; print('gherkin OK', gherkin.__file__)" 2>&1 | head -3; echo "---pytest-bdd---"; .venv/bin/python -c "import pytest_bdd; print('pytest_bdd OK', pytest_bdd.__version__)" 2>&1 | head -3
 
 OUT
-gherkin OK /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/gherkin/__init__.py
+gherkin OK ~/Projects/appmilla_github/fleet-memory/.venv/lib/python3.14/site-packages/gherkin/__init__.py
 ---pytest-bdd---
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
@@ -1175,7 +1175,7 @@ The earlier background search confirms it too — no feature_spec_normalize modu
 
 The /feature-spec run is complete. All three files are written and the .feature file passes the same official Gherkin parser that /feature-plan Step 11 uses downstream, so BDD linking won't choke on it.
 
-please update the status in the /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md and the feature-plan command therein if appropriate
+please update the status in the ~/Projects/appmilla_github/fleet-memory/docs/research/ideas/phase-core-build-plan.md and the feature-plan command therein if appropriate
 Read phase-core-build-plan.md (lines 2-51)
 I understand the plan-update convention (line 8-11). After /feature-spec lands I should: flip the Feature Summary row to Spec'd, add a **Status:** line to the feature's section, and update the top status line. Let me make those edits.
 

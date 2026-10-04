@@ -103,7 +103,7 @@ context block is empty.
 |---|---|
 | "quality gate phases" | a `QualityGateStatus(tests_passed=True, …)` object repr |
 | "Player-Coach pattern" | raw `INFO:guardkit.orchestrator.autobuild:Coach provided feedback…` log lines |
-| "Graphiti→fleet-memory migration" | a terminal transcript (`richardwoollcott@Richards-MBP ~ % guardkit graphiti clear…`) |
+| "Graphiti→fleet-memory migration" | a terminal transcript (`<user>@Richards-MBP ~ % guardkit graphiti clear…`) |
 
 **4. Graphiti contrast — clean conceptual facts** for established concepts:
 | query | Graphiti top facts |

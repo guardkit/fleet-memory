@@ -44,7 +44,7 @@ pgvector retrieval"). Get all three to **1024** together.
 ## Steps
 
 ### 0. Serve Qwen3-Embedding-0.6B on the embed endpoint  ← currently missing
-`http://promaxgb10-41b1:9000` (llama-swap) currently serves `nomic-embed` + `qwen-graphiti` but NOT
+`http://<dell-host>:9000` (llama-swap) currently serves `nomic-embed` + `qwen-graphiti` but NOT
 Qwen3-Embedding-0.6B. The canonical serving spec is the `embed` model block in
 `dgx-spark/examples/llama-swap-config.public.yaml` — model name **`embed`** (aliases `qwen3-embedding`
 / `embeddings`), `--embedding --pooling last` (last-token pooling is a Qwen3-Embedding requirement),
@@ -55,15 +55,15 @@ Qwen3-Embedding-0.6B. The canonical serving spec is the `embed` model block in
   restart llama-swap. Least disruptive to the other models on this box.
 - **Full bring-up (clean-box / video path):** run `dgx-spark/RUNBOOK-single-spark-bring-up.md` — its
   Phase 3.2 deploys the public config (which includes `embed`) wholesale. ⚠️ On THIS box
-  (`promaxgb10-41b1` is the live host) that **replaces the whole config and removes `nomic-embed`**,
+  (`<dell-host>` is the live host) that **replaces the whole config and removes `nomic-embed`**,
   so the running relay breaks until steps 1–3 below land — back up
   `/opt/llama-swap/config/config.yaml` first and do the relay switch immediately after.
 
 Confirm it's serving at 1024:
 ```bash
-curl -s http://promaxgb10-41b1:9000/v1/models | python3 -c "import sys,json;print([m['id'] for m in json.load(sys.stdin)['data']])"
+curl -s http://<dell-host>:9000/v1/models | python3 -c "import sys,json;print([m['id'] for m in json.load(sys.stdin)['data']])"
 # expect 'embed' (+ aliases qwen3-embedding / embeddings) to appear
-curl -s http://promaxgb10-41b1:9000/v1/embeddings -H 'content-type: application/json' \
+curl -s http://<dell-host>:9000/v1/embeddings -H 'content-type: application/json' \
   -d '{"model":"embed","input":"dim check"}' \
   | python3 -c "import sys,json;print('dim=',len(json.load(sys.stdin)['data'][0]['embedding']))"
 # expect: dim= 1024
@@ -74,7 +74,7 @@ Edit `deploy/relay/.env.deploy` (gitignored, chmod 600):
 ```
 FLEET_MEMORY_EMBED_MODEL=embed              # the served model name (alias: qwen3-embedding)
 FLEET_MEMORY_EMBED_DIMS=1024
-# FLEET_MEMORY_EMBED_URL stays http://promaxgb10-41b1:9000
+# FLEET_MEMORY_EMBED_URL stays http://<dell-host>:9000
 ```
 
 ### 2. Recreate the vector tables at 1024 (store is empty → lossless)

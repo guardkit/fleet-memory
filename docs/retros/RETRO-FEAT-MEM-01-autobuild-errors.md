@@ -134,7 +134,7 @@ The test skips when FLEET_MEMORY_EMBED_URL is not set. A skipped test is an abse
 The ranking test needs real nomic embeddings and `pytest.skip`s when `FLEET_MEMORY_EMBED_URL` is unset. The Coach treats a skipped AC test as an absent oracle and rejects — correctly, in principle. The orchestrator simply wasn't given the env var.
 
 **Fix**
-Verified the test passes against the live llama-swap service (`http://promaxgb10-41b1:9000`, serves `nomic-embed`) — 7s, green. Relaunched the orchestrator with `FLEET_MEMORY_EMBED_URL` exported so Player and Coach test runs inherit it. (Now recorded in memory `fleet-memory-test-environment`.)
+Verified the test passes against the live llama-swap service (`http://<dell-host>:9000`, serves `nomic-embed`) — 7s, green. Relaunched the orchestrator with `FLEET_MEMORY_EMBED_URL` exported so Player and Coach test runs inherit it. (Now recorded in memory `fleet-memory-test-environment`.)
 
 ---
 
@@ -181,7 +181,7 @@ A clean `--resume` cleared it — TASK-MEM-012 approved on the fresh run (2 turn
 2. **`.guardkit/config.yaml` `coach.test_execution: subprocess` is committed (`0ca7feb`) — keep it.** Without it every Coach verification on this machine fails silently. (Error 2)
 3. **Author ACs so commands/paths don't form one backtick span ending in a path token.** Put the pattern and each path in separate backticks; prefer bare paths or matching label==href in markdown links. (Error 3; same class as FEAT-MEM-07 Error 2)
 4. **Don't hand-copy `features/` into a worktree** to satisfy one file — it can drag in `.feature` files that trip the BDD gate. Copy only what's needed. (Error 4)
-5. **Export `FLEET_MEMORY_EMBED_URL=http://promaxgb10-41b1:9000`** when launching AutoBuild or running integration tests, or those ACs skip → reject. (Error 6)
+5. **Export `FLEET_MEMORY_EMBED_URL=http://<dell-host>:9000`** when launching AutoBuild or running integration tests, or those ACs skip → reject. (Error 6)
 6. **Launch with `>> log 2>&1; echo EXIT_CODE=$?`, not `tee`,** so a silent orchestrator death is visible. (Error 7)
 7. **A green Coach is necessary, not sufficient** — re-run the full suite in the worktree venv before `/feature-complete`, and again in the **main** venv post-merge.
 8. **Upstream candidates for guardkit** (remove false-positives at source): default `coach.test_execution` to subprocess when the SDK runner produces no Bash call; plan_audit should not treat a backtick *command* as a path; honesty `claim_audit` should not abort on files modified in earlier-turn checkpoints.

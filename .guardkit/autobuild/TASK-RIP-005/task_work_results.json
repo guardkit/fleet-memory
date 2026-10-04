@@ -14,21 +14,21 @@
   "files_modified": [
     ".claude/task-plans/TASK-RIP-005-implementation-plan.md",
     ".guardkit/bdd/TASK-RIP-005_junit.xml",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py",
     "features/re-index-pipeline/test_re_index_pipeline.py",
     "src/fleet_memory/reindex/__init__.py",
     "src/fleet_memory/reindex/pipeline.py",
     "tests/unit/reindex/test_pipeline.py"
   ],
   "files_created": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-005/player_turn_2.json"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-005/player_turn_2.json"
   ],
   "files_authored": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-005/player_turn_2.json",
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/.guardkit/autobuild/TASK-RIP-005/player_turn_2.json",
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py"
   ],
   "tests_written": [
-    "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py"
+    "~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-07/features/re-index-pipeline/test_re_index_pipeline.py"
   ],
   "summary": "Implementation completed",
   "sdk_turns": {

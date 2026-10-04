@@ -12,22 +12,22 @@ echo "=== feature dir ===" && ls -la features/re-index-pipeline/ && echo "" && e
 OUT
 === feature dir ===
 total 56
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 19:53 .
-drwxr-xr-x  9 richardwoollcott  staff    288 Jun 13 19:53 ..
--rw-r--r--  1 richardwoollcott  staff   2274 Jun 13 19:53 re-index-pipeline_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   3220 Jun 13 19:53 re-index-pipeline_summary.md
--rw-r--r--  1 richardwoollcott  staff  17246 Jun 13 19:53 re-index-pipeline.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 19:53 .
+drwxr-xr-x  9 <user>  staff    288 Jun 13 19:53 ..
+-rw-r--r--  1 <user>  staff   2274 Jun 13 19:53 re-index-pipeline_assumptions.yaml
+-rw-r--r--  1 <user>  staff   3220 Jun 13 19:53 re-index-pipeline_summary.md
+-rw-r--r--  1 <user>  staff  17246 Jun 13 19:53 re-index-pipeline.feature
 
 === guardkit features ===
 total 80
-drwxr-xr-x   8 richardwoollcott  staff   256 Jun 13 19:06 .
-drwxr-xr-x@ 11 richardwoollcott  staff   352 Jun 13 19:02 ..
--rw-r--r--@  1 richardwoollcott  staff  8578 Jun 12 23:11 FEAT-CA81.yaml
--rw-r--r--@  1 richardwoollcott  staff  3104 Jun 13 12:19 FEAT-MEM-02.yaml
--rw-r--r--@  1 richardwoollcott  staff  3796 Jun 13 13:27 FEAT-MEM-03.yaml
--rw-r--r--   1 richardwoollcott  staff  2960 Jun 13 16:10 FEAT-MEM-04.yaml
--rw-r--r--@  1 richardwoollcott  staff  4961 Jun 13 17:36 FEAT-MEM-05.yaml
--rw-r--r--@  1 richardwoollcott  staff  4212 Jun 13 19:16 FEAT-MEM-06.yaml
+drwxr-xr-x   8 <user>  staff   256 Jun 13 19:06 .
+drwxr-xr-x@ 11 <user>  staff   352 Jun 13 19:02 ..
+-rw-r--r--@  1 <user>  staff  8578 Jun 12 23:11 FEAT-CA81.yaml
+-rw-r--r--@  1 <user>  staff  3104 Jun 13 12:19 FEAT-MEM-02.yaml
+-rw-r--r--@  1 <user>  staff  3796 Jun 13 13:27 FEAT-MEM-03.yaml
+-rw-r--r--   1 <user>  staff  2960 Jun 13 16:10 FEAT-MEM-04.yaml
+-rw-r--r--@  1 <user>  staff  4961 Jun 13 17:36 FEAT-MEM-05.yaml
+-rw-r--r--@  1 <user>  staff  4212 Jun 13 19:16 FEAT-MEM-06.yaml
 
 === existing task backlog dirs ===
 memory-mcp-server
@@ -91,17 +91,17 @@ src/fleet_memory/relay/schema.py
 project_id: fleet_memory
 enabled: true
 graph_store: falkordb
-falkordb_host: whitestocks
+falkordb_host: <nas-host>
 falkordb_port: 6379
 timeout: 30.0
 max_concurrent_episodes: 3
 chunk_extraction_concurrency: 4
 llm_provider: vllm
-llm_base_url: http://promaxgb10-41b1:9000/v1
+llm_base_url: http://<dell-host>:9000/v1
 llm_model: qwen-graphiti
 llm_max_tokens: 4096
 embedding_provider: vllm
-embedding_base_url: http://promaxgb10-41b1:9000/v1
+embedding_base_url: http://<dell-host>:9000/v1
 embedding_model: nomic-embed
 group_ids:
 - product_knowledge
@@ -111,7 +111,7 @@ Graphiti MCP not loaded; graphiti.yaml shows enabled: true → CLI fallback. Let
 
 Bash
 IN
-timeout 25 /Users/richardwoollcott/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Re-index Pipeline FEAT-MEM-07 deterministic markdown corpus parsers publish typed payloads through relay backfill staging review gate" --phase plan 2>&1 | head -40 || echo "[graphiti-check exited non-zero or timed out — continuing without]"
+timeout 25 ~/.agentecflow/bin/graphiti-check --status --task-context --quiet --description "Re-index Pipeline FEAT-MEM-07 deterministic markdown corpus parsers publish typed payloads through relay backfill staging review gate" --phase plan 2>&1 | head -40 || echo "[graphiti-check exited non-zero or timed out — continuing without]"
 
 OUT
 {"available": true, "error": null, "context": null, "categories": 0, "tokens_used": 0, "tokens_budget": 0}
@@ -134,7 +134,7 @@ Let me check the BasePayload (natural key / identifier fields), the publisher he
 Read base.py
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== publish refs ==="; grep -rln "publish" src/fleet_memory --include="*.py"; echo ""; echo "=== test publisher helper ==="; grep -rln "publish" tests 2>/dev/null | head; echo ""; echo "=== writer identity head ==="; sed -n '1,70p' src/fleet_memory/writer/identity.py
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== publish refs ==="; grep -rln "publish" src/fleet_memory --include="*.py"; echo ""; echo "=== test publisher helper ==="; grep -rln "publish" tests 2>/dev/null | head; echo ""; echo "=== writer identity head ==="; sed -n '1,70p' src/fleet_memory/writer/identity.py
 
 OUT
 === publish refs ===
@@ -220,7 +220,7 @@ I now have a complete picture of the integration boundary. Let me look at how pu
 Read handler.py
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== FEAT-MEM-07 in build plan ==="; grep -n -A40 "FEAT-MEM-07" docs/research/ideas/phase-core-build-plan.md 2>/dev/null | head -70
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== FEAT-MEM-07 in build plan ==="; grep -n -A40 "FEAT-MEM-07" docs/research/ideas/phase-core-build-plan.md 2>/dev/null | head -70
 
 OUT
 === FEAT-MEM-07 in build plan ===
@@ -298,7 +298,7 @@ Let me read the rest of the FEAT-MEM-07 section for the acceptance criteria and 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; sed -n '203,280p' docs/research/ideas/phase-core-build-plan.md
+cd ~/Projects/appmilla_github/fleet-memory; sed -n '203,280p' docs/research/ideas/phase-core-build-plan.md
 
 OUT
 /feature-plan FEAT-XXXX
@@ -479,7 +479,7 @@ Let me check the house format of an existing task file and the generate-feature-
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== generate-feature-yaml help ==="; python3 ~/.agentecflow/bin/generate-feature-yaml --help 2>&1 | head -40; echo ""; echo "=== existing FEAT-MEM-06 yaml head ==="; sed -n '1,30p' .guardkit/features/FEAT-MEM-06.yaml
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== generate-feature-yaml help ==="; python3 ~/.agentecflow/bin/generate-feature-yaml --help 2>&1 | head -40; echo ""; echo "=== existing FEAT-MEM-06 yaml head ==="; sed -n '1,30p' .guardkit/features/FEAT-MEM-06.yaml
 
 OUT
 === generate-feature-yaml help ===
@@ -559,7 +559,7 @@ tasks:
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; f=$(ls tasks/backlog/memory-mcp-server/TASK-MCP-001*.md 2>/dev/null | head -1); echo "=== $f ==="; cat "$f"
+cd ~/Projects/appmilla_github/fleet-memory; f=$(ls tasks/backlog/memory-mcp-server/TASK-MCP-001*.md 2>/dev/null | head -1); echo "=== $f ==="; cat "$f"
 
 OUT
 === tasks/backlog/memory-mcp-server/TASK-MCP-001-scaffold-fastmcp-server.md ===
@@ -591,7 +591,7 @@ test_results:
 autobuild_state:
   current_turn: 1
   max_turns: 5
-  worktree_path: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
+  worktree_path: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-MEM-06
   base_branch: main
   started_at: '2026-06-13T19:16:03.759371'
   last_updated: '2026-06-13T19:55:02.852692'
@@ -1812,7 +1812,7 @@ All files written. Now Step 10: generate the structured YAML feature file (--dis
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; python3 ~/.agentecflow/bin/generate-feature-yaml \
+cd ~/Projects/appmilla_github/fleet-memory; python3 ~/.agentecflow/bin/generate-feature-yaml \
   --name "Re-index Pipeline" \
   --description "FEAT-MEM-07: deterministic re-index of guardkit's authoritative markdown corpus (seed modules, ADRs, review reports, task outcomes) into typed payloads published as MemoryEpisodeV1 (json + payload_type) through the live relay into the FEAT-MEM-03 deterministic writer; idempotency/dedup enforced downstream by content-hash upsert; plus an operator-gated sidecar review staging area for Fable-authored backfill (DECISION-DF-001, zero cloud on the publish path)." \
   --feature-id FEAT-MEM-07 \
@@ -1924,7 +1924,7 @@ YAML generated as FEAT-MEM-07, AC-quality review clean (0 unverifiable). The R3 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== tests/ tree (verify roots) ==="; ls -d tests/*/ 2>/dev/null; echo ""; echo "=== YAML tail (orchestration) ==="; tail -25 .guardkit/features/FEAT-MEM-07.yaml
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== tests/ tree (verify roots) ==="; ls -d tests/*/ 2>/dev/null; echo ""; echo "=== YAML tail (orchestration) ==="; tail -25 .guardkit/features/FEAT-MEM-07.yaml
 
 OUT
 === tests/ tree (verify roots) ===
@@ -1971,7 +1971,7 @@ Now Step 8.5 (pre-flight feature validation) and Step 8.6 (validate the hand-inj
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== 8.6 validate smoke_gates ==="; python3 ~/.agentecflow/bin/generate-feature-yaml --validate-smoke-gates --feature-id FEAT-MEM-07 --base-path . 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "(exit: $?)"; echo ""; echo "=== 8.5 feature validate ==="; guardkit feature validate FEAT-MEM-07 2>&1 | grep -v "UserWarning\|pydantic.v1" | head -30; echo "(exit: $?)"
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== 8.6 validate smoke_gates ==="; python3 ~/.agentecflow/bin/generate-feature-yaml --validate-smoke-gates --feature-id FEAT-MEM-07 --base-path . 2>&1 | grep -v "UserWarning\|pydantic.v1"; echo "(exit: $?)"; echo ""; echo "=== 8.5 feature validate ==="; guardkit feature validate FEAT-MEM-07 2>&1 | grep -v "UserWarning\|pydantic.v1" | head -30; echo "(exit: $?)"
 
 OUT
 === 8.6 validate smoke_gates ===
@@ -1979,7 +1979,7 @@ OUT
 (exit: 0)
 
 === 8.5 feature validate ===
-INFO:guardkit.orchestrator.feature_loader:Loading feature from /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-07.yaml
+INFO:guardkit.orchestrator.feature_loader:Loading feature from ~/Projects/appmilla_github/fleet-memory/.guardkit/features/FEAT-MEM-07.yaml
 ✓ Feature FEAT-MEM-07 is valid
 (exit: 0)
 Both validations pass — smoke-gate paths OK, feature valid (no intra-wave dep conflicts, all task_types valid, all files exist).
@@ -1988,7 +1988,7 @@ Now Step 11: BDD scenario linking — tag the 30 scenarios with @task:<TASK-ID> 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json); RESP_FILE=$(mktemp -t bdd-link-resp-XXXXXX.json); echo "REQ=$REQ_FILE"; echo "RESP=$RESP_FILE"; python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
+cd ~/Projects/appmilla_github/fleet-memory; REQ_FILE=$(mktemp -t bdd-link-req-XXXXXX.json); RESP_FILE=$(mktemp -t bdd-link-resp-XXXXXX.json); echo "REQ=$REQ_FILE"; echo "RESP=$RESP_FILE"; python3 ~/.agentecflow/bin/feature-plan-bdd-link prepare \
   --project-root . \
   --feature-slug "re-index-pipeline" \
   --feature-yaml ".guardkit/features/FEAT-MEM-07.yaml" \
@@ -1997,7 +1997,7 @@ cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; REQ_FILE=$(mkt
 OUT
 REQ=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.G9LnFKonun
 RESP=/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-resp-XXXXXX.json.spQqALR1ZG
-{"status": "ready", "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/re-index-pipeline/re-index-pipeline.feature", "scenarios_to_match": 30, "task_count": 11, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.G9LnFKonun"}
+{"status": "ready", "feature_path": "~/Projects/appmilla_github/fleet-memory/features/re-index-pipeline/re-index-pipeline.feature", "scenarios_to_match": 30, "task_count": 11, "confidence_threshold": 0.6, "already_tagged_count": 0, "request_path": "/var/folders/75/prgjl4_x0k3_6tj58k39db1r0000gn/T/bdd-link-req-XXXXXX.json.G9LnFKonun"}
 Status ready — 30 scenarios, 11 tasks. Step 11.2: invoke the bdd-linker subagent with the request payload:
 
 Bash
@@ -2006,7 +2006,7 @@ cat "$(grep REQ_FILE /tmp/bdd_link_paths.txt | cut -d= -f2)"
 
 OUT
 {
-  "feature_path": "/Users/richardwoollcott/Projects/appmilla_github/fleet-memory/features/re-index-pipeline/re-index-pipeline.feature",
+  "feature_path": "~/Projects/appmilla_github/fleet-memory/features/re-index-pipeline/re-index-pipeline.feature",
   "feature_name": "Re-index Pipeline",
   "confidence_threshold": 0.6,
   "scenarios": [
@@ -2679,7 +2679,7 @@ All 30 scenarios matched (confidence 0.78–0.94, all above the 0.6 threshold). 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; RESP_FILE=$(grep RESP_FILE /tmp/bdd_link_paths.txt | cut -d= -f2); cat > "$RESP_FILE" <<'EOF'
+cd ~/Projects/appmilla_github/fleet-memory; RESP_FILE=$(grep RESP_FILE /tmp/bdd_link_paths.txt | cut -d= -f2); cat > "$RESP_FILE" <<'EOF'
 [
   {"scenario_index": 0, "task_id": "TASK-RIP-004", "confidence": 0.88},
   {"scenario_index": 1, "task_id": "TASK-RIP-004", "confidence": 0.91},
@@ -2725,7 +2725,7 @@ All 30 scenarios tagged with @task: — the R2 BDD oracle is now active. Let me 
 
 Bash
 IN
-cd /Users/richardwoollcott/Projects/appmilla_github/fleet-memory; echo "=== @task: tag count ==="; grep -c "@task:" features/re-index-pipeline/re-index-pipeline.feature; echo ""; echo "=== sample (first 3 tagged) ==="; grep -B1 "@task:" features/re-index-pipeline/re-index-pipeline.feature | grep "@task:" | head -6; rm -f "$(grep REQ_FILE /tmp/bdd_link_paths.txt | cut -d= -f2)" "$(grep RESP_FILE /tmp/bdd_link_paths.txt | cut -d= -f2)" /tmp/bdd_link_paths.txt; echo ""; echo "=== task files created ==="; ls tasks/backlog/re-index-pipeline/
+cd ~/Projects/appmilla_github/fleet-memory; echo "=== @task: tag count ==="; grep -c "@task:" features/re-index-pipeline/re-index-pipeline.feature; echo ""; echo "=== sample (first 3 tagged) ==="; grep -B1 "@task:" features/re-index-pipeline/re-index-pipeline.feature | grep "@task:" | head -6; rm -f "$(grep REQ_FILE /tmp/bdd_link_paths.txt | cut -d= -f2)" "$(grep RESP_FILE /tmp/bdd_link_paths.txt | cut -d= -f2)" /tmp/bdd_link_paths.txt; echo ""; echo "=== task files created ==="; ls tasks/backlog/re-index-pipeline/
 
 OUT
 === @task: tag count ===

@@ -17,12 +17,12 @@ features/relay-integration/relay-integration.feature
 features/typed-payload-registry/typed-payload-registry.feature
 === features dir tree ===
 total 0
-drwxr-xr-x   6 richardwoollcott  staff   192 Jun 13 12:05 .
-drwxr-xr-x  34 richardwoollcott  staff  1088 Jun 13 12:25 ..
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 11:21 deterministic-writer
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 12:05 relay-integration
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 08:22 storage-substrate
-drwxr-xr-x   5 richardwoollcott  staff   160 Jun 13 10:46 typed-payload-registry
+drwxr-xr-x   6 <user>  staff   192 Jun 13 12:05 .
+drwxr-xr-x  34 <user>  staff  1088 Jun 13 12:25 ..
+drwxr-xr-x   5 <user>  staff   160 Jun 13 11:21 deterministic-writer
+drwxr-xr-x   5 <user>  staff   160 Jun 13 12:05 relay-integration
+drwxr-xr-x   5 <user>  staff   160 Jun 13 08:22 storage-substrate
+drwxr-xr-x   5 <user>  staff   160 Jun 13 10:46 typed-payload-registry
 Bash Find source tree and model files
 IN
 echo "=== src tree ===" && find src -type d 2>/dev/null | head -40; echo "=== models ===" && find . -path ./node_modules -prune -o \( -path "*models*" -o -name "*schema*" \) -name "*.py" -print 2>/dev/null | grep -v node_modules | grep -v ".venv" | head -40
@@ -1045,11 +1045,11 @@ git diff --cached --stat; echo "--- untracked check ---"; ls -la features/retrie
 OUT
 --- untracked check ---
 total 48
-drwxr-xr-x  5 richardwoollcott  staff    160 Jun 13 12:48 .
-drwxr-xr-x  7 richardwoollcott  staff    224 Jun 13 12:47 ..
--rw-r--r--  1 richardwoollcott  staff   3474 Jun 13 12:48 retrieval-api_assumptions.yaml
--rw-r--r--  1 richardwoollcott  staff   2495 Jun 13 12:48 retrieval-api_summary.md
--rw-r--r--  1 richardwoollcott  staff  16287 Jun 13 12:47 retrieval-api.feature
+drwxr-xr-x  5 <user>  staff    160 Jun 13 12:48 .
+drwxr-xr-x  7 <user>  staff    224 Jun 13 12:47 ..
+-rw-r--r--  1 <user>  staff   3474 Jun 13 12:48 retrieval-api_assumptions.yaml
+-rw-r--r--  1 <user>  staff   2495 Jun 13 12:48 retrieval-api_summary.md
+-rw-r--r--  1 <user>  staff  16287 Jun 13 12:47 retrieval-api.feature
 Bash Check if feature files are gitignored
 IN
 git check-ignore -v features/retrieval-api/retrieval-api.feature; echo "exit=$?"

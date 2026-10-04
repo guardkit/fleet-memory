@@ -1,7 +1,7 @@
 ============================= test session starts ==============================
-platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/bin/python
+platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0 -- ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/bin/python
 cachedir: .pytest_cache
-rootdir: /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
+rootdir: ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81
 configfile: pyproject.toml
 testpaths: tests
 plugins: cov-7.1.0, timeout-2.4.0, asyncio-1.4.0, langsmith-0.8.15, bdd-8.1.0, anyio-4.13.0
@@ -49,7 +49,7 @@ tests/integration/test_metadata_filter.py: 2 warnings
 tests/integration/test_pool_lifecycle.py: 6 warnings
 tests/integration/test_search_boundaries.py: 4 warnings
 tests/integration/test_store_semantics.py: 5 warnings
-  /Users/richardwoollcott/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/lib/python3.14/site-packages/langgraph/store/base/embed.py:413: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+  ~/Projects/appmilla_github/fleet-memory/.guardkit/worktrees/FEAT-CA81/.venv/lib/python3.14/site-packages/langgraph/store/base/embed.py:413: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
     asyncio.iscoroutinefunction(func)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
