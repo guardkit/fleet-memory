@@ -354,11 +354,15 @@ def test_every_line_is_a_sentence_not_a_code():
 # memory is healthy. The store's newest row is the evidence the fence already reads;
 # the relay check takes it into account so it does not cry wolf, and it still alarms
 # when nothing was written by either route.
+#
+# Only the build projects' rows count: the projects the fence already reads one by
+# one (watch_projects, "guardkit" in these tests). Rows written by anything else,
+# such as Jarvis or the seats, must not hide a stopped build-outcome path.
 
 
 def test_builds_wrote_through_the_door_while_the_relay_saw_nothing_is_ok():
     facts = FenceFacts(
-        store=_store(age_hours=2.0),
+        store=_store(age_hours=2.0, projects=(_project("guardkit", age_hours=2.0),)),
         builds=_builds(4),
         marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
     )
@@ -367,14 +371,43 @@ def test_builds_wrote_through_the_door_while_the_relay_saw_nothing_is_ok():
     assert check.status is Status.OK
     assert report.status is Status.OK
     assert "memory door" in check.message
-    assert check.detail["store_newest_updated_at"] == (NOW - timedelta(hours=2.0)).isoformat()
+    assert "guardkit" in check.message
+    assert check.detail["build_projects_newest_updated_at"] == (
+        NOW - timedelta(hours=2.0)
+    ).isoformat()
+
+
+def test_only_another_projects_recent_rows_still_alarm():
+    """A fresh Jarvis row is no evidence that build outcomes are being recorded."""
+    facts = FenceFacts(
+        store=_store(
+            age_hours=1.0,  # the whole store's newest row: Jarvis, an hour ago
+            projects=(_project("guardkit", age_hours=100.0),),
+        ),
+        builds=_builds(4),
+        marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
+    )
+    report = evaluate(facts, THRESHOLDS, NOW)
+    check = _by_name(report, "relay_idle")
+    assert check.status is Status.ALARM
+    assert check.reason == "RELAY_IDLE"
+
+
+def test_recent_rows_with_no_build_project_named_are_no_evidence():
+    facts = FenceFacts(
+        store=_store(age_hours=1.0, projects=()),
+        builds=_builds(4),
+        marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
+    )
+    report = evaluate(facts, replace(THRESHOLDS, watch_projects=()), NOW)
+    assert _by_name(report, "relay_idle").reason == "RELAY_IDLE"
 
 
 def test_nothing_written_by_either_route_still_alarms():
     facts = FenceFacts(
         # Newest row older than the 72-hour build window, but inside the store's
         # own 168-hour limit: only the relay check can catch this.
-        store=_store(age_hours=100.0),
+        store=_store(age_hours=100.0, projects=(_project("guardkit", age_hours=100.0),)),
         builds=_builds(4),
         marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
     )

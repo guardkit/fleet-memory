@@ -328,25 +328,35 @@ def _relay_check(
 
     # WRITES THROUGH THE MEMORY DOOR (14 October 2026). Build sandboxes hold no bus
     # password, so their records go to the store through the memory service's door,
-    # not the relay, and the relay's marker shows nothing. The store's own newest row
-    # (which this run already read) is the evidence that memory recorded work in the
-    # window. An unreachable or absent store is no evidence, so the alarm below
-    # still fires when nothing was written by either route.
-    store_newest = (
-        store.newest_updated_at if store is not None and store.reachable else None
-    )
-    if store_newest is not None:
-        detail["store_newest_updated_at"] = store_newest.isoformat()
-    if store_newest is not None and store_newest >= window_start:
+    # not the relay, and the relay's marker shows nothing. The evidence that build
+    # outcomes are still being recorded is the build projects' own newest row, which
+    # this run already read: the projects the fence watches one by one
+    # (watch_projects). Only those count, so rows written by anything else (Jarvis,
+    # the seats, the specialist agents) cannot hide a stopped build-outcome path. An
+    # unreachable or absent store, or no watched project, is no evidence, so the
+    # alarm below still fires when nothing was written by either route.
+    build_projects = set(thresholds.watch_projects)
+    project_rows = [
+        project
+        for project in (store.per_project if store is not None and store.reachable else ())
+        if project.project in build_projects and project.newest_updated_at is not None
+    ]
+    newest_project = max(project_rows, key=lambda p: p.newest_updated_at, default=None)
+    if newest_project is not None:
+        detail["build_projects_newest_updated_at"] = (
+            newest_project.newest_updated_at.isoformat()
+        )
+    if newest_project is not None and newest_project.newest_updated_at >= window_start:
         return CheckResult(
             name="relay_idle",
             status=Status.OK,
             message=(
                 f"relay: {len(in_window)} builds finished in the last {window_phrase} "
-                f"and memory recorded work: the newest row in the store was written "
-                f"{humanise_age(now - store_newest)} ago. Records written through the "
-                f"memory door do not pass through the relay, which itself shows "
-                f"{_relay_activity_phrase()}."
+                f"and memory recorded their work: the newest row for "
+                f"{newest_project.project} was written "
+                f"{humanise_age(now - newest_project.newest_updated_at)} ago. Records "
+                f"written through the memory door do not pass through the relay, which "
+                f"itself shows {_relay_activity_phrase()}."
             ),
             detail=detail,
         )
