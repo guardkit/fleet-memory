@@ -20,7 +20,7 @@ from pydantic import ValidationError
 from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
 from fleet_memory.mcp.degradation import ToolResult, _sanitize_message, tool_safe
 from fleet_memory.payloads.registry import get_model_for_type
-from fleet_memory.relay.schema import MemoryEpisodeV1
+from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES, SUBJECT_TOKEN_RE, MemoryEpisodeV1
 
 if TYPE_CHECKING:
     from fleet_memory.relay.service import RelayService
@@ -128,6 +128,30 @@ async def memory_publish_envelope(
         else:
             message = "Envelope validation failed"
         return ToolResult(is_error=True, error_type="client", message=_sanitize_message(message))
+
+    # THE BUS'S OWN LIMITS (14 October 2026). The relay only ever sees what the bus
+    # could carry, so it checks neither. The door bypasses the bus, so it applies
+    # both, and takes nothing the bus route could not have delivered.
+    size = len(episode.model_dump_json().encode("utf-8"))
+    if size > MAX_ENVELOPE_BYTES:
+        return ToolResult(
+            is_error=True,
+            error_type="client",
+            message=(
+                f"the envelope is {size} bytes, over the {MAX_ENVELOPE_BYTES} byte limit "
+                "the bus keeps; chunk the content before sending it"
+            ),
+        )
+    for field_name in ("project_id", "episode_type"):
+        if not SUBJECT_TOKEN_RE.match(getattr(episode, field_name)):
+            return ToolResult(
+                is_error=True,
+                error_type="client",
+                message=(
+                    f"{field_name} must be a plain subject token (letters, digits, "
+                    "'-' and '_', starting with a letter or digit), as the bus requires"
+                ),
+            )
 
     try:
         await service.ingest(episode)

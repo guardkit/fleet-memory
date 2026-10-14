@@ -6,11 +6,28 @@ value object consumed by downstream relay tasks.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from enum import Enum
 from typing import Any
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+
+
+#: The largest envelope the bus carries, in bytes of the envelope's JSON: the bus
+#: client refuses anything bigger before publishing (nats-core
+#: ``MAX_EPISODE_BODY_BYTES``, 900 KB). The relay never sees a bigger one, so the
+#: memory door, which takes the same envelope without the bus, refuses it too.
+MAX_ENVELOPE_BYTES = 921_600
+
+#: A plain subject token: what the bus requires of ``project_id`` and
+#: ``episode_type``, because both become parts of the subject
+#: ``memory.episode.{project_id}.{episode_type}``. A space, ".", "*" or ">" would
+#: change the subject. This is nats-core's identifier rule (``topics._IDENTIFIER_RE``)
+#: word for word; the memory service does not install nats-core, and a test pins the
+#: two together wherever nats-core is present. The relay applies neither limit: the
+#: bus already has. Only the door, which bypasses the bus, checks them.
+SUBJECT_TOKEN_RE = re.compile(r"\A[a-zA-Z0-9][a-zA-Z0-9\-_]*\Z")
 
 
 class ContentFormat(str, Enum):

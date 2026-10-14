@@ -206,3 +206,76 @@ async def test_no_store_is_an_infrastructure_error() -> None:
     answer = json.loads("".join(getattr(p, "text", "") for p in result.content))
     assert answer["is_error"] is True
     assert answer["error_type"] == "infrastructure"
+
+
+# --- the bus's limits, kept at the door ------------------------------------------
+#
+# The bus refuses an episode over 921,600 bytes on the client, and it cannot route a
+# record type or project that is not a plain subject token (a space, ".", "*" or ">"
+# would change the subject). The door keeps both limits, so it takes nothing the bus
+# route could not have carried.
+
+
+@pytest.mark.asyncio
+async def test_an_envelope_bigger_than_the_bus_carries_is_refused() -> None:
+    raw = _published_bytes(body="x" * 3_000_007)
+
+    door_store, answer = await _door_path(raw)
+
+    assert answer["is_error"] is True
+    assert answer["error_type"] == "client"
+    assert "921600" in answer["message"].replace(",", "")
+    assert await _contents(door_store) == []
+
+
+@pytest.mark.asyncio
+async def test_one_byte_over_the_limit_is_refused() -> None:
+    from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES
+
+    base = MemoryEpisodeV1.model_validate_json(_published_bytes(body=""))
+    padding = MAX_ENVELOPE_BYTES + 1 - len(base.model_dump_json().encode("utf-8"))
+    raw = _published_bytes(body="y" * padding)
+    assert len(MemoryEpisodeV1.model_validate_json(raw).model_dump_json().encode()) == (
+        MAX_ENVELOPE_BYTES + 1
+    )
+
+    door_store, answer = await _door_path(raw)
+
+    assert answer["is_error"] is True
+    assert answer["error_type"] == "client"
+    assert await _contents(door_store) == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "fields, named",
+    [
+        ({"episode_type": "a.b c>*"}, "episode_type"),
+        ({"episode_type": "doc.ument"}, "episode_type"),
+        ({"episode_type": "doc*"}, "episode_type"),
+        ({"project_id": "de mo"}, "project_id"),
+        ({"project_id": "demo.other"}, "project_id"),
+        ({"project_id": "demo>"}, "project_id"),
+    ],
+)
+async def test_a_type_or_project_the_bus_could_not_route_is_refused(fields, named) -> None:
+    raw = _published_bytes(**fields)
+
+    door_store, answer = await _door_path(raw)
+
+    assert answer["is_error"] is True
+    assert answer["error_type"] == "client"
+    assert named in answer["message"]
+    assert await _contents(door_store) == []
+
+
+def test_the_door_limits_are_the_bus_clients_own() -> None:
+    """The bus client's rule lives in nats-core, which the memory service does not
+    install. The door keeps the same two values; this pins them to nats-core
+    wherever nats-core is present, so they cannot drift apart unnoticed."""
+    nats_client = pytest.importorskip("nats_core.client")
+    nats_topics = pytest.importorskip("nats_core.topics")
+    from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES, SUBJECT_TOKEN_RE
+
+    assert MAX_ENVELOPE_BYTES == nats_client.MAX_EPISODE_BODY_BYTES
+    assert SUBJECT_TOKEN_RE.pattern == nats_topics._IDENTIFIER_RE.pattern
