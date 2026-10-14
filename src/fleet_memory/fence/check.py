@@ -239,6 +239,7 @@ def _relay_check(
     marker: MarkerRead | None,
     thresholds: Thresholds,
     now: datetime,
+    store: StoreFacts | None = None,
 ) -> CheckResult:
     if marker is None or marker.blind:
         problem = marker.problem if marker is not None else "the progress marker was not read"
@@ -325,6 +326,31 @@ def _relay_check(
             detail=detail,
         )
 
+    # WRITES THROUGH THE MEMORY DOOR (14 October 2026). Build sandboxes hold no bus
+    # password, so their records go to the store through the memory service's door,
+    # not the relay, and the relay's marker shows nothing. The store's own newest row
+    # (which this run already read) is the evidence that memory recorded work in the
+    # window. An unreachable or absent store is no evidence, so the alarm below
+    # still fires when nothing was written by either route.
+    store_newest = (
+        store.newest_updated_at if store is not None and store.reachable else None
+    )
+    if store_newest is not None:
+        detail["store_newest_updated_at"] = store_newest.isoformat()
+    if store_newest is not None and store_newest >= window_start:
+        return CheckResult(
+            name="relay_idle",
+            status=Status.OK,
+            message=(
+                f"relay: {len(in_window)} builds finished in the last {window_phrase} "
+                f"and memory recorded work: the newest row in the store was written "
+                f"{humanise_age(now - store_newest)} ago. Records written through the "
+                f"memory door do not pass through the relay, which itself shows "
+                f"{_relay_activity_phrase()}."
+            ),
+            detail=detail,
+        )
+
     if state.started_at is not None:
         grace_end = state.started_at + timedelta(minutes=thresholds.relay_restart_grace_minutes)
         if now < grace_end:
@@ -399,7 +425,9 @@ def evaluate(
             checks.extend(_store_check(facts.store, thresholds, now))
 
     if not store_only:
-        checks.append(_relay_check(facts.builds, facts.marker, thresholds, now))
+        checks.append(
+            _relay_check(facts.builds, facts.marker, thresholds, now, store=facts.store)
+        )
 
     checks = [_apply_ack(c, facts.ack) for c in checks]
     status = Status.ALARM if any(c.status is Status.ALARM for c in checks) else Status.OK

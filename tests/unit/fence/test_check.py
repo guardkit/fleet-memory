@@ -345,3 +345,51 @@ def test_every_line_is_a_sentence_not_a_code():
         assert " " in line
         assert "STORE_STALE" not in line
         assert "RELAY_IDLE" not in line
+
+
+# --- relay idle, with writes through the memory door (14 October 2026) -------------
+#
+# Build sandboxes hold no bus password, so their records reach the store through the
+# memory door, not the relay. The relay's own marker then shows no progress while
+# memory is healthy. The store's newest row is the evidence the fence already reads;
+# the relay check takes it into account so it does not cry wolf, and it still alarms
+# when nothing was written by either route.
+
+
+def test_builds_wrote_through_the_door_while_the_relay_saw_nothing_is_ok():
+    facts = FenceFacts(
+        store=_store(age_hours=2.0),
+        builds=_builds(4),
+        marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
+    )
+    report = evaluate(facts, THRESHOLDS, NOW)
+    check = _by_name(report, "relay_idle")
+    assert check.status is Status.OK
+    assert report.status is Status.OK
+    assert "memory door" in check.message
+    assert check.detail["store_newest_updated_at"] == (NOW - timedelta(hours=2.0)).isoformat()
+
+
+def test_nothing_written_by_either_route_still_alarms():
+    facts = FenceFacts(
+        # Newest row older than the 72-hour build window, but inside the store's
+        # own 168-hour limit: only the relay check can catch this.
+        store=_store(age_hours=100.0),
+        builds=_builds(4),
+        marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
+    )
+    report = evaluate(facts, THRESHOLDS, NOW)
+    check = _by_name(report, "relay_idle")
+    assert check.status is Status.ALARM
+    assert check.reason == "RELAY_IDLE"
+    assert _by_name(report, "store_age").status is Status.OK
+
+
+def test_an_unreachable_store_is_no_evidence_for_the_relay_check():
+    facts = FenceFacts(
+        store=_store(reachable=False, problem="connection refused"),
+        builds=_builds(4),
+        marker=_marker(last_ingest_hours_ago=200.0, started_hours_ago=300.0),
+    )
+    report = evaluate(facts, THRESHOLDS, NOW)
+    assert _by_name(report, "relay_idle").reason == "RELAY_IDLE"
