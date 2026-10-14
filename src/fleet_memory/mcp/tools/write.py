@@ -17,10 +17,13 @@ from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
 
-from fleet_memory.mcp.degradation import tool_safe
+from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
+from fleet_memory.mcp.degradation import ToolResult, _sanitize_message, tool_safe
 from fleet_memory.payloads.registry import get_model_for_type
+from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES, SUBJECT_TOKEN_RE, MemoryEpisodeV1
 
 if TYPE_CHECKING:
+    from fleet_memory.relay.service import RelayService
     from fleet_memory.writer.core import DeterministicWriter
 
 
@@ -87,6 +90,83 @@ async def memory_write_payload(
     return payload.natural_key
 
 
+async def memory_publish_envelope(
+    envelope: dict[str, Any],
+    service: RelayService,
+) -> ToolResult:
+    """Ingest one published memory envelope exactly as the relay ingests it.
+
+    WHY THIS EXISTS (14 October 2026). A build sandbox holds no bus password.
+    Typed records already have a way in without the bus (memory_write_payload),
+    but prose records (turn states, specs and the other document groups) have
+    no typed form: the publisher sends them as a ``MemoryEpisodeV1`` envelope
+    with ``content_format`` markdown or text, and the relay chunks them into
+    the store. This takes that same envelope and hands it to the relay's own
+    ``RelayService.ingest``, so there is one ingestion path and one storage
+    format. Typed json envelopes take the relay's typed path the same way.
+
+    The envelope is parsed with the relay's own ``MemoryEpisodeV1`` model.
+    What the relay would dead-letter (a poison episode) comes back as a client
+    error; what it would redeliver (a transient failure) comes back as an
+    infrastructure error, for the caller to retry or report. Nothing is
+    written in either case beyond what the relay itself would have written.
+
+    The bus-only parts of the relay are not here: acknowledgements, the
+    dead-letter subject and the relay's liveness marker belong to messages
+    that arrived over the bus.
+
+    Returns:
+        ``ToolResult`` with ``value`` ``{"episode_id": ...}`` on success.
+    """
+    try:
+        episode = MemoryEpisodeV1.model_validate(envelope)
+    except ValidationError as exc:
+        errors = exc.errors()
+        if errors:
+            field = ".".join(str(part) for part in errors[0].get("loc", ["unknown"]))
+            message = f"Field '{field}' {errors[0].get('msg', 'validation failed')}"
+        else:
+            message = "Envelope validation failed"
+        return ToolResult(is_error=True, error_type="client", message=_sanitize_message(message))
+
+    # THE BUS'S OWN LIMITS (14 October 2026). The relay only ever sees what the bus
+    # could carry, so it checks neither. The door bypasses the bus, so it applies
+    # both, and takes nothing the bus route could not have delivered.
+    size = len(episode.model_dump_json().encode("utf-8"))
+    if size > MAX_ENVELOPE_BYTES:
+        return ToolResult(
+            is_error=True,
+            error_type="client",
+            message=(
+                f"the envelope is {size} bytes, over the {MAX_ENVELOPE_BYTES} byte limit "
+                "the bus keeps; chunk the content before sending it"
+            ),
+        )
+    for field_name in ("project_id", "episode_type"):
+        if not SUBJECT_TOKEN_RE.match(getattr(episode, field_name)):
+            return ToolResult(
+                is_error=True,
+                error_type="client",
+                message=(
+                    f"{field_name} must be a plain subject token (letters, digits, "
+                    "'-' and '_', starting with a letter or digit), as the bus requires"
+                ),
+            )
+
+    try:
+        await service.ingest(episode)
+    except PoisonEpisodeError as exc:
+        message = exc.reason if not exc.detail else f"{exc.reason} ({exc.detail})"
+        return ToolResult(is_error=True, error_type="client", message=_sanitize_message(message))
+    except TransientIngestError as exc:
+        return ToolResult(
+            is_error=True,
+            error_type="infrastructure",
+            message=_sanitize_message(exc.message),
+        )
+    return ToolResult(is_error=False, value={"episode_id": episode.episode_id})
+
+
 def register(mcp, context) -> None:
     """Register the memory_write_payload tool with the FastMCP server.
 
@@ -127,3 +207,34 @@ def register(mcp, context) -> None:
 
         # Return ToolResult directly (FastMCP will serialize it)
         return result
+
+    # The relay's own ingestion, for an envelope that only the bus could carry
+    # (prose records), from a caller with no bus account (a build sandbox).
+    @mcp.tool(name="memory_publish_envelope")
+    async def memory_publish_envelope_tool(envelope: dict) -> dict:
+        """Ingest one memory envelope exactly as the relay ingests it from the bus.
+
+        Args:
+            envelope: A MemoryEpisodeV1 envelope, as the publisher puts it on the bus
+
+        Returns:
+            Success: ToolResult with {"episode_id": ...}
+            Error: ToolResult with error details
+        """
+        from fleet_memory.relay.chunk_writer import ChunkWriter
+        from fleet_memory.relay.service import RelayService
+
+        if context.store is None or context.writer is None or context.settings is None:
+            return {
+                "is_error": True,
+                "error_type": "infrastructure",
+                "message": "The memory store is unavailable",
+            }
+        # Built the way the relay's own lifespan builds it (fleet_memory.app),
+        # over this server's store, writer and settings.
+        service = RelayService(
+            writer=context.writer,
+            chunk_writer=ChunkWriter(store=context.store),
+            settings=context.settings,
+        )
+        return await memory_publish_envelope(envelope, service)

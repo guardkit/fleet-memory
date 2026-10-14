@@ -239,6 +239,7 @@ def _relay_check(
     marker: MarkerRead | None,
     thresholds: Thresholds,
     now: datetime,
+    store: StoreFacts | None = None,
 ) -> CheckResult:
     if marker is None or marker.blind:
         problem = marker.problem if marker is not None else "the progress marker was not read"
@@ -325,6 +326,41 @@ def _relay_check(
             detail=detail,
         )
 
+    # WRITES THROUGH THE MEMORY DOOR (14 October 2026). Build sandboxes hold no bus
+    # password, so their records go to the store through the memory service's door,
+    # not the relay, and the relay's marker shows nothing. The evidence that build
+    # outcomes are still being recorded is the build projects' own newest row, which
+    # this run already read: the projects the fence watches one by one
+    # (watch_projects). Only those count, so rows written by anything else (Jarvis,
+    # the seats, the specialist agents) cannot hide a stopped build-outcome path. An
+    # unreachable or absent store, or no watched project, is no evidence, so the
+    # alarm below still fires when nothing was written by either route.
+    build_projects = set(thresholds.watch_projects)
+    project_rows = [
+        project
+        for project in (store.per_project if store is not None and store.reachable else ())
+        if project.project in build_projects and project.newest_updated_at is not None
+    ]
+    newest_project = max(project_rows, key=lambda p: p.newest_updated_at, default=None)
+    if newest_project is not None:
+        detail["build_projects_newest_updated_at"] = (
+            newest_project.newest_updated_at.isoformat()
+        )
+    if newest_project is not None and newest_project.newest_updated_at >= window_start:
+        return CheckResult(
+            name="relay_idle",
+            status=Status.OK,
+            message=(
+                f"relay: {len(in_window)} builds finished in the last {window_phrase} "
+                f"and memory recorded their work: the newest row for "
+                f"{newest_project.project} was written "
+                f"{humanise_age(now - newest_project.newest_updated_at)} ago. Records "
+                f"written through the memory door do not pass through the relay, which "
+                f"itself shows {_relay_activity_phrase()}."
+            ),
+            detail=detail,
+        )
+
     if state.started_at is not None:
         grace_end = state.started_at + timedelta(minutes=thresholds.relay_restart_grace_minutes)
         if now < grace_end:
@@ -399,7 +435,9 @@ def evaluate(
             checks.extend(_store_check(facts.store, thresholds, now))
 
     if not store_only:
-        checks.append(_relay_check(facts.builds, facts.marker, thresholds, now))
+        checks.append(
+            _relay_check(facts.builds, facts.marker, thresholds, now, store=facts.store)
+        )
 
     checks = [_apply_ack(c, facts.ack) for c in checks]
     status = Status.ALARM if any(c.status is Status.ALARM for c in checks) else Status.OK

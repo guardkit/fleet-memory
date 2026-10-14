@@ -1,4 +1,4 @@
-"""memory_search MCP tool for fleet-memory retrieval.
+"""memory_search and memory_search_items MCP tools for fleet-memory retrieval.
 
 Exposes memory_search as an MCP tool that wraps the FEAT-MEM-05 retrieval
 surface (fleet_memory.retrieval.search + assemble_context). The tool builds a
@@ -124,8 +124,69 @@ async def memory_search(
     }
 
 
+@tool_safe
+async def memory_search_items(
+    project: str,
+    query: str | None = None,
+    payload_types: list[str] | None = None,
+    domain_tags: list[str] | None = None,
+    token_budget: int | None = None,
+    include_superseded: bool = False,
+    require_substantive: bool = False,
+    search_callable: Callable[[SearchRequest, Any], list[SearchResult]] | None = None,
+    context: "ServerContext | None" = None,
+) -> dict[str, Any]:
+    """Search fleet-memory and return the ranked results one by one.
+
+    ``memory_search`` assembles its results into one block, which is what a
+    person reading memory wants. A client that scores, filters and cuts each
+    result on its own (GuardKit's builds) needs the results themselves. A
+    build sandbox that holds no database address reads memory through this
+    tool, so it returns exactly what the library's own search returns, in the
+    same order: each result's natural key, its content and its score.
+
+    Takes the arguments of ``memory_search``, plus ``require_substantive``,
+    which drops records that carry no usable prose (the same opt-in filter
+    the library offers). ``token_budget`` assembles nothing here; it is
+    accepted so a request is valid for both tools.
+
+    Returns:
+        ``{"items": [{"value": {"natural_key", "content"}, "score"}, ...]}``
+        in ranked order. Errors come back in the shared tool error envelope
+        (via ``@tool_safe``), exactly as ``memory_search`` reports them.
+    """
+    request = SearchRequest(
+        project=project,
+        query=query,
+        payload_types=payload_types or [],
+        domain_tags=domain_tags or [],
+        token_budget=token_budget if token_budget is not None else DEFAULT_TOKEN_BUDGET,
+        include_superseded=include_superseded,
+        require_substantive=require_substantive,
+    )
+    search_fn = search_callable if search_callable is not None else search
+    if context is None:
+        raise ValueError("ServerContext is required")
+    if context.store is None:
+        raise ValueError("Store is not available in ServerContext")
+
+    results = await search_fn(request, context.store)
+    return {
+        "items": [
+            {
+                "value": {
+                    "natural_key": item.value.get("natural_key"),
+                    "content": item.value.get("content"),
+                },
+                "score": item.score,
+            }
+            for item in results
+        ]
+    }
+
+
 def register(mcp: Any, context: Any) -> None:
-    """Register memory_search tool on the FastMCP server.
+    """Register the memory_search and memory_search_items tools on the FastMCP server.
 
     Extension point for TASK-MCP-001's register_all dispatcher.
     Adds the memory_search tool to the MCP server with proper wiring.
@@ -179,3 +240,42 @@ def register(mcp: Any, context: Any) -> None:
 
         # Return the result (already wrapped by @tool_safe)
         return result
+
+    # The ranked results one by one, for clients that score each result
+    # themselves and hold no database address (a build sandbox).
+    @mcp.tool(name="memory_search_items")
+    async def memory_search_items_tool(
+        project: str,
+        query: str | None = None,
+        payload_types: list[str] | None = None,
+        domain_tags: list[str] | None = None,
+        token_budget: int | None = None,
+        include_superseded: bool = False,
+        require_substantive: bool = False,
+    ) -> dict[str, Any]:
+        """Search fleet-memory and return the ranked results one by one.
+
+        Args:
+            project: Project identifier (underscores only, no hyphens)
+            query: Search query string (optional if filters provided)
+            payload_types: Filter by payload types (empty = all types)
+            domain_tags: Filter by domain tags (empty = no tag filter)
+            token_budget: Accepted for parity with memory_search; nothing is assembled
+            include_superseded: Include superseded memories (default: False)
+            require_substantive: Drop records with no usable prose (default: False)
+
+        Returns:
+            Dict with ``items``: each ``{"value": {"natural_key", "content"}, "score"}``,
+            in ranked order
+        """
+        return await memory_search_items(
+            project=project,
+            query=query,
+            payload_types=payload_types,
+            domain_tags=domain_tags,
+            token_budget=token_budget,
+            include_superseded=include_superseded,
+            require_substantive=require_substantive,
+            search_callable=None,
+            context=context,
+        )
