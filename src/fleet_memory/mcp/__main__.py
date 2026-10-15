@@ -12,12 +12,16 @@ Logs go to stderr to avoid mixing with protocol messages.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import sys
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fleet_memory.mcp.server import ServerContext, create_mcp_server, register_all
 from fleet_memory.settings import Settings
+
+if TYPE_CHECKING:
+    from fastmcp import FastMCP
 
 # Configure logging to stderr (not stdout, which is used for MCP protocol)
 logging.basicConfig(
@@ -57,6 +61,51 @@ def http_guard_options(settings: Settings) -> dict[str, Any]:
     return {"allowed_hosts": allowed_hosts, "host_origin_protection": True}
 
 
+def build_servers(settings: Settings) -> tuple[FastMCP, FastMCP | None]:
+    """The main server, and the sandbox's narrow door when its port is set.
+
+    Both are built over one ServerContext. Only the main server opens the
+    store; the narrow door's tools read the context at call time, so they use
+    the store the main server opened. With FLEET_MEMORY_MCP_SANDBOX_PORT empty
+    the second value is None and only the main server exists, as before.
+    """
+    # Create server context (store and writer are built lazily in lifespan)
+    context = ServerContext(store=None, writer=None, settings=settings)
+    mcp = create_mcp_server(context)
+    register_all(mcp, context)
+    if not settings.mcp_sandbox_port.strip():
+        return mcp, None
+    door = create_mcp_server(context, opens_store=False)
+    register_all(door, context, sandbox=True)
+    return mcp, door
+
+
+async def _serve_both(served: list[tuple[FastMCP, int]], host: str, guard: dict[str, Any]) -> None:
+    """Run both http servers in one process; when either stops, the process ends.
+
+    A stop by signal reaches both (uvicorn passes the signal on), so the other
+    gets a few seconds to finish cleanly before it is cancelled. A failure is
+    raised again, so the process exits with an error and Compose restarts it.
+    """
+    tasks = [
+        asyncio.create_task(
+            server.run_http_async(
+                transport="http", host=host, port=port, show_banner=index == 0, **guard
+            )
+        )
+        for index, (server, port) in enumerate(served)
+    ]
+    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    if pending:
+        more_done, pending = await asyncio.wait(pending, timeout=5)
+        done |= more_done
+    for task in pending:
+        task.cancel()
+    await asyncio.gather(*pending, return_exceptions=True)
+    for task in done:
+        task.result()
+
+
 def main() -> None:
     """Build and run the MCP server.
 
@@ -74,14 +123,8 @@ def main() -> None:
         logger.error(f"Failed to load settings: {e}")
         sys.exit(1)
 
-    # Create server context (store and writer are built lazily in lifespan)
-    context = ServerContext(store=None, writer=None, settings=settings)
-
-    # Build the FastMCP server
-    mcp = create_mcp_server(context)
-
-    # Register all tools (Wave-1: no-op, Wave-3: adds tools)
-    register_all(mcp, context)
+    # Build the FastMCP server(s) and register their tools
+    mcp, door = build_servers(settings)
 
     transport = settings.mcp_transport.strip().lower()
     if transport == "http":
@@ -92,6 +135,15 @@ def main() -> None:
             settings.mcp_port,
             ", ".join(guard["allowed_hosts"]) if guard["allowed_hosts"] else "not checked",
         )
+        if door is not None:
+            sandbox_port = int(settings.mcp_sandbox_port)
+            logger.info("and the sandbox's narrow door on %s:%s", settings.mcp_host, sandbox_port)
+            asyncio.run(
+                _serve_both(
+                    [(mcp, settings.mcp_port), (door, sandbox_port)], settings.mcp_host, guard
+                )
+            )
+            return
         mcp.run(
             transport="http",
             host=settings.mcp_host,

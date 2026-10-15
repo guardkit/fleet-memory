@@ -161,6 +161,13 @@ class Settings(BaseSettings):
         "http://host.docker.internal:8005/mcp. Empty means no Host check "
         "(FLEET_MEMORY_MCP_ALLOWED_HOSTS)",
     )
+    mcp_sandbox_port: str = Field(
+        default="",
+        description="Bind port for the build sandbox's narrow door, a second http listener "
+        "in the same process over the same store. It offers the two searches and a write "
+        "that takes only build outcomes which replace nothing, off the factory's own "
+        "shelves. Empty means no narrow door (FLEET_MEMORY_MCP_SANDBOX_PORT)",
+    )
 
     # DLQ configuration
     dlq_subject: str = Field(

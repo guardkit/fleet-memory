@@ -28,7 +28,7 @@ def _validate_identifier(field_name: str, value: str) -> None:
     """
     if not value:
         raise IdentifierValidationError(field_name, value)
-    if not IDENTIFIER_PATTERN.match(value):
+    if not IDENTIFIER_PATTERN.fullmatch(value):
         raise IdentifierValidationError(field_name, value)
 
 
