@@ -154,6 +154,16 @@ async def test_the_narrow_door_refuses_the_factorys_own_shelves(project) -> None
     _assert_refused(await _write(_server(writer, sandbox=True), _build_outcome(project)), writer)
 
 
+@pytest.mark.parametrize("project", ["guardkit\n", "some_product\n"])
+async def test_a_shelf_name_with_a_trailing_newline_is_refused(project) -> None:
+    # A final newline once slipped past the name check ("$" matches before it) and
+    # landed the record on a shelf of its own (coach note, 15 October 2026).
+    writer = StandInWriter()
+    result = await _write(_server(writer, sandbox=True), _build_outcome(project))
+    assert result["is_error"] is True, result
+    assert writer.writes == []
+
+
 def test_the_reserved_shelves_are_the_designs_ten() -> None:
     assert RESERVED_PROJECTS == (
         "guardkit",

@@ -67,7 +67,7 @@ def validate_namespace(namespace: tuple[str, ...]) -> None:
     """
     invalid_parts = []
     for part in namespace:
-        if not part or not _NAMESPACE_PATTERN.match(part):
+        if not part or not _NAMESPACE_PATTERN.fullmatch(part):
             invalid_parts.append(part)
 
     if invalid_parts:
