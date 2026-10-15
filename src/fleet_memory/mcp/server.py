@@ -43,7 +43,7 @@ class ServerContext:
     settings: Settings | None
 
 
-def create_mcp_server(context: ServerContext) -> FastMCP:
+def create_mcp_server(context: ServerContext, *, opens_store: bool = True) -> FastMCP:
     """Create a FastMCP server instance with the given context.
 
     Builds a FastMCP server configured for stdio transport. The server
@@ -52,6 +52,10 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
 
     Args:
         context: ServerContext with dependencies (can have None values)
+        opens_store: False for the sandbox's narrow door, a second server
+            over the same context. It never opens the store: its tools read
+            the shared context at call time, so they use the store the main
+            server opened, and there is one database pool, not two.
 
     Returns:
         Configured FastMCP instance ready to run over stdio
@@ -76,7 +80,9 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
         """
         # Degraded/test mode: context has None settings, or a store was
         # injected directly (tests) — use the provided context untouched.
-        if context.settings is None or context.store is not None:
+        # The narrow door's server takes the same path: the main server owns
+        # the store.
+        if not opens_store or context.settings is None or context.store is not None:
             yield {
                 "store": context.store,
                 "writer": context.writer,
@@ -130,7 +136,7 @@ def create_mcp_server(context: ServerContext) -> FastMCP:
     return mcp
 
 
-def register_all(mcp: FastMCP, context: ServerContext) -> None:
+def register_all(mcp: FastMCP, context: ServerContext, *, sandbox: bool = False) -> None:
     """Register all MCP tools and resources on the given server instance.
 
     Extension point for Wave-3 tool registration tasks. Each tool task
@@ -139,6 +145,11 @@ def register_all(mcp: FastMCP, context: ServerContext) -> None:
     Args:
         mcp: FastMCP server instance
         context: ServerContext with dependencies
+        sandbox: True for the build sandbox's narrow door (15 October 2026).
+            It gets the projects list, the two searches and a
+            memory_write_payload that takes only build outcomes which replace
+            nothing, off the factory's own shelves; not memory_supersede or
+            memory_publish_envelope.
 
     Example (future Wave-3 registrations):
         from fleet_memory.mcp.tools import search_tool, store_tool
@@ -154,5 +165,6 @@ def register_all(mcp: FastMCP, context: ServerContext) -> None:
     from fleet_memory.mcp.tools import search, supersede, write
 
     search.register(mcp, context)
-    supersede.register(mcp, context)
-    write.register(mcp, context)
+    if not sandbox:
+        supersede.register(mcp, context)
+    write.register(mcp, context, sandbox=sandbox)
