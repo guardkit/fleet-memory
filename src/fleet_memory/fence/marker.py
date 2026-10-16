@@ -196,8 +196,9 @@ class RelayMarker:
                     handle.write(text + "\n")
                     # LOAD-BEARING. mkstemp creates the file 0600, and os.replace keeps
                     # whatever mode and owner the temporary file had. The relay runs as
-                    # root inside its container; the fence runs as the operator's own
-                    # user. Left at 0600 the marker is root-only, so the fence gets a
+                    # its own user inside its container (uid 1000; root before 16 October
+                    # 2026); the fence runs as the operator's own user, which need not be
+                    # the same. Left at 0600 the marker is unreadable to it, so the fence gets a
                     # PermissionError and the relay check is permanently BLIND — the
                     # exact silence this whole rung exists to end. fchmod ignores umask,
                     # so this is 0644 on every box.
