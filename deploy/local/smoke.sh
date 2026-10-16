@@ -12,6 +12,20 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# THIS FOLDER CHOOSES ITS OWN COMPOSE PROJECT AND FILE (16 October 2026). A
+# COMPOSE_PROJECT_NAME, COMPOSE_FILE or any other COMPOSE_* setting exported in
+# the calling shell would otherwise point these commands at a different
+# project. Inherited ones are dropped here; .env.deploy may still name the
+# project (COMPOSE_PROJECT_NAME), and without it the project is "local", the
+# name this folder has always given it. Every call names both explicitly.
+for name in $(compgen -e); do
+    case "$name" in COMPOSE_*) unset "$name" ;; esac
+done
+compose() {
+    docker compose --project-directory . --file docker-compose.yml \
+        --project-name "${COMPOSE_PROJECT_NAME:-local}" "$@"
+}
+
 if [ -f .env.deploy ]; then
     set -a
     # shellcheck disable=SC1091
@@ -26,14 +40,14 @@ echo ""
 
 # GATE G3: server ready + pgvector extension present
 echo "=== GATE G3: Server Ready + pgvector Extension ==="
-if docker compose exec -T postgres pg_isready -U fleet_memory >/dev/null 2>&1; then
+if compose exec -T postgres pg_isready -U fleet_memory >/dev/null 2>&1; then
     echo "GATE G3.1 PASS: pg_isready accepts connections"
 else
     echo "GATE G3.1 FAIL: pg_isready failed"
     exit 1
 fi
 
-VECTOR_CHECK=$(docker compose exec -T postgres psql -U fleet_memory -d fleet_memory -tAc \
+VECTOR_CHECK=$(compose exec -T postgres psql -U fleet_memory -d fleet_memory -tAc \
     "SELECT extname FROM pg_extension WHERE extname='vector';" | tr -d '[:space:]')
 if [ "$VECTOR_CHECK" == "vector" ]; then
     echo "GATE G3.2 PASS: pgvector extension installed"
@@ -55,7 +69,7 @@ fi
 # GATE G5: data directory initialised (local analogue of the NAS backed-up volume)
 echo ""
 echo "=== GATE G5: Data Persistence Location ==="
-PG_VERSION=$(docker compose exec -T postgres cat /var/lib/postgresql/data/PG_VERSION 2>/dev/null | tr -d '[:space:]')
+PG_VERSION=$(compose exec -T postgres cat /var/lib/postgresql/data/PG_VERSION 2>/dev/null | tr -d '[:space:]')
 if [ "$PG_VERSION" == "16" ]; then
     echo "GATE G5 PASS: PG_VERSION=16 (data directory initialised)"
 else
