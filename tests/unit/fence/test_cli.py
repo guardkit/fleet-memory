@@ -355,11 +355,12 @@ def test_a_real_relay_marker_is_understood_end_to_end(env, capsys):
     marker = RelayMarker(env["marker_path"])
     marker.record_start()
     marker.record_ingest()
-    rows = [(NOW - timedelta(hours=1), NOW - timedelta(hours=1), 10)]
+    # The marker is stamped with the real clock, so the store rows must be too:
+    # dated from the fixed NOW they went stale with the calendar.
+    now = datetime.now(UTC)
+    rows = [(now - timedelta(hours=1), now - timedelta(hours=1), 10)]
 
-    code = cli.main(
-        env["argv_base"], now=datetime.now(UTC), connection_factory=_factory(rows)
-    )
+    code = cli.main(env["argv_base"], now=now, connection_factory=_factory(rows))
 
     assert code == 0
     assert "relay" in capsys.readouterr().out

@@ -24,5 +24,28 @@ COPY pyproject.toml ./
 COPY src ./src
 RUN pip install --no-cache-dir ".[relay]"
 
+# RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). A fixed number, 1000:1000,
+# the same one the factory's other images use, so that:
+#   - the folder below can be made owned by it here, in the image. Docker fills a
+#     FRESH named volume from what the image has at the mount path, ownership
+#     included, so a new volume mounted at /var/lib/fleet-memory comes up owned by
+#     this user and writable by the relay. Without this folder a new volume would
+#     be owned by root and the relay could not write its progress marker.
+#   - this repository's own compose file, which binds a folder under the host
+#     user's home instead of a volume, keeps working for a host user who is 1000.
+# A volume made while the image still ran as root keeps its root-owned files:
+# Docker only fills a volume from the image when the volume is empty. Such a
+# volume needs one ownership change before the first start of this image; the
+# relay's README says how.
+# The relay writes nothing else: tiktoken's download cache goes under /tmp, which
+# every user can write.
+RUN groupadd --system --gid 1000 memory \
+    && useradd --system --uid 1000 --gid 1000 --home-dir /home/memory --create-home \
+       --shell /usr/sbin/nologin memory \
+    && mkdir -p /var/lib/fleet-memory \
+    && chown memory:memory /var/lib/fleet-memory
+
+USER memory
+
 # Run the relay app. Settings are supplied via FLEET_MEMORY_* env vars (env_file).
 CMD ["faststream", "run", "fleet_memory.app:app"]

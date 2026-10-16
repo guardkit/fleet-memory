@@ -58,15 +58,35 @@ Three things to know:
   `src/` into the image), so adding the marker costs no extra deploy step — but the
   marker only starts existing after that rebuild. Until then the fence reports that it
   cannot see the relay, which is the honest answer.
-- **It is written root-owned but world-readable (`-rw-r--r--`), on purpose.** The image
-  runs as root (no `USER` in the Dockerfile), so the marker lands root-owned inside your
-  user-owned state directory — that part is fine and needs no fixing. The mode is the
-  part that matters: the fence runs as your own user, so the relay sets `0644` on every
-  write. Left at the `0600` a temporary file is created with, the marker would be
-  root-only, the fence would hit a permission error, and it would report BLIND forever —
-  the very silence this marker exists to end.
+- **It is written by the relay's own user (uid 1000) and world-readable (`-rw-r--r--`),
+  on purpose.** Since 16 October 2026 the image runs as an ordinary user, `memory`,
+  uid/gid 1000, not as root. With this file's bind mount the relay writes into a host
+  folder, so that folder must exist and belong to uid 1000 before the first start (see the
+  next point): if Docker has to create a missing bind folder itself, it creates it owned by
+  root, whoever runs the command. The mode
+  is the part that matters for the fence: the fence runs as your own user, so the relay
+  sets `0644` on every write. Left at the `0600` a temporary file is created with, the
+  marker could be unreadable to the fence, and it would report BLIND forever — the very
+  silence this marker exists to end.
   If you ever see the marker at `-rw-------`, the running relay image predates that fix;
   rebuild it rather than chmod-ing the file, which the next message would overwrite.
+- **A state folder or volume written while the relay ran as root needs one ownership
+  change.** A new named volume is fine: Docker fills it from the image's
+  `/var/lib/fleet-memory`, which the image makes owned by uid 1000. But Docker only does
+  that for an empty volume, so a volume (or host folder) that already holds a root-owned
+  folder and marker stays root-owned. The relay still starts and its health check still
+  passes, because the old marker is there, but it cannot replace the marker: it logs
+  `Relay progress marker could not be written (PermissionError)` once, the marker stops
+  moving, and the fence eventually reports the relay as silent. Fix it once, with the relay
+  stopped, before the first start of the non-root image:
+  `docker run --rm --user 0 --entrypoint chown -v <volume>:/var/lib/fleet-memory <new relay image> -R 1000:1000 /var/lib/fleet-memory`
+  For this file's bind mount, decide by who owns the folder, not by who you are. With the
+  relay stopped:
+  `mkdir -p ~/.local/state/fleet-memory && stat -c '%u:%g' ~/.local/state/fleet-memory`
+  and, if that does not print `1000:1000` (or anything inside it is owned by someone else:
+  `find ~/.local/state/fleet-memory ! -uid 1000`),
+  `sudo chown -R 1000:1000 ~/.local/state/fleet-memory`.
+  Going back to an older root image needs nothing: root can write to a folder owned by 1000.
 - **A failed marker write never costs a message.** The writer swallows its own errors
   and logs one warning per process; ingestion and acking are unaffected.
 

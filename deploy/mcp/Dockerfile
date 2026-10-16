@@ -23,6 +23,17 @@ COPY pyproject.toml ./
 COPY src ./src
 RUN pip install --no-cache-dir .
 
+# RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). The same fixed number,
+# 1000:1000, as the relay image and the factory's other images. The service writes
+# nothing of its own: it serves HTTP on ports above 1024 and tiktoken's download
+# cache goes under /tmp, which every user can write. The home folder exists so a
+# library that looks for one finds a writable place.
+RUN groupadd --system --gid 1000 memory \
+    && useradd --system --uid 1000 --gid 1000 --home-dir /home/memory --create-home \
+       --shell /usr/sbin/nologin memory
+
+USER memory
+
 # Run the MCP server. Settings are supplied via FLEET_MEMORY_* env vars;
 # FLEET_MEMORY_MCP_TRANSPORT=http makes it a resident HTTP service.
 CMD ["python", "-m", "fleet_memory.mcp"]
