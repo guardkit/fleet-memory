@@ -11,7 +11,13 @@ services:
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fleet_memory"]
+      # Over TCP, not the Unix socket. On a fresh volume the image first runs a
+      # temporary server that listens on the socket only while initdb scripts
+      # run (initdb/01_extensions.sql), then restarts. A socket check reports
+      # healthy during that phase, so `up --wait` returned before pgvector was
+      # installed or the published port answered (seen 16 October 2026 under
+      # load: smoke G3.2/G4 failed). PGPORT is set in this container.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U fleet_memory"]
       interval: 2s
       timeout: 5s
       retries: 10
