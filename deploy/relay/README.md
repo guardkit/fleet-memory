@@ -60,8 +60,10 @@ Three things to know:
   cannot see the relay, which is the honest answer.
 - **It is written by the relay's own user (uid 1000) and world-readable (`-rw-r--r--`),
   on purpose.** Since 16 October 2026 the image runs as an ordinary user, `memory`,
-  uid/gid 1000, not as root. With this file's bind mount the state directory belongs to
-  your host user; if that user is 1000 the relay can write there with no change. The mode
+  uid/gid 1000, not as root. With this file's bind mount the relay writes into a host
+  folder, so that folder must exist and belong to uid 1000 before the first start (see the
+  next point): if Docker has to create a missing bind folder itself, it creates it owned by
+  root, whoever runs the command. The mode
   is the part that matters for the fence: the fence runs as your own user, so the relay
   sets `0644` on every write. Left at the `0600` a temporary file is created with, the
   marker could be unreadable to the fence, and it would report BLIND forever — the very
@@ -78,9 +80,13 @@ Three things to know:
   moving, and the fence eventually reports the relay as silent. Fix it once, with the relay
   stopped, before the first start of the non-root image:
   `docker run --rm --user 0 --entrypoint chown -v <volume>:/var/lib/fleet-memory <new relay image> -R 1000:1000 /var/lib/fleet-memory`
-  (for this file's bind mount: `sudo chown -R 1000:1000 ~/.local/state/fleet-memory`
-  only if your host user is not already 1000). Going back to an older root image needs
-  nothing: root can write to a folder owned by 1000.
+  For this file's bind mount, decide by who owns the folder, not by who you are. With the
+  relay stopped:
+  `mkdir -p ~/.local/state/fleet-memory && stat -c '%u:%g' ~/.local/state/fleet-memory`
+  and, if that does not print `1000:1000` (or anything inside it is owned by someone else:
+  `find ~/.local/state/fleet-memory ! -uid 1000`),
+  `sudo chown -R 1000:1000 ~/.local/state/fleet-memory`.
+  Going back to an older root image needs nothing: root can write to a folder owned by 1000.
 - **A failed marker write never costs a message.** The writer swallows its own errors
   and logs one warning per process; ingestion and acking are unaffected.
 
