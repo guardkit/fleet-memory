@@ -19,7 +19,7 @@ from pydantic import ValidationError
 
 from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
 from fleet_memory.mcp.degradation import ToolResult, _sanitize_message, tool_safe
-from fleet_memory.mcp.doors import check_door_project
+from fleet_memory.mcp.doors import RESERVED_PROJECTS, check_door_project
 from fleet_memory.payloads.registry import get_model_for_type
 from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES, SUBJECT_TOKEN_RE, MemoryEpisodeV1
 
@@ -27,25 +27,9 @@ if TYPE_CHECKING:
     from fleet_memory.relay.service import RelayService
     from fleet_memory.writer.core import DeterministicWriter
 
-# THE SANDBOX'S NARROW DOOR (15 October 2026). Code in a build can reach the
-# sandbox's door, so a write there must not plant records where the factory or
-# its agents will read them as their own. These are the factory's and its
-# agents' shelves (memory projects); the narrow door never writes on them. The
-# match is exact after lower-casing, as searches are exact. The list is in code
-# so that adding a product changes nothing; a new agent shelf needs a release.
-RESERVED_PROJECTS = (
-    "guardkit",
-    "guardkitfactory",
-    "forge",
-    "fleet_memory",
-    "nats_core",
-    "specialist_agent",
-    "jarvis",
-    "office_manager",
-    "ai_transition",
-    "software_factory",
-)
-
+# RESERVED_PROJECTS (the factory's own shelves) lives in fleet_memory.mcp.doors,
+# whose door settings refuse it too; it is imported above for this check and for
+# existing callers.
 SANDBOX_REFUSAL = (
     "the sandbox's memory door accepts only build outcomes that replace nothing, "
     f"and never on the factory's own shelves ({', '.join(RESERVED_PROJECTS)})"

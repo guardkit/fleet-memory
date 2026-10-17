@@ -27,7 +27,7 @@ from fleet_memory.mcp.doors import DOOR_PROJECT_REFUSAL, parse_sandbox_doors
 from fleet_memory.mcp.tools.write import SANDBOX_REFUSAL
 from fleet_memory.settings import Settings
 
-DOORS = "8006:proj_a|proj_b,8007:proj_c,8008:guardkit"
+DOORS = "8006:proj_a|proj_b,8007:proj_c"
 NARROW_THREE = {"memory_search", "memory_search_items", "memory_write_payload"}
 
 
@@ -77,9 +77,10 @@ class Estate:
         self.ports = [p for _, p in served]
 
     async def run(self, port: int, steps):
-        """Run ``steps(door_client)`` with the main server up and seeded with three projects."""
+        """Run ``steps(door_client)`` with the main server up and seeded with three
+        projects and the factory's guardkit shelf."""
         async with Client(self.main) as main_client:
-            for project in ("proj_a", "proj_b", "proj_c"):
+            for project in ("proj_a", "proj_b", "proj_c", "guardkit"):
                 written = await main_client.call_tool(
                     "memory_write_payload", {"payload": _outcome(project)}, raise_on_error=False
                 )
@@ -210,23 +211,21 @@ async def test_the_narrow_doors_rules_still_hold_on_a_project_door(monkeypatch, 
     assert await estate.keys("proj_c") == ["build_outcome:proj_c:TASK_1"]
 
 
-async def test_a_door_listing_a_factory_shelf_still_cannot_write_on_it(monkeypatch) -> None:
+async def test_a_project_door_cannot_write_on_a_factory_shelf(monkeypatch) -> None:
     estate = Estate(monkeypatch, doors=DOORS)
 
     async def steps(client: Client):
         return await _call(client, "memory_write_payload", {"payload": _outcome("guardkit")})
 
-    envelope, _ = await estate.run(8008, steps)
+    envelope, _ = await estate.run(8007, steps)
     assert envelope["is_error"] is True and envelope["message"] == SANDBOX_REFUSAL, envelope
-    assert await estate.keys("guardkit") == []
+    assert await estate.keys("guardkit") == ["build_outcome:guardkit:TASK_1"]
 
 
 # --- listings and the whole surface --------------------------------------------
 
 
-@pytest.mark.parametrize(
-    ("port", "expected"), [(8006, ["proj_a", "proj_b"]), (8007, ["proj_c"]), (8008, [])]
-)
+@pytest.mark.parametrize(("port", "expected"), [(8006, ["proj_a", "proj_b"]), (8007, ["proj_c"])])
 async def test_a_door_lists_only_its_own_projects(monkeypatch, port, expected) -> None:
     estate = Estate(monkeypatch, doors=DOORS)
 
@@ -270,7 +269,7 @@ async def test_a_door_offers_nothing_beyond_the_checked_tools_and_listing(monkey
 
 
 def test_each_entry_becomes_a_door_on_its_own_port(monkeypatch) -> None:
-    assert Estate(monkeypatch, doors=DOORS).ports == [8006, 8007, 8008]
+    assert Estate(monkeypatch, doors=DOORS).ports == [8006, 8007]
     assert parse_sandbox_doors(" 8006 : proj_a | proj_b ", main_port=8005)[0].projects == {
         "proj_a",
         "proj_b",
@@ -287,7 +286,7 @@ def test_main_serves_every_door_in_one_process(monkeypatch) -> None:
 
     monkeypatch.setattr(FastMCP, "run_http_async", run_http_async)
     entry.main()
-    assert http_ports == [8005, 8006, 8007, 8008]
+    assert http_ports == [8005, 8006, 8007]
 
 
 async def test_unset_keeps_the_single_door_serving_every_project(monkeypatch) -> None:
@@ -307,7 +306,7 @@ async def test_unset_keeps_the_single_door_serving_every_project(monkeypatch) ->
     assert [envelope["is_error"] for envelope, _ in found] == [False, False]
     assert "private marker for proj_c" in found[1][1]
     assert written["is_error"] is False, written
-    assert json.loads(listing[0].text) == ["proj_a", "proj_b", "proj_c"]
+    assert json.loads(listing[0].text) == ["guardkit", "proj_a", "proj_b", "proj_c"]
 
 
 def test_unset_with_no_sandbox_port_builds_no_door(monkeypatch) -> None:
@@ -332,6 +331,8 @@ def test_unset_with_no_sandbox_port_builds_no_door(monkeypatch) -> None:
         "8006:proj-a",
         "8006:proj_a|",
         "8006:proj_a,",
+        "8006:guardkit",
+        "8006:proj_a|forge",
     ],
 )
 def test_a_malformed_setting_refuses_to_start(monkeypatch, value) -> None:

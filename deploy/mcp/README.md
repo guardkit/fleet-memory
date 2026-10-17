@@ -79,6 +79,12 @@ service at start.
   door only), or a project name that is not lower-case letters, digits and
   `_`.
 
+  The factory's own shelves (`guardkit`, `forge` and the rest of
+  `RESERVED_PROJECTS`) cannot be on a door: the `guardkit` shelf holds build
+  outcomes from many projects, so a door reading it would leak them. Door
+  lists take lower-case memory names only; a project whose memory name has
+  upper-case letters gets no door, which fails safe.
+
 Give each sandbox its own door and keep a project on one door only. To move a
 project to a new sandbox, take it off its old door's list first, then add the
 new door with it.

@@ -23,6 +23,27 @@ from dataclasses import dataclass
 _PROJECT_NAME = re.compile(r"[a-z0-9_]+")
 _PORT = re.compile(r"[0-9]{1,5}")
 
+# THE SANDBOX'S NARROW DOOR (15 October 2026). Code in a build can reach the
+# sandbox's door, so a write there must not plant records where the factory or
+# its agents will read them as their own. These are the factory's and its
+# agents' shelves (memory projects); the narrow door never writes on them,
+# and no door may serve them (17 October 2026): the guardkit shelf, for one,
+# holds build outcomes from many projects, so reading it would leak them. The
+# match is exact after lower-casing, as searches are exact. The list is in code
+# so that adding a product changes nothing; a new agent shelf needs a release.
+RESERVED_PROJECTS = (
+    "guardkit",
+    "guardkitfactory",
+    "forge",
+    "fleet_memory",
+    "nats_core",
+    "specialist_agent",
+    "jarvis",
+    "office_manager",
+    "ai_transition",
+    "software_factory",
+)
+
 # The same words for every refusal, naming no project: neither the one asked
 # for nor the door's own.
 DOOR_PROJECT_REFUSAL = "this sandbox's memory door does not serve that project"
@@ -78,6 +99,11 @@ def parse_sandbox_doors(value: str, *, main_port: int) -> list[SandboxDoor]:
                 raise ValueError(
                     f"FLEET_MEMORY_MCP_SANDBOX_DOORS: {name!r} is not a project name "
                     "(lower-case letters, digits and '_' only)"
+                )
+            if name.lower() in RESERVED_PROJECTS:
+                raise ValueError(
+                    f"FLEET_MEMORY_MCP_SANDBOX_DOORS: {name!r} is a factory shelf and "
+                    "cannot be on a sandbox door"
                 )
             if name in seen_projects:
                 raise ValueError(
