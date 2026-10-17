@@ -195,6 +195,7 @@ def _settings(monkeypatch: pytest.MonkeyPatch, sandbox_port: str) -> Settings:
     monkeypatch.setenv("FLEET_MEMORY_MCP_TRANSPORT", "http")
     monkeypatch.setenv("FLEET_MEMORY_MCP_ALLOWED_HOSTS", "")
     monkeypatch.setenv("FLEET_MEMORY_MCP_SANDBOX_PORT", sandbox_port)
+    monkeypatch.delenv("FLEET_MEMORY_MCP_SANDBOX_DOORS", raising=False)
     return Settings()
 
 
@@ -212,8 +213,8 @@ def _record_runs(monkeypatch: pytest.MonkeyPatch) -> tuple[list[Any], list[Any]]
 
 def test_with_no_sandbox_port_only_one_server_is_built(monkeypatch) -> None:
     settings = _settings(monkeypatch, "")
-    mcp, door = entry.build_servers(settings)
-    assert door is None
+    mcp, doors = entry.build_servers(settings)
+    assert doors == []
 
     runs, http_runs = _record_runs(monkeypatch)
     entry.main()
@@ -243,8 +244,8 @@ async def test_both_servers_share_one_store_which_only_the_main_server_opens(mon
         yield store
 
     monkeypatch.setattr("fleet_memory.store.async_store_context", stand_in_store_context)
-    mcp, door = entry.build_servers(_settings(monkeypatch, "8006"))
-    assert door is not None
+    mcp, [(door, port)] = entry.build_servers(_settings(monkeypatch, "8006"))
+    assert port == 8006
 
     # The narrow door starts first here, as it may in the real process: it
     # must not open a store of its own, and it must see the main server's.

@@ -50,6 +50,60 @@ must be on the list unless every such client overrides that URL.
 Left empty (the default, and this compose file's setting), no host check is
 made, as before. The registration below uses `127.0.0.1`, which needs no entry.
 
+## Doors for build sandboxes
+
+A build sandbox never uses the main port. It reaches a narrow door: a second
+listener in the same process, over the same store, offering only
+`memory_search`, `memory_search_items`, `memory_write_payload` (build outcomes
+that replace nothing, never on the factory's own shelves) and
+`memory://projects`.
+
+There are two ways to run it. Use one or the other; setting both stops the
+service at start.
+
+- **One door for every project** (the original form):
+  `FLEET_MEMORY_MCP_SANDBOX_PORT=8006`. It serves any project.
+- **One door per sandbox** (17 October 2026):
+  `FLEET_MEMORY_MCP_SANDBOX_DOORS=8006:proj_a|proj_b,8007:proj_c`. Each
+  comma-separated entry is a port and the projects that door serves,
+  separated by `|`. On top of the narrow door's rules, each door:
+  - refuses a search (either tool) whose `project` is not on its list, or is
+    missing or empty;
+  - refuses a write whose payload's `project` is not on its list;
+  - lists only its own projects in `memory://projects`.
+
+  A refusal is a plain client error, "this sandbox's memory door does not
+  serve that project", which names no project. The service will not start if
+  the value is malformed: a missing port or project, a port outside 1-65535,
+  the main port, a port or a project listed twice (a project belongs to one
+  door only), or a project name that is not lower-case letters, digits and
+  `_`.
+
+Give each sandbox its own door and keep a project on one door only. To move a
+project to a new sandbox, take it off its old door's list first, then add the
+new door with it.
+
+### Running several door ports
+
+All doors run in this one process, so a deployment changes in three places
+when it adds a door:
+
+1. **The setting**: add the entry to `FLEET_MEMORY_MCP_SANDBOX_DOORS`.
+2. **Publishing**: each door's container port must be reachable from its own
+   sandbox only. With host networking (this compose file) each port is
+   already on the host. With a bridge network, publish each one, for example
+   `"<gateway-address>:<published-port>:8007"`, next to the existing
+   `...:8006` line.
+3. **The guards**: admit each published port from the sandboxes' machine
+   only, as for the first door. If several sandboxes run on one machine they
+   arrive from the same address, so each sandbox's own network rules must
+   allow only its own door port; the door's project list is the second line
+   of defence, not the only one.
+
+The host-name check (`FLEET_MEMORY_MCP_ALLOWED_HOSTS`) compares names only, so
+the gateway address listed once covers every door port. If the container has
+a health probe that asks each port, add the new port to it.
+
 ## Verify
 
 - `docker logs fleet-memory-mcp` → `starting http transport on 0.0.0.0:8005`,

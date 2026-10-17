@@ -20,7 +20,9 @@ if TYPE_CHECKING:
 
 
 @tool_safe
-async def _read_projects(context: ServerContext) -> list[str]:
+async def _read_projects(
+    context: ServerContext, allowed_projects: frozenset[str] | None = None
+) -> list[str]:
     """Read the list of projects that have memories in the store.
 
     Uses alist_namespaces (the async store API) to discover distinct project segments from
@@ -29,6 +31,8 @@ async def _read_projects(context: ServerContext) -> list[str]:
 
     Args:
         context: ServerContext with store dependency
+        allowed_projects: on a sandbox's own door, the only projects it may
+            name; others in the store are left out. None lists every project.
 
     Returns:
         Sorted list of project identifiers
@@ -52,12 +56,16 @@ async def _read_projects(context: ServerContext) -> list[str]:
     # Filter to only include 2-segment namespaces (fleet_memory, project)
     # or 3-segment namespaces (fleet_memory, project, payload_type)
     projects = {ns[1] for ns in namespaces if len(ns) >= 2}
+    if allowed_projects is not None:
+        projects &= allowed_projects
 
     # Return sorted list for consistent ordering
     return sorted(projects)
 
 
-def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
+def register_projects_resource(
+    mcp: FastMCP, context: ServerContext, allowed_projects: frozenset[str] | None = None
+) -> None:
     """Register the memory://projects resource with the MCP server.
 
     Registers a resource at URI memory://projects that lists projects
@@ -67,6 +75,7 @@ def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
     Args:
         mcp: FastMCP server instance
         context: ServerContext with store dependency
+        allowed_projects: a sandbox's own door: list only these projects
     """
 
     @mcp.resource("memory://projects")
@@ -86,7 +95,7 @@ def register_projects_resource(mcp: FastMCP, context: ServerContext) -> None:
                 "message": "The memory store is unavailable"
             }
         """
-        result = await _read_projects(context)
+        result = await _read_projects(context, allowed_projects)
 
         # Check if we got an error result from tool_safe wrapper
         if hasattr(result, "is_error") and result.is_error:

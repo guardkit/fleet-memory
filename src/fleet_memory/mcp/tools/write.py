@@ -19,6 +19,7 @@ from pydantic import ValidationError
 
 from fleet_memory.errors import PoisonEpisodeError, TransientIngestError
 from fleet_memory.mcp.degradation import ToolResult, _sanitize_message, tool_safe
+from fleet_memory.mcp.doors import check_door_project
 from fleet_memory.payloads.registry import get_model_for_type
 from fleet_memory.relay.schema import MAX_ENVELOPE_BYTES, SUBJECT_TOKEN_RE, MemoryEpisodeV1
 
@@ -56,6 +57,7 @@ async def memory_write_payload(
     payload_dict: dict[str, Any],
     writer: DeterministicWriter,
     sandbox: bool = False,
+    allowed_projects: frozenset[str] | None = None,
 ) -> str:
     """Write a typed payload through the deterministic writer.
 
@@ -71,6 +73,8 @@ async def memory_write_payload(
         writer: DeterministicWriter instance from ServerContext
         sandbox: True on the sandbox's narrow door, which writes only a
             build_outcome with no supersedes, never on RESERVED_PROJECTS
+        allowed_projects: on a sandbox's own door, the only projects it writes
+            for, on top of the narrow door's rules; None writes for any project
 
     Returns:
         The derived natural key (e.g., "adr:my_project:ADR_001")
@@ -115,6 +119,8 @@ async def memory_write_payload(
         or payload.project.lower() in RESERVED_PROJECTS
     ):
         raise ValueError(SANDBOX_REFUSAL)
+    # Step 3c: a sandbox's own door writes only for its own projects (17 October 2026)
+    check_door_project(payload.project, allowed_projects)
 
     # Step 4: Write through the deterministic writer (single write path)
     # Idempotency, content-hash upsert, and supersession are handled by the writer
@@ -202,7 +208,9 @@ async def memory_publish_envelope(
     return ToolResult(is_error=False, value={"episode_id": episode.episode_id})
 
 
-def register(mcp, context, sandbox: bool = False) -> None:
+def register(
+    mcp, context, sandbox: bool = False, allowed_projects: frozenset[str] | None = None
+) -> None:
     """Register the memory_write_payload tool with the FastMCP server.
 
     Extension point implementation for TASK-MCP-001.
@@ -212,6 +220,8 @@ def register(mcp, context, sandbox: bool = False) -> None:
         context: ServerContext with dependencies
         sandbox: True for the sandbox's narrow door: the write is checked
             (see RESERVED_PROJECTS) and memory_publish_envelope is not offered
+        allowed_projects: a sandbox's own door (needs ``sandbox``): the only
+            projects the write accepts
     """
 
     # Canonical name — matches the command specs' mcp__fleet_memory__memory_write_payload
@@ -240,7 +250,9 @@ def register(mcp, context, sandbox: bool = False) -> None:
             }
 
         # Call the wrapped implementation
-        result = await memory_write_payload(payload, writer, sandbox=sandbox)
+        result = await memory_write_payload(
+            payload, writer, sandbox=sandbox, allowed_projects=allowed_projects
+        )
 
         # Return ToolResult directly (FastMCP will serialize it)
         return result
