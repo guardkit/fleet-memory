@@ -136,7 +136,13 @@ def create_mcp_server(context: ServerContext, *, opens_store: bool = True) -> Fa
     return mcp
 
 
-def register_all(mcp: FastMCP, context: ServerContext, *, sandbox: bool = False) -> None:
+def register_all(
+    mcp: FastMCP,
+    context: ServerContext,
+    *,
+    sandbox: bool = False,
+    allowed_projects: frozenset[str] | None = None,
+) -> None:
     """Register all MCP tools and resources on the given server instance.
 
     Extension point for Wave-3 tool registration tasks. Each tool task
@@ -150,6 +156,9 @@ def register_all(mcp: FastMCP, context: ServerContext, *, sandbox: bool = False)
             memory_write_payload that takes only build outcomes which replace
             nothing, off the factory's own shelves; not memory_supersede or
             memory_publish_envelope.
+        allowed_projects: one sandbox's own door (17 October 2026), on top of
+            ``sandbox``: both searches, the write and memory://projects serve
+            only these projects. None serves every project, as before.
 
     Example (future Wave-3 registrations):
         from fleet_memory.mcp.tools import search_tool, store_tool
@@ -159,12 +168,15 @@ def register_all(mcp: FastMCP, context: ServerContext, *, sandbox: bool = False)
     # Register resources
     from fleet_memory.mcp.resources import register_projects_resource
 
-    register_projects_resource(mcp, context)
+    if allowed_projects is not None and not sandbox:
+        raise ValueError("a door bound to projects must also be a sandbox door")
+
+    register_projects_resource(mcp, context, allowed_projects)
 
     # Wave-3 tool registrations
     from fleet_memory.mcp.tools import search, supersede, write
 
-    search.register(mcp, context)
+    search.register(mcp, context, allowed_projects)
     if not sandbox:
         supersede.register(mcp, context)
-    write.register(mcp, context, sandbox=sandbox)
+    write.register(mcp, context, sandbox=sandbox, allowed_projects=allowed_projects)

@@ -17,6 +17,7 @@ import logging
 import sys
 from typing import TYPE_CHECKING, Any
 
+from fleet_memory.mcp.doors import parse_sandbox_doors
 from fleet_memory.mcp.server import ServerContext, create_mcp_server, register_all
 from fleet_memory.settings import Settings
 
@@ -61,29 +62,48 @@ def http_guard_options(settings: Settings) -> dict[str, Any]:
     return {"allowed_hosts": allowed_hosts, "host_origin_protection": True}
 
 
-def build_servers(settings: Settings) -> tuple[FastMCP, FastMCP | None]:
-    """The main server, and the sandbox's narrow door when its port is set.
+def build_servers(settings: Settings) -> tuple[FastMCP, list[tuple[FastMCP, int]]]:
+    """The main server, and the sandbox doors with the port each listens on.
 
-    Both are built over one ServerContext. Only the main server opens the
-    store; the narrow door's tools read the context at call time, so they use
-    the store the main server opened. With FLEET_MEMORY_MCP_SANDBOX_PORT empty
-    the second value is None and only the main server exists, as before.
+    All are built over one ServerContext. Only the main server opens the
+    store; the doors' tools read the context at call time, so they use the
+    store the main server opened.
+
+    - Neither sandbox setting: only the main server, as before.
+    - FLEET_MEMORY_MCP_SANDBOX_PORT: the single narrow door, serving every
+      project, exactly as before.
+    - FLEET_MEMORY_MCP_SANDBOX_DOORS (17 October 2026): one narrow door per
+      entry, each serving only its own projects.
+
+    Raises ValueError when the doors setting is malformed or both are set, so
+    the service refuses to start rather than open a door wider than intended.
     """
+    doors = parse_sandbox_doors(settings.mcp_sandbox_doors, main_port=settings.mcp_port)
+    single_port = settings.mcp_sandbox_port.strip()
+    if doors and single_port:
+        raise ValueError(
+            "set FLEET_MEMORY_MCP_SANDBOX_DOORS or FLEET_MEMORY_MCP_SANDBOX_PORT, not both"
+        )
     # Create server context (store and writer are built lazily in lifespan)
     context = ServerContext(store=None, writer=None, settings=settings)
     mcp = create_mcp_server(context)
     register_all(mcp, context)
-    if not settings.mcp_sandbox_port.strip():
-        return mcp, None
-    door = create_mcp_server(context, opens_store=False)
-    register_all(door, context, sandbox=True)
-    return mcp, door
+    served: list[tuple[FastMCP, int]] = []
+    if single_port:
+        door = create_mcp_server(context, opens_store=False)
+        register_all(door, context, sandbox=True)
+        served.append((door, int(single_port)))
+    for entry in doors:
+        door = create_mcp_server(context, opens_store=False)
+        register_all(door, context, sandbox=True, allowed_projects=entry.projects)
+        served.append((door, entry.port))
+    return mcp, served
 
 
 async def _serve_both(served: list[tuple[FastMCP, int]], host: str, guard: dict[str, Any]) -> None:
-    """Run both http servers in one process; when either stops, the process ends.
+    """Run the http servers in one process; when any stops, the process ends.
 
-    A stop by signal reaches both (uvicorn passes the signal on), so the other
+    A stop by signal reaches each (uvicorn passes the signal on), so the others
     gets a few seconds to finish cleanly before it is cancelled. A failure is
     raised again, so the process exits with an error and Compose restarts it.
     """
@@ -124,7 +144,11 @@ def main() -> None:
         sys.exit(1)
 
     # Build the FastMCP server(s) and register their tools
-    mcp, door = build_servers(settings)
+    try:
+        mcp, doors = build_servers(settings)
+    except ValueError as e:
+        logger.error("Refusing to start: %s", e)
+        sys.exit(1)
 
     transport = settings.mcp_transport.strip().lower()
     if transport == "http":
@@ -135,14 +159,10 @@ def main() -> None:
             settings.mcp_port,
             ", ".join(guard["allowed_hosts"]) if guard["allowed_hosts"] else "not checked",
         )
-        if door is not None:
-            sandbox_port = int(settings.mcp_sandbox_port)
-            logger.info("and the sandbox's narrow door on %s:%s", settings.mcp_host, sandbox_port)
-            asyncio.run(
-                _serve_both(
-                    [(mcp, settings.mcp_port), (door, sandbox_port)], settings.mcp_host, guard
-                )
-            )
+        if doors:
+            for _door, port in doors:
+                logger.info("and a sandbox's narrow door on %s:%s", settings.mcp_host, port)
+            asyncio.run(_serve_both([(mcp, settings.mcp_port), *doors], settings.mcp_host, guard))
             return
         mcp.run(
             transport="http",

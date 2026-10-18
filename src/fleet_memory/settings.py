@@ -168,6 +168,16 @@ class Settings(BaseSettings):
         "that takes only build outcomes which replace nothing, off the factory's own "
         "shelves. Empty means no narrow door (FLEET_MEMORY_MCP_SANDBOX_PORT)",
     )
+    mcp_sandbox_doors: str = Field(
+        default="",
+        description="One narrow door per build sandbox, each bound to its own projects "
+        "(17 October 2026): comma-separated '<port>:<project>|<project>' entries, for "
+        "example '8006:proj_a|proj_b,8007:proj_c'. Each door has the narrow door's "
+        "rules and also refuses any search, write or listing outside its own projects. "
+        "A project may belong to one door only. Use this or FLEET_MEMORY_MCP_SANDBOX_PORT, "
+        "not both; a malformed value stops the service at start "
+        "(FLEET_MEMORY_MCP_SANDBOX_DOORS)",
+    )
 
     # DLQ configuration
     dlq_subject: str = Field(
