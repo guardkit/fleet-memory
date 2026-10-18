@@ -20,8 +20,47 @@ WORKDIR /app
 
 # Install the package (src layout: [tool.setuptools.packages.find] where=["src"]).
 COPY pyproject.toml ./
+COPY uv.lock ./
 COPY src ./src
-RUN pip install --no-cache-dir .
+
+# THE VERSIONS ARE THIS REPOSITORY'S OWN LOCKED ONES, not whatever the index
+# serves on the day of the build (18 October 2026, security fix list A6).
+#
+# pyproject.toml declares RANGES, and a developer's environment is built from
+# uv.lock. Installing the ranges straight from the index makes every build a
+# different program, and lets a broken or compromised release on the index into
+# the image even after uv.lock has been fixed. So the lock is turned into a pip
+# constraints file and the install is held to it, the same way Jarvis's image
+# does it. The one package the lock resolves from a local path (this package
+# itself) is left out: a constraint is a version, and it has no version on an
+# index.
+#
+# This is NOT a second source of truth. uv.lock stays the one place the
+# versions are written; this step only reads it.
+RUN python - <<'PY'
+import tomllib
+locked = tomllib.load(open("uv.lock", "rb"))
+with open("/tmp/constraints.txt", "w") as out:
+    for package in locked["package"]:
+        source = package.get("source", {})
+        if "registry" not in source:
+            continue
+        out.write(f"{package['name']}=={package['version']}\n")
+PY
+
+# The base image's own pip is upgraded first, to a pinned version, because the
+# one the base ships has published advisories (OSV-Scanner, 18 October 2026:
+# pip 26.0.1, fixed in 26.2). pip is not in uv.lock, so it is pinned here.
+#
+# THE BUILD BACK END IS PINNED TOO. This package is built by setuptools
+# (pyproject.toml asks for setuptools>=61.0). Left to itself, pip builds it in a
+# throwaway environment and fetches whatever setuptools the index serves that
+# day, and the lock constraints do not reach that environment. So setuptools is
+# installed here at an exact version (83.0.0, released 4 July 2026; it is not in
+# uv.lock, and it needs nothing else to build a wheel), and the package is
+# installed with --no-build-isolation so it builds with exactly that.
+RUN pip install --no-cache-dir --disable-pip-version-check 'pip==26.2' 'setuptools==83.0.0' \
+    && pip install --no-cache-dir --no-build-isolation -c /tmp/constraints.txt .
 
 # RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). The same fixed number,
 # 1000:1000, as the relay image and the factory's other images. The service writes
