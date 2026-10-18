@@ -49,7 +49,11 @@ with open("/tmp/constraints.txt", "w") as out:
         out.write(f"{package['name']}=={package['version']}\n")
 PY
 
-RUN pip install --no-cache-dir -c /tmp/constraints.txt ".[relay]"
+# The base image's own pip is upgraded first, to a pinned version, because the
+# one the base ships has published advisories (OSV-Scanner, 18 October 2026:
+# pip 26.0.1, fixed in 26.2). pip is not in uv.lock, so it is pinned here.
+RUN pip install --no-cache-dir --disable-pip-version-check 'pip==26.2' \
+    && pip install --no-cache-dir -c /tmp/constraints.txt ".[relay]"
 
 # RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). A fixed number, 1000:1000,
 # the same one the factory's other images use, so that:
