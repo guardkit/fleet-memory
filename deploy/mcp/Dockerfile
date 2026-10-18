@@ -51,8 +51,16 @@ PY
 # The base image's own pip is upgraded first, to a pinned version, because the
 # one the base ships has published advisories (OSV-Scanner, 18 October 2026:
 # pip 26.0.1, fixed in 26.2). pip is not in uv.lock, so it is pinned here.
-RUN pip install --no-cache-dir --disable-pip-version-check 'pip==26.2' \
-    && pip install --no-cache-dir -c /tmp/constraints.txt .
+#
+# THE BUILD BACK END IS PINNED TOO. This package is built by setuptools
+# (pyproject.toml asks for setuptools>=61.0). Left to itself, pip builds it in a
+# throwaway environment and fetches whatever setuptools the index serves that
+# day, and the lock constraints do not reach that environment. So setuptools is
+# installed here at an exact version (83.0.0, released 4 July 2026; it is not in
+# uv.lock, and it needs nothing else to build a wheel), and the package is
+# installed with --no-build-isolation so it builds with exactly that.
+RUN pip install --no-cache-dir --disable-pip-version-check 'pip==26.2' 'setuptools==83.0.0' \
+    && pip install --no-cache-dir --no-build-isolation -c /tmp/constraints.txt .
 
 # RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). The same fixed number,
 # 1000:1000, as the relay image and the factory's other images. The service writes
