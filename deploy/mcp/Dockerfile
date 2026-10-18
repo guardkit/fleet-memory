@@ -20,8 +20,35 @@ WORKDIR /app
 
 # Install the package (src layout: [tool.setuptools.packages.find] where=["src"]).
 COPY pyproject.toml ./
+COPY uv.lock ./
 COPY src ./src
-RUN pip install --no-cache-dir .
+
+# THE VERSIONS ARE THIS REPOSITORY'S OWN LOCKED ONES, not whatever the index
+# serves on the day of the build (18 October 2026, security fix list A6).
+#
+# pyproject.toml declares RANGES, and a developer's environment is built from
+# uv.lock. Installing the ranges straight from the index makes every build a
+# different program, and lets a broken or compromised release on the index into
+# the image even after uv.lock has been fixed. So the lock is turned into a pip
+# constraints file and the install is held to it, the same way Jarvis's image
+# does it. The one package the lock resolves from a local path (this package
+# itself) is left out: a constraint is a version, and it has no version on an
+# index.
+#
+# This is NOT a second source of truth. uv.lock stays the one place the
+# versions are written; this step only reads it.
+RUN python - <<'PY'
+import tomllib
+locked = tomllib.load(open("uv.lock", "rb"))
+with open("/tmp/constraints.txt", "w") as out:
+    for package in locked["package"]:
+        source = package.get("source", {})
+        if "registry" not in source:
+            continue
+        out.write(f"{package['name']}=={package['version']}\n")
+PY
+
+RUN pip install --no-cache-dir -c /tmp/constraints.txt .
 
 # RUN AS AN ORDINARY USER, NOT ROOT (16 October 2026). The same fixed number,
 # 1000:1000, as the relay image and the factory's other images. The service writes
