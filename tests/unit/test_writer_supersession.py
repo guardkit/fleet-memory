@@ -227,7 +227,7 @@ async def test_forward_supersession_applied_when_key_appears(
     successor_existing.value = successor_calls[0]
     successor_existing.key = successor_key
 
-    async def mock_asearch_with_successor(namespace):
+    async def mock_asearch_with_successor(namespace, **kwargs):
         return [successor_existing]
 
     mock_store.asearch = AsyncMock(side_effect=mock_asearch_with_successor)

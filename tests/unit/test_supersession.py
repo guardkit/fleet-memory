@@ -249,7 +249,7 @@ async def test_forward_supersession_succeeds(make_adr_payload, mock_store, mock_
             return successor_existing
         return None
 
-    async def mock_asearch_with_successor(namespace):
+    async def mock_asearch_with_successor(namespace, **kwargs):
         # Return the successor record that declares it supersedes ADR_001
         return [successor_existing]
 
@@ -517,3 +517,31 @@ async def test_apply_supersessions_helper_marks_multiple_predecessors(
     for pred in predecessors:
         key = str(record_identity(pred.natural_key))
         assert state[key].get("superseded_by") == successor_key
+
+
+@pytest.mark.asyncio
+async def test_forward_supersession_reads_every_page():
+    """A successor past the first page of the namespace is still found."""
+    from fleet_memory.writer import supersession
+
+    def item(key, supersedes=None):
+        found = MagicMock()
+        found.value = {"natural_key": key} | ({"supersedes": supersedes} if supersedes else {})
+        return found
+
+    page = supersession._FORWARD_PAGE
+    others = [item(f"adr:test_proj:ADR_{n:04d}") for n in range(page)]
+    successor = item("adr:test_proj:ADR_0022", ["adr:test_proj:ADR_0016"])
+
+    async def paged(namespace, *, limit, offset):
+        return (others + [successor])[offset:offset + limit]
+
+    store = MagicMock()
+    store.asearch = AsyncMock(side_effect=paged)
+
+    found = await supersession._apply_forward_supersessions(
+        store, "adr:test_proj:ADR_0016", ("fleet_memory", "test_proj", "adr")
+    )
+
+    assert found == "adr:test_proj:ADR_0022"
+    assert store.asearch.await_count == 2

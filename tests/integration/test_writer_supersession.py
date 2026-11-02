@@ -192,6 +192,37 @@ async def test_forward_supersession_with_real_store(
     assert record.value["superseded_by"] == successor.natural_key
 
 
+@pytest.mark.integration
+async def test_forward_supersession_found_among_many_records(
+    make_adr_payload, store_context, settings_fixture
+):
+    """The successor is found however many records share its namespace.
+
+    Seeding a real project (Bitwarden's decisions, 2 November 2026) wrote each
+    successor, then other records, then the old record: with more than 10
+    records in the namespace the old record stayed live.
+    """
+    store, _ = store_context
+    writer = DeterministicWriter(store, settings_fixture)
+
+    successor = make_adr_payload(
+        identifier="ADR_0022",
+        decision="Use ASP.NET Core authorization",
+        supersedes=["adr:test_proj:ADR_0016"],
+    )
+    await writer.write(successor)
+    for n in range(30, 55):
+        await writer.write(make_adr_payload(identifier=f"ADR_00{n}", decision=f"Decision {n}"))
+
+    predecessor = make_adr_payload(identifier="ADR_0016", decision="Check ICurrentContext")
+    await writer.write(predecessor)
+
+    namespace = ("fleet_memory", predecessor.project, predecessor.payload_type)
+    record = await store.aget(namespace, str(record_identity(predecessor.natural_key)))
+    assert record is not None
+    assert record.value.get("superseded_by") == successor.natural_key
+
+
 # AC-004: Cross-project supersession
 @pytest.mark.integration
 async def test_cross_project_supersession_with_real_store(

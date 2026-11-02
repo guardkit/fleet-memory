@@ -23,6 +23,11 @@ from fleet_memory.writer.identity import record_identity
 if TYPE_CHECKING:
     from langgraph.store.postgres.aio import AsyncPostgresStore
 
+# Records read per page when looking for a forward supersession. The store's
+# search returns 10 records unless told otherwise, so a single call missed any
+# successor beyond the first 10 in the namespace.
+_FORWARD_PAGE = 100
+
 
 async def apply_supersessions(
     store: AsyncPostgresStore,
@@ -107,16 +112,23 @@ async def _apply_forward_supersessions(
 
     try:
         # Search for records that have supersedes field containing our natural_key
-        # Note: This is a simplified approach - searches only within same namespace
-        results = await store.asearch(namespace)
+        # Note: This is a simplified approach - searches only within same namespace.
+        # Every page is read: the successor can be anywhere in the namespace.
+        offset = 0
+        while True:
+            results = await store.asearch(namespace, limit=_FORWARD_PAGE, offset=offset)
 
-        # Check each result for forward supersession declaration
-        for item in results:
-            if item.value and "supersedes" in item.value:
-                supersedes_list = item.value["supersedes"]
-                if natural_key in supersedes_list:
-                    # Found a record that declares it supersedes this key
-                    return item.value.get("natural_key")
+            # Check each result for forward supersession declaration
+            for item in results:
+                if item.value and "supersedes" in item.value:
+                    supersedes_list = item.value["supersedes"]
+                    if natural_key in supersedes_list:
+                        # Found a record that declares it supersedes this key
+                        return item.value.get("natural_key")
+
+            if len(results) < _FORWARD_PAGE:
+                break
+            offset += _FORWARD_PAGE
 
     except Exception:
         # If search fails, continue without forward supersession
