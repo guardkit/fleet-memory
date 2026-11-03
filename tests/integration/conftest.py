@@ -220,61 +220,63 @@ def ephemeral_pg_factory(
     created_projects: list[tuple[str, Path]] = []
 
     def _factory() -> Generator[str, None, None]:
-        """Generate a new ephemeral PostgreSQL instance."""
-        # Check Docker availability
-        docker_check = subprocess.run(
-            ["docker", "info"],
-            capture_output=True,
-            check=False,
-        )
-        if docker_check.returncode != 0:
-            pytest.skip("Docker is not available")
+        """Generate a new ephemeral PostgreSQL instance on every next().
 
-        project_uid = uuid4().hex[:8]
-        project_name = f"fleet_memory_test_{project_uid}"
-        port = _get_random_port()
+        Instances stay up until session cleanup: a test may hold several at once,
+        and a one-shot generator left later tests a StopIteration.
+        """
+        while True:
+            # Check Docker availability
+            docker_check = subprocess.run(
+                ["docker", "info"],
+                capture_output=True,
+                check=False,
+            )
+            if docker_check.returncode != 0:
+                pytest.skip("Docker is not available")
 
-        repo_root = Path(__file__).parent.parent.parent
-        compose_file = repo_root / "deploy" / "local" / "docker-compose.yml"
+            project_uid = uuid4().hex[:8]
+            project_name = f"fleet_memory_test_{project_uid}"
+            port = _get_random_port()
 
-        if not compose_file.exists():
-            raise RuntimeError(f"Docker Compose file not found at {compose_file}")
+            repo_root = Path(__file__).parent.parent.parent
+            compose_file = repo_root / "deploy" / "local" / "docker-compose.yml"
 
-        env = os.environ.copy()
-        env["PGPORT"] = str(port)
+            if not compose_file.exists():
+                raise RuntimeError(f"Docker Compose file not found at {compose_file}")
 
-        start_result = subprocess.run(
-            [
-                "docker",
-                "compose",
-                "-f",
-                str(compose_file),
-                "-p",
-                project_name,
-                "up",
-                "-d",
-                "--wait",
-            ],
-            env=env,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+            env = os.environ.copy()
+            env["PGPORT"] = str(port)
 
-        if start_result.returncode != 0:
-            raise RuntimeError(f"Failed to start ephemeral PostgreSQL: {start_result.stderr}")
+            start_result = subprocess.run(
+                [
+                    "docker",
+                    "compose",
+                    "-f",
+                    str(compose_file),
+                    "-p",
+                    project_name,
+                    "up",
+                    "-d",
+                    "--wait",
+                ],
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
 
-        if not _wait_for_pg_health(project_name, compose_file, timeout=30):
-            _teardown_compose(project_name, compose_file)
-            raise RuntimeError("Ephemeral PostgreSQL did not become healthy within 30 seconds")
+            if start_result.returncode != 0:
+                raise RuntimeError(f"Failed to start ephemeral PostgreSQL: {start_result.stderr}")
 
-        created_projects.append((project_name, compose_file))
-        dsn = f"postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory"
+            if not _wait_for_pg_health(project_name, compose_file, timeout=30):
+                _teardown_compose(project_name, compose_file)
+                raise RuntimeError("Ephemeral PostgreSQL did not become healthy within 30 seconds")
 
-        yield dsn
+            created_projects.append((project_name, compose_file))
+            dsn = f"postgresql://fleet_memory:fleet_memory@127.0.0.1:{port}/fleet_memory"
 
-        # Teardown this instance
-        _teardown_compose(project_name, compose_file)
+            yield dsn
 
     # Register global cleanup for all factory-created instances
     def cleanup_all() -> None:
