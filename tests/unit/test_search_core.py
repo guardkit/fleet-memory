@@ -412,8 +412,8 @@ async def test_search_timeout_fails_explicitly(make_search_request, monkeypatch,
 
 
 @pytest.mark.asyncio
-async def test_default_search_does_not_gain_substantive_deadline(
-    make_search_request, monkeypatch,
+async def test_default_search_has_the_same_deadline(
+    make_search_request, monkeypatch, caplog,
 ):
     import fleet_memory.retrieval.core as core
 
@@ -423,12 +423,74 @@ async def test_default_search_does_not_gain_substantive_deadline(
             return [_outcome_item(1, substantive=False)]
 
     monkeypatch.setattr(core, "_SEARCH_TIMEOUT_SECONDS", 0)
-    results = await search(
-        make_search_request(payload_types=["build_outcome"]),
-        SlowStore(),
+    with pytest.raises(TimeoutError):
+        await search(make_search_request(payload_types=["build_outcome"]), SlowStore())
+
+    assert "exceeded 0s timeout" in caplog.text
+
+
+def _superseded(item: SearchItem) -> SearchItem:
+    item.value["superseded_by"] = "build_outcome:test_project:successor"
+    return item
+
+
+@pytest.mark.asyncio
+async def test_default_search_pages_past_superseded_records(make_search_request):
+    """Twelve superseded records ranked first cannot hide the live one at rank 13."""
+    store = _FilterThenLimitStore(
+        [
+            *[_superseded(_outcome_item(rank, substantive=True)) for rank in range(1, 13)],
+            _outcome_item(13, substantive=False),
+        ]
     )
 
-    assert [item.key for item in results] == ["key-1"]
+    results = await search(make_search_request(payload_types=["build_outcome"]), store)
+
+    assert [item.key for item in results] == ["key-13"]
+    assert len(store.calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_default_search_pages_past_untagged_records(make_search_request):
+    """A tag filter finds tagged records ranked below ten untagged ones."""
+    items = [_outcome_item(rank, substantive=False) for rank in range(1, 16)]
+    for item in items[11:]:
+        item.value["domain_tags"] = ["auth"]
+    store = _FilterThenLimitStore(items)
+
+    results = await search(
+        make_search_request(payload_types=["build_outcome"], domain_tags=["auth"]),
+        store,
+    )
+
+    assert [item.key for item in results] == ["key-12", "key-13", "key-14", "key-15"]
+
+
+@pytest.mark.asyncio
+async def test_default_search_keeps_metadata_only_records(make_search_request):
+    """Paging does not drop records without prose unless the caller opts in."""
+    store = _FilterThenLimitStore(
+        [_outcome_item(rank, substantive=False) for rank in range(1, 13)]
+    )
+
+    results = await search(make_search_request(payload_types=["build_outcome"]), store)
+
+    assert [item.key for item in results] == [f"key-{rank}" for rank in range(1, 11)]
+    assert len(store.calls) == 1
+
+
+@pytest.mark.asyncio
+async def test_default_scan_bound_returns_what_it_found(make_search_request, caplog):
+    """An ordinary search at the scan bound returns its matches, not an error."""
+    items = [_superseded(_outcome_item(rank, substantive=False)) for rank in range(1, 1101)]
+    items[4] = _outcome_item(5, substantive=False)
+    store = _FilterThenLimitStore(items)
+
+    results = await search(make_search_request(payload_types=["build_outcome"]), store)
+
+    assert [item.key for item in results] == ["key-5"]
+    assert len(store.calls) == 103
+    assert "scan bound" in caplog.text
 
 
 @pytest.mark.asyncio

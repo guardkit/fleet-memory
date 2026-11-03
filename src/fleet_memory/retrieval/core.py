@@ -190,14 +190,7 @@ async def _search_partition(
     while len(accepted) < _RANKED_RESULT_LIMIT and not exhausted:
         remaining = _MAX_SCANNED_PER_PARTITION - offset
         if remaining <= 0:
-            logger.error(
-                "filtered search incomplete: scanned %d candidates in %s without "
-                "finding %d accepted results",
-                _MAX_SCANNED_PER_PARTITION,
-                payload_type or "all-types",
-                _RANKED_RESULT_LIMIT,
-            )
-            raise RuntimeError("filtered search incomplete at candidate scan bound")
+            return _scan_bound_reached(request, payload_type, accepted)
 
         logical_size = min(_LOGICAL_PAGE_SIZE, remaining)
         # Installed langgraph-postgres expands its inner vector candidate window
@@ -243,12 +236,31 @@ async def _search_partition(
             and len(accepted) < _RANKED_RESULT_LIMIT
             and not exhausted
         ):
-            logger.error(
-                "filtered search incomplete: scan bound reached in %s",
-                payload_type or "all-types",
-            )
-            raise RuntimeError("filtered search incomplete at candidate scan bound")
+            return _scan_bound_reached(request, payload_type, accepted)
 
+    return accepted
+
+
+def _scan_bound_reached(
+    request: SearchRequest,
+    payload_type: str | None,
+    accepted: list[SearchResult],
+) -> list[SearchResult]:
+    """Handle a partition that hit the candidate scan bound with fewer than ten.
+
+    The opt-in substantive search fails loudly rather than pass off an incomplete
+    scan as complete. An ordinary search returns the matches it found: a short
+    list serves an agent better than an error.
+    """
+    logger.error(
+        "filtered search incomplete: scan bound of %d candidates reached in %s "
+        "with %d accepted",
+        _MAX_SCANNED_PER_PARTITION,
+        payload_type or "all-types",
+        len(accepted),
+    )
+    if request.require_substantive:
+        raise RuntimeError("filtered search incomplete at candidate scan bound")
     return accepted
 
 
@@ -319,42 +331,23 @@ async def search(
     # Domain tags, supersession absence, and opt-in substantive content cannot be
     # expressed by the installed store's scalar metadata filter, so pagination
     # applies those predicates without a single arbitrary over-fetch depth.
+    # Every search pages (3 November 2026): filtering only the first ten let
+    # superseded or untagged records crowd out live matches ranked below them.
     partitions: list[str | None] = (
         sorted(set(request.payload_types)) if request.payload_types else [None]
     )
-    if request.require_substantive:
-        try:
-            async with asyncio.timeout(_SEARCH_TIMEOUT_SECONDS):
-                partition_results = [
-                    await _search_partition(request, store, payload_type)
-                    for payload_type in partitions
-                ]
-        except TimeoutError:
-            logger.error(
-                "filtered search incomplete: exceeded %ss timeout",
-                _SEARCH_TIMEOUT_SECONDS,
-            )
-            raise
-    else:
-        # Preserve the accepted single-page behavior for ordinary history and
-        # metadata consumers. Pagination and its deadline are explicit contextual
-        # task-outcome capabilities, never implicit generic search changes.
-        partition_results = []
-        for payload_type in partitions:
-            namespace = ("fleet_memory", request.project)
-            metadata_filter: dict[str, object] = {"project": request.project}
-            if payload_type is not None:
-                namespace = (*namespace, payload_type)
-                metadata_filter["payload_type"] = payload_type
-            partition_results.append(
-                await store.asearch(
-                    namespace,
-                    query=request.query,
-                    filter=metadata_filter,
-                    limit=_RANKED_RESULT_LIMIT,
-                    offset=0,
-                )
-            )
+    try:
+        async with asyncio.timeout(_SEARCH_TIMEOUT_SECONDS):
+            partition_results = [
+                await _search_partition(request, store, payload_type)
+                for payload_type in partitions
+            ]
+    except TimeoutError:
+        logger.error(
+            "filtered search incomplete: exceeded %ss timeout",
+            _SEARCH_TIMEOUT_SECONDS,
+        )
+        raise
     raw_results = [
         item for partition in partition_results for item in partition
     ]
