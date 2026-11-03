@@ -1,8 +1,10 @@
 """Integration tests for re-index idempotency, concurrency, and convergence.
 
-Marker-gated (@pytest.mark.integration) tests validating the
-writer → store path against ephemeral PostgreSQL + pgvector (hermetic,
-no NATS dependency):
+Marker-gated (@pytest.mark.integration) tests running the manifest-driven
+reindex pipeline (walk -> classify -> parse -> publish) into DeterministicWriter
+against ephemeral PostgreSQL + pgvector (hermetic, no NATS dependency). The
+corpus is completed guardkit tasks under the reindex-owned ``tasks/completed``
+root, loaded with the real guardkit corpus manifest:
 
 - Second run over unchanged corpus creates or modifies no stored record (AC-001)
 - Re-indexing after editing a source document updates its record, no duplicate (AC-002)
@@ -26,14 +28,25 @@ from typing import TYPE_CHECKING
 import pytest
 
 from fleet_memory.embed import make_fake_embed
-from fleet_memory.payloads.models import ADRPayload, SeedModulePayload
+from fleet_memory.payloads.models import ADRPayload
 from fleet_memory.reindex.pipeline import reindex_corpus
 from fleet_memory.store import async_store_context
 from fleet_memory.writer.core import DeterministicWriter
 from fleet_memory.writer.identity import record_identity
+from tests.integration.reindex.corpus_support import (
+    BUILD_OUTCOME_NAMESPACE,
+    CountingStore,
+    load_guardkit_manifest,
+    natural_key_for,
+    records_for_identifier,
+    stored_payload,
+    unique_task_id,
+    write_task,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+
     from fleet_memory.payloads.base import BasePayload
 
 
@@ -56,50 +69,10 @@ def _make_adr_payload(**overrides) -> ADRPayload:
     return ADRPayload(**defaults)
 
 
-def _make_seed_module_payload(**overrides) -> SeedModulePayload:
-    """Factory for SeedModulePayload test instances with sensible defaults."""
-    defaults = {
-        "project": "reindex_integration_test",
-        "identifier": "core_auth",
-        "source_ref": "integration/reindex/seed/core_auth.md",
-        "module_path": "src/auth.py",
-        "version": 1,
-    }
-    defaults.update(overrides)
-    return SeedModulePayload(**defaults)
-
-
 @pytest.fixture
 def make_adr_payload() -> Callable[..., ADRPayload]:
     """Fixture providing ADRPayload factory for integration tests."""
     return _make_adr_payload
-
-
-@pytest.fixture
-def make_seed_module_payload() -> Callable[..., SeedModulePayload]:
-    """Fixture providing SeedModulePayload factory for integration tests."""
-    return _make_seed_module_payload
-
-
-def _create_test_corpus(tmp_path: Path, documents: dict[str, str]) -> Path:
-    """Create a test corpus directory with the given documents.
-
-    Args:
-        tmp_path: Temporary directory for the corpus
-        documents: Mapping of relative path to content
-
-    Returns:
-        Path to the corpus root
-    """
-    corpus_root = tmp_path / "corpus"
-    corpus_root.mkdir(exist_ok=True)
-
-    for rel_path, content in documents.items():
-        doc_path = corpus_root / rel_path
-        doc_path.parent.mkdir(parents=True, exist_ok=True)
-        doc_path.write_text(content, encoding="utf-8")
-
-    return corpus_root
 
 
 # ============================================================================
@@ -108,62 +81,61 @@ def _create_test_corpus(tmp_path: Path, documents: dict[str, str]) -> Path:
 
 
 @pytest.mark.integration
-async def test_second_run_is_noop(test_settings, ephemeral_pg):
+async def test_second_run_is_noop(test_settings, ephemeral_pg, tmp_path: Path):
     """Second run over an unchanged corpus creates or modifies no stored record.
 
-    Tests the writer → store path to ensure idempotency at the database level:
-    running reindex_corpus twice on the same unchanged corpus results in only
-    one record per document with no version increment.
+    The first run publishes a completed task (version 1). The second run over the
+    same files publishes it again, and the writer's content-hash check turns that
+    into a no-op: zero store writes, same version, same content hash, same
+    updated_at.
 
     Acceptance criteria AC-001.
     """
-    # Setup: ephemeral store with fake embeddings
+    manifest = load_guardkit_manifest()
+    task_id = unique_task_id("NOOP")
+    corpus_root = tmp_path / "corpus"
+    write_task(corpus_root, task_id)
+
     fake_embed = make_fake_embed(dims=test_settings.embed_dims)
-    async with async_store_context(test_settings, embed_fn=fake_embed) as store:
+    async with async_store_context(test_settings, embed_fn=fake_embed) as real_store:
+        store = CountingStore(real_store)
         writer = DeterministicWriter(store, test_settings)
 
-        # Create publisher that writes directly via DeterministicWriter
         async def direct_publisher(payload: BasePayload) -> None:
             await writer.write(payload)
 
-        # Create test corpus
-        tmp_path = Path("/tmp/test_reindex_noop")
-        tmp_path.mkdir(exist_ok=True)
-        documents = {
-            "adr/ADR_001.md": """---
-type: adr
-project: reindex_integration_test
-identifier: ADR_001
-decision: Use PostgreSQL for persistence
-status: accepted
----
-# ADR 001
-"""
-        }
-        corpus_root = _create_test_corpus(tmp_path, documents)
+        key = str(record_identity(natural_key_for(task_id)))
 
-        # First run: publish corpus
-        await reindex_corpus(corpus_root, publisher=direct_publisher)
+        # First run: the task really publishes and is stored at version 1
+        first_report = await reindex_corpus(
+            corpus_root, manifest, direct_publisher, store=store
+        )
+        assert first_report.walked_count == 1
+        assert first_report.published_count == 1, first_report.to_json_dict()
+        assert first_report.published_natural_keys == [natural_key_for(task_id)]
+        assert len(store.aput_calls) == 1
 
-        # Read first version
-        namespace = ("fleet_memory", "reindex_integration_test", "adr")
-        key = str(record_identity("adr:reindex_integration_test:ADR_001"))
-        first_record = await store.aget(namespace, key)
-        assert first_record is not None, "First run should create record"
-        first_version = first_record.value.get("version", 1)
+        first_record = await store.aget(BUILD_OUTCOME_NAMESPACE, key)
+        assert first_record is not None, "First run should create the record"
+        assert first_record.value["version"] == 1
 
-        # Second run: publish same corpus
-        await reindex_corpus(corpus_root, publisher=direct_publisher)
+        # Second run over the unchanged corpus
+        writes_before = len(store.aput_calls)
+        second_report = await reindex_corpus(
+            corpus_root, manifest, direct_publisher, store=store
+        )
+        assert second_report.published_count == 1, second_report.to_json_dict()
 
-        # Read second version
-        second_record = await store.aget(namespace, key)
+        # Nothing written, nothing modified
+        assert len(store.aput_calls) == writes_before, (
+            f"Second run wrote to the store: {store.aput_calls[writes_before:]}"
+        )
+        second_record = await store.aget(BUILD_OUTCOME_NAMESPACE, key)
         assert second_record is not None
-        second_version = second_record.value.get("version", 1)
-
-        # Assert: version unchanged (no-op on second run)
-        assert (
-            second_version == first_version
-        ), f"Second run should be no-op, but version changed: {first_version} → {second_version}"
+        assert second_record.value["version"] == first_record.value["version"]
+        assert second_record.value["content_hash"] == first_record.value["content_hash"]
+        assert second_record.updated_at == first_record.updated_at
+        assert len(await records_for_identifier(store, task_id)) == 1
 
 
 # ============================================================================
@@ -172,14 +144,22 @@ status: accepted
 
 
 @pytest.mark.integration
-async def test_edit_updates_not_duplicates(test_settings, ephemeral_pg):
+async def test_edit_updates_not_duplicates(test_settings, ephemeral_pg, tmp_path: Path):
     """Re-indexing after editing a source document updates its record with no duplicate.
 
-    Tests that editing a document and re-running reindex_corpus results in a
-    version++ update to the existing record, not a new duplicate record.
+    The task's lessons section (body prose the parser carries into the payload)
+    is edited between runs: the same record moves to version 2 with the new
+    lessons, and only one record exists for the task.
 
     Acceptance criteria AC-002.
     """
+    manifest = load_guardkit_manifest()
+    task_id = unique_task_id("EDIT")
+    corpus_root = tmp_path / "corpus"
+    original_lessons = "Probe both venv locations before falling back."
+    edited_lessons = "EDITED: fail loudly when neither venv location exists."
+    task_path = write_task(corpus_root, task_id, lessons=original_lessons)
+
     fake_embed = make_fake_embed(dims=test_settings.embed_dims)
     async with async_store_context(test_settings, embed_fn=fake_embed) as store:
         writer = DeterministicWriter(store, test_settings)
@@ -187,64 +167,43 @@ async def test_edit_updates_not_duplicates(test_settings, ephemeral_pg):
         async def direct_publisher(payload: BasePayload) -> None:
             await writer.write(payload)
 
-        # Create test corpus with initial content
-        tmp_path = Path("/tmp/test_reindex_edit")
-        tmp_path.mkdir(exist_ok=True)
-        documents_v1 = {
-            "seed/core_auth.md": """---
-type: seed_module
-project: reindex_integration_test
-identifier: core_auth
-module_path: src/auth.py
----
-# Initial content
-"""
-        }
-        corpus_root = _create_test_corpus(tmp_path, documents_v1)
+        key = str(record_identity(natural_key_for(task_id)))
 
-        # First run
-        await reindex_corpus(corpus_root, publisher=direct_publisher)
+        # First run: original document published at version 1
+        first_report = await reindex_corpus(
+            corpus_root, manifest, direct_publisher, store=store
+        )
+        assert first_report.published_count == 1, first_report.to_json_dict()
 
-        namespace = ("fleet_memory", "reindex_integration_test", "seed_module")
-        key = str(record_identity("seed_module:reindex_integration_test:core_auth"))
-        first_record = await store.aget(namespace, key)
-        assert first_record is not None
-        first_version = first_record.value.get("version", 1)
+        first_record = await store.aget(BUILD_OUTCOME_NAMESPACE, key)
+        assert first_record is not None, "First run should create the record"
+        assert first_record.value["version"] == 1
+        assert stored_payload(first_record)["lessons"] == original_lessons
 
-        # Edit the document (change module_path to trigger content hash change)
-        edited_path = corpus_root / "seed/core_auth.md"
-        edited_path.write_text(
-            """---
-type: seed_module
-project: reindex_integration_test
-identifier: core_auth
-module_path: src/auth_v2.py
----
-# EDITED content with new module path
-""",
+        # Edit the source document in place
+        task_path.write_text(
+            task_path.read_text(encoding="utf-8").replace(original_lessons, edited_lessons),
             encoding="utf-8",
         )
 
-        # Second run with edited content
-        await reindex_corpus(corpus_root, publisher=direct_publisher)
+        # Second run over the edited corpus
+        second_report = await reindex_corpus(
+            corpus_root, manifest, direct_publisher, store=store
+        )
+        assert second_report.published_count == 1, second_report.to_json_dict()
 
-        # Verify: single record with version increment
-        second_record = await store.aget(namespace, key)
+        # Same record, next version, edited content
+        second_record = await store.aget(BUILD_OUTCOME_NAMESPACE, key)
         assert second_record is not None
-        second_version = second_record.value.get("version", 1)
+        assert second_record.value["version"] == first_record.value["version"] + 1
+        assert second_record.value["content_hash"] != first_record.value["content_hash"]
+        assert stored_payload(second_record)["lessons"] == edited_lessons
 
-        # Assert version incremented
-        assert (
-            second_version == first_version + 1
-        ), f"Edit should increment version: {first_version} → {second_version}"
-
-        # Assert: only one record exists (no duplicate)
-        # Search entire namespace for this identifier
-        all_records = await store.asearch(namespace)
-        matching_records = [r for r in all_records if r.key == key]
-        assert (
-            len(matching_records) == 1
-        ), f"Expected 1 record for edited document, found {len(matching_records)}"
+        # No duplicate: exactly one record carries this task's identifier
+        matching_records = await records_for_identifier(store, task_id)
+        assert [record.key for record in matching_records] == [key], (
+            f"Expected 1 record for edited document, found {len(matching_records)}"
+        )
 
 
 # ============================================================================
@@ -253,14 +212,23 @@ module_path: src/auth_v2.py
 
 
 @pytest.mark.integration
-async def test_concurrent_runs_converge(test_settings, ephemeral_pg):
+async def test_concurrent_runs_converge(test_settings, ephemeral_pg, tmp_path: Path):
     """Two re-index runs started concurrently converge to exactly one record per key.
 
-    Tests that overlapping concurrent reindex_corpus runs on the same corpus
-    converge to a single stored record per natural key, with no duplicates.
+    Both runs walk the same five-task corpus at once, so their reads and writes
+    interleave. Each run publishes every task, and the store ends with exactly
+    one version-1 record per task.
 
     Acceptance criteria AC-003.
     """
+    manifest = load_guardkit_manifest()
+    corpus_root = tmp_path / "corpus"
+    task_ids = [unique_task_id(f"CONC{index}") for index in range(5)]
+    lessons_by_id = {}
+    for index, task_id in enumerate(task_ids):
+        lessons_by_id[task_id] = f"Concurrent lesson number {index}."
+        write_task(corpus_root, task_id, lessons=lessons_by_id[task_id])
+
     fake_embed = make_fake_embed(dims=test_settings.embed_dims)
     async with async_store_context(test_settings, embed_fn=fake_embed) as store:
         writer = DeterministicWriter(store, test_settings)
@@ -268,42 +236,28 @@ async def test_concurrent_runs_converge(test_settings, ephemeral_pg):
         async def direct_publisher(payload: BasePayload) -> None:
             await writer.write(payload)
 
-        # Create test corpus
-        tmp_path = Path("/tmp/test_reindex_concurrent")
-        tmp_path.mkdir(exist_ok=True)
-        documents = {
-            "adr/ADR_CONCURRENT.md": """---
-type: adr
-project: reindex_integration_test
-identifier: ADR_CONCURRENT
-decision: Test concurrent writes
-status: accepted
----
-# Concurrent test
-"""
-        }
-        corpus_root = _create_test_corpus(tmp_path, documents)
-
-        # Run two reindex_corpus calls concurrently
-        await asyncio.gather(
-            reindex_corpus(corpus_root, publisher=direct_publisher),
-            reindex_corpus(corpus_root, publisher=direct_publisher),
+        reports = await asyncio.gather(
+            reindex_corpus(corpus_root, manifest, direct_publisher, store=store),
+            reindex_corpus(corpus_root, manifest, direct_publisher, store=store),
         )
 
-        # Verify: exactly one record exists
-        namespace = ("fleet_memory", "reindex_integration_test", "adr")
-        key = str(record_identity("adr:reindex_integration_test:ADR_CONCURRENT"))
+        expected_keys = sorted(natural_key_for(task_id) for task_id in task_ids)
+        for report in reports:
+            assert report.published_count == len(task_ids), report.to_json_dict()
+            assert sorted(report.published_natural_keys) == expected_keys
 
-        all_records = await store.asearch(namespace)
-        matching_records = [r for r in all_records if r.key == key]
+        for task_id in task_ids:
+            key = str(record_identity(natural_key_for(task_id)))
+            matching_records = await records_for_identifier(store, task_id)
+            assert [record.key for record in matching_records] == [key], (
+                f"Concurrent runs should converge to 1 record for {task_id}, "
+                f"found {len(matching_records)}"
+            )
 
-        assert (
-            len(matching_records) == 1
-        ), f"Concurrent runs should converge to 1 record, found {len(matching_records)}"
-
-        # Verify record is valid
-        record = matching_records[0]
-        assert record.value.get("identifier") == "ADR_CONCURRENT"
+            record = matching_records[0]
+            assert record.value["natural_key"] == natural_key_for(task_id)
+            assert record.value["version"] == 1
+            assert stored_payload(record)["lessons"] == lessons_by_id[task_id]
 
 
 # ============================================================================
